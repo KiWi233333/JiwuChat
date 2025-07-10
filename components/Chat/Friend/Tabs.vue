@@ -42,15 +42,6 @@ const activeNames = useLocalStorage(`${route.fullPath}_activeNames`, {
           <small>新的朋友</small>
         </div>
       </div>
-      <div class="card-item">
-        <small pb-2 pt-4 op-90>AI 机器人</small>
-        <div class="item" :class="{ focus: chat.theFriendOpt.type === FriendOptType.AiRobot }" @click="toggleView(FriendOptType.AiRobot)">
-          <div class="avatar-icon bg-theme-primary">
-            <i i-ri:robot-2-line class="ai-icon" />
-          </div>
-          <small>探索机器人</small>
-        </div>
-      </div>
       <el-collapse v-model="activeNames.arr">
         <!-- 群聊 -->
         <el-collapse-item name="1" title="群聊">

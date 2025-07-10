@@ -24,7 +24,6 @@ export enum MittEventType {
   // 表单操作事件
   MSG_FORM = "chat-msg-form",
   CHAT_AT_USER = "chat-at-user", // @用户事件
-  CAHT_ASK_AI_ROBOT = "chat-ask-ai-robot", // 提问AI机器人事件
   // 视频组件事件
   VIDEO_READY = "video-ready",
   // 成员列表事件
@@ -74,11 +73,6 @@ export interface AtUserPlaoyload {
   type: "add" | "remove" | "clear",
   payload?: string | null
 }
-// 提问AI机器人事件载荷
-export interface AskAiRobotPayload {
-  type: "add" | "remove" | "clear",
-  payload?: string // userId
-}
 
 // 消息队列事件载荷
 export interface MessageQueueData {
@@ -115,14 +109,12 @@ type EventPayloadMap = {
   [MittEventType.RTC_CALL]: WSRtcCallMsg;
   [MittEventType.PIN_CONTACT]: WSPinContactMsg;
   [MittEventType.UPDATE_CONTACT_INFO]: WSUpdateContactInfoMsg;
-  [MittEventType.AI_STREAM]: WSAiStreamMsg;
   [MittEventType.OTHER]: object;
   // 消息列表组件事件
   [MittEventType.MSG_LIST_SCROLL]: MsgListScrollPayload;
   // 表单操作事件
   [MittEventType.MSG_FORM]: MsgFormEventPlaoyload;
   [MittEventType.CHAT_AT_USER]: AtUserPlaoyload;
-  [MittEventType.CAHT_ASK_AI_ROBOT]: AskAiRobotPayload;
   // 视频组件事件
   [MittEventType.VIDEO_READY]: VideoReadyPayload;
   // 成员列表事件
@@ -154,11 +146,10 @@ const eventAndWsMap: Readonly<Record<WsMsgBodyType, MittEventType>> = {
   [WsMsgBodyType.DELETE]: MittEventType.DELETE,
   [WsMsgBodyType.RTC_CALL]: MittEventType.RTC_CALL,
   [WsMsgBodyType.PIN_CONTACT]: MittEventType.PIN_CONTACT,
-  [WsMsgBodyType.AI_STREAM]: MittEventType.AI_STREAM,
   [WsMsgBodyType.UPDATE_CONTACT_INFO]: MittEventType.UPDATE_CONTACT_INFO,
 } as const;
-export function resolteChatPath(type: WsMsgBodyType): MittEventType {
-  return eventAndWsMap[type] || MittEventType.OTHER;
+export function resolveChatPath(type: WsMsgBodyType): keyof MittEvents {
+  return (eventAndWsMap[type] || MittEventType.OTHER) as keyof MittEvents;
 }
 
 
@@ -167,20 +158,4 @@ export const mitter = mitt<MittEvents>();
 
 export function removeAllEventListener() {
   mitter.all.clear();
-  // mitter.off(MittEventType.MESSAGE);
-  // mitter.off(MittEventType.ONLINE_OFFLINE_NOTIFY);
-  // mitter.off(MittEventType.RECALL);
-  // mitter.off(MittEventType.APPLY);
-  // mitter.off(MittEventType.MEMBER_CHANGE);
-  // mitter.off(MittEventType.TOKEN_EXPIRED_ERR);
-  // mitter.off(MittEventType.DELETE);
-  // mitter.off(MittEventType.RTC_CALL);
-  // mitter.off(MittEventType.PIN_CONTACT);
-  // mitter.off(MittEventType.OTHER);
-  // mitter.off(MittEventType.MSG_LIST_SCROLL);
-  // mitter.off(MittEventType.MSG_FORM);
-  // mitter.off(MittEventType.VIDEO_READY);
-  // mitter.off(MittEventType.CHAT_AT_USER);
-  // mitter.off(MittEventType.CAHT_ASK_AI_ROBOT);
-  // mitter.off(MittEventType.RELOAD_MEMBER_LIST);
 }

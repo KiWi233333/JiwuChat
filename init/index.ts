@@ -31,8 +31,6 @@ export async function useDefaultInit() {
   unMountedIframeInit = useIframeInit();
   // 硬件加速管理
   useHardwareAcceleration();
-  // 主题自定义管理
-  initThemeCustomization();
 }
 
 /**

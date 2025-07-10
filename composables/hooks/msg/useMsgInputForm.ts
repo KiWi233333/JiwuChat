@@ -474,30 +474,21 @@ export function useMsgInputForm(
 
   // 状态
   const isAtUser = computed(() => chat.atUserList.length > 0);
-  const isReplyAI = computed(() => chat.askAiRobotList.length > 0);
   const showAtOptions = ref(false);
-  const showAiOptions = ref(false);
   const selectedAtItemIndex = ref(0);
   const selectedAiItemIndex = ref(0);
   const atFilterKeyword = ref("");
-  const aiFilterKeyword = ref("");
   const optionsPosition = ref({ left: 0, top: 0, width: 250 });
 
   // 管理器实例
   const domCache = new DomCacheManager();
   const selectionManager = new SelectionManager(msgInputRef);
   const tagManager = new TagManager(msgInputRef, domCache, selectionManager);
-  const imageManager = new ImageManager(msgInputRef, selectionManager, computed(() => chat.isAIRoom || isReplyAI.value));
+  const imageManager = new ImageManager(msgInputRef, selectionManager, computed(() => chat.isAIRoom));
 
   // Hooks
   const { userOptions, userAtOptions, loadUser } = useLoadAtUserList();
-  const { aiOptions, loadAi } = useLoadAiList();
 
-  // AI机器人
-  const aiSelectOptions = computed(() => new Set(chat.askAiRobotList.map(p => p.userId)));
-  const aiShowOptions = computed(() => // 过滤掉已选择的AI机器人
-    aiOptions.value?.filter(p => !aiSelectOptions.value.has(p.userId)) || [],
-  );
   // @用户
   // const atSelectOptions = computed(() => new Set(chat.atUserList.map(p => p.userId)));
   // const atShowOptions = computed(() =>   // 过滤掉已选择的@用户
@@ -510,15 +501,6 @@ export function useMsgInputForm(
     const keyword = atFilterKeyword.value.toLowerCase();
     return userAtOptions.value.filter(user =>
       user?.nickName?.toLowerCase().includes(keyword),
-    );
-  });
-
-  const filteredAiOptions = computed(() => {
-    if (!aiFilterKeyword.value)
-      return aiShowOptions.value;
-    const keyword = aiFilterKeyword.value.toLowerCase();
-    return aiShowOptions.value.filter(ai =>
-      ai?.nickName?.toLowerCase().includes(keyword),
     );
   });
 
@@ -538,9 +520,7 @@ export function useMsgInputForm(
   // 方法
   function resetOptions() {
     showAtOptions.value = false;
-    showAiOptions.value = false;
     atFilterKeyword.value = "";
-    aiFilterKeyword.value = "";
   }
 
   function updateSelectionRange() {
@@ -585,21 +565,10 @@ export function useMsgInputForm(
         const beforeText = InputDetector.getBeforeText(range, msgInputRef.value);
         const detection = InputDetector.detectType(beforeText);
 
-        if (detection.type === "at" && userAtOptions.value.length > 0 && !isReplyAI.value) {
+        if (detection.type === "at" && userAtOptions.value.length > 0) {
           atFilterKeyword.value = detection.keyword;
           showAtOptions.value = true;
-          showAiOptions.value = false;
           selectedAtItemIndex.value = 0;
-          updateOptionsPosition();
-          updateSelectionRange();
-          return;
-        }
-
-        if (detection.type === "ai" && aiOptions.value.length > 0 && !isAtUser.value) {
-          aiFilterKeyword.value = detection.keyword;
-          showAiOptions.value = true;
-          showAtOptions.value = false;
-          selectedAiItemIndex.value = 0;
           updateOptionsPosition();
           updateSelectionRange();
           return;
@@ -619,7 +588,6 @@ export function useMsgInputForm(
     if (!msgInputRef.value)
       return;
     resolveContentAtUsers();
-    resolveContentAiAsk();
   }
   function resolveContentAtUsers() {
     const users = tagManager.parseFromDom(".at-user-tag", (tag) => {
@@ -644,29 +612,6 @@ export function useMsgInputForm(
     return users;
   }
 
-  function resolveContentAiAsk() {
-    const aiRobots = tagManager.parseFromDom(".ai-robot-tag", (tag) => {
-      const uid = tag.getAttribute("data-uid");
-      const username = tag.getAttribute("data-username");
-      const nickName = tag.textContent;
-
-      if (!uid || !username || !nickName)
-        return null;
-
-      const robotInfo = aiOptions.value.find(r => r.userId === uid);
-      return {
-        label: robotInfo?.label || nickName,
-        value: robotInfo?.value || nickName,
-        userId: uid,
-        username,
-        nickName,
-        avatar: robotInfo?.avatar,
-        aiRobotInfo: robotInfo?.aiRobotInfo,
-      } as AskAiRobotOption;
-    });
-
-    chat.askAiRobotList = aiRobots;
-  }
 
   function insertAtUserTag(user: AskAiRobotOption) {
     if (!user?.userId || !user?.nickName)
@@ -694,34 +639,6 @@ export function useMsgInputForm(
       username: user.username || "",
       text: `@${user.nickName}`,
     }, /@[^@\s]*$/, true);
-  }
-
-  function insertAiRobotTag(robot: AskAiRobotOption) {
-    if (!robot?.userId || !robot?.nickName)
-      return;
-
-    if (!chat.askAiRobotList.some(r => r.userId === robot.userId)) {
-      chat.askAiRobotList.push(robot);
-    }
-
-    const outer = SecurityUtils.createSafeElement("span", "ai-robot-tag", {
-      "data-type": "ai-robot",
-      "data-uid": robot.userId,
-      "draggable": "false",
-      "data-username": robot.username || "",
-      "title": `${SecurityUtils.sanitizeInput(robot.nickName)} (${SecurityUtils.sanitizeInput(robot.username || "")})`,
-    });
-
-    const inner = SecurityUtils.createSafeElement("span", "ai-robot-inner");
-    inner.textContent = SecurityUtils.sanitizeInput(robot.nickName || "未知");
-    outer.appendChild(inner);
-
-    tagManager.insert(outer, {
-      type: "ai-robot",
-      uid: robot.userId,
-      username: robot.username || "",
-      text: robot.nickName,
-    }, /\/[^/\s]*$/);
   }
 
   function handleSelectAtUser(user: AskAiRobotOption) {
@@ -754,8 +671,6 @@ export function useMsgInputForm(
     else {
       selectionManager.focusAtEnd();
     }
-
-    insertAiRobotTag(robot);
   }
 
   function clearInputContent() {
@@ -770,16 +685,6 @@ export function useMsgInputForm(
 
   function getInputVaildText(): string {
     try {
-      if (isReplyAI.value) { // TODO: AI对话只遍历获取纯文本
-        let content = "";
-        msgInputRef.value?.childNodes.forEach((node) => {
-          if (node.nodeType === Node.TEXT_NODE) {
-            content += node.textContent || "";
-          }
-        });
-        return content;
-      }
-
       // 默认 （包括 @ ）
       const content = msgInputRef.value?.textContent || "";
       inputTextContent.value = content;
@@ -806,9 +711,9 @@ export function useMsgInputForm(
       }
 
       // 处理选项导航
-      if ((showAtOptions.value || showAiOptions.value) && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+      if ((showAtOptions.value) && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
         e.preventDefault();
-        const options = showAtOptions.value ? filteredUserAtOptions.value : filteredAiOptions.value;
+        const options = showAtOptions.value ? filteredUserAtOptions.value : [];
         const currentIndex = showAtOptions.value ? selectedAtItemIndex.value : selectedAiItemIndex.value;
         const direction = e.key === "ArrowDown" ? 1 : -1;
         const newIndex = Math.max(0, Math.min(currentIndex + direction, options.length - 1));
@@ -816,10 +721,6 @@ export function useMsgInputForm(
         if (showAtOptions.value) {
           selectedAtItemIndex.value = newIndex;
           nextTick(() => scrollToSelectedItem(true, newIndex));
-        }
-        else if (showAiOptions.value) {
-          selectedAiItemIndex.value = newIndex;
-          nextTick(() => scrollToSelectedItem(false, newIndex));
         }
         return;
       }
@@ -831,7 +732,7 @@ export function useMsgInputForm(
       }
 
       // 确认选择
-      if ((showAtOptions.value || showAiOptions.value) && (e.key === "Enter" || e.key === "Tab")) {
+      if ((showAtOptions.value) && (e.key === "Enter" || e.key === "Tab")) {
         if (showAtOptions.value && filteredUserAtOptions.value.length) {
           const selectedUser = filteredUserAtOptions.value[selectedAtItemIndex.value];
           if (selectedUser) {
@@ -840,18 +741,10 @@ export function useMsgInputForm(
             return;
           }
         }
-        else if (showAiOptions.value && filteredAiOptions.value.length) {
-          const selectedAi = filteredAiOptions.value[selectedAiItemIndex.value];
-          if (selectedAi) {
-            handleSelectAiRobot(selectedAi);
-            e.preventDefault();
-            return;
-          }
-        }
       }
 
       // 退出选择
-      if ((showAtOptions.value || showAiOptions.value) && e.key === "Escape") {
+      if ((showAtOptions.value) && e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();
         resetOptions();
@@ -1048,24 +941,15 @@ export function useMsgInputForm(
 
     // @ 和 AI 选择状态
     showAtOptions,
-    showAiOptions,
     selectedAtItemIndex,
     selectedAiItemIndex,
     atFilterKeyword,
-    aiFilterKeyword,
     optionsPosition,
 
     // 计算选项
     filteredUserAtOptions,
-    filteredAiOptions,
-    aiShowOptions,
     userOptions,
     userAtOptions,
-    aiOptions,
-    aiSelectOptions,
-
-    // 状态
-    isReplyAI,
 
     // 滚动条引用
     atScrollbar,
@@ -1073,7 +957,6 @@ export function useMsgInputForm(
 
     // 加载函数
     loadUser,
-    loadAi,
 
     // 内容管理
     updateFormContent,
@@ -1087,7 +970,6 @@ export function useMsgInputForm(
 
     // 标签插入
     insertAtUserTag,
-    insertAiRobotTag,
 
     // 选项处理器
     resetOptions,

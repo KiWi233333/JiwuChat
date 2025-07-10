@@ -16,7 +16,6 @@ export interface WsMsgItemMap {
   tokenMsg: object[];
   rtcMsg: WSRtcCallMsg[];
   pinContactMsg: WSPinContactMsg[];
-  aiStreamMsg: WSAiStreamMsg[];
   updateContactInfoMsg: WSUpdateContactInfoMsg[]
   other: object[];
 }
@@ -36,7 +35,6 @@ export function useWsMessage() {
     [WsMsgBodyType.TOKEN_EXPIRED_ERR]: "tokenMsg",
     [WsMsgBodyType.RTC_CALL]: "rtcMsg",
     [WsMsgBodyType.PIN_CONTACT]: "pinContactMsg",
-    [WsMsgBodyType.AI_STREAM]: "aiStreamMsg",
     [WsMsgBodyType.UPDATE_CONTACT_INFO]: "updateContactInfoMsg",
   };
 
@@ -51,7 +49,6 @@ export function useWsMessage() {
     tokenMsg: [],
     rtcMsg: [],
     pinContactMsg: [],
-    aiStreamMsg: [],
     updateContactInfoMsg: [],
     other: [],
   });
@@ -76,7 +73,7 @@ export function useWsMessage() {
     // 如果消息类型在映射中存在，则处理该消息
     if (wsMsgMap[wsMsg.type] !== undefined) {
       wsMsgList.value[wsMsgMap[wsMsg.type]].push(body as any);
-      mitter.emit(resolteChatPath(wsMsg.type), body);
+      mitter.emit(resolveChatPath(wsMsg.type), body);
     }
     handleNotification(wsMsg);
   }

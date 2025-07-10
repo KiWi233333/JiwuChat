@@ -2,7 +2,6 @@ import type { OsType, Platform } from "@tauri-apps/plugin-os";
 import type { Update } from "@tauri-apps/plugin-updater";
 import type { Action } from "element-plus";
 import type { ExtendItem } from "~/components/menu/extension";
-import type { ThemeConfig } from "~/composables/hooks/useThemeCustomization";
 import type { SystemConstantVO } from "~/init/system";
 import { appDataDir } from "@tauri-apps/api/path";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
@@ -140,13 +139,6 @@ export const useSettingStore = defineStore(
             { name: "夜间", value: "dark" },
           ],
         },
-        // 翻译
-        translation: {
-          value: 1,
-          targetLang: "zh" as TranslationEnums,
-          stream: false,
-          list: [] as TranslationToolVO[],
-        },
         isAutoStart: false, // 开机自启
         isCloseAllTransition: false, // 是否关闭所有动画效果，包括页面切换动画和组件动画。
         animation: {
@@ -163,11 +155,10 @@ export const useSettingStore = defineStore(
         rtcCallBellUrl: DEFAULT_RTC_CALL_BELL_URL, // 呼叫铃声铃声
       };
     }
-    // 自定义主题配置
-    const customThemeConfig = ref<ThemeConfig | null>(null);
-    const translationTool = computed(() => settingPage.value.translation.list.find(item => item.value === settingPage.value.translation.value));
+    // --------------------- 默认铃声 -----------------
     const isDefaultRtcCallBell = computed(() => settingPage.value.rtcCallBellUrl === DEFAULT_RTC_CALL_BELL_URL);
     const isChatFold = ref(false);
+
     const isThemeChangeLoad = ref(false);
 
     // --------------------- 右键菜单 -----------------
@@ -330,7 +321,10 @@ export const useSettingStore = defineStore(
         const update = (await check()) as Update;
         if (!update) {
           handleUploadInfo && handleUploadInfo(update);
+          appUploader.value.isCheckUpdatateLoad = false;
+          return false;
         }
+        // 处理更新信息
         appUploader.value.isUpload = !!update?.available;
         appUploader.value.isCheckUpdatateLoad = false;
         if (!appUploader.value.isUpload || !update.version) {
@@ -343,6 +337,7 @@ export const useSettingStore = defineStore(
           return false;
         }
         appUploader.value.newVersion = update?.version; // 新版本号
+        appUploader.value.version = update?.currentVersion; // 新版本号
         // 检查是否忽略当前版本
         if (!checkLog && appUploader.value.ignoreVersion.includes(update.version))
           return false;
@@ -466,37 +461,18 @@ export const useSettingStore = defineStore(
       }
     }
 
-
     /**
      * 加载设置预设数据
      */
     function loadSettingPreData() {
-      // 在组件挂载时获取翻译工具列表
-      fetchTranslationTools();
     }
-    // 获取翻译工具列表
-    async function fetchTranslationTools() {
-      try {
-        const user = useUserStore(); // 假设有一个 user store 提供 token
-        const token = user.getToken; // 获取用户 token
-        const res = await getTranslationToolList(token);
-        if (res.code === StatusCode.SUCCESS) {
-          settingPage.value.translation.list = res.data;
-        }
-      }
-      catch (error) {
-        console.error("获取翻译工具列表错误:", error);
-      }
-    }
-
     /**
      * 重置设置
      */
     async function reset() {
-      isChatFold.value = false;
       showChatMenu.value = true;
-      isThemeChangeLoad.value = false;
       isUseWebsocket.value = true;
+      isChatFold.value = false;
       appUploader.value = {
         isCheckUpdatateLoad: false,
         isUpdating: false,
@@ -523,7 +499,6 @@ export const useSettingStore = defineStore(
       fileDownloadMap.value = {};
       appDataDownloadDirUrl.value = "";
       downUpChangeContact.value = true;
-      customThemeConfig.value = null;
       loadSystemFonts();
       if (!isWeb.value) {
         await nextTick();
@@ -566,7 +541,6 @@ export const useSettingStore = defineStore(
       isOpenContactSearch,
       isDesktop,
       isMobile,
-      isChatFold,
       // state
       isCollapse,
       contextMenuTheme,
@@ -583,7 +557,6 @@ export const useSettingStore = defineStore(
       fileDownloadList,
       appPlatform,
       systemConstant,
-      translationTool,
       appDataDownloadDirUrl,
       BaseDirCode,
       osType,
@@ -591,7 +564,7 @@ export const useSettingStore = defineStore(
       isWeb,
       isDefaultRtcCallBell,
       selectExtendMenuList,
-      customThemeConfig,
+      isChatFold,
       // actions
       checkUpdates,
       handleAppUpdate,

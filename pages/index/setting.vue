@@ -141,9 +141,6 @@ onUnmounted(() => {
     </div>
     <!-- 工具 -->
     <label class="title">工具</label>
-    <div id="translation" class="box">
-      <SettingTranslation class="select" :size="size" />
-    </div>
     <!-- 功能与交互 -->
     <label class="title">功能与交互</label>
     <div id="function" class="box">
@@ -156,7 +153,7 @@ onUnmounted(() => {
           title="定制化动画"
 
 
-          text bg round
+          text round bg
           size="small"
           @click="showCustomTransitionPanel = true"
         />
@@ -220,8 +217,6 @@ onUnmounted(() => {
       <SettingAutoStart v-if="setting.isDesktop" :size="size" />
       <!-- 下载路径 -->
       <SettingDownLoad v-if="!setting.isWeb" />
-      <!-- 版本更新 -->
-      <SettingVersionDialog />
     </div>
     <div class="btns">
       <BtnElButton

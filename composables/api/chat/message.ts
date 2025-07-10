@@ -155,10 +155,8 @@ export enum MessageType {
   VIDEO = 6,
   EMOJI = 7, // 暂无
   SYSTEM = 8,
-  AI_CHAT = 9, // AI发起人消息
   DELETE = 10,
   RTC = 11, // rtc通话
-  AI_CHAT_REPLY = 12, // AI回复消息
   GROUP_NOTICE = 13, // 群通知消息
 }
 
@@ -237,16 +235,6 @@ export const msgBodyVOBuilderMap = {
       fileName: body.fileName || "其他文件名",
       mimeType: body.mimeType,
       fileType: body.fileType,
-    };
-  },
-  [MessageType.AI_CHAT]: (formData: ChatMessageDTO): AiChatBodyMsgVO => { // AI发起消息
-    const body = formData.body as AiChatBodyDTO;
-    const robotList = [];
-    return {
-      userId: body.businessCode.toString(),
-      robotInfo: undefined,
-      robotList: undefined,
-      businessCode: body.businessCode,
     };
   },
   [MessageType.GROUP_NOTICE]: (formData: ChatMessageDTO): GroupNoticeBodyMsgVO => {
@@ -335,10 +323,8 @@ export interface MessageBodyMap {
   [MessageType.VIDEO]: VideoBodyMsgVO;
   [MessageType.EMOJI]: any; //   暂无
   [MessageType.SYSTEM]: SystemBodyMsgVO;
-  [MessageType.AI_CHAT]: AiChatBodyMsgVO;
   [MessageType.DELETE]: string;
   [MessageType.RTC]: RtcLiteBodyMsgVO;
-  [MessageType.AI_CHAT_REPLY]: AiChatReplyBodyMsgVO;
   [MessageType.GROUP_NOTICE]: GroupNoticeBodyMsgVO;
 }
 
@@ -474,53 +460,6 @@ export interface RtcLiteBodyMsgVO {
   durationText?: string;
 }
 
-/**
- * AI发起人消息
- */
-export interface AiChatBodyMsgVO {
-  /**
-   * 机器人id
-   */
-  userId: string;
-  /**
-   * 机器人信息
-   */
-  robotInfo?: RobotUserVO;
-  /**
-   * 机器人列表
-   */
-  robotList?: RobotUserVO[];
-  /**
-   * 机器人业务类型
-   * 文生 1：文本 2：图片 3：视频
-   */
-  businessCode: AiBusinessType;
-}
-
-/** AI回复消息 */
-export interface AiChatReplyBodyMsgVO {
-  content?: string;
-  urlContentMap?: { [key: string]: UrlInfoDTO };
-  // atUidList?: string[];
-  mentionList?: MentionInfo[];
-  reply?: {
-    id: number;
-    uid: string;
-    nickName: string;
-    type: MessageType;
-    canCallback: isTrue;
-    gapCount: number;
-    body?: string
-  };
-  status: AiReplyStatusEnum;
-  /**
-   * 部分模型的思考经过
-   */
-  reasoningContent?: string;
-  // imgMsgDTO?: ImgBodyMsgVO;
-  // videoMsgDTO?: VideoBodyMsgVO;
-}
-
 export enum FileBodyMsgTypeEnum {
   //  "TXT" | "EXCEL" | "XLSX" | "PDF" | "PPT" | "PPTX" | "DOC" | "DOCX"
   TXT = "TXT",
@@ -541,15 +480,13 @@ export const MessageTypeText = {
   [MessageType.VIDEO]: "视频",
   [MessageType.EMOJI]: "表情",
   [MessageType.SYSTEM]: "系统消息",
-  [MessageType.AI_CHAT]: "机器人消息",
   [MessageType.DELETE]: "删除消息",
   [MessageType.RTC]: "RTC通讯消息",
-  [MessageType.AI_CHAT_REPLY]: "AI回复消息",
   [MessageType.GROUP_NOTICE]: "群通知消息",
 };
 
 
-export type CanSendMessageType = MessageType.TEXT | MessageType.IMG | MessageType.SOUND | MessageType.VIDEO | MessageType.FILE | MessageType.AI_CHAT | MessageType.GROUP_NOTICE;
+export type CanSendMessageType = MessageType.TEXT | MessageType.IMG | MessageType.SOUND | MessageType.VIDEO | MessageType.FILE | MessageType.GROUP_NOTICE;
 
 /**
  * ChatMessageDTO
@@ -587,7 +524,6 @@ interface MessageBodyDTOMap {
   [MessageType.RECALL]: RecallBodyDTO;
   [MessageType.VIDEO]: VideoBodyDTO;
   [MessageType.FILE]: FileBodyDTO;
-  [MessageType.AI_CHAT]: AiChatBodyDTO;
   [MessageType.GROUP_NOTICE]: GroupNoticeBodyDTO;
 }
 export interface TextBodyDTO {
@@ -634,11 +570,6 @@ export interface VideoBodyDTO {
   thumbSize?: number;
   thumbWidth?: number;
   thumbHeight?: number;
-}
-
-export interface AiChatBodyDTO {
-  userIds: string[];
-  businessCode: AiBusinessType;
 }
 
 export interface GroupNoticeBodyDTO {

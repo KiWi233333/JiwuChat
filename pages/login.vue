@@ -66,7 +66,6 @@ onMounted(async () => {
           :icon-class="user.showLoginPageType === 'env-config' ? 'i-solar:settings-minimalistic-bold-duotone text-0.9em' : 'i-solar:settings-minimalistic-outline text-1em'"
           @click="user.showLoginPageType = (user.showLoginPageType === 'env-config' ? 'login' : 'env-config')"
         />
-        <BtnAppDownload />
         <MenuController v-if="setting.isDesktop" key="header" :size="setting.isDesktop ? 'small' : ''" :show-max="false" />
       </div>
     </div>

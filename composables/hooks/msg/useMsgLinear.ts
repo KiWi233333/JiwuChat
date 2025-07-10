@@ -16,11 +16,7 @@ export function useMsgLinear() {
     mitter.on(MittEventType.PIN_CONTACT, (data: WSPinContactMsg) => {
       resolvePinContact(data);
     });
-    // 5、ai推送消息 type=11
-    mitter.on(MittEventType.AI_STREAM, (data: WSAiStreamMsg) => {
-      resolveAiStream(data);
-    });
-    // 6、会话信息更新消息 type=12 UPDATE_CONTACT_INFO
+    // 5、会话信息更新消息 type=12 UPDATE_CONTACT_INFO
     mitter.on(MittEventType.UPDATE_CONTACT_INFO, (data: WSUpdateContactInfoMsg) => {
       resolveUpdateContactInfo(data);
     });
@@ -32,7 +28,6 @@ export function useMsgLinear() {
     mitter.off(MittEventType.RECALL);
     mitter.off(MittEventType.DELETE);
     mitter.off(MittEventType.PIN_CONTACT);
-    mitter.off(MittEventType.AI_STREAM);
     mitter.off(MittEventType.UPDATE_CONTACT_INFO);
   }
 
@@ -88,13 +83,8 @@ async function resolveNewMsg(msg: ChatMessageVO) {
     chat.appendMsg(msg); // 追加消息
   }
 
-  // 本人问答的AI消息进行滚动
+  // 本人问答的RTC消息进行滚动
   if (isCurrentRoom) {
-    if (msg.message.type === MessageType.AI_CHAT_REPLY) {
-      (msg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === user.userInfo.id && handleAIReplayMsg(); // 处理AI回复消息 多一步滚动
-      const contact = useChatStore().contactMap[msg.message.roomId];
-      contact && (contact.text = contact.type === RoomType.GROUP ? `${msg.fromUser.nickName}: 回答中...` : "AI回答中...");
-    }
     msg.message.type === MessageType.RTC && handleRTCMsg((msg as any)); // 处理rtc消息 多一步滚动
   }
   ws.wsMsgList.newMsg.splice(0);
@@ -191,201 +181,6 @@ function handleRTCMsg(msg: ChatMessageVO<RtcLiteBodyMsgVO>) {
   }
 }
 
-// 创建消息缓冲区
-interface BufferItem {
-  content: string
-  reasoning: string
-  timer: number | NodeJS.Timeout
-  pendingContent: string
-  pendingReasoning: string
-  charIndex: number
-  updateInterval: any
-}
-const bufferMap = new WeakMap<ChatMessageVO<AiChatReplyBodyMsgVO>, BufferItem>();
-
-/**
- * 6. ai推送消息处理
- *
- * @param data 数据
- */
-function resolveAiStream(data: WSAiStreamMsg) {
-  const chat = useChatStore();
-  const contact = chat.contactMap[data.roomId];
-  if (!contact)
-    return;
-
-  const oldMsg = chat.findMsg(data.roomId, data.msgId) as ChatMessageVO<AiChatReplyBodyMsgVO> | undefined;
-
-  // 统一状态更新
-  if (oldMsg?.message?.body) {
-    oldMsg.message.body.status = data.status;
-  }
-
-  // 处理不同状态
-  switch (data.status) {
-    case AiReplyStatusEnum.START:
-      handleStartState(oldMsg);
-      break;
-    case AiReplyStatusEnum.IN_PROGRESS:
-      handleProgressUpdate(data, contact, oldMsg);
-      break;
-    default:
-      handleFinalState(data, contact, oldMsg);
-  }
-}
-/**
- * 处理进度更新
- */
-function handleProgressUpdate(
-  data: WSAiStreamMsg,
-  contact: ChatContactDetailVO,
-  oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
-  count = 3,
-  delay = 50,
-) {
-  // 初始化缓冲区
-  if (oldMsg && !bufferMap.has(oldMsg)) {
-    bufferMap.set(oldMsg, {
-      content: oldMsg?.message?.content || "",
-      reasoning: oldMsg?.message?.body?.reasoningContent || "",
-      timer: 0,
-      pendingContent: "",
-      pendingReasoning: "",
-      charIndex: 0,
-      updateInterval: null,
-    });
-  }
-
-  const buffer = bufferMap.get(oldMsg!)!;
-  // 累积待处理内容
-  buffer.pendingContent += data.content;
-  buffer.pendingReasoning += data.reasoningContent || "";
-  const chat = useChatStore();
-  if (chat.theRoomId === data.roomId) { // 当前房间
-    // 如果没有正在进行的更新，启动渐入效果
-    if (chat.shouldAutoScroll) { // AI消息更新时自动滚动到底部
-      chat.scrollBottom(true);
-    }
-    function handleAiFlowIntervalFn() {
-      // 每次更新s字符
-      const contentChars = buffer.pendingContent.length > 0 ? buffer.pendingContent.substring(0, count) : "";
-      const reasoningChars = buffer.pendingReasoning.length > 0 ? buffer.pendingReasoning.substring(0, count) : "";
-
-      // 添加到显示内容
-      buffer.content += contentChars;
-      buffer.reasoning += reasoningChars;
-
-      // 从待处理内容中移除已处理的字符
-      buffer.pendingContent = buffer.pendingContent.substring(contentChars.length);
-      buffer.pendingReasoning = buffer.pendingReasoning.substring(reasoningChars.length);
-
-      // AI消息更新时自动滚动到底部
-      const chat = useChatStore();
-      if (chat.shouldAutoScroll) {
-        chat.scrollBottom(true);
-      }
-
-      // 应用更新
-      applyBufferUpdate(oldMsg, buffer);
-
-      // 如果没有待处理内容且收到了结束信号，清除定时器
-      if (buffer.pendingContent.length === 0 && buffer.pendingReasoning.length === 0) {
-        if (oldMsg?.message?.body?.status !== AiReplyStatusEnum.IN_PROGRESS) {
-          clearInterval(buffer.updateInterval);
-          buffer.updateInterval = null;
-          oldMsg && bufferMap.delete(oldMsg);
-        }
-      }
-    }
-    // 同步一次
-    handleAiFlowIntervalFn();
-    if (!buffer.updateInterval) {
-      buffer.updateInterval = setInterval(handleAiFlowIntervalFn, delay); // 调整速度，50ms更新s字符
-    }
-  }
-  else {
-    clearInterval(buffer.updateInterval);
-    buffer.updateInterval = null;
-    // 正常填充
-    buffer.content += data.content;
-    buffer.reasoning += data.reasoningContent || "";
-    clearTimeout(buffer.timer);
-    buffer.timer = setTimeout(() => {
-      applyBufferUpdate(oldMsg, buffer);
-    }, 1000); // 延迟1s更新
-  }
-}
-
-
-function applyBufferUpdate(
-  oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
-  buffer?: { content: string; reasoning: string; pendingContent?: string; pendingReasoning?: string; updateInterval?: any },
-) {
-  if (!buffer || !oldMsg)
-    return;
-
-  // 批量更新逻辑
-  const update = {
-    content: buffer.content,
-    reasoning: buffer.reasoning,
-  };
-
-  // 使用 Object.assign 减少响应式触发
-  if (oldMsg?.message) {
-    oldMsg.message.body && (oldMsg.message.body.reasoningContent = update.reasoning);
-    oldMsg.message.content = update.content;
-  }
-}
-
-function handleStartState(
-  oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
-) {
-  // 初始化缓冲区
-  if (oldMsg) {
-    bufferMap.set(oldMsg, {
-      content: "",
-      reasoning: "",
-      timer: 0,
-      pendingContent: "",
-      pendingReasoning: "",
-      charIndex: 0,
-      updateInterval: null,
-    });
-    // 更新联系人文本(AI回答中...)
-    const contact = useChatStore().contactMap[oldMsg.message.roomId];
-    contact && (contact.text = contact.type === RoomType.GROUP ? `${oldMsg.fromUser.nickName}: 回答中...` : "AI回答中...");
-  }
-}
-
-// 直接更新
-function handleFinalState(
-  data: WSAiStreamMsg,
-  contact: ChatContactDetailVO,
-  oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
-) {
-  const finalContent = (data.content || "...").substring(0, 100);
-  contact.text = contact.type === RoomType.GROUP ? `${oldMsg?.fromUser.nickName || "机器人"}: ${finalContent}` : finalContent;
-
-  if (oldMsg) {
-    const buffer = bufferMap.get(oldMsg);
-    if (buffer) {
-      clearInterval(buffer.updateInterval);
-      clearTimeout(buffer.timer);
-      bufferMap.delete(oldMsg);
-    }
-
-    if (oldMsg?.message) {
-      oldMsg.message.body && (oldMsg.message.body.reasoningContent = data.reasoningContent || "");
-      oldMsg.message.content = data.content;
-    }
-
-    // AI消息完成时，如果应该自动滚动，则滚动到底部
-    const chat = useChatStore();
-    if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
-      chat.scrollBottom(true);
-    }
-  }
-}
 
 /**
  * 处理会话信息更新消息
@@ -398,4 +193,3 @@ export function resolveUpdateContactInfo(data: WSUpdateContactInfoMsg) {
     data.noticeStatus !== null && data.noticeStatus !== undefined && (contact.noticeStatus = data.noticeStatus);
   });
 }
-

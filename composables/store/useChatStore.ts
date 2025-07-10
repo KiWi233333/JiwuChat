@@ -802,21 +802,7 @@ export const useChatStore = defineStore(
     }
     /** --------------------------- / 机器人 --------------------------- */
     const askAiRobotList = ref<AskAiRobotOption[]>([]);
-    // 设置/机器人
-    function setAskAiUid(userId: string) {
-      if (!userId || atUserList.value.find(p => p.userId === userId))
-        return;
-      mitter.emit(MittEventType.CAHT_ASK_AI_ROBOT, {
-        type: "add",
-        payload: userId,
-      });
-    }
-    // 移除机器人
-    function removeAskAiByUsername(username?: string) {
-      if (!username)
-        return;
-      askAiRobotList.value = askAiRobotList.value.filter(p => p.username !== username);
-    }
+    // 其他函数
 
     /** --------------------------- 回复消息 --------------------------- */
     const replyMsg = ref<Partial<ChatMessageVO>>();
@@ -1040,9 +1026,6 @@ export const useChatStore = defineStore(
       replyMsg,
       atUserList,
       isOpenGroupMember,
-      askAiRobotList,
-      setAskAiUid,
-      removeAskAiByUsername,
       theFriendOpt,
       showTheFriendPanel,
       isOpenContact,

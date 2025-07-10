@@ -100,10 +100,6 @@ export enum WsMsgBodyType {
    */
   PIN_CONTACT = 10,
   /**
-   * AI推送消息
-   */
-  AI_STREAM = 11,
-  /**
    * 会话信息更新通知
    */
   UPDATE_CONTACT_INFO = 12,
@@ -193,7 +189,7 @@ export interface WSUpdateContactInfoMsg {
 
 export enum AiRoleEnums {
   ASSISTANT = "assistant",
-  SYSTEM = "SYSTEM",
+  SYSTEM = "system",
   USER = "user",
 }
 
@@ -201,68 +197,6 @@ export enum AiRoleEnums {
 //   KIMI_AI = 1, // kimi
 //   XUNFEI_AI = 2,
 // }
-
-export enum AiBusinessType {
-  TEXT = 1,
-  PHOTO = 2,
-  VIDEO = 3,
-}
-
-export enum AiReplyStatusEnum {
-  /**
-   * 开始
-   */
-  START = 0,
-  /**
-   * 对话中
-   */
-  IN_PROGRESS = 1,
-  /**
-   * 结束
-   */
-  FINISHED = 2,
-  /**
-   * 错误
-   */
-  ERROR = 3,
-  /**
-   * 继续对话
-   */
-  COTINUE = 4,
-}
-
-/**
- * AI回复推送消息类型
- */
-export interface WSAiStreamMsg {
-  msgId: number; // 消息ID
-  roomId: number; // 房间ID
-  userId: string; // 机器人ID
-  content: string; // AI回复内容
-  reasoningContent?: string; // 思考过程
-  replyTime: Date; // 当前块的回复时间
-  role: AiRoleEnums; // 角色，默认为ASSISTANT
-  modelCode: number; // 大模型类型 动态
-  businessCode: AiBusinessType; // 业务类型
-  status: AiReplyStatusEnum; // 状态
-  statusText: string; // 状态文本
-}
-
-// 辅助函数用于获取状态文本
-export function getStatusText(status: AiReplyStatusEnum): string {
-  switch (status) {
-    case AiReplyStatusEnum.START:
-      return "开始";
-    case AiReplyStatusEnum.IN_PROGRESS:
-      return "对话中";
-    case AiReplyStatusEnum.FINISHED:
-      return "已结束";
-    case AiReplyStatusEnum.ERROR:
-      return "错误";
-    default:
-      return "";
-  }
-}
 
 export interface WsMsgDataTypeMap<T> {
   [WsMsgBodyType.MESSAGE]: ChatMessageVO
@@ -274,7 +208,6 @@ export interface WsMsgDataTypeMap<T> {
   [WsMsgBodyType.TOKEN_EXPIRED_ERR]: null
   [WsMsgBodyType.RTC_CALL]: WSRtcCallMsg
   [WsMsgBodyType.PIN_CONTACT]: WSPinContactMsg
-  [WsMsgBodyType.AI_STREAM]: WSAiStreamMsg
   [WsMsgBodyType.UPDATE_CONTACT_INFO]: WSUpdateContactInfoMsg
 }
 

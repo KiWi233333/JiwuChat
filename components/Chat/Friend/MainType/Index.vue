@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChatFriendMainTypeAiRobot, ChatFriendMainTypeGroup, ChatFriendMainTypeGroupMembers, ChatFriendMainTypeNewFriend, ChatFriendMainTypeUser } from "#components";
+import { ChatFriendMainTypeGroup, ChatFriendMainTypeGroupMembers, ChatFriendMainTypeNewFriend, ChatFriendMainTypeUser } from "#components";
 
 /**
  * 面板适配器
@@ -11,7 +11,6 @@ const maps: FriendOptTypeMap = ({
   [FriendOptType.User]: ChatFriendMainTypeUser,
   [FriendOptType.NewFriend]: ChatFriendMainTypeNewFriend,
   [FriendOptType.Group]: ChatFriendMainTypeGroup,
-  [FriendOptType.AiRobot]: ChatFriendMainTypeAiRobot,
   [FriendOptType.GROUP_MEMBER]: ChatFriendMainTypeGroupMembers,
 });
 interface FriendOptTypeMap {

@@ -39,21 +39,14 @@ const {
   imageManager,
   selectionManager,
 
-  // @ 和 AI 选择状态
+  // @
   showAtOptions,
-  showAiOptions,
   selectedAtItemIndex,
-  selectedAiItemIndex,
   optionsPosition,
 
   // 计算选项
   filteredUserAtOptions,
-  filteredAiOptions,
   userOptions,
-  aiOptions,
-
-  // 状态
-  isReplyAI,
 
   // 滚动条引用
   atScrollbar,
@@ -61,7 +54,6 @@ const {
 
   // 加载函数
   loadUser,
-  loadAi,
 
   // 内容管理
   updateFormContent,
@@ -74,7 +66,6 @@ const {
 
   // 标签插入
   insertAtUserTag,
-  insertAiRobotTag,
 
   // 选项处理器
   resetOptions,
@@ -362,21 +353,6 @@ async function onSubmit() {
         }));
       }
     }
-
-    // 处理 AI机器人 TODO: 可改为全体呼叫
-    const { replaceText, aiRobitUidList } = resolveAiReply(formDataTemp.content, aiOptions.value, chat.askAiRobotList);
-    if (aiRobitUidList.length > 0) {
-      if (!replaceText)
-        return false;
-      formDataTemp.content = replaceText;
-      formDataTemp.body = {
-        // userId: aiRobitUidList?.[0],
-        // modelCode: 1,
-        userIds: aiRobitUidList.length > 0 ? aiRobitUidList : undefined,
-        businessCode: AiBusinessType.TEXT,
-      } as AiChatBodyDTO;
-      formDataTemp.msgType = MessageType.AI_CHAT; // 设置对应消息类型
-    }
   };
   // 图片
   if (formDataTemp.msgType === MessageType.IMG) {
@@ -420,30 +396,7 @@ async function onSubmit() {
     });
     return true;
   }
-  // 2) AI私聊
-  if (isAiRoom.value) {
-    const content = formDataTemp.content?.trim();
-    if (!content)
-      return false;
-    if (!chat.theContact?.targetUid) {
-      if (!chat.theContact.roomId || !chat.theContact.type) {
-        ElMessage.error("房间信息不完整！");
-        return false;
-      }
-      await chat.reloadBaseContact(chat.theContact.roomId, chat.theContact.type);
-    }
-    await submitToQueue({
-      roomId: chat.theRoomId!,
-      msgType: MessageType.AI_CHAT, // AI消息
-      content,
-      body: {
-        userIds: [chat.theContact?.targetUid],
-        businessCode: AiBusinessType.TEXT,
-      } as AiChatBodyDTO,
-    });
-    return true;
-  }
-  // 3) 普通消息
+  // 2) 普通消息
   await submitToQueue(formDataTemp);
   return true;
 }
@@ -753,7 +706,6 @@ function resetForm() {
   videoList.value = []; // 清空视频
   // store
   chat.atUserList.splice(0);
-  chat.askAiRobotList.splice(0);
 
   // 重置上传
   inputOssImgUploadRef.value?.resetInput?.();
@@ -952,7 +904,6 @@ watch(() => chat.theRoomId, (newVal, oldVal) => {
   resetForm();
   // 加载数据
   loadUser();
-  loadAi(newVal);
   // 移动端与动画兼容
   loadInputTimer.value && clearTimeout(loadInputTimer.value);
   if (!setting.isMobileSize) {
@@ -992,11 +943,6 @@ onMounted(() => {
   });
   // At 用户
   mitter.on(MittEventType.CHAT_AT_USER, (e) => {
-    if (isReplyAI.value) {
-      // TODO: 待后期考虑添加引用@信息，让去理解
-      ElMessage.warning("当前使用AI机器人无法@其他人");
-      return;
-    }
     const { type, payload: userId } = e;
     const user = userOptions.value.find(u => u.userId === userId);
     if (!user)
@@ -1022,22 +968,6 @@ onMounted(() => {
     }
   });
 
-  // / 询问ai机器人
-  mitter.on(MittEventType.CAHT_ASK_AI_ROBOT, (e) => {
-    const { type, payload: userId } = e;
-    const robot = aiOptions.value.find(u => u.userId === userId);
-    if (type === "add" && robot) {
-      // 检查是否已经存在该机器人标签
-      const existingTag = msgInputRef.value?.querySelector(`[data-uid="${robot.userId}"]`);
-      if (existingTag)
-        return;
-
-      selectionManager.focusAtEnd()
-      ;
-      insertAiRobotTag(robot);
-    }
-  });
-
   // 处理聚焦
   mitter.on(MittEventType.MSG_FORM, ({
     type,
@@ -1053,7 +983,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  mitter.off(MittEventType.CAHT_ASK_AI_ROBOT);
   mitter.off(MittEventType.CHAT_AT_USER);
   loadInputTimer.value && clearTimeout(loadInputTimer.value);
   window.removeEventListener("keydown", startAudio);
@@ -1239,56 +1168,6 @@ defineExpose({
                 @submit="onSubmitFile"
               />
             </div>
-            <!-- AI机器人选择器 -->
-            <el-select
-              v-if="aiOptions.length > 0"
-              v-model="chat.askAiRobotList"
-              placeholder="AI助手"
-              size="small"
-              style="width: 9rem;"
-              :multiple-limit="6"
-              no-match-text="没有找到机器人"
-              :fallback-placements="['top']"
-              no-data-text="暂无机器人"
-              placement="top"
-              tag-type="primary"
-              tag-effect="dark"
-              :show-arrow="false"
-              class="group ai-select text-1rem text-color"
-              :class="{ 'selected-items': chat.askAiRobotList.length > 0 }"
-              popper-class="w-9rem global-custom-select"
-              :offset="8"
-              :value-on-clear="undefined"
-              clearable teleported collapse-tags multiple
-              :max-collapse-tags="2"
-            >
-              <template #footer>
-                <el-button text bg size="small" class="w-full" :disabled="!chat.askAiRobotList.length" @click="chat.askAiRobotList = []">
-                  清除选择{{ chat.askAiRobotList.length > 0 ? `（已选${chat.askAiRobotList.length}）` : '' }}
-                </el-button>
-              </template>
-              <template #prefix>
-                <i class="robot-select-icon" />
-              </template>
-              <template #label="{ value }">
-                <CardAvatar
-                  class="h-5 w-5 shrink-0 rounded-1/2 bg-color"
-                  :src="BaseUrlImg + value.avatar"
-                  :title="value.label"
-                />
-              </template>
-              <el-option
-                v-for="item in aiOptions"
-                :key="item.userId"
-                :label="item.nickName"
-                :value="item"
-              >
-                <div class="h-full w-8em flex items-center pr-1" :title="item.label">
-                  <CardAvatar class="h-6 w-6 shrink-0 border-default rounded-1/2 bg-color" :src="BaseUrlImg + item.avatar" />
-                  <span class="ml-2 flex-1 truncate text-xs text-color">{{ item.label }}</span>
-                </div>
-              </el-option>
-            </el-select>
             <i ml-a block w-0 />
             <!-- 群通知消息 -->
             <div
@@ -1355,7 +1234,6 @@ defineExpose({
             :class="{ focused: inputFocus }"
             :contenteditable="!isNotExistOrNorFriend"
             spellcheck="false"
-            :data-placeholder="!setting.isMobileSize && aiOptions.length ? '输入 / 唤起AI助手' : ''"
             @input="handleInput"
             @paste="handlePasteEvent"
             @keydown="handleKeyDown"
@@ -1388,35 +1266,6 @@ defineExpose({
             active-class="active"
             @item-click="(item) => handleSelectAtUser(item)"
             @item-hover="(item, index) => selectedAtItemIndex = index"
-          >
-            <template #default="{ item }">
-              <CardAvatar class="avatar" :src="BaseUrlImg + item.avatar" />
-              <span class="name">{{ item.nickName }}</span>
-            </template>
-          </ListVirtualScrollList>
-        </div>
-        <!-- AI机器人选择框 -->
-        <div
-          v-if="showAiOptions && filteredAiOptions.length > 0"
-          class="ai-options"
-          :style="{
-            left: `${optionsPosition.left}px`,
-            top: `${optionsPosition.top}px`,
-            width: `${optionsPosition.width}px`,
-          }"
-        >
-          <ListVirtualScrollList
-            ref="aiScrollbar"
-            :items="filteredAiOptions"
-            :item-height="32"
-            :selected-index="selectedAiItemIndex"
-            item-class="ai-item"
-            active-class="active"
-            max-height="12rem"
-            wrap-class="px-1.5"
-            class-name="py-1.5"
-            @item-click="handleSelectAiRobot"
-            @item-hover="(item, index) => selectedAiItemIndex = index"
           >
             <template #default="{ item }">
               <CardAvatar class="avatar" :src="BaseUrlImg + item.avatar" />

@@ -20,22 +20,16 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
   e.preventDefault();
 
   // 从目标元素获取上下文名称
-  let ctxName = String((e?.target as HTMLElement)?.getAttribute?.("ctx-name") || "");
-  const isAiReplyMsg = data.message.type === MessageType.AI_CHAT_REPLY;
+  const ctxName = String((e?.target as HTMLElement)?.getAttribute?.("ctx-name") || "");
 
-  // 如果没有上下文名称且不是AI回复，则返回
-  if (!ctxName && !isAiReplyMsg) {
+  // 如果没有上下文名称，则返回
+  if (!ctxName) {
     return;
   }
 
   // 如果是未发送成功的消息
   if (chat.isExsistQueue(data.message.id)) {
     return;
-  }
-
-  // 为AI回复设置上下文名称
-  if (!ctxName && isAiReplyMsg) {
-    ctxName = "aiReply";
   }
 
   // 权限检查
@@ -98,24 +92,6 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         },
       },
       {
-        label: translation ? "关闭翻译" : "翻译",
-        hidden: !txt,
-        customClass: "group",
-        icon: `i-solar:text-field-focus-line-duotone group-hover:(scale-110 i-solar:text-field-focus-bold) ${translation ? "group-btn-danger" : "group-btn-success"}`,
-        onClick: async () => {
-          if (translation) {
-            closeTranslation(data.message.id, translation.targetLang);
-            data.message.body._textTranslation = null;
-          }
-          else {
-            const res = await useTranslateTxt(data.message.id, data.message.content as string, user.getToken);
-            if (res) {
-              data.message.body._textTranslation = res;
-            }
-          }
-        },
-      },
-      {
         label: "打开链接",
         hidden: !Object.keys(data.message.body?.urlContentMap || {}).length,
         customClass: "group",
@@ -148,48 +124,6 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
       },
       ...defaultContextMenu,
     ],
-    // 翻译
-    translation: [
-      {
-        label: "复制",
-        hidden: !txt || !translation,
-        customClass: "group",
-        icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
-        onClick: () => {
-          useCopyText(translation?.result as string);
-        },
-      },
-      {
-        label: "重新",
-        hidden: !txt || !translation,
-        customClass: "group",
-        icon: "i-solar:refresh-outline group-hover:(rotate-180 i-solar:refresh-bold) group-btn-info",
-        onClick: async () => {
-          if (translation) {
-            closeTranslation(data.message.id, translation.targetLang);
-            data.message.body._textTranslation = null;
-          }
-          const res = await useTranslateTxt(data.message.id, data.message.content as string, user.getToken);
-          if (res) {
-            data.message.body._textTranslation = res;
-          }
-        },
-      },
-      {
-        label: "关闭",
-        hidden: !txt || !translation,
-        customClass: "group",
-        icon: "i-solar:text-field-focus-line-duotone group-hover:(scale-110 i-solar:text-field-focus-bold) group-btn-danger",
-        onClick: async () => {
-          if (!txt || !data.message.id || !translation)
-            return;
-          if (closeTranslation(data.message.id, translation.targetLang)) {
-            data.message.body._textTranslation = null;
-          }
-        },
-      },
-    ],
-
     // 图片内容
     img: [
       {
@@ -370,65 +304,6 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         icon: "i-solar:download-line-duotone group-hover:(scale-110 i-solar:download-bold-duotone) group-btn-success",
         customClass: "group",
         onClick: async () => saveVideoLocal(BaseUrlVideo + data.message.body.url),
-      },
-      ...defaultContextMenu,
-    ],
-
-    // AI回复内容
-    aiReply: [
-      {
-        label: "分享图片",
-        icon: "i-solar:share-line-duotone group-hover:(scale-110 i-solar:share-bold-duotone) group-btn-war",
-        customClass: "group",
-        onClick: () => {
-          ElMessage.warning("暂不支持分享图片");
-        },
-      },
-      {
-        label: "复制",
-        hidden: !txt,
-        customClass: "group",
-        icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
-        onClick: () => {
-          if (!txt) {
-            return ElMessage.error("复制失败，请选择文本！");
-          }
-          useCopyText(txt as string);
-        },
-      },
-      {
-        label: translation ? "关闭翻译" : "翻译",
-        hidden: !txt,
-        customClass: "group",
-        icon: `i-solar:text-field-focus-line-duotone group-hover:(scale-110 i-solar:text-field-focus-bold) ${translation ? "group-btn-danger" : "group-btn-success"}`,
-        onClick: async () => {
-          if (translation) {
-            closeTranslation(data.message.id, translation.targetLang);
-            data.message.body._textTranslation = null;
-          }
-          else {
-            const res = await useTranslateTxt(data.message.id, data.message.content as string, user.getToken);
-            if (res) {
-              data.message.body._textTranslation = res;
-            }
-            else {
-              ElMessage.error("翻译失败，请稍后再试！");
-            }
-          }
-        },
-      },
-      {
-        label: "搜一搜",
-        hidden: !data.message.content,
-        customClass: "group",
-        icon: "i-solar:magnifer-linear group-hover:(rotate-15 i-solar:magnifer-bold) group-btn-info",
-        onClick: () => {
-          if (!txt) {
-            return ElMessage.error("选择内容为空，无法搜索！");
-          }
-          const bingUrl = `https://bing.com/search?q=${encodeURIComponent(txt as string)}`;
-          window.open(bingUrl, "_blank");
-        },
       },
       ...defaultContextMenu,
     ],

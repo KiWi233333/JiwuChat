@@ -1,8 +1,8 @@
 {
-  "name": "jiwu-mall-chat",
+  "name": "jiwu-chat",
   "version": "1.7.0",
   "private": true,
-  "description": "jiwu-mall-chat",
+  "description": "JiwuChat - A simple IM app.",
   "author": "Kiwi2333",
   "scripts": {
     "prepare": "husky install && nuxi prepare",

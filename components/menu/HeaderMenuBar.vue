@@ -88,7 +88,7 @@ const getAppTitle = computed(() => {
     <slot name="right">
       <div class="right relative z-1 flex items-center gap-1 sm:gap-2">
         <!-- 桌面更新菜单 -->
-        <SettingUpdator v-if="!setting.isMobileSize && $route.path !== '/setting'" />
+        <SettingUpdator v-if="!setting.isMobileSize && setting.isDesktop && setting.appUploader.isUpload " />
         <!-- 下载（部分端） -->
         <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1 w-5 h-5" />
         <!-- 折叠菜单 -->
@@ -105,8 +105,6 @@ const getAppTitle = computed(() => {
           </template>
         </MenuDots>
         <template v-if="setting.isDesktop || setting.isWeb">
-          <!-- web下载推广菜单 -->
-          <BtnAppDownload />
           <!-- 菜单按钮 -->
           <template v-if="!['android', 'web', 'ios'].includes(setting.appPlatform)">
             <div class="mx-1 h-1.2em border-default-l sm:mx-2" />

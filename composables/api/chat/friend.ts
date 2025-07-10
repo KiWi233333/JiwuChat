@@ -339,8 +339,7 @@ export enum FriendOptType {
   User = 0, // 用户个人页面
   NewFriend = 1, // 添加
   Group = 2, // 群组
-  AiRobot = 3, // 添加ai机器人
-  GROUP_MEMBER = 4, // 群成员
+  GROUP_MEMBER = 3, // 群成员
 }
 
 

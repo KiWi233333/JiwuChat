@@ -25,7 +25,7 @@ const INIT_MSG = {
     roomId: 0,
     sendTime: Date.now(),
     content: "你好！欢迎光临极物聊天，有什么可以帮您的吗？",
-    type: MessageType.AI_CHAT,
+    type: MessageType.TEXT,
     body: {},
   },
 };
@@ -200,7 +200,7 @@ function sendMsg(msg: string, id: string) {
                 roomId: 0,
                 sendTime: Date.now(),
                 content: "",
-                type: MessageType.AI_CHAT,
+                type: MessageType.TEXT,
                 body: {},
               },
             });
