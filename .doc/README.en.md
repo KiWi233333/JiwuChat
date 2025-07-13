@@ -1,12 +1,12 @@
 <div align=center>
  <div align=center margin="10em" style="margin:4em 0 0 0;font-size: 30px;letter-spacing:0.3em;">
-<img src="./jiwuchat-tauri.png" width="140px" height="140px" alt="Image Name" align=center />
+<img src="../.doc/jiwuchat-tauri.png" width="140px" height="140px" alt="Image Name" align=center />
  </div>
  <h2 align=center style="margin: 2em 0;">JiwuChat Tauri APP</h2>
 
 <div>
       <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri" target="_blank">
-        <img class="disabled-img-view" src="https://img.shields.io/badge/Github-Project-blueviolet.svg?style=plasticr" alt="Project" >
+        <img class="disabled-img-view" src="https://img.shields.io/badge/Github-Project%20Address-blueviolet.svg?style=plasticr" alt="Project Address" >
       </a>
       <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/stargazers" target="_blank">
         <img class="disabled-img-view" alt="License"
@@ -31,7 +31,7 @@
           <img src="https://api.netlify.com/api/v1/badges/b68ad9ac-53e5-4c5a-ac56-a8882ffe7697/deploy-status" alt="+QQ Group"/>
       </a>
       <a href="https://qm.qq.com/q/iSaETNVdKw" target="_blank">
-        <img src="https://img.shields.io/badge/QQ Group:939204073 -blue?logo=tencentqq&logoColor=white" alt="QQ Group"/>
+        <img src="https://img.shields.io/badge/QQ%20Group:939204073-blue?logo=tencentqq&logoColor=white" alt="QQ Group"/>
       </a>
     </div>
     <div>
@@ -48,112 +48,154 @@ Language : [简体中文](../README.md) | **English** | [Deutsch](./README.de.md
 
 ## Introduction
 
-JiwuChat is a lightweight `(~8MB)` multi-platform chat application built with Tauri2 and Nuxt3. It supports various real-time messaging features, AI group chat bots (integrated with `iFlytek Spark`, `KimiAI`, etc.), `WebRTC audio/video calls`, screen sharing, and AI-powered shopping. It enables seamless cross-device communication, supporting text, images, files, and voice messages, along with group chats and customizable settings. Light/dark mode is available for efficient social networking. ✨
+JiwuChat is a lightweight `(~10MB)` multi-platform chat application built with Tauri2 and Nuxt3. It features a variety of real-time messaging, AI group chat bots (with `iFlytek Spark`, `KimiAI`, etc. already integrated), `WebRTC audio/video calls`, screen sharing, and AI shopping functions. It supports seamless cross-device communication, covering various message types such as text, images, files, and voice. It also supports group chats and customizable settings. It offers light/dark modes to help with efficient social networking. ✨
 
-## One Codebase, Multiple Platforms
+## One Codebase, Multi-platform Adaptation
 
-![Multi-platform Support](./previews.png)
+![Multi-platform Adaptation](../.doc/previews.png)
 
 ## Default Account
 
-- Username: ikun233
+- Account: ikun233
 - Password: 123456
-- Demo: [Web Version](https://jiwuchat.top/)
+- Experience: [Web Version](https://jiwuchat.top/)
 
-> ⚠ Note: ~~This test account has limited permissions (e.g., no file uploads, profile edits, or password changes).~~
+> ⚠ Note: ~~This account does not have permission to upload files, modify personal information, change passwords, etc. It is for testing purposes only.~~
 
-> 👀 Thanks for your support! The project is still under development, and the backend is not yet open-source. Feel free to share your feedback via email or QQ.
+> 👀 Thank you for your support. The project is still under development, and the backend is not yet open source. We welcome your valuable suggestions. If you have any questions, please contact us via email or QQ.
 
-## Feature List
+## Project Screenshots
 
-| Module         | Description                                                                 | Status |
-|----------------|-----------------------------------------------------------------------------|--------|
-| User Module    | Supports login/registration via account, phone, or email; profile management | ✔      |
-| Messaging      | Supports text, images, files, voice, @mentions, recall, delete, and AI replies | ✔      |
-| Chat Sessions  | Group chats, private chats, pinning, roles (owner, admin, etc.)              | ✔      |
-| Contacts       | View, add, and delete contacts                                              | ✔      |
-| System Updates | Auto-updates, version announcements                                         | ✔      |
-| Account Security| Login, password change, device security, online status management           | ✔      |
-| AI Module      | Supports multiple AI chatbots (e.g., `DeepSeek`, `iFlytek Spark`, `KimiAI`) | ✔      |
-| Smart Shopping | AI-powered product recommendations via `Jiwu Circle`                       | ✔      |
-| File Management| Download, open, and delete files locally                                   | ✔      |
-| Audio/Video    | `WebRTC`-based screen sharing, voice, and video calls                       | ✔      |
-| Others         | AI translation, dark/light mode, fonts, custom download paths, multi-OS support | ✔      |
+- Chat Desktop App Login / Register
 
-## Screenshots
+![Login](../.doc/login.png)
 
-- Desktop App: Login / Register
+![Register](../.doc/register.png)
 
-![Login](./login.png)
-
-![Register](./register.png)
-
-- Light / Dark Themes
-
-![Light](./chat1.png)
-
-![Home](./chat.png)
-
-- AI Chatbots (DeepSeek, iFlytek Spark, Kimi AI) 🤩
-
-![AI Chatbot](./group-ai-ds.png)
-
-![AI Chatbot](./group-ai-2.png)
-
-![AI Chatbot](./group-ai-1.png)
-
-- Audio/Video Calls (WebRTC)
-
-![Audio/Video](./rtc1.png)
-
-- Screen Sharing
-
-![Screen Sharing](./rtc3.png)
-
-- Social Chat
-
-![Dark](./chat2.png)
-
-- AI Shopping (Powered by [Jiwu Circle](https://github.com/KiWi233333/jiwu-mall-sites))
-
-![Dark](./chat3.png)
-
-![Dark](./chat3.2.png)
-
-- Account & Security
-
-![Account](./chat4.png)
-
-![Security](./chat5.png)
-
-- Settings
-
-![Settings](./chat6-light.png)
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="../.doc/chat1.png" alt="Light Theme" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🌙 Light/Dark Theme</em>
+    </td>
+    <td align="center">
+      <img src="../.doc/group-ai-ds.png" alt="AI Robot" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🤖 AI Robot (DeepSeek, Gemini)</em>
+    </td>
+    <td align="center">
+      <img src="../.doc/rtc1.png" alt="Voice and Video Chat" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>📞 Voice and Video Chat WebRTC</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../.doc/chat.png" alt="Home Page" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🏠 Home Page Interface</em>
+    </td>
+    <td align="center">
+      <img src="../.doc/group-ai-2.png" alt="AI Group Chat" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🤖 AI Group Chat Function</em>
+    </td>
+    <td align="center">
+      <img src="../.doc/rtc3.png" alt="Screen Sharing" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>📺 Screen Content Sharing</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../.doc/chat2.png" alt="Dark Theme" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🌙 Dark Theme</em>
+    </td>
+    <td align="center">
+      <img src="../.doc/chat3.png" alt="AI Shopping Chat" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🛒 AI Shopping Chat</em>
+    </td>
+    <td align="center">
+      <img src="../.doc/chat4.png" alt="Account and Security" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🔐 Account and Security</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../.doc/group-ai-1.png" alt="AI Robot Plaza" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🤖 AI Robot Plaza</em>
+    </td>
+    <td align="center">
+      <img src="../.doc/chat3.2.png" alt="Shopping Function" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🛍️ Shopping Function Interface</em>
+    </td>
+    <td align="center">
+      <img src="../.doc/chat5.png" alt="Device Management" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>📱 Device Management</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="../.doc/chat6-light.png" alt="Settings Page" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>⚙️ Settings Page</em>
+    </td>
+    <td align="center"></td>
+    <td align="center"></td>
+  </tr>
+</table>
 
 - Mobile Adaptation
 
 <div>
- <img src="./chat12.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat14.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat13.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat7.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./rtc2.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./rtc_remove_desktop.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat8.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat10.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat15.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat11.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat17.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat16.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
- <img src="./chat9.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="../.doc/chat12.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat14.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat13.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat7.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/rtc2.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/rtc_remove_desktop.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat8.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat10.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat15.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat11.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat17.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat16.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
+ <img src="../.doc/chat9.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
 </div>
+
+## 🌌 System Functions
+
+![Modules](../.doc/JiwuChat%20功能导图.png)
+
+<details>
+  <summary>Function Table [Expand/Collapse]</summary>
+
+| Module | Sub-module | Function Description | Status |
+|---|---|---|---|
+| User Module | Account Management | User registration, login, historical login account selection | ✅ |
+| | Account Security | Email/phone binding reminder, device management, account security verification | ✅ |
+| Message Module | Basic Chat | Text messages, image messages, video messages, file uploads, message recall, message read status | ✅ |
+| | Data Sync | Multi-device message synchronization, read status synchronization | ✅ |
+| | Advanced Chat | Quoted replies, @mentions, announcements, re-editing recalled messages | ✅ |
+| Session Module | Session Management | Session list, pin session, hide session, unread count statistics, session sorting | ✅ |
+| Group Chat Module | Group Operations | Create group chat, leave group chat, view group chat details | ✅ |
+| | Group Member Management | Group member management, set administrator, revoke administrator, get @ list | ✅ |
+| Contact Module | Friend Operations | Friend requests, friend search, friend list, reject friend requests, delete friends | ✅ |
+| | Profile and Notifications | View friend details, unread request count statistics | ✅ |
+| AI Module | Dialogue Function | Private chat with AI, group chat with AI, multi-AI simultaneous chat | ✅ |
+| | Model Management | Support for models from multiple vendors like Gemini, Kimi AI, DeepSeek, Silicon-based Flow, model list, token calculation | ✅ |
+| | Plaza Function | AI Robot Plaza display | ✅ |
+| Communication Module | Audio/Video Calls | WebRTC-based voice calls, video calls, screen sharing | ✅ |
+| | Call History | Call status updates, hang-up records | ✅ |
+| Notification System | Message Notifications | Desktop notifications, system tray reminders, ringtone settings, do not disturb | ✅ |
+| Extension Function | Integrated | Mall integration, blog integration, update log panel | ✅ |
+| Other Modules | Other Functions | Social chat functions, AI shopping functions, file download management, translation tools (AI Translate/Tencent Translate) | ✅ |
+| | File and Playback | Image viewer, video player, file download, batch image upload | ✅ |
+| | Theme Configuration | Light/dark theme switching, follow system theme, font settings, adaptive layout | ✅ |
+| | Platform Compatibility | Windows, MacOS, Linux, Android, Web adaptation | ✅ |
+
+</details>
 
 ## ⏳ Getting Started
 
 ### 📦 Install Dependencies
 
 ```sh
-Node.js >= 18 required
+# node version > = 20
 npm install -g pnpm
 
 pnpm install
@@ -161,72 +203,23 @@ pnpm install
 
 ### ✨ Development
 
-- 📌 If you **don't** have a backend server, modify `.env.development` or use `.env.production`.
-
-```sh
-Terminal 1: Start Nuxt (Production)
-pnpm run prod:nuxt
-Terminal 2: Start Tauri
-pnpm run dev:tauri
-```
-
-- If you **have** a backend, customize `.env.development` for development:
-
-```sh
-Recommended to run separately
-Terminal 1: Start Nuxt
-pnpm run dev:nuxt
-Terminal 2: Start Tauri
-pnpm run dev:tauri
-```
-
-### 📦 Build
-
-```sh
-pnpm run build:tauri
-```
-
-### ❌ pnpm Install Errors
-
-Check registry:
-
-```sh
-pnpm get registry
-```
-
-Temporary fix:
-
-```sh
-pnpm --registry https://registry.npm.taobao.org install any-touch
-```
-
-Persistent change:
-
-```sh
-pnpm config set registry https://registry.npm.taobao.org
-```
-
-Revert:
-
-```sh
-pnpm config set registry https://registry.npmjs.org
-```
+- For detailed operation documents, please see [Run.md](../Run.md)
 
 ## 🔧 Tech Stack
 
-| Category       | Technology/Component       | Version       |
-|----------------|----------------------------|---------------|
-| Framework      | Nuxt                       | ^3.14.159+    |
-|                | Tauri                      | ^2.1.0        |
-| UI Library     | Element Plus               | ^2.8.4        |
-| State Management| Pinia                      | 2.1.7         |
-| Utility        | Vueuse                     | 10.11.0       |
-| Build Tools    | Nuxi                       | lts           |
-|                | Vite                       | lts           |
-| Code Quality   | ESLint                     | 8.56.0        |
-|                | Prettier                   | 3.3.2         |
-| Type Checking  | TypeScript                 | 5.3.2         |
-| Styling        | Sass                       | 1.77.6        |
+| Category | Technology/Component | Version |
+|---|---|---|
+| Framework | Nuxt | ^3.14.159+ |
+| | Tauri | ^2.1.0 |
+| UI Component Library | Element Plus | ^2.8.4 |
+| State Management | Pinia | 2.1.7 |
+| Utility Library | Vueuse | 10.11.0 |
+| Build & Dev Tools | Nuxi | lts |
+| | Vite | lts |
+| Code Quality | ESLint | 8.56.0 |
+| | Prettier | 3.3.2 |
+| Type Checking | TypeScript | 5.3.2 |
+| Style Processing | Sass | 1.77.6 |
 
 ## 🦾 Trends
 

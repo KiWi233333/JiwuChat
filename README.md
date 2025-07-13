@@ -72,47 +72,72 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 
 ![注册](./.doc/register.png)
 
-- 深浅主题 Light / Dark
-
-![浅色](./.doc/chat1.png)
-
-![主页](./.doc/chat.png)
-
-- AI机器人 (DeepSeek、iFlytek Spark、Kimi AI) 🤩
-
-![AI Chatbot](./.doc/group-ai-ds.png)
-
-![AI Chatbot](./.doc/group-ai-2.png)
-
-![AI Chatbot](./.doc/group-ai-1.png)
-
-- 语音视频聊天 WebRTC
-
-![语音视频聊天](./.doc/rtc1.png)
-
-- 屏幕共享
-
-![屏幕内容共享](./.doc/rtc3.png)
-
-- 聊天社交
-
-![暗黑](./.doc/chat2.png)
-
-- AI购物聊天 （来源: [极物圈](https://github.com/KiWi233333/jiwu-mall-sites)）
-
-![暗黑](./.doc/chat3.png)
-
-![暗黑](./.doc/chat3.2.png)
-
-- 账号与安全
-
-![账号与安全](./.doc/chat4.png)
-
-![账号与安全](./.doc/chat5.png)
-
-- 设置
-
-![设置](./.doc/chat6-light.png)
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./.doc/chat1.png" alt="浅色主题" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🌙 深浅色主题</em>
+    </td>
+    <td align="center">
+      <img src="./.doc/group-ai-ds.png" alt="AI机器人" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🤖 AI机器人 (DeepSeek、Gemini)</em>
+    </td>
+    <td align="center">
+      <img src="./.doc/rtc1.png" alt="语音视频聊天" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>📞 语音视频聊天 WebRTC</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./.doc/chat.png" alt="主页" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🏠 主页界面</em>
+    </td>
+    <td align="center">
+      <img src="./.doc/group-ai-2.png" alt="AI群聊" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🤖 AI群聊功能</em>
+    </td>
+    <td align="center">
+      <img src="./.doc/rtc3.png" alt="屏幕共享" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>📺 屏幕内容共享</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./.doc/chat2.png" alt="暗黑主题" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🌙 暗黑主题</em>
+    </td>
+    <td align="center">
+      <img src="./.doc/chat3.png" alt="AI购物聊天" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🛒 AI购物聊天</em>
+    </td>
+    <td align="center">
+      <img src="./.doc/chat4.png" alt="账号与安全" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🔐 账号与安全</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./.doc/group-ai-1.png" alt="AI机器人广场" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🤖 AI机器人广场</em>
+    </td>
+    <td align="center">
+      <img src="./.doc/chat3.2.png" alt="购物功能" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>🛍️ 购物功能界面</em>
+    </td>
+    <td align="center">
+      <img src="./.doc/chat5.png" alt="设备管理" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>📱 设备管理</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./.doc/chat6-light.png" alt="设置页面" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
+      <br><em>⚙️ 设置页面</em>
+    </td>
+    <td align="center"></td>
+    <td align="center"></td>
+  </tr>
+</table>
 
 - 移动端适配
 
@@ -170,7 +195,7 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 ### 📦 安装依赖
 
 ```sh
-# node 版本 >= 18
+# node 版本 > = 20
 npm install -g pnpm
 
 pnpm install
@@ -179,57 +204,6 @@ pnpm install
 ### ✨ 开发
 
 - 详细操作文档可查看 [Run.md](./Run.md)
-
-- 📌 若`没有`后端服务，修改`.env.development`环境变量，或使用`.env.production`配置文件。
-
-```sh
-# 终端1：启动nuxt (发布环境)
-pnpm run prod:nuxt
-# 终端2：启动tauri
-pnpm run dev:tauri
-```
-
-- 若`有`后端服务，可采用自定义修改开发`.env.development`环境变量文件进行开发
-
-```sh
-# 建议分开运行
-# 终端1：启动nuxt
-pnpm run dev:nuxt
-# 终端2：启动tauri
-pnpm run dev:tauri
-```
-
-### 📦 打包
-
-```sh
-pnpm run build:tauri
-```
-
-### ❌ pnpm install error
-
-查看源
-
-```sh
-pnpm get registry
-```
-
-临时修改
-
-```sh
-pnpm --registry https://registry.npm.taobao.org install any-touch
-```
-
-持久使用
-
-```sh
-pnpm config set registry https://registry.npm.taobao.org
-```
-
-还原
-
-```sh
-pnpm config set registry https://registry.npmjs.org
-```
 
 ## 🔧 涉及技术栈 | Tech Stack
 
