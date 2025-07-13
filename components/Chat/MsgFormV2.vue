@@ -209,19 +209,20 @@ const {
   start: startAudio,
   handlePlayAudio, // 播放录音
 } = useRecording({ pressHandleRefName: "pressHandleRef", timeslice: 1000 });
-
+const isUploadSound = ref(false);
 // computed
-const isBtnLoading = computed(() => isSending.value || isUploadImg.value || isUploadFile.value || isUploadVideo.value);
+const isBtnLoading = computed(() => isSending.value || isUploadImg.value || isUploadFile.value || isUploadVideo.value || isUploadSound.value);
 const isSoundRecordMsg = computed(() => chat.msgForm.msgType === MessageType.SOUND);
 
 
 /**
- * 处理粘贴事件 - 支持图片粘贴
+ * 处理粘贴事件
+ *
+ * @param e 剪贴板事件
  */
 async function handlePasteEvent(e: ClipboardEvent) {
   // 使用 hook 中的增强粘贴处理
   e.preventDefault();
-
   const clipboardData = e.clipboardData;
   if (!clipboardData)
     return;
@@ -260,9 +261,12 @@ async function handlePasteEvent(e: ClipboardEvent) {
     else if (FILE_TYPE_ICON_MAP[item.type]) {
       type = "file";
     }
-    if (type !== undefined) {
-      file && await resolveFileUpload(type, file);
+    else {
+      type = "file"; // TODO: 允许上传任意类型文件
     }
+    // if (type !== undefined) {
+    file && await resolveFileUpload(type, file);
+    // }
   }
 }
 
@@ -348,9 +352,6 @@ async function onSubmit() {
   const formDataTemp = JSON.parse(JSON.stringify(chat.msgForm));
   // 文本类
   if (chat.msgForm.content) {
-    if (document.querySelector(".at-select")) // enter冲突at选择框
-      return;
-
     if (chat.theContact.type === RoomType.GROUP) { // 处理 @用户
       const atUidList = resolveContentAtUsers();
       if (atUidList?.length) {
@@ -412,12 +413,14 @@ async function onSubmit() {
   isSending.value = true;
   // 1) 语音消息
   if (formDataTemp.msgType === MessageType.SOUND) {
-    await onSubmitSound((key) => {
-      formDataTemp.body.url = key;
-      formDataTemp.body.translation = audioTransfromText.value;
-      formDataTemp.body.second = second.value;
-      submitToQueue(formDataTemp);
-    });
+    formDataTemp.body.translation = audioTransfromText.value;
+    formDataTemp.body.second = second.value;
+    const soundKey = await onSubmitSound();
+    if (!soundKey) {
+      return false;
+    }
+    formDataTemp.body.url = soundKey;
+    submitToQueue(formDataTemp);
     return true;
   }
   // 2) AI私聊
@@ -715,25 +718,36 @@ function onSubmitUploadPreview(content?: string) {
 
 /**
  * 发送语音
- * @param callback 上传成功回调
  */
-async function onSubmitSound(callback: (key: string) => void) {
+async function onSubmitSound(): Promise<string | null> {
   if (!theAudioFile.value || !theAudioFile?.value?.id) {
     isSending.value = false;
-    return false;
+    return null;
   }
+  isUploadSound.value = true;
+  try {
+    const data = await new Promise<string>((resolve, reject) => {
+      useOssUpload(OssFileType.SOUND, theAudioFile.value as OssFile, user.getToken, {
+        callback(event, data, file) {
+          if (event === "error") {
+            reject(new Error("发送语音失败，请稍后再试！"));
+          }
+          else if (event === "success") {
+            resolve(data);
+          }
+        },
+      });
+    });
 
-  return await useOssUpload(OssFileType.SOUND, theAudioFile.value as OssFile, user.getToken, {
-    callback(event, data, file) {
-      if (event === "error") {
-        isSending.value = false;
-        ElMessage.error("发送语音失败，请稍后再试！");
-      }
-      else if (event === "success") {
-        callback(data);
-      }
-    },
-  });
+    isUploadSound.value = false;
+    return data;
+  }
+  catch (error) {
+    ElMessage.error("发送语音失败，请稍后再试！");
+    isSending.value = false;
+    isUploadSound.value = false;
+    return null;
+  }
 }
 
 // 重置表单
@@ -1131,10 +1145,8 @@ defineExpose({
     <div class="form-contain">
       <!-- 工具栏 TODO: AI机器人暂不支持 -->
       <template v-if="!isAiRoom">
-        <div
-          class="relative h-9 flex flex-shrink-0 items-center gap-3 px-2"
-        >
-          <el-tooltip popper-style="padding: 0.2em 0.5em;" :content="!isSoundRecordMsg ? (setting.isMobileSize ? '语音' : '语音 Ctrl+T') : '键盘'" placement="top">
+        <div class="relative h-9 flex flex-shrink-0 items-center gap-3 sm:px-2">
+          <el-tooltip popper-style="padding: 0.2em 0.5em;" :content="!isSoundRecordMsg ? '语音' : '键盘'" placement="top">
             <i
               :class="!isSoundRecordMsg ? 'i-solar:microphone-3-broken hover:animate-pulse' : 'i-solar:keyboard-broken'"
               class="h-6 w-6 btn-primary cursor-pointer"
@@ -1154,7 +1166,7 @@ defineExpose({
               >
                 <i i-solar:soundwave-line-duotone class="icon" p-2.5 />
                 <div class="text w-5rem truncate text-center transition-width group-hover:(w-6rem sm:w-8rem) sm:w-8rem">
-                  <span class="chating-hidden">{{ isChating ? `正在输入 ${second}s` : (setting.isMobileSize ? '语音' : '语音 Ctrl+T') }}</span>
+                  <span class="chating-hidden">{{ isChating ? `正在输入 ${second}s` : '语音' }}</span>
                   <span hidden class="chating-show">停止录音 {{ second ? `${second}s` : '' }}</span>
                 </div>
               </BtnElButton>
@@ -1176,7 +1188,6 @@ defineExpose({
               />
             </div>
             <BtnElButton
-              v-if="setting.isMobileSize"
               :disabled="!user.isLogin || isSending || isNotExistOrNorFriend"
               type="primary"
               round
@@ -1601,14 +1612,17 @@ defineExpose({
         --at-apply: "inline text-0.9em pl-1 text-theme-primary dark:text-theme-info font-500";
       }
       .ai-robot-inner {
-        --at-apply: "inline pr-2 pl-1 mr-1 py-1 cursor-pointer bg-color border-default-2-hover select-none text-0.8em card-rounded-df";
+        vertical-align: middle;
+        --at-apply: "inline-block w-fit h-fit py-0.2em leading-1.6em pl-1 pr-2 mr-1 cursor-pointer bg-color border-default-2-hover select-none text-0.8em card-rounded-df";
       }
       .ai-robot-inner {
         --at-apply: "text-";
       }
       .ai-robot-inner::before {
         content: "";
-        --at-apply: "p-2 mr-1 text-theme-primary i-ri:robot-2-line";
+        vertical-align: middle;
+        background: var(--ai-robot-inner-icon) no-repeat center center / cover;
+        --at-apply: "inline-block w-1.4em h-1.4em mr-1 rounded-3em shadow";
       }
     }
 

@@ -10,8 +10,10 @@ import { appName } from "~/constants";
 // export const FILE_MAX_SIZE = 50 * 1024 * 1024;// 50MB 文件大小
 
 export const FILE_TYPE_ICON_MAP = {
+  // 文本文件
   "text/plain": "/images/icon/TXT.png",
 
+  // Office文档
   "application/vnd.ms-excel": "/images/icon/XLS.png",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "/images/icon/XLSX.png",
 
@@ -21,18 +23,95 @@ export const FILE_TYPE_ICON_MAP = {
   "application/msword": "/images/icon/DOC.png",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "/images/icon/DOCX.png",
 
+  // PDF文件
   "application/pdf": "/images/icon/PDF.png",
   "application/x-pdf": "/images/icon/PDF.png",
   "application/x-bzpdf": "/images/icon/PDF.png",
   "application/x-gzpdf": "/images/icon/PDF.png",
+
+  // 压缩文件
+  "application/zip": "/images/icon/ZIP.png",
+  "application/x-zip-compressed": "/images/icon/ZIP.png",
+  "application/x-rar-compressed": "/images/icon/ARCH.png",
+  "application/x-7z-compressed": "/images/icon/ARCH.png",
+  "application/x-tar": "/images/icon/ARCH.png",
+  "application/gzip": "/images/icon/ARCH.png",
+
+  // 设计文件
+  "image/vnd.adobe.photoshop": "/images/icon/PSD.png",
+  "application/photoshop": "/images/icon/PSD.png",
+  "image/psd": "/images/icon/PSD.png",
+
+  // 音频文件（使用默认图标）
+  "audio/mpeg": "/images/icon/MP3.png",
+  "audio/wav": "/images/icon/MP3.png",
+  "audio/ogg": "/images/icon/MP3.png",
+  "audio/flac": "/images/icon/MP3.png",
+  "audio/aac": "/images/icon/MP3.png",
+  "audio/x-m4a": "/images/icon/MP3.png",
+
+  // exe
+  "application/vnd.microsoft.portable-executable": "/images/icon/EXE.png",
+  "application/x-ms-dos-executable": "/images/icon/EXE.png",
+  "application/x-msdownload": "/images/icon/EXE.png",
 } as Record<string, string>;
+
+// 文件后缀到 MIME 类型的映射
+const MIME_TYPE_MAP: Record<string, string> = {
+  // 图片
+  "png": "image/png",
+  "jpg": "image/jpeg",
+  "jpeg": "image/jpeg",
+  "gif": "image/gif",
+  "svg": "image/svg+xml",
+  "bmp": "image/bmp",
+  "tiff": "image/tiff",
+  "webp": "image/webp",
+
+  // 视频
+  "mp4": "video/mp4",
+  "avi": "video/avi",
+  "mov": "video/quicktime",
+  "wmv": "video/x-ms-wmv",
+  "mkv": "video/x-matroska",
+  "flv": "video/x-flv",
+  "m4v": "video/x-m4v",
+
+  // 音频
+  "mp3": "audio/mpeg",
+  "wav": "audio/wav",
+  "ogg": "audio/ogg",
+  "flac": "audio/flac",
+  "aac": "audio/aac",
+  "m4a": "audio/x-m4a",
+
+  // 压缩文件
+  "zip": "application/zip",
+  "rar": "application/x-rar-compressed",
+  "7z": "application/x-7z-compressed",
+  "tar": "application/x-tar",
+  "gz": "application/gzip",
+
+  // 设计文件
+  "psd": "image/vnd.adobe.photoshop",
+
+  // 其他文件类型
+  "txt": "file:text/plain",
+  "xls": "file:application/vnd.ms-excel",
+  "xlsx": "file:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "ppt": "file:application/vnd.ms-powerpoint",
+  "pptx": "file:application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "doc": "file:application/msword",
+  "docx": "file:application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "pdf": "file:application/pdf",
+  "exe": "application/vnd.microsoft.portable-executable",
+};
 
 export const FILE_UPLOAD_ACCEPT = Object.keys(FILE_TYPE_ICON_MAP).join(",");
 /**
  * 默认文件图标
  */
 export const FILE_TYPE_ICON_DEFAULT = "/images/icon/DEFAULT.png";
-
 
 // 定制fs实现任意路径 https://github.com/lencx/tauri-tutorial/discussions/13
 export const existsFile = (path: string) => invoke<boolean>("exist_file", { path });
@@ -120,8 +199,6 @@ export async function downloadFile(url: string, fileName: string, options: {
     ElMessage.warning("正在下载，请稍后...");
     return downloadFileByStreamSaver(url, fileName, callback);
   }
-  // if (!await setting.checkDownloadPath())
-  // return;
   let dir = setting.appDataDownloadDirUrl;
   const existsDir = await existsFile(dir);
   if (!existsDir || options.selected) {
@@ -171,7 +248,6 @@ export async function downloadFile(url: string, fileName: string, options: {
     setting.fileDownloadMap[url]!.status = FileStatus.ERROR;
   }
 }
-
 
 /**
  * 计算路径
@@ -457,47 +533,6 @@ export interface VideoFileInfo {
   size: number;
 }
 
-
-// 文件后缀到 MIME 类型的映射
-const MIME_TYPE_MAP: Record<string, string> = {
-  // 图片
-  png: "image/png",
-  jpg: "image/jpeg",
-  jpeg: "image/jpeg",
-  gif: "image/gif",
-  svg: "image/svg+xml",
-  bmp: "image/bmp",
-  tiff: "image/tiff",
-  webp: "image/webp",
-
-  // 视频
-  mp4: "video/mp4",
-  avi: "video/avi",
-  mov: "video/quicktime",
-  wmv: "video/x-ms-wmv",
-  mkv: "video/x-matroska",
-  flv: "video/x-flv",
-  m4v: "video/x-m4v",
-
-  // 音频
-  mp3: "audio/mpeg",
-  wav: "audio/wav",
-  ogg: "audio/ogg",
-  flac: "audio/flac",
-  aac: "audio/aac",
-  m4a: "audio/x-m4a",
-
-  // 其他文件类型
-  txt: "file:text/plain",
-  xls: "file:application/vnd.ms-excel",
-  xlsx: "file:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  ppt: "file:application/vnd.ms-powerpoint",
-  pptx: "file:application/vnd.openxmlformats-officedocument.presentationml.presentation",
-  doc: "file:application/msword",
-  docx: "file:application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  pdf: "file:application/pdf",
-};
-
 // 判断文件类型
 export function getSimpleOssTypeByExtName(fileName: string): { type: OssConstantItemType, mineType: string } | null {
   const extension = fileName.split(".").pop()?.toLowerCase(); // 获取文件后缀
@@ -530,7 +565,10 @@ export function getSimpleOssTypeByExtName(fileName: string): { type: OssConstant
       mineType: mimeType.replace("file:", ""),
     };
   }
-  return null;
+  return {
+    type: "file",
+    mineType: "application/*", // TODO: 允许全部文件上传
+  };
 }
 
 /**

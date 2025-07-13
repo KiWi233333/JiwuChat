@@ -504,18 +504,19 @@ export function useFileUpload(refsDom: RefDoms = { img: "inputOssImgUploadRef", 
       });
       chat.msgForm.msgType = MessageType.IMG; // 图片
     }
-    // else if (type === "audio") {
-    //   inputOssImgUploadRef.value?.resetInput?.();
-    //   inputOssFileUploadRef.value?.resetInput?.();
-    //   await inputOssImgUploadRef.value?.onUpload({
-    //     id: showUrl || URL.createObjectURL(file),
-    //     key: undefined,
-    //     status: "",
-    //     percent: 0,
-    //     file,
-    //   });
-    //   chat.msgForm.msgType = MessageType.SOUND; // 语音
-    // }
+    else if (type === "audio") {
+      inputOssImgUploadRef.value?.resetInput?.();
+      inputOssFileUploadRef.value?.resetInput?.();
+      await inputOssImgUploadRef.value?.onUpload({
+        id: showUrl || URL.createObjectURL(file),
+        key: undefined,
+        status: "",
+        percent: 0,
+        file,
+      });
+      chat.msgForm.msgType = MessageType.FILE; // 音频文件
+      // chat.msgForm.msgType = MessageType.SOUND; // 语音
+    }
     return done;
   }
 

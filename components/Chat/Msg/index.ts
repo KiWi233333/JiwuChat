@@ -772,17 +772,17 @@ function renderMessageContent() {
         }, token.content);
 
       case "url":
+        const fullUrl = token.data?.url?.startsWith("/") || token.data?.url?.includes("://") ? token.data?.url : `http://${token.data?.url}`;
         return h("a", {
           "key": `url-${index}`,
-          "href": token.data?.url,
+          "href": fullUrl,
           "ctx-name": "urllink",
-          "url": token.data?.url,
+          "url": fullUrl,
           "target": "_blank",
           "rel": "noopener noreferrer",
           "class": "msg-link",
-          "title": token.data?.altTitle || token.data?.url,
+          "title": token.data?.altTitle || fullUrl,
         }, token.content);
-
       default:
         return h("span", {
           "ctx-name": "content",

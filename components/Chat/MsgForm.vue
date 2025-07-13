@@ -295,9 +295,6 @@ function onSubmitGroupNoticeMsg(formData: ChatMessageDTO) {
  * 单按键触发事件
  */
 function onInputExactKey(key: "ArrowUp" | "ArrowDown") {
-  if (!setting.downUpChangeContact) {
-    return;
-  }
   if (!chat.msgForm.content?.trim() && (key === "ArrowUp" || key === "ArrowDown")) {
     chat.onDownUpChangeRoom(key === "ArrowDown" ? "down" : "up");
   }
@@ -686,7 +683,7 @@ defineExpose({
         <div
           class="relative h-9 flex flex-shrink-0 items-center gap-3 px-2"
         >
-          <el-tooltip popper-style="padding: 0.2em 0.5em;" :content="!isSoundRecordMsg ? (setting.isMobileSize ? '语音' : '语音 Ctrl+T') : '键盘'" placement="top">
+          <el-tooltip popper-style="padding: 0.2em 0.5em;" :content="!isSoundRecordMsg ? '语音' : '键盘'" placement="top">
             <i
               :class="!isSoundRecordMsg ? 'i-solar:microphone-3-broken hover:animate-pulse' : 'i-solar:keyboard-broken'"
               class="h-6 w-6 btn-primary cursor-pointer"
@@ -706,7 +703,7 @@ defineExpose({
               >
                 <i i-solar:soundwave-line-duotone class="icon" p-2.5 />
                 <div class="text w-5rem truncate text-center transition-width group-hover:(w-6rem sm:w-8rem) sm:w-8rem">
-                  <span class="chating-hidden">{{ isChating ? `正在输入 ${second}s` : (setting.isMobileSize ? '语音' : '语音 Ctrl+T') }}</span>
+                  <span class="chating-hidden">{{ isChating ? `正在输入 ${second}s` : '语音' }}</span>
                   <span hidden class="chating-show">停止录音 {{ second ? `${second}s` : '' }}</span>
                 </div>
               </BtnElButton>

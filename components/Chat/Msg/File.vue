@@ -44,6 +44,7 @@ defineExpose({
 
 const fileItem = computed(() => setting.fileDownloadMap[BaseUrlFile + body.url]);
 // ctx-name="file"
+const iconSrc = body.mimeType ? (FILE_TYPE_ICON_MAP[body.mimeType] || FILE_TYPE_ICON_DEFAULT) : FILE_TYPE_ICON_DEFAULT;
 </script>
 
 <template>
@@ -58,12 +59,12 @@ const fileItem = computed(() => setting.fileDownloadMap[BaseUrlFile + body.url])
       <div
         ctx-name="file"
         :title="fileName"
-        class="file max-w-14em min-w-10em w-fit flex cursor-pointer gap-3 border-default card-default bg-color p-3 shadow-sm transition-all !items-center hover:border-[var(--el-color-primary)] hover:shadow-lg"
+        class="file max-w-14em min-w-12em w-fit flex cursor-pointer gap-3 border-default-hover card-default bg-color p-3 shadow-sm transition-all !items-center hover:shadow-lg"
         @click="onDownloadFile(BaseUrlFile + body.url, fileName)"
       >
-        <img ctx-name="file" :src="body.mimeType ? FILE_TYPE_ICON_MAP[body.mimeType] : FILE_TYPE_ICON_DEFAULT" class="file-icon h-8 w-8 object-contain">
-        <div ctx-name="file">
-          <p ctx-name="file" class="text-overflow-2 text-sm leading-4">
+        <img ctx-name="file" :src="iconSrc" class="file-icon h-9 w-9 object-contain">
+        <div ctx-name="file" class="flex-1">
+          <p ctx-name="file" class="text-overflow-2 min-h-1.5em min-w-full text-sm leading-5">
             {{ fileName }}
           </p>
           <small v-if="body?.url && setting.fileDownloadMap[BaseUrlFile + body.url]?.status !== undefined" ctx-name="file" class="float-left mr-2 mt-2 text-xs op-60">

@@ -64,7 +64,9 @@ onMounted(() => {
       <i class="i-solar-download-minimalistic-broken btn-info" :class="iconClass" title="下载管理" />
     </template>
     <template #default>
-      <div class="w-90vw sm:w-350px">
+      <div
+        class="w-90vw sm:w-350px"
+      >
         <div class="flex items-center gap-2 p-2 pt-0">
           <i class="i-solar-download-minimalistic-broken p-0.6em" />
           <span>下载</span>
@@ -98,7 +100,7 @@ onMounted(() => {
               @click="setting.openFileByDefaultApp(p)"
             >
               <img
-                :src="p.mimeType ? FILE_TYPE_ICON_MAP[p.mimeType] : FILE_TYPE_ICON_DEFAULT"
+                :src="p.mimeType ? (FILE_TYPE_ICON_MAP[p.mimeType] || FILE_TYPE_ICON_DEFAULT) : FILE_TYPE_ICON_DEFAULT"
                 class="h-6 w-6 object-contain"
               >
               <div class="flex flex-1 flex-col justify-between gap-1 truncate px-1">
@@ -109,11 +111,9 @@ onMounted(() => {
                   <el-progress
                     v-if="p.status === FileStatus.DOWNLOADING"
                     :stroke-width="6"
-                    :percentage="+((p.currentSize / p.totalSize) * 100 || 0).toFixed(2)"
+                    :percentage="p.currentSize && p.totalSize ? +(p.currentSize / p.totalSize).toFixed(4) * 100 : 0"
                     :show-text="false"
-                    striped
-                    striped-flow
-                    class="progress-bar w-1/2"
+                    class="progress-bar w-7/10"
                   />
                   <small v-else>
                     {{ DownFileTextMap[p.status] }}
