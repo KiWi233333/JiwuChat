@@ -112,6 +112,8 @@ export const useSettingStore = defineStore(
         },
       },
     });
+    // ---------------------快捷键-----------------
+    const shortcutManager = useShortcuts();
     // ---------------------菜单-----------------
     const selectExtendMenuList = ref<ExtendItem[]>([]);
     // ---------------------设置-----------------
@@ -158,7 +160,6 @@ export const useSettingStore = defineStore(
           hardwareAcceleration: false, // 硬件加速
         },
         isWindow10Shadow: false, // 是否启用 Windows 10 窗口阴影
-        isEscMin: true, // esc
         notificationType: isWeb.value ? NotificationEnums.SYSTEM : NotificationEnums.TRAY, // 托盘通知
         rtcCallBellUrl: DEFAULT_RTC_CALL_BELL_URL, // 呼叫铃声铃声
       };
@@ -176,7 +177,6 @@ export const useSettingStore = defineStore(
 
     // --------------------- 聊天设置 -----------------
     const showChatMenu = ref(true);
-    const downUpChangeContact = ref(true); // 向上向下切换联系人列表
     async function checkMainWinVisible() {
       try {
         if (isWeb.value) {
@@ -252,7 +252,18 @@ export const useSettingStore = defineStore(
         return;
       }
       try {
-        await openPath(item.localPath);
+      // 高风险文件扩展名列表
+        const highRiskExtensions = [".exe", ".bat", ".cmd", ".scr", ".pif", ".vbs", ".js", ".jar", ".app", ".com", ".msi", ".dll"];
+        const fileExtension = item.localPath.substring(item.localPath.lastIndexOf(".")).toLowerCase();
+
+        if (highRiskExtensions.includes(fileExtension)) {
+        // 对于高风险文件，打开其所在的文件夹而不是直接打开文件
+          await openFileFolder(item);
+        }
+        else {
+        // 对于其他文件，直接打开
+          await openPath(item.localPath);
+        }
       }
       catch (error) {
         console.warn(error);
@@ -523,7 +534,6 @@ export const useSettingStore = defineStore(
       selectExtendMenuList.value = [];
       fileDownloadMap.value = {};
       appDataDownloadDirUrl.value = "";
-      downUpChangeContact.value = true;
       customThemeConfig.value = null;
       loadSystemFonts();
       if (!isWeb.value) {
@@ -578,7 +588,6 @@ export const useSettingStore = defineStore(
       isThemeChangeLoad,
       appUploader,
       showChatMenu,
-      downUpChangeContact,
       showDownloadPanel,
       fileDownloadMap,
       fileDownloadList,
@@ -606,6 +615,7 @@ export const useSettingStore = defineStore(
       openFileFolder,
       changeDownloadDir,
       checkDownloadPath,
+      shortcutManager,
       // getter
     };
   },

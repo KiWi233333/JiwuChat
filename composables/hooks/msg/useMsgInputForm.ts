@@ -459,7 +459,7 @@ export function useMsgInputForm(
   // Store
   const setting = useSettingStore();
   const chat = useChatStore();
-
+  // 快捷键 Hook
   const { atScrollbarRef = "atScrollbarRef", aiScrollbarRef = "aiScrollbarRef" } = scrollbarRefs;
 
   // Refs
@@ -713,7 +713,9 @@ export function useMsgInputForm(
     });
 
     const inner = SecurityUtils.createSafeElement("span", "ai-robot-inner");
-    inner.textContent = SecurityUtils.sanitizeInput(robot.nickName || "未知");
+    inner.textContent = SecurityUtils.sanitizeInput(robot.nickName || "未知机器人");
+    // 添加头像变量 var(--ai-robot-inner-icon)
+    inner.style.setProperty("--ai-robot-inner-icon", `url(${BaseUrlImg + robot.avatar || ""})`);
     outer.appendChild(inner);
 
     tagManager.insert(outer, {
@@ -768,15 +770,37 @@ export function useMsgInputForm(
     }
   }
 
-  function getInputVaildText(): string {
+  function getInputVaildText(isAllContent = false): string {
     try {
       if (isReplyAI.value) { // TODO: AI对话只遍历获取纯文本
         let content = "";
-        msgInputRef.value?.childNodes.forEach((node) => {
-          if (node.nodeType === Node.TEXT_NODE) {
-            content += node.textContent || "";
-          }
-        });
+        if (isAllContent) {
+          // 获取所有子节点的内容
+          msgInputRef.value?.childNodes.forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+              content += node.textContent || "";
+            }
+            else if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName === "IMG") {
+              content += `[图片]`;
+            }
+            else if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains("at-user-tag")) {
+              const atUser = node as HTMLElement;
+              content += `@${atUser.dataset.username || "未知"}`;
+            }
+            else if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains("ai-robot-tag")) {
+              const aiRobot = node as HTMLElement;
+              content += `/${aiRobot.dataset.username || "未知"}`;
+            }
+          });
+        }
+        else {
+        // 遍历所有子节点，获取纯文本内容
+          msgInputRef.value?.childNodes.forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+              content += node.textContent || "";
+            }
+          });
+        }
         return content;
       }
 
@@ -790,6 +814,71 @@ export function useMsgInputForm(
       return "";
     }
   }
+
+  /**
+   * 换行
+   */
+  function breakLine() {
+    if (!msgInputRef.value)
+      return;
+
+    try {
+      // 获取当前选区
+      const selection = selectionManager.getCurrent();
+      if (!selection || selection.rangeCount === 0) {
+        // 如果没有选区，将光标定位到末尾
+        selectionManager.focusAtEnd();
+        return;
+      }
+
+      const range = selection.getRangeAt(0);
+
+      // 确保选区在输入框内
+      if (!selectionManager.isInInputBox(range)) {
+        selectionManager.focusAtEnd();
+        return;
+      }
+
+      // 删除选中的内容（如果有）
+      range.deleteContents();
+
+      // 创建换行文本节点
+      const newLineText = document.createTextNode("\n");
+
+      // 插入换行符
+      range.insertNode(newLineText);
+
+      // 将光标移动到换行符后面
+      range.setStartAfter(newLineText);
+      range.collapse(true);
+
+      // 更新选区
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      // 确保输入框保持焦点
+      msgInputRef.value.focus();
+
+      // 更新表单内容
+      nextTick(() => {
+        updateFormContent();
+      });
+    }
+    catch (error) {
+      console.warn("Break line error:", error);
+      // 降级处理：直接在末尾添加换行
+      selectionManager.focusAtEnd();
+      const endRange = document.createRange();
+      endRange.selectNodeContents(msgInputRef.value);
+      endRange.collapse(false);
+      endRange.insertNode(document.createTextNode("\n"));
+      endRange.setStartAfter(endRange.endContainer);
+      endRange.collapse(true);
+      const selection = selectionManager.getCurrent();
+      selection?.removeAllRanges();
+      selection?.addRange(endRange);
+    }
+  }
   /**
    * 处理键盘事件
    * @param e 键盘事件对象
@@ -798,16 +887,15 @@ export function useMsgInputForm(
     try {
       updateSelectionRange();
 
-      // 限制快捷键 - 只允许常规输入框快捷键
+      // 0. 限制快捷键 - 只允许常规输入框快捷键
       if (isRestrictedShortcut(e)) {
         e.preventDefault();
-        e.stopPropagation();
         return;
       }
-
-      // 处理选项导航
+      // 1. 处理弹出选项导航 上下键 (ai、@好友)
       if ((showAtOptions.value || showAiOptions.value) && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
         e.preventDefault();
+        e.stopPropagation();
         const options = showAtOptions.value ? filteredUserAtOptions.value : filteredAiOptions.value;
         const currentIndex = showAtOptions.value ? selectedAtItemIndex.value : selectedAiItemIndex.value;
         const direction = e.key === "ArrowDown" ? 1 : -1;
@@ -823,20 +911,14 @@ export function useMsgInputForm(
         }
         return;
       }
-
-      // 会话切换
-      if ((e.key === "ArrowUp" || e.key === "ArrowDown") && setting.downUpChangeContact && !getInputVaildText()) {
-        e.preventDefault();
-        chat.onDownUpChangeRoom(e.key === "ArrowDown" ? "down" : "up");
-      }
-
-      // 确认选择
+      // 确认选择 (ai、@好友)
       if ((showAtOptions.value || showAiOptions.value) && (e.key === "Enter" || e.key === "Tab")) {
         if (showAtOptions.value && filteredUserAtOptions.value.length) {
           const selectedUser = filteredUserAtOptions.value[selectedAtItemIndex.value];
           if (selectedUser) {
             handleSelectAtUser(selectedUser);
             e.preventDefault();
+            e.stopPropagation();
             return;
           }
         }
@@ -849,20 +931,15 @@ export function useMsgInputForm(
           }
         }
       }
-
-      // 退出选择
+      // 退出选择 (ai、@好友)
       if ((showAtOptions.value || showAiOptions.value) && e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();
         resetOptions();
         return;
       }
-
-      // 发送消息
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleSubmit();
-      }
+      // 其他消息快捷键
+      setting.shortcutManager.handleInputShortcuts(e);
     }
     catch (error) {
       console.warn("Handle key down error:", error);
@@ -1006,32 +1083,35 @@ export function useMsgInputForm(
       items: contextMenuItems,
     });
   }
+  // 禁用的快捷键列表
+  const restrictedShortcutMap: Record<string, boolean> = {
+    "ctrl+b": true,
+    "ctrl+i": true,
+    "ctrl+u": true,
+    "meta+b": true,
+    "meta+i": true,
+    "meta+u": true,
+  };
+
   // 快捷键限制函数
   function isRestrictedShortcut(e: KeyboardEvent): boolean {
     const { key, ctrlKey, metaKey } = e;
-
-    // 禁用的快捷键列表
-    const restrictedShortcuts = [
-      // 格式化快捷键
-      { ctrl: true, key: "b" }, // 加粗
-      { ctrl: true, key: "i" }, // 斜体
-      { ctrl: true, key: "u" }, // 下划线
-
-      // Mac 系统对应的快捷键
-      { meta: true, key: "b" }, // 加粗 (Mac)
-      { meta: true, key: "i" }, // 斜体 (Mac)
-      { meta: true, key: "u" }, // 下划线 (Mac)
-    ];
-
     // 检查是否为禁用的快捷键
-    return restrictedShortcuts.some((shortcut) => {
-      const ctrlMatch = shortcut.ctrl ? (ctrlKey || metaKey) : !ctrlKey && !metaKey;
-      const metaMatch = shortcut.meta ? metaKey : !metaKey;
-      const keyMatch = shortcut.key.toLowerCase() === key.toLowerCase();
-
-      return ctrlMatch && metaMatch && keyMatch;
-    });
+    return !!restrictedShortcutMap[ctrlKey ? "ctrl+" : metaKey ? "meta+" : key.toLocaleLowerCase()];
   }
+
+  // 快捷键初始化 --- 处理会话切换快捷键 || 输入框快捷键（发送消息、换行等）
+  setting.shortcutManager.updateShortHandlers("send-message", handleSubmit);
+  setting.shortcutManager.updateShortHandlers("line-break", () => {
+    if (setting.shortcutManager.isEnabled("line-break", "local")) {
+      breakLine();
+    }
+  });
+  setting.shortcutManager.updateShortHandlers("switch-chat", (e) => {
+    if (!getInputVaildText(true)) {
+      chat.onDownUpChangeRoom(e.key === "ArrowDown" ? "down" : "up");
+    }
+  });
 
   return {
     // 核心 refs 和状态

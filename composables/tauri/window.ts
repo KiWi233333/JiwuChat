@@ -93,6 +93,26 @@ export async function destroyWindow(label: Labels) {
   }
 }
 
+export async function minimizeWindow(label?: Labels) {
+  const setting = useSettingStore();
+  // 自定义弹窗
+  const dom = document.getElementById(CustomeDialogPopupId);
+  if (dom && dom.dataset.modelValue === "true") {
+    return;
+  }
+  if (!setting.isDesktop) {
+    return;
+  }
+  const chat = useChatStore();
+  if (!chat.notDialogShow) {
+    chat.notDialogShow = false;
+    return;
+  }
+  const wind = label ? await WebviewWindow.getByLabel(label) : getCurrentWebviewWindow();
+  wind?.minimize();
+}
+
+
 const labelRouteMap = {
   login: {
     title: `${appName} - 登录`,
@@ -135,13 +155,12 @@ export async function createWindow(label: keyof typeof labelRouteMap, data?: { t
     }
 
     // 适配移动端和web
-    if (!useSettingStore().isDesktop) {
-      console.log(url);
-
+    const setting = useSettingStore();
+    if (!setting.isDesktop) {
       await navigateTo(url);
       return true;
     }
-    return await invoke(`create_window`, { label, title, url });
+    return await invoke(`create_window`, { label, title, url, shadow: !setting.settingPage.isWindow10Shadow });
   }
   catch (err) {
     console.warn(err);

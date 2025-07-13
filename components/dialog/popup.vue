@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { CustomeDialogPopupId } from "@/composables/hooks/useShortcuts";
 
 interface DialogPosition {
   x: number;
@@ -30,6 +30,7 @@ interface DialogProps {
   zIndex?: number;
   disableClass?: string;
   minScale?: number;
+  escClose?: boolean
 }
 
 const {
@@ -46,6 +47,7 @@ const {
   center = false,
   destroyOnClose = false,
   minScale = 0.5,
+  escClose = true,
 } = defineProps<DialogProps>();
 
 const emit = defineEmits<{
@@ -58,6 +60,7 @@ const emit = defineEmits<{
   (e: "closed"): void;
 }>();
 
+const dialogModelRef = useTemplateRef<HTMLElement>("dialogModelRef");
 // 控制内容渲染的状态
 const shouldRenderContent = ref(modelValue);
 // 是否应当销毁内容标记
@@ -99,13 +102,34 @@ function trackMousePosition(e: MouseEvent) {
   }
 }
 
+// 处理ESC键关闭
+function handleEscClose(e: KeyboardEvent) {
+  // 检查是否启用ESC关闭功能且对话框已打开
+  if (escClose && modelValue && e.key === "Escape") {
+    // 立即阻止事件冒泡和默认行为，防止其他监听器捕获
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    e.stopPropagation();
+    emit("update:modelValue", false);
+    emit("cancel");
+  }
+}
+
 // 生命周期钩子
 onMounted(() => {
   window.addEventListener("mousedown", trackMousePosition);
+  // 添加键盘事件监听器
+  if (escClose) {
+    window?.addEventListener("keydown", handleEscClose);
+  }
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("mousedown", trackMousePosition);
+  // 移除键盘事件监听器
+  if (escClose) {
+    window?.removeEventListener("keydown", handleEscClose);
+  }
 });
 
 // 处理关闭对话框
@@ -248,7 +272,8 @@ defineExpose({
     >
       <div
         v-show="modelValue"
-        key="dialog"
+        key="dialogModel"
+        ref="dialogModelRef"
         :style="{
           '--duration': `${duration}ms`,
           'zIndex': `${zIndex}`,
@@ -269,7 +294,9 @@ defineExpose({
         <!-- 对话框 -->
         <div
           v-if="shouldRenderContent"
+          :id="CustomeDialogPopupId"
           ref="dialogRef"
+          :data-model-value="escClose && modelValue"
           :style="[dialogStyle, { width: dialogWidth }]"
           class="relative"
           :class="{

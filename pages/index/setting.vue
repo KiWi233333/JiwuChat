@@ -110,7 +110,9 @@ onUnmounted(() => {
       <i i-solar:settings-bold ml-2 inline-block p0.6em opacity-60 hover:animate-spin />
     </h3>
     <!-- 主题与字体 -->
-    <label class="title">主题与字体</label>
+    <label class="title">主题与字体
+      <!-- <i class="i-solar:palette-line-duotone ml-1 cursor-pointer p-2.2" /> -->
+    </label>
     <div id="theme" class="box">
       <SettingTheme
         :input-props="{
@@ -123,7 +125,9 @@ onUnmounted(() => {
     </div>
 
     <!-- 通知与提醒 -->
-    <label class="title">通知与提醒</label>
+    <label class="title">通知与提醒
+      <!-- <i class="i-solar:bell-line-duotone ml-1 cursor-pointer p-2.2" /> -->
+    </label>
     <div id="notification" class="box">
       <!-- 消息通知 -->
       <div class="group h-8 flex-row-bt-c">
@@ -140,12 +144,18 @@ onUnmounted(() => {
       <SettingBell />
     </div>
     <!-- 工具 -->
-    <label class="title">工具</label>
+    <label class="title">工具
+      <!-- <i class="i-solar:box-linear ml-1 cursor-pointer p-2.2" /> -->
+    </label>
     <div id="translation" class="box">
       <SettingTranslation class="select" :size="size" />
     </div>
+    <!-- 快捷键管理 -->
+    <SettingShortcuts v-if="!setting.isMobileSize || setting.isDesktop" :size="size" />
     <!-- 功能与交互 -->
-    <label class="title">功能与交互</label>
+    <label class="title">功能与交互
+      <!-- <i class="i-solar:telescope-outline ml-1 cursor-pointer p-2.2" /> -->
+    </label>
     <div id="function" class="box">
       <!-- 关闭动画 -->
       <div class="group h-8 flex items-center">
@@ -154,23 +164,18 @@ onUnmounted(() => {
           class="ml-a mr-2 h-5 !border-default-hover"
           icon-class="i-solar:pen-2-bold text-1em mr-1"
           title="定制化动画"
-
-
           text bg round
           size="small"
           @click="showCustomTransitionPanel = true"
         />
-        <el-tooltip
-          :content="!setting.settingPage.isCloseAllTransition ? '开启动画' : '关闭动画'" placement="left"
-          popper-style="padding: 0 0.5em;"
-        >
-          <el-switch
-            v-model="setting.settingPage.isCloseAllTransition"
-            class="transition-opacity hover:op-80"
-            :size="size"
-            inline-prompt @change="changeAnimateMode"
-          />
-        </el-tooltip>
+        <el-switch
+          v-model="setting.settingPage.isCloseAllTransition"
+          class="transition-opacity hover:op-80"
+          :size="size"
+          inline-prompt
+          :title="!setting.settingPage.isCloseAllTransition ? '关闭动画' : '开启动画'"
+          @change="(val: string | number | boolean) => changeAnimateMode(!!val)"
+        />
       </div>
       <!-- Window10阴影 -->
       <div v-if="setting.isDesktop && isWindow10" class="group h-8 flex items-center">
@@ -183,33 +188,6 @@ onUnmounted(() => {
           :size="size"
           inline-prompt
           @change="checkWind10Shadow"
-        />
-      </div>
-      <!-- 上下按键切换会话 -->
-      <div v-if="!setting.isMobileSize" class="group h-8 flex-row-bt-c">
-        切换会话
-        <el-tooltip
-          :content="!setting.downUpChangeContact ? '开启方向上下键切换' : '关闭方向上下键切换'" placement="left"
-          popper-style="padding: 0 0.5em;"
-        >
-          <el-switch
-            v-model="setting.downUpChangeContact"
-            class="transition-opacity hover:op-80"
-            :size="size"
-            inline-prompt
-          />
-        </el-tooltip>
-      </div>
-      <!-- Esc -->
-      <div v-if="setting.isDesktop" class="group h-8 flex-row-bt-c">
-        ESC 最小化
-        <el-switch
-          v-model="setting.settingPage.isEscMin"
-          class="transition-opacity hover:op-80"
-          :size="size"
-          :active-value="true"
-          :inactive-value="false"
-          inline-prompt @change="(val: string | number | boolean) => setting.settingPage.isEscMin = !!val"
         />
       </div>
     </div>

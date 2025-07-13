@@ -1357,7 +1357,7 @@ defineExpose({
           拖拽文件到此处上传
         </div>
         <el-scrollbar
-          :max-height="setting.isMobileSize ? (showMobileTools ? '2.4rem' : '30vh') : '10em'"
+          :max-height="setting.isMobileSize ? (showMobileTools ? '2.4rem' : '30vh') : '10rem'"
           class="h-full w-full flex-1"
           wrap-class="h-full transition-max-height rounded bg-color-3 sm:(!bg-transparent rounded-0)"
           view-class="h-full"
@@ -1373,8 +1373,6 @@ defineExpose({
             @input="handleInput"
             @paste="handlePasteEvent"
             @keydown="handleKeyDown"
-            @keyup="updateSelectionRange"
-            @click="updateSelectionRange"
             @focus="showMobileTools = false"
             @contextmenu.self="onContextMenu"
             @compositionend="updateSelectionRange"
@@ -1579,7 +1577,7 @@ defineExpose({
   }
 
   .rich-editor {
-    --at-apply: "text-0.9em w-full h-full min-h-36px p-2 outline-none text-color ";
+    --at-apply: "text-0.9em flex-1 w-full h-full min-h-36px p-2 outline-none text-color ";
     caret-color: var(--el-color-primary);
     word-break: break-word;
     white-space: pre-wrap;

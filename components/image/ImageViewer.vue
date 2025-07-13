@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useLocalStorage } from "@vueuse/core";
-
 const SHOW_SHORTCUT_TIPS_KEY = "image-viewer-show-shortcut-tips";
 const IS_SHORTCUT_CARD_COLLAPSED_KEY = "image-viewer-is-shortcut-card-collapsed";
 

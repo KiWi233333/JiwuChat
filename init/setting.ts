@@ -5,124 +5,6 @@ import {
   isEnabled as isAutoStartEnabled,
 } from "@tauri-apps/plugin-autostart";
 
-const shorcutKeyMap: Record<string, { name: string, action: () => void }> = {
-  // 切换主题
-  "alt+k": {
-    name: "切换主题",
-    action: () => {
-      const colorMode = useColorMode();
-      useModeToggle(colorMode.value === "light" ? "dark" : "light");
-    },
-  },
-  // 退出应用
-  "ctrl+q": {
-    name: "退出应用",
-    action: () => closeWindowHandler(true),
-  },
-  // 关闭窗口
-  "ctrl+w": {
-    name: "关闭窗口",
-    action: () => closeWindowHandler(false),
-  },
-  // esc 最小化窗口
-  "Escape": {
-    name: "最小化窗口",
-    action: () => {
-      const setting = useSettingStore();
-      const chat = useChatStore();
-      if (!setting.isDesktop)
-        return;
-      if (!chat.notDialogShow) {
-        chat.notDialogShow = false; // 关闭各类弹窗
-        return;
-      }
-      getCurrentWebviewWindow?.()?.minimize();
-    },
-  },
-};
-
-
-// 监听快捷键
-function checkAndExecuteShortcutKey(e: KeyboardEvent) {
-  const key = e.key;
-  const ctrlKey = e.ctrlKey;
-  const shiftKey = e.shiftKey;
-  const altKey = e.altKey;
-  const metaKey = e.metaKey;
-  const shorcutKey = `${ctrlKey ? "ctrl+" : ""}${shiftKey ? "shift+" : ""}${altKey ? "alt+" : ""}${metaKey ? "meta+" : ""}${key}`;
-  const shorcutAction = shorcutKeyMap[shorcutKey];
-  if (shorcutAction) {
-    e.preventDefault();
-    shorcutAction.action();
-    return true;
-  }
-  return false;
-}
-
-interface ShortcutKeyItem {
-  key: string;
-  ctrl?: boolean;
-  shift?: boolean;
-  alt?: boolean;
-  meta?: boolean;
-}
-
-
-// 禁用的快捷键组合
-const disabledShortcuts: ShortcutKeyItem[] = [
-  // 打印相关
-  { key: "p", ctrl: true },
-  // 查找相关
-  { key: "f", ctrl: true },
-  { key: "F3" },
-  // 刷新相关
-  { key: "r", ctrl: true },
-  { key: "F", ctrl: true, shift: true },
-  // 开发者工具
-  // { key: "F12" },
-  { key: "I", ctrl: true, shift: true },
-  // 页面缩放
-  { key: "=", ctrl: true },
-  { key: "-", ctrl: true },
-  { key: "0", ctrl: true },
-  // 新建窗口/标签页
-  { key: "n", ctrl: true },
-  { key: "t", ctrl: true },
-  // 书签
-  { key: "d", ctrl: true },
-  // 历史记录
-  { key: "h", ctrl: true },
-  // 地址栏
-  { key: "l", ctrl: true },
-  // 保存页面
-  { key: "s", ctrl: true },
-];
-
-async function onKeyDown(e: KeyboardEvent) {
-  // 检查是否为禁用的快捷键
-  const isDisabledShortcut = disabledShortcuts.some((shortcut) => {
-    return e.key === shortcut.key
-      && (shortcut.ctrl ? e.ctrlKey : !e.ctrlKey)
-      && (shortcut.shift ? e.shiftKey : !e.shiftKey)
-      && (shortcut.alt ? e.altKey : !e.altKey)
-      && (shortcut.meta ? e.metaKey : !e.metaKey);
-  });
-
-  if (isDisabledShortcut) {
-    e.preventDefault();
-    return;
-  }
-  if (!e.key)
-    return;
-  // 快捷键处理
-  if (checkAndExecuteShortcutKey(e)) {
-    e.preventDefault();
-  }
-}
-
-function onContextMenu(e: MouseEvent) {
-  e.preventDefault();
-}
 function onVisibilityChange() {
   const chat = useChatStore();
   const route = useRoute();
@@ -263,14 +145,20 @@ export function useSettingInit() {
  * 初始化快捷键
  */
 export function useHotkeyInit() {
-  // 阻止默认行为，防止右键菜单弹出
+  // 使用 hook 方式初始化快捷键
+  const setting = useSettingStore();
+  const unMountedShortcuts = setting.shortcutManager.initShortcuts();
+
+  // 保持兼容性 - 阻止右键菜单
+  const onContextMenu = (e: MouseEvent) => {
+    e.preventDefault();
+  };
+
   window.addEventListener("contextmenu", onContextMenu);
-  // 快捷键阻止
-  window.addEventListener("keydown", onKeyDown);
 
   return () => {
+    unMountedShortcuts();
     window.removeEventListener("contextmenu", onContextMenu);
-    window.removeEventListener("keydown", onKeyDown);
   };
 }
 
