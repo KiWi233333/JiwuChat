@@ -60,7 +60,6 @@ export function useMessageList() {
     roomId = roomId || chat.theRoomId;
     if (!isValidRoom(roomId))
       return;
-
     if (!chat.contactMap[roomId] || chat.contactMap[roomId]!.isLoading || chat.contactMap[roomId]!.isReload || chat.contactMap[roomId]!.isSyncing || chat.contactMap[roomId]!.pageInfo.isLast) {
       return;
     }
@@ -102,7 +101,7 @@ export function useMessageList() {
       chat.contactMap[roomId]!.pageInfo.cursor = data.cursor || undefined;
 
       await nextTick();
-      saveScrollTop();
+      saveScrollTop(roomId);
       call && call(msgList.value);
       if (chat.contactMap[roomId]!.pageInfo.cursor === null && !chat.contactMap[roomId]!.msgIds?.length) {
         // 第一次加载默认没有动画
@@ -174,22 +173,20 @@ export function useMessageList() {
           thePageInfo.cursor = data.cursor || undefined;
         }
       }
-      if (chat.theRoomId === roomId) {
-        // 滚动到底部
-        await nextTick();
-        scrollBottom(false);
-        await nextTick();
-        saveScrollTop();
-      }
     }
     catch (error) {
       console.error("重新加载消息出错:", error);
-      await nextTick();
-      scrollBottom(false);
     }
     finally {
-      chat.contactMap[roomId]!.isLoading = false;
-      chat.contactMap[roomId]!.isReload = false;
+      await nextTick();
+      scrollBottom(false);
+      requestAnimationFrame(() => {
+        chat.contactMap[roomId]!.isLoading = false;
+        chat.contactMap[roomId]!.isReload = false;
+        if (chat.theRoomId === roomId) {
+          saveScrollTop(roomId);
+        }
+      });
     }
   }
 
@@ -288,9 +285,9 @@ export function useMessageList() {
   /**
    * 保存上一个位置
    */
-  function saveScrollTop() {
-    if (chat.theRoomId && chat.theContact) {
-      chat.theContact.scrollTopSize = scrollbarRef?.value?.wrapRef?.scrollHeight || 0;
+  function saveScrollTop(roomId?: number) {
+    if (roomId && chat.contactMap[roomId]) {
+      chat.contactMap[roomId].scrollTopSize = scrollbarRef?.value?.wrapRef?.scrollHeight || 0;
     }
   }
 
@@ -343,7 +340,7 @@ export function useMessageList() {
           scrollReplyMsg(payload?.msgId, payload.gapCount, payload?.animate);
           break;
         case "saveScrollTop":
-          saveScrollTop();
+          saveScrollTop(chat.theRoomId);
           break;
         case "scrollTop":
           scrollTop(payload?.size, payload?.animate);
@@ -370,11 +367,16 @@ export function useMessageList() {
       if (val) {
         // 消息阅读上报
         chat.setReadRoom(val);
-
+        // 清除计时器
+        clearTimer();
         // 检查是否需要同步消息
         const contact = chat?.contactMap?.[val];
-        if (contact && (!contact.msgIds.length || contact.lastMsgId !== contact?.lastMsgId))
+        if (contact && (!contact.msgIds.length || contact.lastMsgId !== contact?.lastMsgId)) {
           reload(val);
+        }
+        else {
+          requestAnimationFrame(() => scrollBottom(false));
+        }
       }
 
       // 处理旧房间

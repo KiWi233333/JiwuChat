@@ -154,6 +154,7 @@ export const useSettingStore = defineStore(
         animation: {
           pageTransition: false, // 页面切换动画
           listTransition: true, // 列表过渡动画
+          msgListSkeleton: true, // 消息列表骨架屏
           dialogTransition: true, // 弹窗进入动画
           messageTransition: true, // 消息气泡动画
           themeTransition: true, // 主题切换动画

@@ -85,6 +85,18 @@ const _show = computed({
           </div>
 
           <div class="setting-item">
+            <span class="setting-label" title="骨架屏加载动画">消息列表动画
+              <span class="tip border-default rounded-8 px-2 py-0.2em text-mini">骨架屏</span>
+            </span>
+            <el-switch
+              v-model="setting.settingPage.animation.msgListSkeleton"
+              class="transition-opacity hover:op-80"
+              :size="size"
+              inline-prompt
+            />
+          </div>
+
+          <div class="setting-item">
             <span class="setting-label">列表过渡</span>
             <el-switch
               v-model="setting.settingPage.animation.listTransition"
