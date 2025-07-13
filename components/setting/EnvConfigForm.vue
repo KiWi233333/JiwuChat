@@ -36,9 +36,18 @@ const rules: FormRules<EnvConfigMap> = {
   ],
 };
 
-// 加载保存的配置
-onMounted(() => {
-  envConfig.value = getEnvConfig();
+// 添加环境类型选择状态
+const envType = ref<"dev" | "prod">("dev");
+
+// 环境选项配置
+const envOptions = [
+  { label: "开发环境", value: "dev" },
+  { label: "生产环境", value: "prod" },
+];
+
+// 监听环境类型变化
+watch(envType, (newType) => {
+  changeDefaultConfig(newType);
 });
 
 // 保存配置（仅保存可修改的字段，同时返回完整配置给父组件）
@@ -109,6 +118,18 @@ function resetConfig() {
   envConfig.value = { ...DefaultEnvConfigMap };
   ElMessage.info("已重置为默认配置");
 }
+
+// 加载保存的配置
+onMounted(() => {
+  envConfig.value = getEnvConfig();
+  // 根据当前配置判断环境类型
+  if (envConfig.value.VITE_API_BASE_URL === DEV_EnvConfig.VITE_API_BASE_URL) {
+    envType.value = "dev";
+  }
+  else if (envConfig.value.VITE_API_BASE_URL === PROD_EnvConfig.VITE_API_BASE_URL) {
+    envType.value = "prod";
+  }
+});
 </script>
 
 <template>
@@ -140,7 +161,6 @@ function resetConfig() {
             clearable
           />
         </el-form-item>
-
         <el-form-item label="WebSocket URL" prop="VITE_API_WS_BASE_URL">
           <el-input
             v-model="envConfig.VITE_API_WS_BASE_URL"
@@ -149,28 +169,11 @@ function resetConfig() {
           />
         </el-form-item>
         <el-form-item label="环境类型">
-          <el-button-group>
-            <el-button
-              text
-              bg
-              class="h-8"
-              :class="{ '!bg-theme-primary': envConfig.VITE_API_BASE_URL === DEV_EnvConfig.VITE_API_BASE_URL }"
-              style="font-size: 0.8rem;"
-              @click="changeDefaultConfig('dev')"
-            >
-              开发环境
-            </el-button>
-            <el-button
-              text
-              bg
-              class="h-8"
-              :class="{ '!bg-theme-primary': envConfig.VITE_API_BASE_URL === PROD_EnvConfig.VITE_API_BASE_URL }"
-              style="font-size: 0.8rem;"
-              @click="changeDefaultConfig('prod')"
-            >
-              生产环境
-            </el-button>
-          </el-button-group>
+          <el-segmented
+            v-model="envType"
+            :options="envOptions"
+            style="width: 48%"
+          />
         </el-form-item>
       </div>
       <!-- 操作按钮 -->

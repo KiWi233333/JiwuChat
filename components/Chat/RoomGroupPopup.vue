@@ -170,12 +170,12 @@ async function changShieldStatus() {
           群公告
           <i v-show="isLord && editFormField !== 'notice'" i-solar:pen-2-bold ml-2 p-2 op-0 transition-opacity @click="editFormField = 'notice'" />
         </div>
-        <textarea
-          v-if="theContactClone?.roomGroup?.detail"
+        <el-input
+          v-if="editFormField === 'notice' && theContactClone?.roomGroup?.detail"
           ref="noticeInputRef"
           v-model="theContactClone.roomGroup.detail.notice"
           :disabled="!isLord || editFormField !== 'notice'"
-          :rows="editFormField === 'notice' ? 8 : 1"
+          :rows="8"
           :maxlength="200"
           class="scroll-bar mt-2 card-rounded-df border-none bg-transparent transition-200"
           type="textarea"
@@ -184,36 +184,25 @@ async function changShieldStatus() {
           @keydown.enter.stop="submitUpdateRoom('notice', theContactClone?.roomGroup?.detail?.notice)"
           @blur="submitUpdateRoom('notice', theContactClone?.roomGroup?.detail?.notice)"
         />
+        <el-scrollbar v-else max-height="8em" class="scroll-bar card-rounded-df border-none bg-transparent text-small transition-200" @click.stop="isLord && (editFormField = 'notice')">
+          {{ theContactClone?.roomGroup?.detail?.notice || "未填写" }}
+        </el-scrollbar>
       </div>
     </div>
 
-    <!-- <div sticky left-0 top-0 z-10 flex-row-bt-c flex-shrink-0 flex-row truncate bg-color px-2 pb-2>
-      <i
-        class="i-solar:magnifer-linear block h-4.5 w-4.5 btn-info"
-        @click="() => {
-          showSearch = !showSearch
-          if (showSearch) {
-            searchInputRef?.focus?.()
-          }
-        }"
-      />
-      <small>群成员</small>
-      <div class="rounded-2rem p-1.5" @click="showJoinGroup">
-        <i class="block h-1.8em h-5 w-1.8em w-5 btn-info border-default rounded-2rem" i-carbon:add-large />
-      </div>
-    </div> -->
-    <div class="label-item mt-3 select-none border-default-2-t pt-3">
+    <div class="label-item mt-2 select-none border-default-2-t pt-3">
       <div class="flex-row-bt-c">
         <small>群成员</small>
-        <i
-          class="i-solar:magnifer-linear block h-4.5 w-4.5 btn-info"
-          @click="() => {
+        <div
+          class="card-default p-1.6 hover:bg-color-2" @click="() => {
             showSearch = !showSearch
             if (showSearch) {
               searchInputRef?.focus?.()
             }
           }"
-        />
+        >
+          <i class="i-solar:magnifer-linear block h-4.5 w-4.5 btn-info" />
+        </div>
       </div>
     </div>
     <!-- 搜索群聊 -->

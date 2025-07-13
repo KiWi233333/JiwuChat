@@ -58,7 +58,7 @@ export const useChatStore = defineStore(
     const recallMsgMap = ref<Record<number, ChatMessageVO>>({});
 
     /** ---------------------------- 好友 ---------------------------- */
-    const applyUnReadCount = useLocalStorage(computed(() => `applyUnReadCount_${useUserStore().userId}`), 0); // 申请未读数
+    const applyUnReadCount = useLocalStorage(() => `applyUnReadCount_${useUserStore().userId}`, 0); // 申请未读数
 
     /** ---------------------------- 会话 ---------------------------- */
     const searchKeyWords = ref("");
@@ -648,6 +648,31 @@ export const useChatStore = defineStore(
 
     const readDebounceTimers: Record<string, NodeJS.Timeout> = {};
     /**
+     * 标记已读请求
+     */
+    async function markMsgRead(roomId: number) {
+      try {
+        const res = await setMsgReadByRoomId(roomId, user.getToken);
+        if (res.code === StatusCode.SUCCESS && contactMap.value[roomId]) {
+          contactMap.value[roomId].unreadCount = 0;
+          const ctx = contactMap.value[roomId];
+          if (ctx) {
+            ctx.unreadCount = 0;
+            ctx.unreadMsgList = [];
+          }
+        }
+        // 消费消息
+        const ws = useWsStore();
+        ws.wsMsgList.newMsg = ws.wsMsgList.newMsg.filter(k => k.message.roomId !== roomId);
+      }
+      catch (error) {
+        console.error("标记已读失败:", error);
+      }
+      finally {
+        delete readDebounceTimers[roomId];
+      }
+    }
+    /**
      * 设置消息已读
      */
     async function setReadRoom(roomId: number, isSender = false) {
@@ -670,30 +695,12 @@ export const useChatStore = defineStore(
       }
       if (readDebounceTimers[roomId])
         clearTimeout(readDebounceTimers[roomId]);
+      else
+        markMsgRead(roomId); // 立即标记已读
       // 标记已读请求（优化错误处理）
-      readDebounceTimers[roomId] = setTimeout(async () => {
-        try {
-          const res = await setMsgReadByRoomId(roomId, user.getToken);
-          if (res.code === StatusCode.SUCCESS && contactMap.value[roomId]) {
-            contactMap.value[roomId].unreadCount = 0;
-            const ctx = contactMap.value[roomId];
-            if (ctx) {
-              ctx.unreadCount = 0;
-              ctx.unreadMsgList = [];
-            }
-          }
-          // 消费消息
-          const ws = useWsStore();
-          ws.wsMsgList.newMsg = ws.wsMsgList.newMsg.filter(k => k.message.roomId !== roomId);
-        }
-        catch (error) {
-          console.error("标记已读失败:", error);
-        }
-        finally {
-          delete readDebounceTimers[roomId];
-        }
-      }, 300);
+      readDebounceTimers[roomId] = setTimeout(() => markMsgRead(roomId), 300);
     }
+
     // 标记全部已读
     const clearAllUnread = () => {
       for (const key in contactMap.value) {

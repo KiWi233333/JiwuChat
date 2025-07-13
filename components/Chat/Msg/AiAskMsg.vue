@@ -30,7 +30,7 @@ const getTitle = robotListLen === 1
         {{ data.message.content }}
       </p>
       <!--  询问的AI -->
-      <div v-if="robotList?.length" class="ask-ai flex-ml-a flex-wrap gap-2" :title="getTitle">
+      <div v-if="robotList?.length" class="ask-ai flex-ml-a flex-wrap gap-1" :title="getTitle">
         <template v-for="(robot, i) in robotList" :key="i">
           <img
             v-if="robot?.avatar"

@@ -18,7 +18,7 @@ const pageInfo = ref({
   isLast: false,
   size: 20,
 });
-const historyContactId = useLocalStorage<number | undefined>(`${user.userId}-history-contact-id`, undefined);
+const historyContactId = useLocalStorage<number | undefined>(() => `${user.userId}-history-contact-id`, undefined);
 const isLoadRoomMap: Record<number, boolean> = {};
 const currentRoomIndex = computed(() => chat.getContactList.findIndex(room => room.roomId === chat.theRoomId));
 // 滚动顶部触发

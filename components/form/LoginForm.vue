@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { CardLoading } from "#components";
 import {
   DeviceType,
   getLoginCodeByType,
@@ -463,6 +464,7 @@ defineExpose({
           class="submit w-full tracking-0.2em shadow"
           style="padding: 20px"
           :loading="isLoading || user.isOnLogining"
+          :loading-icon="CardLoading"
           @keyup.enter="onLogin(formRef)"
           @click="onLogin(formRef)"
         >
@@ -506,6 +508,7 @@ defineExpose({
             type="primary"
             transition-icon
             :loading="user.isOnLogining"
+            :loading-icon="CardLoading"
             icon-class="i-solar-alt-arrow-left-bold"
             mr-2 sm:mr-4
             @click="navigateTo('/')"
@@ -615,7 +618,7 @@ defineExpose({
 <style lang="scss">
 .el-autocomplete-suggestion {
   .el-scrollbar {
-    --at-apply: "!max-h-12em !h-12em";
+    --at-apply: "!max-h-12em";
   }
 }
 </style>

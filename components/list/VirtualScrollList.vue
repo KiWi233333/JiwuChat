@@ -510,6 +510,7 @@ const [DefineVirtualListContent, ReuseVirtualListContent] = createReusableTempla
     ref="scrollbarRef"
     :max-height="maxHeight"
     :wrap-class="wrapClass"
+    v-bind="$attrs"
     :class="className || $attrs.class"
     @scroll="onScroll"
     @end-reached="(direction) => emit('endReached', direction)"

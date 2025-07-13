@@ -28,14 +28,16 @@ pub async fn create_window(
     label: String,
     url: String,
     title: String,
+    shadow: Option<bool>
 ) -> tauri::Result<()> {
+    let shadow = shadow.unwrap_or(true);
     println!("创建窗口：{}, {}", title, url);
     // 映射对应fn
     match label.as_str() {
-        "main" => create_main_window(app_handle).await?,
-        "msgbox" => create_msgbox_window(app_handle).await?,
-        "login" => create_login_window(app_handle).await?,
-        "extend" => create_extend_window(app_handle, title, url).await?,
+        "main" => create_main_window(app_handle, shadow).await?,
+        "msgbox" => create_msgbox_window(app_handle, shadow).await?,
+        "login" => create_login_window(app_handle, shadow).await?,
+        "extend" => create_extend_window(app_handle, title, url, shadow).await?,
         _ => {}
     }
     Ok(())
@@ -87,14 +89,14 @@ pub async fn animate_window_resize(
     Ok(())
 }
 
-pub async fn create_main_window(app_handle: AppHandle) -> tauri::Result<()> {
+pub async fn create_main_window(app_handle: AppHandle, shadow: bool) -> tauri::Result<()> {
     // 主窗口配置
     let mut wind_builder =
         WebviewWindowBuilder::new(&app_handle, "main", WebviewUrl::App("/".into()))
             .title("极物聊天")
             .resizable(true)
             .center()
-            .shadow(true)
+            .shadow(shadow)
             .decorations(false)
             .min_inner_size(375.0, 780.0)
             .max_inner_size(1920.0, 1080.0)
@@ -117,7 +119,7 @@ pub async fn create_main_window(app_handle: AppHandle) -> tauri::Result<()> {
     {
         use tauri::utils::TitleBarStyle;
         wind_builder = wind_builder.title_bar_style(TitleBarStyle::Overlay);
-        wind_builder = wind_builder.shadow(true);
+        wind_builder = wind_builder.shadow(shadow);
     }
 
     let main_window = wind_builder.build()?;
@@ -166,7 +168,7 @@ pub async fn create_main_window(app_handle: AppHandle) -> tauri::Result<()> {
     Ok(())
 }
 
-async fn create_msgbox_window(app_handle: AppHandle) -> tauri::Result<()> {
+async fn create_msgbox_window(app_handle: AppHandle, shadow: bool) -> tauri::Result<()> {
     #[cfg(desktop)]
     let mut wind_builder =
         WebviewWindowBuilder::new(&app_handle, "msgbox", WebviewUrl::App("/msg".into()))
@@ -176,7 +178,7 @@ async fn create_msgbox_window(app_handle: AppHandle) -> tauri::Result<()> {
             .decorations(false)
             .resizable(false)
             .always_on_top(true)
-            .shadow(false)
+            .shadow(shadow)
             .position(-240.0, -300.0)
             .focused(false)
             .visible(false);
@@ -214,14 +216,14 @@ async fn create_msgbox_window(app_handle: AppHandle) -> tauri::Result<()> {
     Ok(())
 }
 
-async fn create_login_window(app_handle: AppHandle) -> tauri::Result<()> {
+async fn create_login_window(app_handle: AppHandle, shadow: bool) -> tauri::Result<()> {
     // 只创建登录窗口
     let mut wind_builder =
         WebviewWindowBuilder::new(&app_handle, "login", WebviewUrl::App("/login".into()))
             .title("极物聊天 - 登录")
             .resizable(false)
             .center()
-            .shadow(true)
+            .shadow(shadow)
             .decorations(false)
             .inner_size(340.0, 480.0)
             .visible(true);
@@ -278,6 +280,7 @@ async fn create_extend_window(
     app_handle: AppHandle,
     title: String,
     url: String,
+    shadow: bool,
 ) -> tauri::Result<()> {
     // 主窗口配置
     let mut wind_builder =
@@ -285,7 +288,7 @@ async fn create_extend_window(
             .title(title)
             .resizable(true)
             .center()
-            .shadow(true)
+            .shadow(shadow)
             .decorations(false)
             .min_inner_size(375.0, 780.0)
             .max_inner_size(1920.0, 1080.0)
