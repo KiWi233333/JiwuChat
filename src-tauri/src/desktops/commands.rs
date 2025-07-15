@@ -141,8 +141,15 @@ pub async fn create_main_window(app_handle: AppHandle, shadow: bool) -> tauri::R
                     .unwrap_or_else(|e| eprintln!("隐藏窗口时出错: {:?}", e));
             }
             WindowEvent::Destroyed => {
-                _app.save_window_state(StateFlags::all())
-                    .unwrap_or_else(|e| eprintln!("保存窗口状态时出错: {:?}", e));
+                println!("窗口已销毁，检查剩余窗口。");
+                let webview_windows = _app.webview_windows();
+                let remaining_windows: Vec<_> = webview_windows.keys().collect();
+                
+                if remaining_windows.len() == 1 && remaining_windows.iter().any(|&label| label == "main") {
+                    println!("仅剩main窗口，保存窗口状态。");
+                    _app.save_window_state(StateFlags::all())
+                        .unwrap_or_else(|e| eprintln!("保存窗口状态时出错: {:?}", e));
+                }
             }
             _ => {}
         });

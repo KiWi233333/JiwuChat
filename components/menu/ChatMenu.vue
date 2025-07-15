@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { NuxtLink } from "#components";
-import { useOpenExtendWind } from "./extension";
 
 defineEmits<{
   (e: "close"): void

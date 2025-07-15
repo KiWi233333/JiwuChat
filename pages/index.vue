@@ -3,7 +3,6 @@ import { mitter, MittEventType } from "~/composables/utils/useMitt";
 import { appName } from "~/constants";
 
 const user = useUserStore();
-const ws = useWsStore();
 const setting = useSettingStore();
 const chat = useChatStore();
 const showGroupDialog = computed({

@@ -126,11 +126,11 @@ const showMentionUrls = ref(false);
           v-for="(urlInfo, key) in urlContentMap"
           :key="key"
           ctx-name="urllink"
-          :url="String(key)"
+          :url="urlInfo.url"
           :data="urlInfo"
           class="url-info"
         />
-        <div v-if="isMultipleUrl" key="up" class="flex-row-c-c btn-primary select-none text-center text-mini" @click="showMentionUrls = !showMentionUrls">
+        <div v-if="isMultipleUrl" key="up" class="more flex-row-c-c btn-primary select-none text-center text-mini" @click="showMentionUrls = !showMentionUrls">
           <i class="i-solar:double-alt-arrow-down-line-duotone mr-1 inline-block transition-200" :class="{ 'rotate-180': showMentionUrls }" />
           {{ showMentionUrls ? '收起' : '展开' }}
         </div>
@@ -154,7 +154,7 @@ const showMentionUrls = ref(false);
   --at-apply: "flex flex-col gap-2 w-fit";
 
   .url-info {
-    --at-apply: "max-w-full w-14rem rounded-2 bg-color p-3 shadow-sm transition-200 sm:(max-w-16rem min-w-12rem) hover:(shadow)";
+    --at-apply: "max-w-60vw w-16rem rounded-2 bg-color p-3 shadow-sm transition-200 sm:(max-w-16rem min-w-12rem) hover:(shadow)";
   }
   &.multiple-url {
 

@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { LogicalSize } from "@tauri-apps/api/dpi";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 
 const unReadContactList = ref<ChatContactDetailVO[]>([]);
@@ -44,6 +45,8 @@ onMounted(() => {
     unReadContactList.value = JSON.parse(localStorage.getItem("unReadContactList") || "[]");
     // 获取好友申请未读数
     applyUnReadCount.value = Number.parseInt(localStorage.getItem(applyUnReadCountKey.value) || "0") || ws.wsMsgList.applyMsg.length;
+    // 设置窗口大小 防止记忆窗口
+    appWindow.setSize(new LogicalSize(240.0, 300.0));
   }
   catch (error) {
     console.warn(error);

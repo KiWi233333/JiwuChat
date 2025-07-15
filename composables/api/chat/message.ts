@@ -376,13 +376,46 @@ export interface GroupNoticeBodyMsgVO {
 }
 
 export interface UrlInfoDTO {
-  title?: string;
+  /**
+   * 标题
+   */
+  title: string;
+  /**
+   * 描述
+   */
   description?: string;
   /**
-   * 网站LOGO
+   * 网站LOGO/大图片
    */
-  image?: string;
-
+  image: string;
+  /**
+   * 网站图标 (favicon)
+   */
+  icon: string;
+  /**
+   * 网站名称
+   */
+  siteName?: string;
+  /**
+   * 网站URL
+   */
+  url: string;
+  /**
+   * 网站类型 (website, article, video等)
+   */
+  type?: string;
+  /**
+   * 作者
+   */
+  author?: string;
+  /**
+   * 发布者
+   */
+  publisher?: string;
+  /**
+   * 语言
+   */
+  language?: string;
 }
 export interface ReplyMsgVO {
   id: number;

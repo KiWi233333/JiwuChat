@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { ExtendItem } from "./extension";
-import { useOpenExtendWind } from "./extension";
+import type { ExtendItem } from "@/composables/tauri/extension";
+import { useOpenExtendWind } from "@/composables/tauri/extension";
 
 /**
- * 扩展菜单弹窗
+ * 扩展菜单弹窗W
  */
 const props = defineProps<{
   show: boolean | undefined | null

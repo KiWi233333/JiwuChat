@@ -29,6 +29,7 @@ interface DialogProps {
   center?: boolean;
   zIndex?: number;
   disableClass?: string;
+  modelClass?: string;
   minScale?: number;
   escClose?: boolean
 }
@@ -286,6 +287,7 @@ defineExpose({
           <div
             v-if="modelValue"
             class="fixed inset-0 z-0 border-default-2 card-rounded-df bg-black/30 transition-opacity duration-300 dark:bg-black/40"
+            :class="modelClass"
             @click.stop.prevent="handleClose"
           >
             <slot name="mark-content" />

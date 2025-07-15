@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { MenuItem } from "./ChatMenu.vue";
-import { useOpenExtendWind } from "./extension";
+import { useOpenExtendWind } from "@/composables/tauri/extension";
 
 defineEmits<{
   (e: "close"): void
