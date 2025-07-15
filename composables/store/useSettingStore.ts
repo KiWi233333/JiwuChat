@@ -1,7 +1,6 @@
 import type { OsType, Platform } from "@tauri-apps/plugin-os";
 import type { Update } from "@tauri-apps/plugin-updater";
 import type { Action } from "element-plus";
-import type { ExtendItem } from "~/components/menu/extension";
 import type { ThemeConfig } from "~/composables/hooks/useThemeCustomization";
 import type { SystemConstantVO } from "~/init/system";
 import { appDataDir } from "@tauri-apps/api/path";
