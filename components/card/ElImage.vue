@@ -48,9 +48,11 @@ function openPreview() {
     </template>
     <!-- 错误 -->
     <template #error>
-      <div :ctx-name="ctxName" class="h-full w-full flex-row-c-c" :class="errorRootClass">
-        <i :ctx-name="ctxName" class="icon i-solar-gallery-remove-bold-duotone op-60" :class="errorClass" />
-      </div>
+      <slot name="error">
+        <div :ctx-name="ctxName" class="h-full w-full flex-row-c-c" :class="errorRootClass">
+          <i :ctx-name="ctxName" class="icon i-solar-gallery-remove-bold-duotone op-60" :class="errorClass" />
+        </div>
+      </slot>
     </template>
   </el-image>
   <template v-else>

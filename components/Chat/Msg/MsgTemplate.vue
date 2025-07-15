@@ -154,7 +154,7 @@ const showMentionUrls = ref(false);
   --at-apply: "flex flex-col gap-2 w-fit";
 
   .url-info {
-    --at-apply: "max-w-60vw w-16rem rounded-2 bg-color p-3 shadow-sm transition-200 sm:(max-w-16rem min-w-12rem) hover:(shadow)";
+    --at-apply: "max-w-60vw w-16rem rounded-2 bg-color shadow-sm transition-200 sm:(max-w-16rem min-w-12rem) hover:(shadow)";
   }
   &.multiple-url {
 
