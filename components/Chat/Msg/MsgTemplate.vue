@@ -165,12 +165,12 @@ const showMentionUrls = ref(false);
       --at-apply: "block mb-2 relative shadow-sm";
       &::after {
         content: "";
-        --at-apply: "absolute top-0 left-0 scale-94 translate-y-2 -z-1 w-full h-full rounded-2 bg-color-br bg-op-60 shadow-sm";
+        --at-apply: "absolute top-0 left-0 w-full scale-94 mx-a translate-y-2 -z-1 h-full rounded-2 bg-color shadow-sm !bg-op-60";
       }
 
       &::before {
         content: "";
-        --at-apply: "absolute top-0 left-0 scale-90 translate-y-4 -z-1 w-full h-full rounded-2 bg-color-br bg-op-40 shadow-sm";
+        --at-apply: "absolute top-0 left-0 w-full scale-90 mx-a translate-y-4 -z-1 h-full rounded-2 bg-color shadow-sm !bg-op-40";
       }
     }
   }
