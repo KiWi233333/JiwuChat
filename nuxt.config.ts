@@ -86,7 +86,7 @@ export default defineNuxtConfig({
     // viewTransition: true, // 支持View Transition API Chorme111 https://blog.csdn.net/weixin_42553583/article/details/130474259
     crossOriginPrefetch: true, // 使用 Speculation Rules API 启用跨源预取。
     watcher: "parcel", // 使用 Parcel 作为文件监视器。
-    treeshakeClientOnly: true, // 仅客户端打包时启用 treeshaking。
+    // treeshakeClientOnly: true, // 仅客户端打包时启用 treeshaking。
     noVueServer: true, // 禁用 Vue Server Renderer。
   },
   routeRules: {
