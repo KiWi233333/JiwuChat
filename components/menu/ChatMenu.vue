@@ -83,15 +83,15 @@ const menuList = computed<MenuItem[]>(() => ([
     activeIcon: "i-solar:devices-bold",
     class: "absolute bottom-15 diabled-bg",
   },
-  {
-    title: "设置",
-    path: "/setting",
-    icon: "i-solar:settings-linear hover:animate-spin block",
-    activeIcon: "i-solar:settings-bold hover:animate-spin block",
-    class: "absolute bottom-2 diabled-bg",
-    tipValue: +setting.appUploader.isUpload,
-    isDot: true,
-  },
+  // {
+  //   title: "设置",
+  //   path: "/setting",
+  //   icon: "i-solar:settings-linear hover:animate-spin block",
+  //   activeIcon: "i-solar:settings-bold hover:animate-spin block",
+  //   class: "absolute bottom-2 diabled-bg",
+  //   tipValue: +setting.appUploader.isUpload,
+  //   isDot: true,
+  // },
 ]));
 
 export interface MenuItem {
@@ -145,6 +145,17 @@ export interface MenuItem {
           <i class="icon p-2.6" :class="route.path === p.path ? p.activeIcon : p.icon" />
         </el-badge>
       </component>
+      <!-- 设置 -->
+      <div
+        title="设置"
+        class="group item absolute bottom-2 !bg-transparent"
+      >
+        <el-badge :value="+setting.appUploader.isUpload" :hidden="!setting.appUploader.isUpload" :is-dot="true" :offset="[-2, -2]" :max="99">
+          <MenuMore>
+            <i class="icon i-solar:hamburger-menu-outline p-3" />
+          </MenuMore>
+        </el-badge>
+      </div>
     </el-scrollbar>
     <div
       v-if="setting.isChatFold"
@@ -165,7 +176,7 @@ export interface MenuItem {
   --at-apply: "card-rounded-df hover:(bg-gray-3 bg-op-30 dark:(bg-dark-3 bg-op-30) text-color-theme-primary) h-10 w-10 flex-row-c-c cursor-pointer transition-200";
 
   .icon {
-      --at-apply: "dark:op-80";
+    --at-apply: "dark:op-80";
   }
   &:hover {
     .icon {

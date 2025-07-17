@@ -1,3 +1,4 @@
+import { addRootClass, removeRootClass, STOP_TRANSITION_KEY } from "~/init/setting";
 
 export const DEFAULT_THEME_TOGGLE_ID = "toggle-theme-btn";
 /**
@@ -49,7 +50,7 @@ export function useModeToggle(mode: "system" | "dark" | "light" | "auto" | strin
     colorMode.preference = mode;
   });
   // 关闭所有渐变（优化性能）
-  document.documentElement.classList.add("stop-transition");
+  addRootClass(STOP_TRANSITION_KEY);
   transition.ready.then(() => {
     const clipPath = [
       `circle(0px at ${x}px ${y}px)`,
@@ -69,7 +70,7 @@ export function useModeToggle(mode: "system" | "dark" | "light" | "auto" | strin
   });
   // 完成时
   transition.finished.then(async () => {
-    document.documentElement.classList.remove("stop-transition");
+    removeRootClass(STOP_TRANSITION_KEY);
     await nextTick();
     setting.isThemeChangeLoad = false;
   }).catch(() => {

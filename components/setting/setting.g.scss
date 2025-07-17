@@ -1,0 +1,29 @@
+.setting-group {
+  .title {
+    --at-apply: "text-sm block px-3 tracking-0.1em mt-4 mb-2 sm:(px-4 mt-4 mb-2)";
+  }
+  .setting-label {
+    --at-apply: "text-sm";
+  }
+  .box {
+    border: 1px solid transparent;
+    --at-apply: "text-sm card-rounded-df bg-color shadow-sm dark:shadow px-3 sm:px-4 py-2 flex flex-col gap-3";
+
+    .inputs {
+      --at-apply: "w-10rem sm:w-12rem";
+    }
+    .setting-item {
+      --at-apply: "h-8 text-sm flex-row-bt-c";
+    }
+  }
+}
+
+:deep(.el-segmented) {
+  height: 1.8rem;
+  min-height: 1.8rem;
+  line-height: 1.8rem;
+  // --el-segmented-padding: 2px;
+  .el-segmented__item-label {
+    font-size: 0.86rem;
+  }
+}

@@ -92,7 +92,7 @@ const getAppTitle = computed(() => {
         <!-- 下载（部分端） -->
         <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1 w-5 h-5" />
         <!-- 折叠菜单 -->
-        <MenuDots>
+        <MenuDots v-if="setting.isMobileSize">
           <template #btn>
             <div
               text
@@ -109,7 +109,6 @@ const getAppTitle = computed(() => {
           <BtnAppDownload />
           <!-- 菜单按钮 -->
           <template v-if="!['android', 'web', 'ios'].includes(setting.appPlatform)">
-            <div class="mx-1 h-1.2em border-default-l sm:mx-2" />
             <MenuController size="small">
               <template #start="{ data }">
                 <ElButton
@@ -124,6 +123,7 @@ const getAppTitle = computed(() => {
                     :class="data.isAlwaysOnTopVal ? ' mb-1 color-[var(--el-color-warning)] -rotate-45' : 'mb-0 btn-primary'"
                   />
                 </ElButton>
+                <div class="mx-1 h-1.2em border-default-l" />
               </template>
             </MenuController>
           </template>

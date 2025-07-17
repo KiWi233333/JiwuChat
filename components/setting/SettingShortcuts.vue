@@ -167,21 +167,7 @@ const localShortcutList = computed(() =>
 </template>
 
 <style scoped lang="scss">
-.setting-group {
-  .title {
-    --at-apply: "flex items-center text-0.9em block pl-3 tracking-0.1em mt-4 mb-2 sm:(pl-4 mt-6 mb-3)";
-  }
-
-  .box {
-    --at-apply: "text-0.9em card-rounded-df bg-white dark:bg-dark shadow px-3 sm:px-4 py-2 flex flex-col gap-3";
-    border: 1px solid transparent;
-
-    .setting-item {
-      --at-apply: "h-8 text-sm flex-row-bt-c";
-    }
-  }
-}
-
+@use "./setting.g.scss";
 .shortcut-key {
   .key-display {
     --at-apply: "tip mx-2 bg-color-2 border-default cursor-pointer rounded-8 px-2 py-0.3em text-mini transition-colors hover:bg-color-3";

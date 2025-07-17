@@ -1,4 +1,5 @@
 import type { NavigationGuardReturn, RouteLocationNormalized } from "vue-router";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { type } from "@tauri-apps/plugin-os";
 
 type DialogCleanupFunction = (() => void) | undefined;
@@ -107,9 +108,22 @@ function handleDesktopNavigation(
   const user = useUserStore() as any;
 
   // 扩展页面权限检查
-  if ((!from.path.startsWith("/extend") && to.path.startsWith("/extend"))
-    || (to.path.startsWith("/extend") && !user.isLogin)) {
+  if (to.path.startsWith("/extend")) {
     return abortNavigation();
+  }
+  // if ((!from.path.startsWith("/extend") && to.path.startsWith("/extend"))
+  //   || (to.path.startsWith("/extend") && !user.isLogin)) {
+  //   return abortNavigation();
+  // }
+  // 页面权限检查
+  if (to.path === "/setting") {
+    const { open } = useOpenSettingWind();
+    open({
+      url: "/desktop/setting",
+    });
+    if (getCurrentWindow().label !== SETTING_WINDOW_LABEL) {
+      return abortNavigation();
+    }
   }
 
   // 登录状态路由控制
@@ -219,10 +233,11 @@ function checkIsDesktop(): boolean {
  */
 async function loadLoginWindow(): Promise<void> {
   try {
-    await createWindow(LOGIN_WINDOW_LABEL);
-    await destroyWindow(MSGBOX_WINDOW_LABEL);
     destroyWindow(MAIN_WINDOW_LABEL);
+    createWindow(LOGIN_WINDOW_LABEL);
+    destroyWindow(MSGBOX_WINDOW_LABEL);
     destroyWindow(EXTEND_WINDOW_LABEL);
+    destroyWindow(SETTING_WINDOW_LABEL);
   }
   catch (e) {
     console.error(e);

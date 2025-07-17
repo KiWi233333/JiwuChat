@@ -2,6 +2,7 @@ import type { OsType, Platform } from "@tauri-apps/plugin-os";
 import type { Update } from "@tauri-apps/plugin-updater";
 import type { Action } from "element-plus";
 import type { ThemeConfig } from "~/composables/hooks/useThemeCustomization";
+import type { ExtendItem } from "~/composables/tauri/extension";
 import type { SystemConstantVO } from "~/init/system";
 import { appDataDir } from "@tauri-apps/api/path";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
@@ -164,6 +165,7 @@ export const useSettingStore = defineStore(
         rtcCallBellUrl: DEFAULT_RTC_CALL_BELL_URL, // 呼叫铃声铃声
       };
     }
+    const openShadow = computed(() => appPlatform.value !== "windows" || settingPage.value.isWindow10Shadow);
     // 自定义主题配置
     const customThemeConfig = ref<ThemeConfig | null>(null);
     const translationTool = computed(() => settingPage.value.translation.list.find(item => item.value === settingPage.value.translation.value));
@@ -602,6 +604,7 @@ export const useSettingStore = defineStore(
       isDefaultRtcCallBell,
       selectExtendMenuList,
       customThemeConfig,
+      openShadow,
       // actions
       checkUpdates,
       handleAppUpdate,
