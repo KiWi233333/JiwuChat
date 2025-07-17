@@ -80,7 +80,6 @@ const menuList = reactive([
     placement="bottom-end"
     :menu-list="menuList"
     trigger="click"
-    :show-arrow="false"
   >
     <template #reference>
       <slot name="btn">

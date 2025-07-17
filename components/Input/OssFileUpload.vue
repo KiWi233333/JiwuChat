@@ -22,7 +22,23 @@ const {
   disable = false,
   modelValue = [] as OssFile[],
   accept = "image/*",
-  acceptDesc = ["image/jpeg", "image/png", "image/bmp", "image/webp", "image/jpg", "image/tiff", "image/tif", "image/ico", "image/x-icon"],
+  acceptDesc = [
+    "image/jpeg",
+    "image/png",
+    "image/bmp",
+    "image/webp",
+    "image/jpg",
+    "image/tiff",
+    "image/tif",
+    "image/ico",
+    "image/x-icon",
+    "image/gif",
+    "image/svg+xml",
+    "image/heic",
+    "image/heif",
+    "image/raw",
+    "image/apng",
+  ],
   uploadType = OssFileType.IMAGE,
   uploadQuality = undefined,
   autoUpload = true,
@@ -242,12 +258,21 @@ async function onUpload(ossFile: OssFile): Promise<boolean> {
       const url = window.URL || window.webkitURL;
       const img = new Image();
       img.src = url.createObjectURL(ossFile.file!);
+      console.log(ossFile.file);
       img.onload = () => {
         ossFile.width = img.width;
         ossFile.height = img.height;
+        console.log(ossFile.width, ossFile.height);
         resolve(true);
       };
     });
+
+    // 判断是否为 GIF
+    if (ossFile.file.type === "image/gif") {
+    // GIF 不压缩，直接上传
+      fileList.value.push(ossFile);
+      return await qiniuUploadPromise(ossFile.file, ossFile?.key || "", upToken.data.uploadToken, ossFile);
+    }
 
     try {
       const res = await qiniu.compressImage(ossFile?.file, options);
