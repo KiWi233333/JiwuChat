@@ -1124,41 +1124,26 @@ html.stop-transition-all {
 }
 
 // popper 进入动画
-[data-popper-placement="bottom"] {
-  transform-origin: center top !important;
-}
-[data-popper-placement="bottom-end"] {
-  transform-origin: right top !important;
-}
-[data-popper-placement="bottom-start"] {
-  transform-origin: left top !important;
-}
-[data-popper-placement="top-end"] {
-  transform-origin: right bottom !important;
-}
-[data-popper-placement="top-start"] {
-  transform-origin: left bottom !important;
-}
-[data-popper-placement="top"] {
-  transform-origin: center bottom !important;
-}
-[data-popper-placement="right-start"] {
-  transform-origin: left 5em !important;
-}
-[data-popper-placement="right-end"] {
-  transform-origin: right top !important;
-}
-[data-popper-placement="left"] {
-  transform-origin: right center !important;
-}
-[data-popper-placement="left-start"] {
-  transform-origin: right bottom !important;
-}
-[data-popper-placement="left-end"] {
-  transform-origin: left bottom !important;
-}
-[data-popper-placement="right"] {
-  transform-origin: left center !important;
+$popper-placements: (
+  "bottom": center top,
+  "bottom-end": right top,
+  "bottom-start": left top,
+  "top": center bottom,
+  "top-end": right bottom,
+  "top-start": left bottom,
+  "left": right center,
+  "left-start": right bottom,
+  "left-end": left bottom,
+  "right": left center,
+  "right-start": left 60%,
+  "right-end": left bottom
+);
+
+@each $placement, $origin in $popper-placements {
+  [data-popper-placement="#{$placement}"] {
+    transform-origin: #{$origin} !important;
+    transition-timing-function: cubic-bezier(.4,0,.2,1) !important;
+  }
 }
 
 .popper-fade-move,

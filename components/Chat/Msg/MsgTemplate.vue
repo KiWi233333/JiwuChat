@@ -126,7 +126,6 @@ const showMentionUrls = ref(false);
           v-for="(urlInfo, key) in urlContentMap"
           :key="key"
           ctx-name="urllink"
-          :url="urlInfo.url"
           :data="urlInfo"
           class="url-info"
         />

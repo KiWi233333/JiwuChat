@@ -140,6 +140,7 @@ function createItem() {
   <DialogPopup
     v-model="isShow"
     :duration="400"
+    :min-scale="0.9"
     content-class="w-94vw rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
   >
     <template #title>
@@ -163,7 +164,7 @@ function createItem() {
           v-loading="item.loading"
           :element-loading-spinner="defaultLoadingIcon"
           element-loading-custom-class="text-.5em"
-          class="item group"
+          class="group item"
           :title="item.title"
           :class="{
             'not-link': item.disabled,

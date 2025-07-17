@@ -1,11 +1,10 @@
 <script setup lang="ts">
 interface Props {
   data: UrlInfoDTO
-  url: string
   ctxName?: string
 }
 
-const { data, url } = defineProps<Props>();
+const { data } = defineProps<Props>();
 function showImage() {
   if (!data.image)
     return;

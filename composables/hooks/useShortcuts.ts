@@ -11,6 +11,7 @@ export interface ShortcutConfig {
   disabledEdit?: boolean; // 是否禁用编辑
   description: string;
   eventType: ShortcutEventType;
+  selfTarget?: boolean; // 是否只在当前输入框生效
 }
 
 const DISABLED_BROWSER_SHORTCUTS: Record<string, boolean> = {
@@ -81,7 +82,7 @@ export function useShortcuts() {
   const shortcuts = useLocalStorage<ShortcutConfig[]>(() => `shortcuts_${user.userId}`, [
     { key: "Alt+K", description: "切换主题", category: "app", enabled: true, eventType: "toggle-theme" },
     { key: "Ctrl+W", description: "关闭窗口", category: "app", enabled: true, eventType: "close-window" },
-    { key: "Escape", description: "最小化窗口", category: "app", enabled: true, eventType: "minimize-window" },
+    { key: "Escape", description: "最小化窗口", category: "app", enabled: true, eventType: "minimize-window", selfTarget: true },
     { key: "Enter", description: "发送消息", category: "local", enabled: true, eventType: "send-message" },
     { key: "Shift+Enter", description: "换行输入", category: "local", enabled: true, eventType: "line-break" },
     { key: "ArrowUp/ArrowDown", disabledEdit: true, description: "切换会话", category: "local", enabled: true, eventType: "switch-chat" },
@@ -129,6 +130,11 @@ export function useShortcuts() {
     }
     if (!handler)
       return false;
+    // // 如果是输入框快捷键且当前焦点在输入框内
+    // const tagName = document.activeElement?.tagName;
+    // if ((tagName === "INPUT" || tagName === "TEXTAREA") && bestMatch.selfTarget) {
+    //   return false;
+    // }
     // 特殊处理输入框快捷键
     if (category === "local") {
       const { key } = e;

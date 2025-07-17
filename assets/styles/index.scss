@@ -263,6 +263,7 @@ body .el-message {
 
 .mx-context-menu {
   --popper-fade-anima-scale: 0.9;
+  transform-origin: center top;
   --at-apply: "!border-default-2 dark:!bg-[#111111] !bg-white  animate-[popper-fade-anim_0.15s]";
   .mx-context-menu-items {
     .mx-context-menu-item {

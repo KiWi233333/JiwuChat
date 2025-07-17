@@ -79,9 +79,8 @@ function handleMemberClick(member: any, index: number) {
   }
 }
 
-
 // 邀请进群
-function showJoinGroup() {
+function handleAddMember() {
   chat.inviteMemberForm = {
     show: true,
     roomId: chat.theRoomId!,
@@ -191,8 +190,13 @@ async function changShieldStatus() {
     </div>
 
     <div class="label-item mt-2 select-none border-default-2-t pt-3">
-      <div class="flex-row-bt-c">
+      <div class="flex items-center">
         <small>群成员</small>
+        <div
+          class="ml-a card-default p-1.6 hover:bg-color-2" @click="handleAddMember"
+        >
+          <i class="i-solar:add-circle-linear block h-4.5 w-4.5 btn-info" />
+        </div>
         <div
           class="card-default p-1.6 hover:bg-color-2" @click="() => {
             showSearch = !showSearch

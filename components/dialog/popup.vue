@@ -86,7 +86,8 @@ const dialogStyle = ref<DialogStyle>({
   transform: "scale(1)",
   opacity: "1",
 });
-const transition = "transform var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1), opacity var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1)";
+const enterTransition = "transform var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1), opacity var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1)";
+const leaveTransition = "transform var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1), opacity var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1)";
 const loadingAnima = ref(false);
 
 // 计算对话框的最终宽度
@@ -188,7 +189,7 @@ function onEnter(): void {
       transformOrigin: originPoint,
       transform: "scale(1)",
       opacity: "1",
-      transition,
+      transition: enterTransition,
     };
   });
 }
@@ -221,7 +222,7 @@ function onBeforeLeave(): void {
       transformOrigin: originPoint,
       transform: `scale(${minScale})`,
       opacity: "0",
-      transition,
+      transition: leaveTransition,
     };
   });
 }
