@@ -276,10 +276,7 @@ export function useSettingTheme() {
   });
   const theme = computed({
     get: () => setting.settingPage.modeToggle.value,
-    set: (val: string) => {
-      useModeToggle(val, thePostion.value as MouseEvent);
-      setting.settingPage.modeToggle.value = val;
-    },
+    set: (val: "light" | "dark" | "system") => useSettingThemeChange(val),
   });
 
   return {

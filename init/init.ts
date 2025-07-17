@@ -99,7 +99,7 @@ export function useAuthInit() {
   if (iframeToken && !user.isLogin) {
     let loading = {} as any;
     loading = ElLoading.service({ fullscreen: true, text: "正在登录，请稍等..." });
-    user.onUserLogin(String(iframeToken), true, "/", () => {
+    user.onUserLogin(String(iframeToken), true, undefined, () => {
       setTimeout(() => {
         loading?.close?.();
       }, 300);

@@ -135,7 +135,7 @@ export const useSettingStore = defineStore(
           ],
         },
         modeToggle: {
-          value: "system",
+          value: "system" as "light" | "dark" | "system",
           list: [
             { name: "系统", value: "system" },
             { name: "日间", value: "light" },

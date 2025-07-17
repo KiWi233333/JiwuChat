@@ -36,12 +36,10 @@ export function useSettingInit() {
   watch(() => [setting.settingPage.modeToggle.value, colorMode.value], (val) => {
     if (!val[0])
       return;
-    useModeToggle(val[0], undefined, true);
+    useModeToggle(val[0]);
   });
-  nextTick(() => {
-    useModeToggle(setting.settingPage.modeToggle.value, undefined, true);
-  });
-  const unlistenStore = useSyncSettingStore();
+  nextTick(() => useModeToggle(setting.settingPage.modeToggle.value, undefined, false));
+
   // 2、获取版本更新
   const route = useRoute();
   if (route.path !== "/msg") {
@@ -58,17 +56,11 @@ export function useSettingInit() {
 
   // 3、准备完成关闭加载动画
   removeRootClass(STOP_TRANSITION_KEY);
-  ElMessage.closeAll("error");
   setting.showDownloadPanel = false;
-  // 4、设置字体
-  const font = setting.settingPage.fontFamily.value || null;
-  if (font)
-    document.documentElement?.style.setProperty("--font-family", font);
-  // 字体大小
-  const fontSize = setting.settingPage.fontSize.value || null;
-  if (fontSize) {
-    document.documentElement?.style.setProperty("--font-size", `${fontSize}px`);
-  }
+
+  // 4、设置字体 字体大小
+  initFontAndFamily().catch(console.error);
+
   // 5、流畅模式
   watch(() => setting.settingPage.isCloseAllTransition, (val) => {
     if (val)
@@ -78,16 +70,17 @@ export function useSettingInit() {
   }, {
     immediate: true,
   });
-  if (setting.settingPage.modeToggle.value === "auto") {
-    const nowDate = new Date();
-    useModeToggle(nowDate.getHours() < 18 && nowDate.getHours() > 6 ? "light" : "dark");
-  }
+  // if (setting.settingPage.modeToggle.value === "auto") {
+  //   const nowDate = new Date();
+  //   useModeToggle(nowDate.getHours() < 18 && nowDate.getHours() > 6 ? "light" : "dark");
+  // }
   setTimeout(() => {
     setting.isThemeChangeLoad = false;
   }, 1000);
 
   // 6、窗口大小变化
   setting.isMobileSize = window.innerWidth < 640;
+
   // 7. 使用防抖函数处理窗口大小变化
   const handleResizeDebounced = useThrottleFn(() => {
     addRootClass(STOP_TRANSITION_KEY);
@@ -97,16 +90,15 @@ export function useSettingInit() {
   const handleResize = () => {
     handleResizeDebounced();
   };
-
   window.addEventListener("resize", handleResize);
 
-  // 7、自动重启
+  // 8、自动重启
   isAutoStartEnabled().then((isAutoStart) => {
     setting.settingPage.isAutoStart = isAutoStart;
   }).catch(() => {
     setting.settingPage.isAutoStart = false;
   });
-  watch(() => setting.settingPage.isAutoStart, async (val) => {
+  watchDebounced(() => setting.settingPage.isAutoStart, async (val) => {
     try {
       if (val)
         await enableAutoStart();
@@ -116,16 +108,90 @@ export function useSettingInit() {
     catch (error) {
       console.warn(error);
     }
+  }, {
+    debounce: 100,
   });
 
   return () => {
-    removeRootClass(STOP_TRANSITION_KEY);
-    unlistenStore();
-    const setting = useSettingStore();
-    setting.appUploader.isCheckUpdatateLoad = false;
-    setting.appUploader.isUpdating = false;
-    setting.appUploader.isUpload = false;
   };
+}
+
+/**
+ * 监听字体风格
+ */
+async function initFontAndFamily() {
+  const setting = useSettingStore();
+
+  const fontFamily = setting.settingPage.fontFamily.value;
+  if (fontFamily)
+    document.documentElement?.style.setProperty("--font-family", fontFamily);
+  // 1. 设置字体大小
+  watch(() => setting.settingPage.fontSize.value, (val) => {
+    document.documentElement?.style.setProperty("--font-size", `${val}px`);
+  }, {
+    immediate: true,
+  });
+
+  // 2. 监听字体风格
+  if (!setting.settingPage.fontFamily.list.length) {
+    setting.settingPage.fontFamily.list = DEFAULT_FONT_FAMILY_LIST;
+  }
+
+  // 动态加载网络字体
+  async function loadWebFont(fontItem: typeof DEFAULT_FONT_FAMILY_LIST[0]) {
+    if (!fontItem.url || !document.fonts)
+      return;
+
+    try {
+      const fontFace = new FontFace(
+        fontItem.value,
+        `url(${fontItem.url}) format("woff2")`,
+        { weight: String(fontItem.baseFontWeight || 400) },
+      );
+
+      await fontFace.load();
+      document.fonts.add(fontFace);
+    }
+    catch (error) {
+      console.warn(`字体加载失败: ${fontItem.name}`, error);
+    }
+  }
+
+  // 初始化一次
+  loadFont(setting.settingPage.fontFamily.value).catch(console.error);
+
+  async function loadFont(fontValue: string) {
+    // 从默认字体列表中查找对应的字体配置
+    const fontItem = DEFAULT_FONT_FAMILY_LIST.find(item => item.value === fontValue);
+
+    // 如果是网络字体，先加载
+    if (fontItem?.url) {
+      await loadWebFont(fontItem);
+    }
+    const fontStack = `${fontValue}, AlimamaFangYuanTiVF, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+    document.documentElement.style.setProperty("--font-family", fontStack);
+  }
+
+  // 监听字体变化并应用到根元素
+  watch(
+    () => setting.settingPage.fontFamily.value,
+    async (fontValue) => {
+      if (fontValue) {
+        const loading = document
+          ? ElLoading.service({
+              fullscreen: true,
+              text: "加载中...",
+              background: "transparent",
+              spinner: defaultLoadingIcon,
+            })
+          : null;
+        await loadFont(fontValue);
+        setTimeout(() => {
+          loading?.close();
+        }, 300);
+      }
+    },
+  );
 }
 
 

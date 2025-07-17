@@ -1,7 +1,7 @@
 // 打包分包插件解决潜在循环依赖
 // import { prismjsPlugin } from "vite-plugin-prismjs";
 // import { pwa } from "./config/pwa";
-import { appDescription, appName } from "./constants/index";
+import { appDescription, appKeywords, appTitle } from "./constants/index";
 import * as packageJson from "./package.json";
 import "dayjs/locale/zh-cn";
 
@@ -57,11 +57,14 @@ export default defineNuxtConfig({
   ],
   srcDir: "",
   rootDir: "",
+  unocss: {
+    warn: false,
+  },
   app: {
     // pageTransition: { name: "page", mode: "out-in" },
     // layoutTransition: { name: "layout", mode: "out-in" },
     head: {
-      title: `${appName}✨`,
+      title: appTitle,
       viewport: "width=device-width,initial-scale=1",
       // 网站头部信息
       link: [
@@ -73,6 +76,28 @@ export default defineNuxtConfig({
         { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
         { name: "description", content: appDescription },
         { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
+        { name: "apple-mobile-web-app-capable", content: "yes" },
+        { name: "apple-mobile-web-app-title", content: appTitle },
+        { name: "format-detection", content: "telephone=no" },
+        { name: "msapplication-TileColor", content: "#ffffff" },
+        { name: "theme-color", content: "#5324ff" },
+        { name: "robots", content: "index,follow" },
+        { name: "author", content: "Kiwi2333" },
+        { name: "keywords", content: appKeywords },
+        { charset: "utf-8" },
+        { "http-equiv": "X-UA-Compatible", "content": "IE=edge" },
+        // Open Graph
+        { property: "og:title", content: appTitle },
+        { property: "og:description", content: appDescription },
+        { property: "og:type", content: "website" },
+        { property: "og:image", content: "/logo.png" },
+        { property: "og:url", content: "https://jiwuchat.top" },
+        { property: "og:site_name", content: appTitle },
+        // Twitter Card
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: appTitle },
+        { name: "twitter:description", content: appDescription },
+        { name: "twitter:image", content: "/logo.png" },
       ],
     },
   },

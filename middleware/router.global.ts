@@ -106,26 +106,6 @@ function handleDesktopNavigation(
   from: RouteLocationNormalized,
 ): NavigationGuardReturn {
   const user = useUserStore() as any;
-
-  // 扩展页面权限检查
-  if (to.path.startsWith("/extend")) {
-    return abortNavigation();
-  }
-  // if ((!from.path.startsWith("/extend") && to.path.startsWith("/extend"))
-  //   || (to.path.startsWith("/extend") && !user.isLogin)) {
-  //   return abortNavigation();
-  // }
-  // 页面权限检查
-  if (to.path === "/setting") {
-    const { open } = useOpenSettingWind();
-    open({
-      url: "/desktop/setting",
-    });
-    if (getCurrentWindow().label !== SETTING_WINDOW_LABEL) {
-      return abortNavigation();
-    }
-  }
-
   // 登录状态路由控制
   if (!user.isLogin) {
     loadLoginWindow();
@@ -146,6 +126,24 @@ function handleDesktopNavigation(
     if (from.path === "/login") {
       loadMainWindow();
       if (to.path !== "/login") {
+        return abortNavigation();
+      }
+    }
+    // 扩展页面权限检查
+    if (to.path.startsWith("/extend")) {
+      return abortNavigation();
+    }
+    // if ((!from.path.startsWith("/extend") && to.path.startsWith("/extend"))
+    //   || (to.path.startsWith("/extend") && !user.isLogin)) {
+    //   return abortNavigation();
+    // }
+    // 页面权限检查
+    if (to.path === "/setting") {
+      const { open } = useOpenSettingWind();
+      open({
+        url: "/desktop/setting",
+      });
+      if (getCurrentWindow().label !== SETTING_WINDOW_LABEL) {
         return abortNavigation();
       }
     }

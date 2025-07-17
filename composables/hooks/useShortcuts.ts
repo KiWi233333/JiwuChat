@@ -94,7 +94,7 @@ export function useShortcuts() {
   });
   // 默认事件处理器
   const eventHandlers = ref<Record<string, ShortcutEventHandler>>({
-    "toggle-theme": () => useModeToggle(colorMode.value === "light" ? "dark" : "light"),
+    "toggle-theme": () => useSettingThemeChange(),
     "close-window": () => closeWindowHandler(false),
     "minimize-window": () => minimizeWindow(),
     "send-message": () => {},

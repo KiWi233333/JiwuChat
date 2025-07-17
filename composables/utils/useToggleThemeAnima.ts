@@ -4,7 +4,7 @@ export const DEFAULT_THEME_TOGGLE_ID = "toggle-theme-btn";
 /**
  * 切换主题
  */
-export function useModeToggle(mode: "system" | "dark" | "light" | "auto" | string, event?: MouseEvent, isAnimated = true) {
+export function useModeToggle(mode: "system" | "dark" | "light" | string, event?: MouseEvent, isAnimated = true) {
   const setting = useSettingStore();
   if (setting.isThemeChangeLoad)
     return;
@@ -78,3 +78,13 @@ export function useModeToggle(mode: "system" | "dark" | "light" | "auto" | strin
   });
 }
 
+
+/**
+ * 切换主题处理函数
+ */
+export function useSettingThemeChange(val?: "dark" | "light" | "system") {
+  const setting = useSettingStore();
+  const theme = val || (setting.settingPage.modeToggle.value === "dark" ? "light" : "dark");
+  useModeToggle(theme);
+  setting.settingPage.modeToggle.value = theme;
+}
