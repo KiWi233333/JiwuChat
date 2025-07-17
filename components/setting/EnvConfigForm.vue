@@ -172,7 +172,7 @@ onMounted(() => {
           <el-segmented
             v-model="envType"
             :options="envOptions"
-            style="width: 48%"
+            class="w-80/100 sm:w-48/100"
           />
         </el-form-item>
       </div>

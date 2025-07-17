@@ -1,9 +1,22 @@
-import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import {
   disable as disableAutoStart,
   enable as enableAutoStart,
   isEnabled as isAutoStartEnabled,
 } from "@tauri-apps/plugin-autostart";
+
+// 动画禁用
+export const STOP_TRANSITION_ALL_KEY = "stop-transition-all";
+export const STOP_TRANSITION_KEY = "stop-transition";
+export function addRootClass(className: string | "stop-transition-all" | "stop-transition") {
+  document?.documentElement?.classList?.remove(className);
+  document?.documentElement?.classList?.add(className);
+}
+
+export function removeRootClass(className: string | "stop-transition-all" | "stop-transition") {
+  document?.documentElement?.classList?.remove(className);
+}
+export const IS_DEV = import.meta.env.DEV;
+export const IS_PROD = import.meta.env.PROD;
 
 function onVisibilityChange() {
   const chat = useChatStore();
@@ -44,25 +57,27 @@ export function useSettingInit() {
   }
 
   // 3、准备完成关闭加载动画
-  const app = document.body;
-  if (app)
-    app.classList.remove("stop-transition");
+  removeRootClass(STOP_TRANSITION_KEY);
   ElMessage.closeAll("error");
   setting.showDownloadPanel = false;
   // 4、设置字体
   const font = setting.settingPage.fontFamily.value || null;
   if (font)
-    document.documentElement.style.setProperty("--font-family", font);
+    document.documentElement?.style.setProperty("--font-family", font);
   // 字体大小
   const fontSize = setting.settingPage.fontSize.value || null;
   if (fontSize) {
-    document.documentElement.style.setProperty("--font-size", `${fontSize}px`);
+    document.documentElement?.style.setProperty("--font-size", `${fontSize}px`);
   }
   // 5、流畅模式
-  if (setting.settingPage.isCloseAllTransition)
-    document.documentElement.classList.add("stop-transition-all");
-  else
-    document.documentElement.classList.remove("stop-transition-all");
+  watch(() => setting.settingPage.isCloseAllTransition, (val) => {
+    if (val)
+      addRootClass(STOP_TRANSITION_ALL_KEY);
+    else
+      removeRootClass(STOP_TRANSITION_ALL_KEY);
+  }, {
+    immediate: true,
+  });
   if (setting.settingPage.modeToggle.value === "auto") {
     const nowDate = new Date();
     useModeToggle(nowDate.getHours() < 18 && nowDate.getHours() > 6 ? "light" : "dark");
@@ -73,46 +88,19 @@ export function useSettingInit() {
 
   // 6、窗口大小变化
   setting.isMobileSize = window.innerWidth < 640;
-  let timer: NodeJS.Timeout | null = null;
-  function onResize() {
-    const setting = useSettingStore();
-    if (timer)
-      clearTimeout(timer); // 清除之前的定时器，避免重复触发
-    const app = document.documentElement;
-    if (app)
-      app.classList.add("stop-transition");
+  // 7. 使用防抖函数处理窗口大小变化
+  const handleResizeDebounced = useThrottleFn(() => {
+    addRootClass(STOP_TRANSITION_KEY);
+    setting.isMobileSize = window?.innerWidth <= 768;
+    removeRootClass(STOP_TRANSITION_KEY);
+  }, 200);
+  const handleResize = () => {
+    handleResizeDebounced();
+  };
 
-    const osType = localStorage.getItem("osType");
-    if (osType && ["windows", "macos", "linux"].includes(osType) && IGNORE_SAVE_WINDOW_STATE_LABELS.includes(getCurrentWebviewWindow().label)) {
-      return;
-    }
-    timer = setTimeout(async () => {
-      if (app)
-        app.classList.remove("stop-transition");
-      setting.isMobileSize = window?.innerWidth <= 768; // 判断是否为移动端
-      timer = null;
-      // if (setting.isDesktop) { // 迁移rust保存
-      //   // console.log("save window state");
-      //   if (saving.value) {
-      //     return;
-      //   }
-      //   saving.value = true;
-      //   // await saveWindowState(StateFlags.ALL); // TODO: 保存窗口状态
-      //   saving.value = false;
-      // }
-    }, 200);
-  }
-  window.addEventListener("resize", onResize);
+  window.addEventListener("resize", handleResize);
 
-  // 7、页面加载完整后，滚动到底部
-  setTimeout(() => {
-    nextTick(() => {
-      const chat = useChatStore();
-      chat?.scrollBottom(false);
-    });
-  }, 0);
-
-  // 8、自动重启
+  // 7、自动重启
   isAutoStartEnabled().then((isAutoStart) => {
     setting.settingPage.isAutoStart = isAutoStart;
   }).catch(() => {
@@ -131,7 +119,7 @@ export function useSettingInit() {
   });
 
   return () => {
-    window.removeEventListener("resize", onResize);
+    removeRootClass(STOP_TRANSITION_KEY);
     unlistenStore();
     const setting = useSettingStore();
     setting.appUploader.isCheckUpdatateLoad = false;

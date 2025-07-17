@@ -2,6 +2,7 @@
 import type { ChatContactVO } from "@/composables/api/chat/contact";
 import ContextMenu from "@imengyu/vue3-context-menu";
 import { RoomType } from "@/composables/api/chat/contact";
+import { STOP_TRANSITION_KEY } from "~/init/setting";
 
 const props = defineProps<{
   dto?: ContactPageDTO
@@ -396,7 +397,7 @@ onMounted(() => {
       :item-height="setting.isMobileSize ? '4.5rem' : '5rem'"
       max-height="100%"
       wrap-class="w-full relative h-full p-0 sm:p-2 "
-      :class-name="['contact-list', isAnimateDelay ? 'stop-transition' : '']"
+      :class-name="['contact-list', isAnimateDelay ? STOP_TRANSITION_KEY : '']"
       item-class="contact-item"
       :get-item-key="(room) => room.roomId"
       :selected-index="currentRoomIndex"
@@ -539,16 +540,6 @@ onMounted(() => {
     border-right: 1px solid transparent !important;
   }
 }
-
-// .contact {
-//   --at-apply: "animate-(fade-in duration-300)";
-// }
-// .stop-transition {
-//   .contact {
-//     transition: none !important;
-//     animation: none !important;
-//   }
-// }
 
 :deep(.el-scrollbar__bar) {
   right: 1px;

@@ -2,7 +2,7 @@
 const {
   inputProps,
 } = defineProps<{
-  inputProps: Record<string, any>;
+  inputProps?: Record<string, any>;
 }>();
 
 // 主题
@@ -17,7 +17,7 @@ const showThemeConfig = ref(false);
 
 <template>
   <div v-bind="$attrs" class="group h-8 flex-row-bt-c">
-    主题切换
+    主题定制
     <BtnElButton
       class="ml-a mr-2 h-6.5 !border-default-hover"
       text

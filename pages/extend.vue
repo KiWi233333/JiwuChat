@@ -1,11 +1,12 @@
 
 <script lang="ts" setup>
+import { removeRootClass, STOP_TRANSITION_KEY } from "~/init/setting";
+
 // 模板页面
 const user = useUserStore();
 onMounted(() => {
   getwindowSharedData();
-  // 移除stop-transition-all类
-  document?.body?.classList?.remove("stop-transition-all");
+  removeRootClass(STOP_TRANSITION_KEY);
 });
 const { message } = useRouteAnnouncer({
   politeness: "assertive",

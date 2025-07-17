@@ -4,7 +4,7 @@ const setting = useSettingStore();
 
 <template>
   <div class="group h-8 flex-row-bt-c">
-    翻译工具
+    翻译厂商
     <el-select
       id="translation-tool"
       v-model="setting.settingPage.translation.value"
@@ -16,7 +16,7 @@ const setting = useSettingStore();
       fit-input-width
       :filterable="!setting.isMobileSize"
       default-first-option
-      placeholder="请选择翻译工具"
+      placeholder="请选择翻译厂商！"
     >
       <el-option
         v-for="tool in setting.settingPage.translation.list"

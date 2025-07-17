@@ -27,9 +27,9 @@ async function openFileFolder() {
 
 <template>
   <div v-if="!setting.isWeb" class="group h-8 flex-row-bt-c">
-    下载
+    下载目录
     <div class="ml-a flex items-center gap-3" :title="setting.appDataDownloadDirUrl">
-      <small class="mr-2 max-w-40vw flex-1 truncate op-60">{{ setting.appDataDownloadDirUrl }}</small>
+      <small v-copying.toast="setting.appDataDownloadDirUrl" class="mr-2 max-w-40vw flex-1 cursor-pointer truncate op-60 hover:text-theme-primary">{{ setting.appDataDownloadDirUrl.replace(/^(.{12}).*(.{12})$/, "$1...$2") }}</small>
       <span
         class="cursor-pointer text-0.8rem tracking-0.1em !btn-warning"
         @click="setting.changeDownloadDir()"
