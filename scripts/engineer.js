@@ -3,12 +3,13 @@
 /**
  * 前端工程化脚本聚合工具
  * 提供交互式命令行界面，统一管理所有工程化脚本
+ * 适配 inquirer@12.7.0
  */
 
 const { execSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
-const inquirer = require("inquirer");
+const { select, input, confirm } = require("@inquirer/prompts");
 
 const colors = {
   reset: "\x1B[0m",
@@ -165,7 +166,7 @@ ${colors.reset}`);
   }
 
   /**
-   * 显示菜单并获取选择（UI重构版）
+   * 显示菜单并获取选择（使用新的 Inquirer.js API）
    */
   async showMenuAndGetChoice(menuName) {
     const menu = this.menuConfig[menuName];
@@ -174,42 +175,27 @@ ${colors.reset}`);
       return null;
     }
 
-    // 更美观的分隔符
-    const createSeparator = (text = "") => {
-      const line = `${colors.gray}────────────────────────────${colors.reset}`;
-      return new inquirer.Separator(text ? `${colors.gray}─── ${text} ───${colors.reset}` : line);
-    };
-
-    // 选项图标与文本对齐
-    const padLabel = (icon, label, width = 16) => {
-      const padLen = Math.max(0, width - label.length * 2); // 中文宽度适配
-      return `${icon} ${label}${" ".repeat(padLen)}`;
-    };
-
     const choices = [];
     const functionOptions = menu.options.filter(opt => opt.key !== "0");
+
+    // 添加功能选项
     functionOptions.forEach((option) => {
       const icon = this.getOptionIcon(option, menuName);
       choices.push({
-        name: padLabel(icon, option.label),
+        name: `${icon} ${option.label}`,
         value: option,
-        short: option.label,
+        description: option.description || `执行${option.label}`,
       });
     });
 
-    // 分隔符
-    if (functionOptions.length > 0) {
-      choices.push(createSeparator());
-    }
-
-    // 返回/退出项始终置底，且有统一图标
+    // 返回/退出项始终置底
     const exitOption = menu.options.find(opt => opt.key === "0");
     if (exitOption) {
       const exitIcon = menuName === "main" ? "🚪" : "🔙";
       choices.push({
-        name: padLabel(exitIcon, exitOption.label),
+        name: `${exitIcon} ${exitOption.label}`,
         value: exitOption,
-        short: exitOption.label,
+        description: exitOption.label,
       });
     }
 
@@ -218,20 +204,24 @@ ${colors.reset}`);
     log.title(menu.title);
     console.log("");
 
-    const { selection } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "selection",
+    try {
+      const selection = await select({
         message: `${colors.bright}${colors.cyan}请选择操作:${colors.reset}`,
         choices,
-        pageSize: Math.min(choices.length, 12),
+        pageSize: 12,
         loop: false,
-        prefix: `${colors.cyan}?${colors.reset}`,
-        suffix: colors.reset,
-      },
-    ]);
+      });
 
-    return selection;
+      return selection;
+    }
+    catch (error) {
+      if (error.name === "ExitPromptError") {
+        log.info("用户取消了操作");
+        return null;
+      }
+      log.error(`用户输入错误: ${error.message}`);
+      return null;
+    }
   }
 
   /**
@@ -313,28 +303,58 @@ ${colors.reset}`);
   }
 
   /**
-   * 获取用户输入
+   * 获取用户输入（使用新的 Inquirer.js API）
    */
   async getUserInput(prompt = "请选择操作", type = "input", choices = []) {
-    const promptConfig = {
-      type,
-      name: "input",
-      message: prompt,
-      prefix: `${colors.cyan}?${colors.reset}`,
-    };
+    try {
+      let result;
 
-    if (type === "confirm") {
-      promptConfig.default = false;
+      switch (type) {
+        case "input":
+          result = await input({
+            message: prompt,
+            default: "",
+          });
+          return result.trim();
+
+        case "confirm":
+          result = await confirm({
+            message: prompt,
+            default: false,
+          });
+          return result;
+
+        case "list":
+          if (choices.length > 0) {
+            result = await select({
+              message: prompt,
+              choices: choices.map(choice => ({
+                name: choice,
+                value: choice,
+              })),
+              pageSize: Math.min(choices.length + 2, 10),
+              loop: false,
+            });
+            return result;
+          }
+          break;
+
+        default:
+          result = await input({
+            message: prompt,
+            default: "",
+          });
+          return result.trim();
+      }
     }
-
-    if (type === "list" && choices.length > 0) {
-      promptConfig.choices = choices;
-      promptConfig.pageSize = Math.min(choices.length + 2, 10);
-      promptConfig.loop = false;
+    catch (error) {
+      if (error.name === "ExitPromptError") {
+        log.info("用户取消了操作");
+        return null;
+      }
+      log.error(`用户输入错误: ${error.message}`);
+      return null;
     }
-
-    const { input } = await inquirer.prompt([promptConfig]);
-    return typeof input === "string" ? input.trim() : input;
   }
 
   /**
@@ -435,129 +455,163 @@ ${colors.reset}`);
   }
 
   /**
-   * 快速发布
+   * 快速发布（使用新的 Inquirer.js API）
    */
   async quickRelease() {
     log.title("🚀 执行快速发布...");
 
-    const { releaseType } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "releaseType",
+    try {
+      const releaseType = await select({
         message: "请选择发布类型",
-        choices: ["patch", "minor", "major"],
-      },
-    ]);
+        choices: [
+          { name: "🔄 Patch (修复版本)", value: "patch" },
+          { name: "📈 Minor (功能版本)", value: "minor" },
+          { name: "🚀 Major (主版本)", value: "major" },
+        ],
+        default: "patch",
+      });
 
-    const tasks = [
-      { name: "预提交检查", script: "git.js", args: ["pre-commit"] },
-      { name: "构建项目", script: "build.js", args: ["build", "production"] },
-      { name: "版本发布", script: "git.js", args: ["release", releaseType] },
-    ];
+      const tasks = [
+        { name: "预提交检查", script: "git.js", args: ["pre-commit"] },
+        { name: "构建项目", script: "build.js", args: ["build", "production"] },
+        { name: "版本发布", script: "git.js", args: ["release", releaseType] },
+      ];
 
-    for (const task of tasks) {
-      log.step(`正在进行 ${task.name}...`);
-      const success = await this.executeScript(task.script, task.args);
-      if (!success) {
-        log.error(`${task.name} 失败，终止快速发布`);
-        return;
+      for (const task of tasks) {
+        log.step(`正在进行 ${task.name}...`);
+        const success = await this.executeScript(task.script, task.args);
+        if (!success) {
+          log.error(`${task.name} 失败，终止快速发布`);
+          return;
+        }
+      }
+
+      log.success("🎉 快速发布全部完成!");
+    }
+    catch (error) {
+      if (error.isTtyError) {
+        log.error("当前环境不支持交互式提示");
+      }
+      else {
+        log.error(`快速发布失败: ${error.message}`);
       }
     }
-
-    log.success("🎉 快速发布全部完成!");
   }
 
   /**
-   * 快速开发启动
+   * 快速开发启动（使用新的 Inquirer.js API）
    */
   async quickDev() {
     log.title("🚀 启动开发环境...");
 
-    const { platform } = await inquirer.prompt([
-      {
-        type: "list",
-        name: "platform",
+    try {
+      const platform = await select({
         message: "请选择平台",
-        choices: ["nuxt", "tauri", "android", "ios"],
-      },
-    ]);
+        choices: [
+          { name: "🌐 Nuxt (Web开发)", value: "nuxt" },
+          { name: "💻 Tauri (桌面应用)", value: "tauri" },
+          { name: "📱 Android (安卓应用)", value: "android" },
+          { name: "🍎 iOS (苹果应用)", value: "ios" },
+        ],
+        default: "nuxt",
+      });
 
-    const platformMap = {
-      nuxt: ["nuxt", "development"],
-      tauri: ["tauri"],
-      android: ["mobile", "android"],
-      ios: ["mobile", "ios"],
-    };
+      const platformMap = {
+        nuxt: ["nuxt", "development"],
+        tauri: ["tauri"],
+        android: ["mobile", "android"],
+        ios: ["mobile", "ios"],
+      };
 
-    if (!platformMap[platform]) {
-      log.error("无效的平台选择");
-      return;
+      if (!platformMap[platform]) {
+        log.error("无效的平台选择");
+        return;
+      }
+
+      await this.executeScript("dev.js", platformMap[platform]);
     }
-
-    await this.executeScript("dev.js", platformMap[platform]);
+    catch (error) {
+      if (error.isTtyError) {
+        log.error("当前环境不支持交互式提示");
+      }
+      else {
+        log.error(`快速开发启动失败: ${error.message}`);
+      }
+    }
   }
 
   /**
-   * 主循环
+   * 主循环（适配 inquirer@12.7.0）
    */
   async run() {
-    this.showWelcome();
-
-    let currentMenu = "main";
-
-    while (currentMenu !== "exit") {
-      console.clear();
+    try {
       this.showWelcome();
 
-      const option = await this.showMenuAndGetChoice(currentMenu);
+      let currentMenu = "main";
 
-      if (!option) {
-        currentMenu = "main";
-        continue;
-      }
+      while (currentMenu !== "exit") {
+        console.clear();
+        this.showWelcome();
 
-      let nextMenu = currentMenu;
-      let shouldPause = false;
+        const option = await this.showMenuAndGetChoice(currentMenu);
 
-      if (option.action) {
-        switch (option.action) {
-          case "exit":
-            currentMenu = "exit";
-            break;
-          case "quickCheck":
-            await this.quickCheck();
-            shouldPause = true;
-            break;
-          case "quickBuild":
-            await this.quickBuild();
-            shouldPause = true;
-            break;
-          case "quickRelease":
-            await this.quickRelease();
-            shouldPause = true;
-            break;
-          case "quickDev":
-            await this.quickDev();
-            shouldPause = true;
-            break;
-          default:
-            nextMenu = option.action;
+        if (!option) {
+          // 用户取消或出错，返回主菜单
+          currentMenu = "main";
+          continue;
+        }
+
+        let nextMenu = currentMenu;
+        let shouldPause = false;
+
+        if (option.action) {
+          switch (option.action) {
+            case "exit":
+              currentMenu = "exit";
+              break;
+            case "quickCheck":
+              await this.quickCheck();
+              shouldPause = true;
+              break;
+            case "quickBuild":
+              await this.quickBuild();
+              shouldPause = true;
+              break;
+            case "quickRelease":
+              await this.quickRelease();
+              shouldPause = true;
+              break;
+            case "quickDev":
+              await this.quickDev();
+              shouldPause = true;
+              break;
+            default:
+              nextMenu = option.action;
+          }
+        }
+        else if (option.script) {
+          await this.executeScript(option.script, option.args);
+          shouldPause = true;
+        }
+
+        if (currentMenu !== "exit") {
+          if (shouldPause) {
+            const continueInput = await this.getUserInput("按 Enter 继续...", "input");
+            if (continueInput === null) {
+              // 用户取消，返回主菜单
+              currentMenu = "main";
+            }
+          }
+          currentMenu = nextMenu;
         }
       }
-      else if (option.script) {
-        await this.executeScript(option.script, option.args);
-        shouldPause = true;
-      }
 
-      if (currentMenu !== "exit") {
-        if (shouldPause) {
-          await this.getUserInput("按 Enter 继续...");
-        }
-        currentMenu = nextMenu;
-      }
+      log.success("感谢使用前端工程化工具! 👋");
     }
-
-    log.success("感谢使用前端工程化工具! 👋");
+    catch (error) {
+      log.error(`程序运行出错: ${error.message}`);
+      process.exit(1);
+    }
   }
 }
 

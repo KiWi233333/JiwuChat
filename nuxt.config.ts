@@ -20,6 +20,7 @@ export default defineNuxtConfig({
       scrollBehaviorType: "smooth",
     },
   },
+  ignore: ["src-tauri"],
   future: {
     compatibilityVersion: 4,
     typescriptBundlerResolution: true, // https://nuxtjs.org.cn/docs/guide/going-further/features#typescriptbundlerresolution

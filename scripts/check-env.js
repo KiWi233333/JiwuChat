@@ -168,6 +168,19 @@ class EnvironmentChecker {
     }
 
     log.celebrate("\n开发环境检查通过！所有必需工具都已正确安装。\n");
+
+    // 运行命令
+    log.title("运行命令:");
+    console.log("");
+    console.log(`${colors.bright}${colors.blue}📦 生产环境 Nuxt 服务:${colors.reset}`);
+    console.log(`   ${colors.cyan}pnpm run prod:nuxt${colors.reset}`);
+    console.log("");
+    console.log(`${colors.bright}${colors.blue}🔧 开发环境 Tauri 应用:${colors.reset}`);
+    console.log(`   ${colors.cyan}pnpm run dev:tauri${colors.reset}`);
+    console.log("");
+    console.log(`${colors.bright}${colors.blue}🛠️ 开发工具:${colors.reset}`);
+    console.log(`   ${colors.cyan}pnpm run tools${colors.reset}`);
+    console.log("");
     return true;
   }
 }
