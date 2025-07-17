@@ -21,9 +21,6 @@ useHead({
     { name: "keywords", content: appKeywords },
   ],
 });
-definePageMeta({
-  key: route => route.path,
-});
 interface MenuItem {
   label: string;
   value: string;

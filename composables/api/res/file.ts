@@ -117,6 +117,23 @@ export const FILE_TYPE_ICON_DEFAULT = "/images/icon/DEFAULT.png";
 export const existsFile = (path: string) => invoke<boolean>("exist_file", { path });
 export const removeFile = (path: string) => invoke<boolean>("remove_file", { path });
 export const mkdirFile = (path: string) => invoke<boolean>("mkdir_file", { path });
+
+/**
+ * 目录统计信息
+ */
+export interface DirStats {
+  total_size: number;
+  file_count: number;
+  dir_count: number;
+}
+
+/**
+ * 扫描目录统计信息
+ * @param path 目录路径
+ * @returns 目录统计信息
+ */
+export const scanDirStats = (path: string) => invoke<DirStats>("scan_dir_stats", { path });
+
 /**
  * 格式化文件大小
  * @param size 字节大小

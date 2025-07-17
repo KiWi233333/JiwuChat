@@ -27,6 +27,7 @@ pub fn setup_desktop() {
         })
         .invoke_handler(tauri::generate_handler![
             crate::desktops::commands::exist_file,
+            crate::desktops::commands::scan_dir_stats,
             crate::desktops::commands::remove_file,
             crate::desktops::commands::mkdir_file,
             crate::desktops::commands::exit_app,

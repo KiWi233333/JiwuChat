@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { openPath } from "@tauri-apps/plugin-opener";
+
 interface Props {
   size?: "small" | "default" | "large"
 }
@@ -232,23 +234,69 @@ async function getStorageUsage() {
   }
 }
 
-// 组件挂载时计算缓存大小和存储使用情况
+
+// 下载目录统计信息
+const downloadDirStats = ref<DirStats | null>(null);
+const isLoadingStats = ref(false);
+
+// 扫描下载目录统计信息
+async function scanDownloadDirStats() {
+  if (!setting.appDataDownloadDirUrl)
+    return;
+
+  isLoadingStats.value = true;
+  try {
+    const stats = await scanDirStats(setting.appDataDownloadDirUrl);
+    downloadDirStats.value = stats;
+  }
+  catch (error) {
+    console.error("扫描下载目录失败:", error);
+    downloadDirStats.value = null;
+  }
+  finally {
+    isLoadingStats.value = false;
+  }
+}
+
+// 打开下载文件夹
+async function openFileFolder() {
+  if (!await existsFile(setting.appDataDownloadDirUrl)) {
+    ElMessageBox.confirm("下载目录不存在，是否创建？", {
+      title: "提示",
+      center: true,
+      confirmButtonText: "创建",
+      cancelButtonText: "取消",
+      confirmButtonClass: "el-button-warning",
+      lockScroll: true,
+      callback: async (action: string) => {
+        if (action === "confirm") {
+          mkdirFile(setting.appDataDownloadDirUrl);
+        }
+      },
+    });
+    return;
+  }
+  await openPath(setting.appDataDownloadDirUrl);
+}
+
+
 onMounted(() => {
+  // 组件挂载时扫描下载目录
+  scanDownloadDirStats();
+  // 组件挂载时计算缓存大小和存储使用情况
   calculateAllStorageSize();
   getStorageUsage();
 });
 </script>
 
 <template>
-  <div class="setting-group pt-4">
-    <div class="box !pb-4">
-      <!-- 总体存储使用情况 -->
+  <div class="setting-group">
+    <label class="title">存储数据</label>
+    <div class="box">
       <div class="setting-item">
-        <span class="setting-label">总体存储</span>
+        <span class="setting-label">缓存和文件</span>
         <div class="flex items-center gap-3">
-          <div class="text-sm">
-            <span class="text-theme-warning font-medium">{{ formatSize(storageData.total) }}</span>
-          </div>
+          <span class="text-theme-warning font-medium">{{ formatSize(storageData.total + (downloadDirStats?.total_size || 0)) }}</span>
           <BtnElButton
             size="small"
             text
@@ -277,12 +325,46 @@ onMounted(() => {
       </div>
       <!-- 下载路径 -->
       <SettingDownLoad v-if="!setting.isWeb" />
+    </div>
+    <!-- 文件数据 -->
+    <label class="title">文件数据</label>
+    <div class="box">
+      <div class="setting-item">
+        <span class="setting-label">文件总大小</span>
+        <div class="flex items-center gap-3">
+          <div class="text-sm">
+            <span v-if="downloadDirStats" class="text-theme-info font-medium dark:text-light">
+              {{ formatSize(downloadDirStats.total_size) }}
+            </span>
+            <span v-else class="opacity-70">未统计</span>
+          </div>
+          <BtnElButton
+            size="small"
+            text
+            class="text-4"
+            icon-class="i-solar:refresh-outline hover:rotate-180 transition-200"
+            :loading="isLoadingStats"
+            @click="scanDownloadDirStats"
+          />
+        </div>
+      </div>
+      <div class="setting-item">
+        <span class="setting-label">文件统计</span>
+        <div title="总文件数量" class="ml-a flex-row-c-c btn-warning-bg border-default-2 card-default card-rounded-df px-2 py-1" @click="openFileFolder">
+          共{{ downloadDirStats?.file_count || 0 }}个
+          <img class="ml-1 h-4 w-4" src="/images/icon/DEFAULT.png" alt="">
+        </div>
+        <div title="文件夹数量" class="ml-2 flex-row-c-c btn-info-bg border-default-2 card-default card-rounded-df px-2 py-1" @click="openFileFolder">
+          共{{ downloadDirStats?.dir_count || 0 }}个
+          <img class="ml-1 h-4 w-4" src="/images/icon/OpenedFolder.png" alt="">
+        </div>
+      </div>
+    </div>
+    <!-- 存储分析 -->
+    <label class="title">存储分析</label>
+    <div class="box storage-details !py-4">
       <!-- 存储详情 -->
       <div class="storage-details">
-        <h4 class="mb-3 text-sm font-medium opacity-80">
-          存储详情
-        </h4>
-
         <!-- localStorage -->
         <div class="storage-item">
           <div class="flex items-center gap-2">
@@ -299,7 +381,7 @@ onMounted(() => {
             <BtnElButton
               size="small"
               class="btn"
-              bg text
+              text bg
               icon-class="i-solar:trash-bin-minimalistic-outline mr-1"
               :disabled="storageData.localStorage.count === 0"
               @click="clearLocalStorage"

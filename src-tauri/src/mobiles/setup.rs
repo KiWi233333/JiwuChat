@@ -15,6 +15,7 @@ pub fn setup_mobile() {
         })
         .invoke_handler(tauri::generate_handler![
             crate::mobiles::commands::exist_file,
+            crate::desktops::commands::scan_dir_stats,
             crate::mobiles::commands::remove_file,
             crate::mobiles::commands::mkdir_file,
             crate::mobiles::commands::exit_app,

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ListTransitionGroup } from "#components";
-
 const emit = defineEmits<{
   (e: "submit", data: ChatUserSeInfoVO): void
 }>();
@@ -25,6 +23,7 @@ const noMore = computed(() => searchPage.value.total > 0 && searchPageList.lengt
 const searchHistoryList = useStorageAsync<string[]>("jiwu_chat_friend_user", []);
 const currentFocus = ref(-1); // 当前聚焦的索引
 const isShowModel = ref(false);
+const virtualListRef = useTemplateRef("virtualListRef");
 
 /**
  * 搜索好友
@@ -59,9 +58,17 @@ function handleKeydown(type: string) {
   switch (type) {
     case "arrow-down":
       currentFocus.value = Math.min(currentFocus.value + 1, searchPageList.length - 1);
+      // 滚动到聚焦项
+      nextTick(() => {
+        virtualListRef.value?.scrollToItem(currentFocus.value);
+      });
       break;
     case "arrow-up":
       currentFocus.value = Math.max(currentFocus.value - 1, 0);
+      // 滚动到聚焦项
+      nextTick(() => {
+        virtualListRef.value?.scrollToItem(currentFocus.value);
+      });
       break;
     default:
       break;
@@ -108,7 +115,10 @@ function clearSearch() {
     size: 0,
     current: 0,
   };
+  // 重置虚拟列表滚动位置
+  resetVirtualListScroll();
 }
+
 function reSearch() {
   searchPageList.splice(0);
   searchPage.value = {
@@ -119,6 +129,8 @@ function reSearch() {
   };
   currentFocus.value = -1;
   page.value = 0;
+  // 重置虚拟列表滚动位置
+  resetVirtualListScroll();
 }
 /**
  * 关闭历史标签
@@ -139,6 +151,24 @@ const showSearchHistory = ref(false);
 onDeactivated(() => {
   isShowModel.value = false;
 });
+
+/**
+ * 虚拟列表滚动到底部时触发加载更多
+ */
+function onEndReached() {
+  if (!noMore.value && !isLoading.value) {
+    onLoadMore();
+  }
+}
+
+/**
+ * 性能优化：重置列表滚动位置
+ */
+function resetVirtualListScroll() {
+  nextTick(() => {
+    virtualListRef.value?.scrollToTop();
+  });
+}
 </script>
 
 <template>
@@ -160,7 +190,7 @@ onDeactivated(() => {
         :on-search="onSearch"
         placeholder="搜索好友 🔮"
         @focus="isShowModel = true"
-        @keyup.esc.stop="clearSearch"
+        @keyup.esc.stop="(isShowModel = false) && clearSearch() "
         @keyup.enter.stop="onSearch"
         @keydown.arrow-down.stop="handleKeydown('arrow-down')"
         @keydown.arrow-up.stop="handleKeydown('arrow-up')"
@@ -177,24 +207,24 @@ onDeactivated(() => {
         搜&nbsp;索
       </BtnElButton>
     </div>
-    <Transition name="fade" :duration="200">
+    <Transition enter-active-class="animate-(fade-in duration-200)" leave-active-class="animate-(fade-out duration-200)">
       <div v-if="isShowModel" class="absolute left-0 top-2.5rem z-1 h89vh w-full flex-1 bg-color">
         <!-- 搜索历史记录 -->
         <div
           v-show="searchPage.current === 0"
           class="tags overflow-hidden transition-max-height"
-          :class="showSearchHistory ? 'max-h-15em' : 'max-h-3.2em '"
+          :class="showSearchHistory ? 'max-h-15em' : 'max-h-4em '"
         >
-          <div mt-2 text-mini>
+          <div my-3 text-mini>
             历史记录：
             <i
-              i-solar:close-circle-bold class="float-right btn-primary p-2.8" @click="() => {
+              i-solar:close-circle-line-duotone class="float-right btn-primary p-2.8" @click="() => {
                 isShowModel = false;
                 clearSearch();
               }"
             />
             <i
-              i-solar:round-alt-arrow-down-bold
+              i-solar:round-alt-arrow-down-line-duotone
               title="查看更多"
               class="float-right mr-1 btn-primary p-2.8"
               :class="{ 'rotate-180': showSearchHistory }"
@@ -216,55 +246,69 @@ onDeactivated(() => {
           </el-tag>
         </div>
         <!-- 标题 -->
-        <div class="mt-2 flex-row-bt-c pr-2">
-          <span
-            v-show="searchPageList.length > 0"
-            class="text-0.8rem"
-          >
+        <div
+          v-show="!isShowResult"
+          class="mt-3 flex-row-bt-c pl-1 pr-2"
+        >
+          <span v-show="searchPageList.length > 0" class="text-0.8rem">
             {{ ` 找到 ${searchPage.total} 个匹配好友` }}
+            <i
+              i-solar:close-circle-line-duotone class="float-right btn-primary p-2.8" @click="(isShowModel = false) && clearSearch()"
+            />
           </span>
         </div>
-        <el-scrollbar
+        <div
           v-show="isShowResult && searchPage.current && searchPageList.length > 0"
-          class="py-2"
-          wrap-class="pb-4 flex-1  overflow-hidden"
-          height="calc(100vh - 150px)"
         >
-          <ListAutoIncre
-            :immediate="false"
-            :no-more="noMore"
-            :auto-stop="false"
-            @load="onLoadMore"
+          <ListVirtualScrollList
+            ref="virtualListRef"
+            :items="searchPageList"
+            item-height="4rem"
+            max-height="calc(100vh - 15rem)"
+            :selected-index="currentFocus"
+            wrap-class="py-2 flex-1 overflow-hidden"
+            enable-pull-to-refresh
+            :overscan="20"
+            :pull-trigger-distance="30"
+            :pull-distance="60"
+            @end-reached="onEndReached"
           >
-            <ListTransitionGroup tag="div">
-              <!-- 用户卡片 -->
+            <template #default="{ item, isActive }">
               <div
-                v-for="(p, index) in searchPageList"
-                :key="p.id"
                 class="relative mb-2 flex cursor-pointer items-center truncate card-default card-bg-color p-2 transition-300 transition-all hover:(bg-color-2 shadow-sm)"
                 :class="{
-                  selected: chat.theFriendOpt.type === FriendOptType.User && chat.theFriendOpt.data?.id === p?.id,
-                  focused: currentFocus === index,
+                  selected: chat.theFriendOpt.type === FriendOptType.User && chat.theFriendOpt.data?.id === item?.id,
+                  focused: isActive,
                 }"
                 tabindex="0"
-                @click="emit('submit', p)"
+                @click="emit('submit', item)"
               >
                 <CardElImage
-                  :src="BaseUrlImg + p.avatar"
+                  :src="BaseUrlImg + item.avatar"
                   fit="cover"
                   error-class="i-solar:user-bold-duotone"
-                  class="mr-2 h-2.2rem w-2.2rem border-default card-default object-cover"
+                  class="mr-2 h-10 w-10 border-default card-default rounded-full object-cover"
                 />
-                <small>{{ p.nickname || p.username }}</small>
+                <small>{{ item.nickname || item.username }}</small>
               </div>
-            </ListTransitionGroup>
-            <template #done>
-              <p text-center text-mini>
-                暂无更多
-              </p>
             </template>
-          </ListAutoIncre>
-        </el-scrollbar>
+            <template #end>
+              <div v-if="!noMore && searchPageList.length > 0" class="py-2 text-center">
+                <div v-if="isLoading" class="text-mini">
+                  加载中...
+                </div>
+                <div v-else class="text-mini">
+                  滚动加载更多
+                </div>
+              </div>
+              <div v-if="noMore && searchPageList.length > 0" class="py-2 text-center">
+                <p class="text-mini">
+                  暂无更多
+                </p>
+              </div>
+            </template>
+          </ListVirtualScrollList>
+        </div>
         <ElEmpty
           v-show="!searchPage.total && !isLoading"
           data-fades

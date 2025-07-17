@@ -2,27 +2,15 @@
 const setting = useSettingStore();
 
 // 创建临时变量用于滑块实时显示
-const tempFontSize = ref(+setting?.settingPage?.fontSize?.value || 16);
-
-// 使用计算属性处理字体大小
 const fontSize = computed({
-  get: () => tempFontSize.value,
-  set: (value: number) => {
-    tempFontSize.value = value;
+  get() {
+    return setting.settingPage.fontSize.value;
+  },
+  set(value) {
+    setting.settingPage.fontSize.value = value;
   },
 });
-
-// 防抖处理字体大小变化
-const updateFontSize = useDebounceFn((value: any) => {
-  setting.settingPage.fontSize.value = value;
-  applyFontSettings();
-}, 200);
-
-// 应用字体设置
-function applyFontSettings() {
-  const fontSize = setting.settingPage.fontSize.value;
-  document.documentElement.style.setProperty("--font-size", `${fontSize}px`);
-}
+const tempFontSize = debouncedRef(fontSize, 140);
 </script>
 
 <template>
@@ -64,7 +52,6 @@ function applyFontSettings() {
       v-bind="$attrs"
       class="inputs px-1"
       @dblclick.stop="fontSize = 16"
-      @change="updateFontSize"
     />
   </div>
 </template>
