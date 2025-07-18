@@ -22,7 +22,7 @@ export function useSettingStoreSync() {
     catch (err) {
       console.warn("Failed to process storage change:", err);
     }
-  }, 80);
+  }, 100);
 
   // 添加storage监听器
   window.addEventListener("storage", storageListener);

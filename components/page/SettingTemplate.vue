@@ -94,10 +94,11 @@ async function onHashHandle() {
   }, 2000);
 }
 
-watch(() => setting.isMobileSize, (val: boolean) => {
-  if (!activeMenu.value) {
-    activeMenu.value = val ? "" : "notification";
+watch(() => setting.isMobileSize, (mobileSize: boolean) => {
+  if (activeMenu.value && !setting.isMobileSize) {
+    return;
   }
+  activeMenu.value = mobileSize ? "" : "notification";
 }, {
   immediate: true,
 });
@@ -123,12 +124,13 @@ onUnmounted(() => {
 
 <template>
   <div
+    id="setting-page"
     :class="{
       'user-none': IS_PROD,
     }"
-    class="h-full flex flex-col"
+    class="h-full flex flex-col bg-color-3 sm:bg-color"
   >
-    <MenuHeaderMenuBar v-if="menuBar" nav-class="relative z-999 shadow left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute shadow-none right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-2-b bg-color">
+    <MenuHeaderMenuBar v-if="menuBar" nav-class="relative h-fit z-1001 shadow left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute shadow-none right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-2-b bg-color">
       <template #center="{ appTitle }">
         <!-- 移动端菜单 -->
         <div v-if="setting.isMobile" class="absolute-center-center block tracking-0.1em sm:hidden" :data-tauri-drag-region="setting.isDesktop">
@@ -146,8 +148,14 @@ onUnmounted(() => {
         </div>
       </template>
     </MenuHeaderMenuBar>
-    <main :class="mainClass" class="h-full flex-1 sm:flex">
-      <menu class="h-full w-full bg-color sm:(max-w-14rem min-w-fit border-default-2-r shadow)" :class="menuClass">
+    <main :class="mainClass" class="relative h-full flex-1 sm:flex">
+      <menu
+        class="transition-anima h-full w-full sm:(max-w-14rem min-w-fit border-default-2-r shadow-lg)"
+        :class="[
+          menuClass,
+          activeItem?.value && setting.isMobileSize ? '-translate-x-1/4 scale-94 css-will-change' : '',
+        ]"
+      >
         <h3 flex items-center class="px-7 pt-8 text-lg">
           <i i-solar:settings-bold mr-2 inline-block p-3 opacity-60 hover:animate-spin />
           设置
@@ -161,23 +169,25 @@ onUnmounted(() => {
           :size="setting.isMobileSize ? 'large' : 'small'"
         >
           <template #default="{ item }">
-            <div class="selece-none flex items-center rounded-2 px-2 py-1">
+            <div class="flex items-center rounded-2 px-2 py-1">
               <i :class="activeMenu === (item as MenuItem).value ? (item as MenuItem).activeIcon : (item as MenuItem).icon" mr-2 />
               <div>{{ (item as MenuItem).label }}</div>
+              <i i-solar:alt-arrow-right-line-duotone ml-a inline p-2.4 text-small sm:hidden />
             </div>
           </template>
         </el-segmented>
       </menu>
       <el-scrollbar
         ref="scrollbarRef"
-        class="fixed left-full top-0 h-full w-full flex-1 bg-color-3 pt-10 sm:card-bg-color-2 sm:!static"
+        class="transition-anima left-0 top-0 h-full w-full flex-1 bg-color-3 pt-4 shadow-lg !fixed !z-1000 sm:(z-1 card-bg-color-2 pt-10 shadow-none transition-none) !sm:static"
         wrap-class="h-full w-full pb-4 sm:pb-20 flex flex-1 flex-col px-4"
         :class="{
           'settinlink-animated': showAnima,
-          'left-0 z-1': showAnima,
+          'translate-x-full css-will-change': !activeMenu,
         }"
       >
-        <h3 v-if="activeItem" flex items-center border-default-2-b p-3 sm:p-4>
+        <h3 v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b py-3 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
+          <i i-solar:alt-arrow-left-line-duotone mr-1 p-3 sm:hidden />
           {{ activeItem?.label }}
         </h3>
         <!-- 动态显示对应的设置组件 -->
@@ -196,21 +206,48 @@ onUnmounted(() => {
 
 
   .el-segmented__item-selected {
-    --at-apply: "bg-color-2 text-color op-100";
+    --at-apply: "bg-color-2 text-color";
   }
   .el-segmented__item:not(.is-disabled):not(.is-selected):active,
   .el-segmented__item:not(.is-disabled):not(.is-selected):hover {
     --at-apply: "bg-color-2 text-color !bg-op-50";
   }
   .el-segmented__item {
-    --at-apply: "text-color";
-
     &.is-selected {
-      --at-apply: "text-color op-100";
+      --at-apply: "text-color";
       i {
-        --at-apply: "scale-110";
+        --at-apply: "scale-105";
       }
     }
+  }
+
+  // 小尺寸上
+  @media screen and (max-width: 640px) {
+
+    .el-segmented__group {
+      --at-apply: "rounded-2 py-2 bg-color overflow-hidden shadow-sm";
+    }
+
+    .el-segmented__item-selected {
+      --at-apply: "op-0";
+    }
+
+    .el-segmented__item:not(.is-disabled):not(.is-selected):active,
+    .el-segmented__item:not(.is-disabled):not(.is-selected):hover {
+      --at-apply: "bg-color  !bg-op-50";
+    }
+
+    .el-segmented__item {
+      --at-apply: " bg-color text-sm";
+
+      &.is-selected {
+        --at-apply: "bg-color ";
+        i {
+          --at-apply: "scale-110";
+        }
+      }
+    }
+
   }
 }
 :deep(.el-scrollbar__thumb) {
@@ -247,5 +284,11 @@ onUnmounted(() => {
   100% {
     border-color: transparent !important;
   }
+}
+.transition-anima {
+  transition: transform 0.3s ease-in-out;
+}
+.css-will-change {
+  will-change: transform;
 }
 </style>

@@ -254,7 +254,7 @@ onDeactivated(() => {
         <!-- 历史记录 -->
         <div
           v-show="searchPageList.length > 0"
-          class="mt-5 flex-row-bt-c border-default-t pl-1 pr-2 pt-2"
+          class="mt-3 flex-row-bt-c border-default-t pl-1 pr-2 pt-2"
         >
           <span class="text-0.8rem">
             {{ ` 找到 ${searchPage.total} 个匹配好友` }}

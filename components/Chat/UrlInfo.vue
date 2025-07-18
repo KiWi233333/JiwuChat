@@ -54,7 +54,7 @@ const googleIconUrl = "https://www.google.com/s2/favicons?sz=64&domain=";
           />
         </template>
       </CardElImage>
-      <span>{{ footer }}</span>
+      <span truncate :title="footer">{{ footer }}</span>
     </div>
   </a>
 </template>

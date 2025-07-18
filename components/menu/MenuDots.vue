@@ -61,11 +61,7 @@ const menuList = reactive([
     attrs: {
       id: DEFAULT_THEME_TOGGLE_ID,
     },
-    onClick: () => {
-      const modes = colorMode.preference === "dark" ? "light" : "dark";
-      useModeToggle(modes);
-      setting.settingPage.modeToggle.value = modes;
-    },
+    onClick: () => useSettingThemeChange(),
   },
   {
     label: "退出登录",

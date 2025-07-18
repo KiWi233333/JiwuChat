@@ -327,8 +327,8 @@ onMounted(() => {
       <SettingDownLoad v-if="!setting.isWeb" />
     </div>
     <!-- 文件数据 -->
-    <label class="title">文件数据</label>
-    <div class="box">
+    <label v-if="!setting.isWeb" class="title">文件数据</label>
+    <div v-if="!setting.isWeb" class="box">
       <div class="setting-item">
         <span class="setting-label">文件总大小</span>
         <div class="flex items-center gap-3">

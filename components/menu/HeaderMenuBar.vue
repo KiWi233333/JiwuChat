@@ -92,7 +92,7 @@ const getAppTitle = computed(() => {
         <!-- 下载（部分端） -->
         <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1 w-5 h-5" />
         <!-- 折叠菜单 -->
-        <MenuDots v-if="setting.isMobileSize">
+        <MenuDots v-if="setting.isMobileSize || $route.path.startsWith('/extend')">
           <template #btn>
             <div
               text
