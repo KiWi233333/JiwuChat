@@ -84,7 +84,7 @@ export function useModeToggle(mode: "system" | "dark" | "light" | string, event?
  */
 export function useSettingThemeChange(val?: "dark" | "light" | "system") {
   const setting = useSettingStore();
-  const theme = val || (setting.settingPage.modeToggle.value === "dark" ? "light" : "dark");
+  const theme = val || (useColorMode().preference === "dark" ? "light" : "dark");
   useModeToggle(theme);
   setting.settingPage.modeToggle.value = theme;
 }

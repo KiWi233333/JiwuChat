@@ -130,13 +130,9 @@ function handleDesktopNavigation(
       }
     }
     // 扩展页面权限检查
-    if (to.path.startsWith("/extend")) {
+    if (!from.path.startsWith("/extend") && to.path.startsWith("/extend")) {
       return abortNavigation();
     }
-    // if ((!from.path.startsWith("/extend") && to.path.startsWith("/extend"))
-    //   || (to.path.startsWith("/extend") && !user.isLogin)) {
-    //   return abortNavigation();
-    // }
     // 页面权限检查
     if (to.path === "/setting") {
       const { open } = useOpenSettingWind();

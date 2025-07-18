@@ -237,8 +237,8 @@ async function changShieldStatus() {
       :items="memberList"
       item-height="2.75rem"
       max-height="20rem"
-      :overscan="16"
-      :get-item-key="(item, index) => `${chat.theRoomId!}_${item.userId}`"
+      :overscan="20"
+      :get-item-key="item => `${chat.theRoomId!}_${item.userId}`"
       class-name="min-h-14rem card-rounded-df scroll-2 relative"
       active-class="active"
       enable-pull-to-refresh

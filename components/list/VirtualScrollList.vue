@@ -26,6 +26,7 @@ interface ScrollEvent {
 interface Props<T = any> {
   items?: T[]
   itemHeight?: number | string
+  height?: string
   maxHeight?: string
   wrapClass?: any
   className?: any
@@ -57,8 +58,8 @@ interface Emits<T = any> {
 
 // Props 解构
 const {
-  itemHeight = "2.5rem",
-  maxHeight = "12rem",
+  itemHeight = "",
+  maxHeight = "",
   wrapClass = "",
   className = "",
   itemClass = "",
@@ -509,6 +510,7 @@ const [DefineVirtualListContent, ReuseVirtualListContent] = createReusableTempla
   <el-scrollbar
     ref="scrollbarRef"
     :max-height="maxHeight"
+    :height="height"
     :wrap-class="wrapClass"
     v-bind="$attrs"
     :class="className || $attrs.class"
