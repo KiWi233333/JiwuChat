@@ -6,7 +6,7 @@ import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { isPermissionGranted, requestPermission } from "@tauri-apps/plugin-notification";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { type as osType, platform } from "@tauri-apps/plugin-os";
-import { restoreStateCurrent, StateFlags } from "@tauri-apps/plugin-window-state";
+// import { restoreStateCurrent, StateFlags } from "@tauri-apps/plugin-window-state";
 import { MSG_WEBVIEW_WIDTH, useFlashTray } from "~/composables/tauri/window";
 
 
@@ -43,9 +43,9 @@ export async function userTauriInit() {
   const isMobileSystem = ["android", "ios"].includes(setting.osType);
 
   // 1、初始化窗口状态
-  if (!isMobileSystem) { // 非移动端才有该功能
-    restoreStateCurrent(StateFlags.ALL);
-  }
+  // if (!isMobileSystem) { // 非移动端才有该功能
+  //   restoreStateCurrent(StateFlags.ALL); // 恢复窗口状态
+  // }
   // msgbox 默认不调整
   const main = WebviewWindow.getCurrent();
   if (main.label === "msgbox" && useRoute().path !== "/msg") {
@@ -155,7 +155,7 @@ export async function useMsgBoxWebViewInit() {
   }
   if (!["windows", "linux", "macos"].includes(platformName))
     return;
-  restoreStateCurrent(StateFlags.ALL);
+  // restoreStateCurrent(StateFlags.ALL); // 窗口状态
   const chat = useChatStore();
   const setting = useSettingStore();
   const user = useUserStore();

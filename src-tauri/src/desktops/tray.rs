@@ -5,7 +5,7 @@ use tauri::{
     AppHandle, Emitter, Manager,
 };
 use tauri_plugin_opener::open_url;
-use tauri_plugin_window_state::{AppHandleExt, StateFlags};
+// use tauri_plugin_window_state::{AppHandleExt, StateFlags};
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
@@ -59,9 +59,9 @@ pub fn setup_tray(app: &tauri::AppHandle) -> tauri::Result<()> {
                     });
             }
             "quit" => {
-                app.clone()
-                    .save_window_state(StateFlags::all())
-                    .unwrap_or_else(|e| eprintln!("保存窗口状态时出错: {:?}", e));
+                // app.clone()
+                //     .save_window_state(StateFlags::all())
+                //     .unwrap_or_else(|e| eprintln!("保存窗口状态时出错: {:?}", e));
                 std::process::exit(0);
             }
             "restart" => {

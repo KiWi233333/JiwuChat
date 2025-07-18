@@ -12,7 +12,7 @@ import { BaseDirectory } from "@tauri-apps/plugin-fs";
 import { openPath } from "@tauri-apps/plugin-opener";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { check } from "@tauri-apps/plugin-updater";
-import { filename as windowStateFilename } from "@tauri-apps/plugin-window-state";
+// import { filename as windowStateFilename } from "@tauri-apps/plugin-window-state";
 import { acceptHMRUpdate, defineStore } from "pinia";
 
 /**
@@ -562,11 +562,11 @@ export const useSettingStore = defineStore(
         // 自动重启
         if (await isAutostartEnabled())
           await disableAutostart();
-        // 窗口状态
-        const file = await windowStateFilename();
-        if (file)
-          await removeFile(`${await appDataDir()}\\${file}`);
-        return true;
+        // TODO：删除窗口状态
+        // // const file = await windowStateFilename();
+        // if (file)
+        //   await removeFile(`${await appDataDir()}\\${file}`);
+        // return true;
       }
       catch (error) {
         console.error(error);

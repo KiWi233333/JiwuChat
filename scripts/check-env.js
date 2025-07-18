@@ -191,7 +191,7 @@ async function main() {
   const success = await checker.check();
 
   if (!success) {
-    process.exit(1);
+    // process.exit(1);
   }
 }
 

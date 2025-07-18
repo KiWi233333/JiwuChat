@@ -51,7 +51,6 @@
     "@tauri-apps/plugin-updater": "2.9.0",
     "@tauri-apps/plugin-upload": "2.3.0",
     "@tauri-apps/plugin-websocket": "2.4.0",
-    "@tauri-apps/plugin-window-state": "2.3.0",
     "@vueuse/core": "13.5.0",
     "element-china-area-data": "6.1.0",
     "element-plus": "2.10.2",

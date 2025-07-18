@@ -66,7 +66,7 @@ function deepMerge(source: any): any {
   }
 
   diffAndUpdate(current, source);
-  console.log("Setting store updated from storage:", source, current);
+  // console.log("Setting store updated from storage:", source, current);
 }
 
 export function initSettingStoreSync() {
