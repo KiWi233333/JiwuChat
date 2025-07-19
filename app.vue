@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { appEnName, appKeywords, appName } from "@/constants/index";
 import { useDefaultInit, useInit, useUnmounted } from "@/init/index";
 
@@ -46,18 +45,6 @@ onMounted(() => {
   }
 });
 
-callOnce(() => {
-  checkWind10CloseShadow();
-});
-
-async function checkWind10CloseShadow() {
-  console.log("checkWind10CloseShadow checking...");
-  const v = await useWindowsVersion();
-  isWindow10.value = v === "Windows 10";
-  if (isWindow10.value && setting.isDesktop) {
-    getCurrentWebviewWindow()?.setShadow(setting.settingPage.isWindow10Shadow);
-  }
-}
 onUnmounted(useUnmounted);
 </script>
 

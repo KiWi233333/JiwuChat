@@ -295,6 +295,11 @@ onMounted(() => {
             @focus="isEditSlogan = true"
             @blur="onBlur()"
           />
+          <span
+            v-else
+            class="truncate pl-2 text-xs"
+            :title="userCopy?.slogan"
+          >{{ userCopy?.slogan || "暂无个性签名" }}</span>
           <el-button
             v-show="isEditSlogan"
             key="isEditSlogan-btn"
@@ -312,6 +317,7 @@ onMounted(() => {
             type="date"
             placeholder="选择生日"
             size="small"
+            :disabled="!isEdit"
             @change="submitUpdateUser('birthday')"
           />
         </div>

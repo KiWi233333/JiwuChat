@@ -1,3 +1,4 @@
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import {
   disable as disableAutoStart,
   enable as enableAutoStart,
@@ -111,6 +112,22 @@ export function useSettingInit() {
   }, {
     debounce: 100,
   });
+
+  // 9. 窗口阴影
+  useWindowsVersion()
+    .then(async (version) => {
+      if (version === "Windows 10") {
+        console.log("checkWind10CloseShadow checking...");
+        watch(() => setting.settingPage.isWindow10Shadow, (val) => {
+          if (setting.isDesktop) {
+            getCurrentWebviewWindow()?.setShadow(val);
+          }
+        }, {
+          immediate: true,
+        });
+      }
+    })
+    .catch(console.error);
 
   return () => {
   };

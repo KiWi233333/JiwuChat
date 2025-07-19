@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
-
 interface Props {
   size?: "small" | "default" | "large"
 }
@@ -11,14 +9,6 @@ const setting = useSettingStore();
 const isWindow10 = ref(false);
 // 定制化动画设置弹窗
 const showCustomTransitionPanel = ref(false);
-
-// 确认和设置窗口阴影
-function checkWind10Shadow() {
-  if (setting.isDesktop) {
-    getCurrentWebviewWindow()?.setShadow(setting.settingPage.isWindow10Shadow);
-  }
-}
-
 // 监听窗口版本
 onMounted(async () => {
   const v = await useWindowsVersion();
@@ -60,7 +50,6 @@ onMounted(async () => {
           class="ml-a transition-opacity hover:op-80"
           :size="size"
           inline-prompt
-          @change="checkWind10Shadow"
         />
       </div>
     </div>

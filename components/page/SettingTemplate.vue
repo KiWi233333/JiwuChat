@@ -28,17 +28,18 @@ interface MenuItem {
   activeIcon: string;
   component: Component
   hidden?: boolean
+  tip?: string;
 }
 const setting = useSettingStore();
 
 const menuOptions = computed<MenuItem[]>(() => [
-  { label: "通知", value: "notification", icon: "i-solar:bell-outline", activeIcon: "i-solar:bell-bold light:op-70", component: SettingNotification },
-  { label: "主题与字体", value: "appearance", icon: "i-solar:pallete-2-line-duotone", activeIcon: "i-solar:pallete-2-bold", component: SettingAppearance },
-  { label: "快捷键", value: "shortcut", hidden: setting.isMobileSize, icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", component: SettingShortcuts },
-  { label: "工具", value: "tools", icon: "i-solar:inbox-archive-line-duotone", activeIcon: "i-solar:inbox-archive-bold", component: SettingTools },
-  { label: "新特性", value: "function", icon: "i-solar:telescope-outline", activeIcon: "i-solar:telescope-bold", component: SettingFunction },
-  { label: "数据与存储", value: "storage", icon: "i-solar:database-outline", activeIcon: "i-solar:database-bold", component: SettingStorage },
-  { label: "系统与更新", value: "system", icon: "i-solar:server-square-update-linear", activeIcon: "i-solar:server-square-update-bold", component: SettingSystem },
+  { label: "通知", tip: "系统通知、自定义铃声", value: "notification", icon: "i-solar:bell-outline", activeIcon: "i-solar:bell-bold light:op-70", component: SettingNotification },
+  { label: "主题与字体", tip: "自定义主题和字体", value: "appearance", icon: "i-solar:pallete-2-line-duotone", activeIcon: "i-solar:pallete-2-bold", component: SettingAppearance },
+  { label: "快捷键", tip: "快捷键自定义", value: "shortcut", hidden: setting.isMobileSize, icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", component: SettingShortcuts },
+  { label: "工具", tip: "翻译等工具", value: "tools", icon: "i-solar:inbox-archive-line-duotone", activeIcon: "i-solar:inbox-archive-bold", component: SettingTools },
+  { label: "新特性", tip: "自定义动画、窗口阴影", value: "function", icon: "i-solar:telescope-outline", activeIcon: "i-solar:telescope-bold", component: SettingFunction },
+  { label: "数据与存储", tip: "数据与存储情况、文件情况、缓存清理", value: "storage", icon: "i-solar:database-outline", activeIcon: "i-solar:database-bold", component: SettingStorage },
+  { label: "系统与更新", tip: "开机自启、系统应用更新", value: "system", icon: "i-solar:server-square-update-linear", activeIcon: "i-solar:server-square-update-bold", component: SettingSystem },
 ].filter(item => !item.hidden));
 const MENU_OPTIONS_LABEL_MAX_LENGTH = 5;
 const activeMenu = ref("");
@@ -170,7 +171,7 @@ onUnmounted(() => {
           :size="setting.isMobileSize ? 'large' : 'small'"
         >
           <template #default="{ item }">
-            <div class="flex items-center rounded-2 px-2 py-1">
+            <div class="flex items-center rounded-2 px-2 py-1" :title="(item as MenuItem).tip">
               <i :class="activeMenu === (item as MenuItem).value ? (item as MenuItem).activeIcon : (item as MenuItem).icon" mr-2 />
               <div>{{ (item as MenuItem).label }}</div>
               <i i-solar:alt-arrow-right-line-duotone ml-a inline p-2.4 text-small sm:hidden />
