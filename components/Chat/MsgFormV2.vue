@@ -17,7 +17,7 @@ const isDisabledFile = computed(() => !user?.isLogin || chat.theContact.selfExis
 const isLord = computed(() => chat.theContact.type === RoomType.GROUP && chat.theContact.member?.role === ChatRoomRoleEnum.OWNER); // 群主
 const isSelfRoom = computed(() => chat.theContact.type === RoomType.SELFT); // 私聊
 const isAiRoom = computed(() => chat.theContact.type === RoomType.AICHAT); // 机器人
-const maxContentLen = computed(() => chat.theContact.type === RoomType.AICHAT ? 2048 : 512); // 对话文本长度
+const maxContentLen = computed(() => setting.systemConstant.msgInfo[chat.msgForm.msgType]?.maxLength || 0); // 对话文本长度
 // 状态
 const showGroupNoticeDialog = ref(false);
 const loadInputDone = ref(false); // 用于移动尺寸动画
@@ -299,10 +299,10 @@ async function handleSubmit() {
   }
 
   // 处理文本
-  if (chat.msgForm.msgType === MessageType.TEXT && (!content || content.length > maxContentLen.value)) {
-    ElMessage.warning(`消息长度应小于${maxContentLen.value}字符！`);
-    return;
-  }
+  // if (!content || content.length > maxContentLen.value) {
+  //   ElMessage.warning(`消息长度应小于${maxContentLen.value}字符！`);
+  //   return;
+  // }
 
   // 发送请求
   isSending.value = true;

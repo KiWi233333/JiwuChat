@@ -153,7 +153,7 @@ onUnmounted(() => {
         class="transition-anima h-full w-full sm:(max-w-14rem min-w-fit border-default-2-r shadow-lg)"
         :class="[
           menuClass,
-          activeItem?.value && setting.isMobileSize ? '-translate-x-1/4 scale-94 css-will-change' : '',
+          activeItem?.value && setting.isMobileSize ? '-translate-x-1/2 css-will-change' : '',
         ]"
       >
         <h3 flex items-center class="px-7 pt-8 text-lg">

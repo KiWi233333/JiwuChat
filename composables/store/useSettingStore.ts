@@ -74,8 +74,8 @@ export const useSettingStore = defineStore(
           type: "image",
           path: "image/",
           code: 0,
-          timeOut: 2400,
-          fileSize: 3145728, // 3M
+          timeOut: 12000,
+          fileSize: 3145728,
           fileType: "image/*",
         },
         file: {
@@ -83,32 +83,55 @@ export const useSettingStore = defineStore(
           path: "file/",
           code: 2,
           timeOut: 12000,
-          fileSize: 52428800, // 50M
-          fileType: "text/plain;application/vnd.ms-excel;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;application/octet-stream;application/vnd.ms-powerpoint;application/pdf;application/x-pdf;application/x-bzpdf;application/x-gzpdf;application/vnd.openxmlformats-officedocument.presentationml.presentation;application/msword;application/vnd.openxmlformats-officedocument.wordprocessingml.document;",
+          fileSize: 52428800,
+          fileType: "!image/*;!video/*",
         },
         video: {
           type: "video",
           path: "video/",
           code: 1,
-          timeOut: 2400,
-          fileSize: 20971520, // 20M
-          fileType: "mp4/*",
+          timeOut: 12000,
+          fileSize: 20971520,
+          fileType: "video/*;",
         },
         audio: {
           type: "audio",
           path: "audio/",
           code: 4,
-          timeOut: 2400,
-          fileSize: 10485760, // 10M
+          timeOut: 12000,
+          fileSize: 10485760,
           fileType: "audio/mp3;audio/x-mpeg;audio/mpeg;audio/webm;audio/wav;video/webm;",
         },
         font: {
           type: "font",
           path: "font/",
           code: 3,
-          timeOut: 2400,
+          timeOut: 12000,
           fileSize: 12582912,
           fileType: "font/*",
+        },
+      },
+      msgInfo: {
+        [MessageType.TEXT]: {
+          maxLength: 2048,
+        },
+        [MessageType.IMG]: {
+          maxLength: 2048,
+        },
+        [MessageType.VIDEO]: {
+          maxLength: 2048,
+        },
+        [MessageType.FILE]: {
+          maxLength: 2048,
+        },
+        [MessageType.SYSTEM]: {
+          maxLength: 10240,
+        },
+        [MessageType.AI_CHAT]: {
+          maxLength: 8192,
+        },
+        [MessageType.GROUP_NOTICE]: {
+          maxLength: 4096,
         },
       },
     });
