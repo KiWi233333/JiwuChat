@@ -115,7 +115,7 @@ async function calculateCacheSize() {
 }
 
 // 计算所有存储数据大小
-async function calculateAllStorageSize() {
+async function calculateAllStorageSize(isLog = false) {
   isCalculatingSize.value = true;
   try {
     const localStorage = calculateLocalStorageSize();
@@ -132,6 +132,7 @@ async function calculateAllStorageSize() {
       cache,
       total,
     };
+    isLog && ElMessage.info("刷新成功！");
   }
   catch (error) {
     console.error("计算存储大小失败:", error);
@@ -302,12 +303,12 @@ onMounted(() => {
             text
             class="text-4"
             icon-class="i-solar:refresh-outline hover:rotate-180 transition-200"
-            @click="calculateAllStorageSize"
+            @click="calculateAllStorageSize(true)"
           />
         </div>
       </div>
       <!-- 存储空间配额 -->
-      <div v-if="storageUsage.total > 0" class="setting-item">
+      <div class="setting-item">
         <span class="setting-label">存储配额</span>
         <div class="flex items-center gap-3">
           <div class="text-sm opacity-70">

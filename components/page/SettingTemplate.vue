@@ -130,7 +130,7 @@ onUnmounted(() => {
     :class="{
       'user-none': IS_PROD,
     }"
-    class="h-full flex flex-col bg-color-3 sm:bg-color"
+    class="h-full flex flex-col bg-color-2 sm:bg-color"
   >
     <MenuHeaderMenuBar v-if="menuBar" nav-class="relative h-fit z-1001 shadow left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute shadow-none right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-2-b bg-color">
       <template #center="{ appTitle }">
@@ -181,7 +181,7 @@ onUnmounted(() => {
       </menu>
       <el-scrollbar
         ref="scrollbarRef"
-        class="transition-anima left-0 top-0 h-full w-full flex-1 bg-color-3 pt-4 shadow-lg !fixed !z-1000 sm:(z-1 card-bg-color-2 pt-10 shadow-none transition-none) !sm:static"
+        class="transition-anima left-0 top-0 h-full w-full flex-1 bg-color-3 pt-4 shadow-lg !fixed !z-999 sm:(z-1 card-bg-color-2 pt-10 shadow-none transition-none) !sm:static"
         wrap-class="h-full w-full pb-4 sm:pb-20 flex flex-1 flex-col px-4"
         :class="{
           'settinlink-animated': showAnima,
