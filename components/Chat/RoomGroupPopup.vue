@@ -287,7 +287,7 @@ async function changShieldStatus() {
               effect="dark"
               type="info"
             >
-              {{ ChatRoomRoleEnumMap[member.roleType || ChatRoomRoleEnum.MEMBER] as string }}
+              {{ ChatRoomRoleEnumMap[(member.roleType as ChatRoomRoleEnum) || ChatRoomRoleEnum.MEMBER] as string }}
             </el-tag>
           </div>
         </div>

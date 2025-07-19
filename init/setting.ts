@@ -84,10 +84,10 @@ export function useSettingInit() {
   // 7. 使用防抖函数处理窗口大小变化
   const handleResizeDebounced = useThrottleFn(() => {
     addRootClass(STOP_TRANSITION_KEY);
-    setting.isMobileSize = window?.innerWidth <= 768;
-    removeRootClass(STOP_TRANSITION_KEY);
+    requestAnimationFrame(() => removeRootClass(STOP_TRANSITION_KEY));
   }, 200);
   const handleResize = () => {
+    setting.isMobileSize = window?.innerWidth <= 768;
     handleResizeDebounced();
   };
   window.addEventListener("resize", handleResize);

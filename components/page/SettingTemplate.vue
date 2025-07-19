@@ -27,21 +27,22 @@ interface MenuItem {
   icon: string;
   activeIcon: string;
   component: Component
+  hidden?: boolean
 }
-const menuOptions: MenuItem[] = [
+const setting = useSettingStore();
+
+const menuOptions = computed<MenuItem[]>(() => [
   { label: "通知", value: "notification", icon: "i-solar:bell-outline", activeIcon: "i-solar:bell-bold light:op-70", component: SettingNotification },
   { label: "主题与字体", value: "appearance", icon: "i-solar:pallete-2-line-duotone", activeIcon: "i-solar:pallete-2-bold", component: SettingAppearance },
-  { label: "快捷键", value: "shortcut", icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", component: SettingShortcuts },
+  { label: "快捷键", value: "shortcut", hidden: setting.isMobileSize, icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", component: SettingShortcuts },
   { label: "工具", value: "tools", icon: "i-solar:inbox-archive-line-duotone", activeIcon: "i-solar:inbox-archive-bold", component: SettingTools },
   { label: "新特性", value: "function", icon: "i-solar:telescope-outline", activeIcon: "i-solar:telescope-bold", component: SettingFunction },
   { label: "数据与存储", value: "storage", icon: "i-solar:database-outline", activeIcon: "i-solar:database-bold", component: SettingStorage },
   { label: "系统与更新", value: "system", icon: "i-solar:server-square-update-linear", activeIcon: "i-solar:server-square-update-bold", component: SettingSystem },
-];
+].filter(item => !item.hidden));
 const MENU_OPTIONS_LABEL_MAX_LENGTH = 5;
 const activeMenu = ref("");
-const activeItem = computed(() => menuOptions.find(item => item.value === activeMenu.value));
-
-const setting = useSettingStore();
+const activeItem = computed(() => menuOptions.value.find(item => item.value === activeMenu.value));
 
 const size = computed(() => {
   if (setting.settingPage?.fontSize?.value < 16) {
