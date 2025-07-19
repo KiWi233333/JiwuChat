@@ -23,12 +23,8 @@
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
   <!-- 存储权限 -->
-  <uses-permission
-    android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-    android:maxSdkVersion="32" />
-  <uses-permission
-    android:name="android.permission.READ_EXTERNAL_STORAGE"
-    android:maxSdkVersion="32" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
   <!-- AndroidTV support -->
   <uses-feature
