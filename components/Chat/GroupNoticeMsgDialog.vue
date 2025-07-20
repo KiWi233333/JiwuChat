@@ -57,7 +57,7 @@ async function addMsg() {
     <el-form ref="applyFormRef" :model="applyForm">
       <el-form-item
         label=""
-        style="margin: 1rem 0;"
+        style="margin: 1rem 0 0 0;"
         prop="content"
         :rules="[{
                    min: 1,
@@ -79,17 +79,28 @@ async function addMsg() {
       </el-form-item>
       <el-form-item
         label=""
-        style="margin: 0.5rem 0 0 0;"
+        style="margin: 0;"
         prop="body.noticeAll"
+        class="h-12 flex items-center"
       >
         <!-- 是否群发 -->
         <el-checkbox
           v-model="applyForm.body.noticeAll"
+          style="--el-checkbox-height: 1rem;"
           :true-value="1"
           :false-value="0"
         >
           群发
         </el-checkbox>
+        <div v-if="chat.replyMsg?.fromUser" class="ml-2 flex flex-1 items-center card-rounded-df bg-color p-1 shadow-sm">
+          <el-tag effect="dark" size="small" class="mr-2 shrink-0">
+            回复
+          </el-tag>
+          <div class="max-w-8em flex-1 truncate text-small">
+            {{ `${chat.replyMsg?.fromUser?.nickName}: ${chat.replyMsg ? resolveMsgReplyText(chat.replyMsg as ChatMessageVO) : '未知'}` }}
+          </div>
+          <div class="i-solar:close-circle-bold ml-a h-6 w-6 btn-default text-dark op-80 transition-200 transition-color sm:(h-5 w-5) dark:text-light hover:text-[var(--el-color-danger)]" @click="chat.setReplyMsg({})" />
+        </div>
       </el-form-item>
     </el-form>
     <template #footer>
