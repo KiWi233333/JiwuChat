@@ -214,7 +214,7 @@ async function onLogin(formEl: any | undefined) {
     if (res.code === StatusCode.SUCCESS) {
       // 登录成功
       if (res.data) {
-        await store.onUserLogin(res.data, autoLogin.value, "/", (info) => {
+        await store.onUserLogin(res.data, autoLogin.value, (info) => {
           // 初始化
           useWsStore().reload();
           // 保存账号
@@ -231,6 +231,8 @@ async function onLogin(formEl: any | undefined) {
               nickname: info.nickname,
             },
           });
+          // 转发
+          navigateTo("/");
         });
         done();
       }

@@ -71,18 +71,18 @@ export const useUserStore = defineStore(
      * 用户登录
      * @param t t
      */
-    const onUserLogin = async (t: string, saveLocal?: boolean, redirectTo?: string, callback?: (data: UserInfoVO) => void) => {
+    const onUserLogin = async (t: string, saveLocal?: boolean, callback?: (data: UserInfoVO) => void) => {
       const res = await getUserInfo(t);
       if (res.code && res.code === StatusCode.SUCCESS) {
         userInfo.value = res.data as UserInfoVO;
         isLogin.value = true;
         token.value = t;
         callback && callback(res.data);
-        if (redirectTo)
-          await navigateTo(redirectTo);
+        return true;
       }
       else {
         callbackUserExit(t);
+        return false;
       }
     };
 
@@ -119,15 +119,6 @@ export const useUserStore = defineStore(
       }
     };
 
-    /**
-     * 用户确认状态
-     */
-    const onCheckLogin = () => {
-      if (token.value)
-        return onUserLogin(token.value);
-      else
-        return false;
-    };
     /**
      * 退出登录
      * @param t token
@@ -196,7 +187,6 @@ export const useUserStore = defineStore(
       isOnLogining,
       // actions
       onUserLogin,
-      onCheckLogin,
       callbackUserExit,
       exitLogin,
       clearUserStore,

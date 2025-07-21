@@ -91,23 +91,31 @@ export async function userTauriInit() {
 /**
  * 初始化用户信息
  */
-export function useAuthInit() {
+export async function useAuthInit() {
   const user = useUserStore();
   // 用于iframe嵌入快速登录
   const route = useRoute();
-  const iframeToken = route.query.token;
-  if (iframeToken && !user.isLogin) {
-    let loading = {} as any;
+  if (!user.isLogin) {
+    return;
+  }
+  let loading: any;
+  let token = "";
+  if (!user.isLogin) {
     loading = ElLoading.service({ fullscreen: true, text: "正在登录，请稍等..." });
-    user.onUserLogin(String(iframeToken), true, undefined, () => {
-      setTimeout(() => {
-        loading?.close?.();
-      }, 300);
-    });
+    token = String(route.query.token);
   }
   else {
     // 确认是否登录
-    user.onCheckLogin();
+    token = user.getToken;
+  }
+
+  if (token && await user.onUserLogin(token)) {
+    setTimeout(() => {
+      navigateTo("/");
+    }, 400);
+  }
+  else {
+    navigateTo("/login");
   }
 }
 

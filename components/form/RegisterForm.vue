@@ -320,11 +320,10 @@ async function toLogin(token?: string) {
   if (token) {
     // 登录成功
     await store.onUserLogin(token, true);
-    await navigateTo("/");
-    store.onUserLogin(token, true);
     ElMessage.success({
       message: "登录成功！",
     });
+    await navigateTo("/");
     return;
   }
   const data = await toLoginByPwd(formUser.username, formUser.password);
@@ -337,7 +336,6 @@ async function toLogin(token?: string) {
   ElMessage.success({
     message: "登录成功！",
   });
-  store.onUserLogin(data.data);
   isLoading.value = false;
 }
 

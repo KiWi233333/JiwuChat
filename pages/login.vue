@@ -82,7 +82,11 @@ onMounted(async () => {
     <!-- 表单 -->
     <div
       class="flex select-none rounded-t-8 bg-color px-6 py-4 shadow-lg sm:(mt-0 h-full animate-none border-0 rounded-t-0 shadow-none)"
-      :class="[setting.isDesktop ? 'w-full h-full !rounded-0 mt-a animate-none' : 'h-fit flex-row-c-c sm:static absolute bottom-0 left-0 w-full   shadow-lg border-default-t', setting.isWeb && !setting.isMobileSize ? '' : 'login-bg']"
+      :class="[
+        setting.isDesktop ? 'w-full h-full !rounded-0 mt-a animate-none' : 'h-fit flex-row-c-c sm:static absolute bottom-0 left-0 w-full shadow-lg border-default-t',
+        setting.isWeb && !setting.isMobileSize ? '' : 'login-bg',
+        setting.isMobileSize ? 'min-h-62vh' : '',
+      ]"
       data-fade
     >
       <div data-fades class="form-main mx-a my-a w-full text-center sm:(my-a max-w-3/5 w-24rem text-left)">
