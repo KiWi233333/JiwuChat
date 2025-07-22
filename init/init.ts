@@ -108,11 +108,12 @@ export async function useAuthInit() {
     // 确认是否登录
     token = user.getToken;
   }
-
-  if (token && await user.onUserLogin(token)) {
-    setTimeout(() => {
-      navigateTo("/");
-    }, 400);
+  const isLogin = token && await user.onUserLogin(token);
+  if (isLogin) {
+    const route = useRoute();
+    if (route.path === "/login") {
+      await navigateTo("/");
+    }
   }
   else {
     navigateTo("/login");
