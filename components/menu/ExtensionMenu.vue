@@ -90,11 +90,11 @@ function onRemove(item: ExtendItem) {
 
 // 加载扩展菜单
 onMounted(() => {
-  extendMenuSaveList.value = setting.selectExtendMenuList.map(item => extendMenuAllList.value.find(menu => menu.title === item.title)).filter(item => item) as ExtendItem[];
+  extendMenuSaveList.value = setting.selectExtendMenuList.map(item => extendMenuAllList.value.find(menu => menu.title === item.title)).filter(item => item).map(item => ({ ...item, loading: false })) as ExtendItem[];
 });
 // 保存菜单设置
 function saveMenu(list: ExtendItem[]) {
-  setting.selectExtendMenuList = JSON.parse(JSON.stringify(list.sort((a, b) => (a.saveTime || 0) - (b.saveTime || 0))));
+  setting.selectExtendMenuList = JSON.parse(JSON.stringify(list.sort((a, b) => (a.saveTime || 0) - (b.saveTime || 0)))).map((item: ExtendItem) => ({ ...item, loading: false }));
   isShow.value = false;
 }
 // @unocss-include
@@ -170,23 +170,22 @@ function createItem() {
             'not-link': item.disabled,
             [`${item.class || ''}`]: item.class,
           }"
+          @click.stop="!item.disabled && open(item)"
         >
           <div mx-a h-1.8em w-1.8em flex-row-c-c>
             <i
               class="block h-full w-full"
               :class="item.icon"
-              @click.stop="!item.disabled && open(item)"
             />
           </div>
           <div
             class="absolute right-1 top-1 btn-danger-bg group-hover:(op-100) sm:op-0"
-            @click.stop="onRemove(item)"
+            @click.stop.prevent="onRemove(item)"
           >
             <i class="i-carbon:subtract p-2 p-2.2" />
           </div>
           <div
             class="mx-a mt-2 text-center text-xs"
-            @click.stop="!item.disabled && open(item)"
           >
             {{ item.title }}
           </div>
