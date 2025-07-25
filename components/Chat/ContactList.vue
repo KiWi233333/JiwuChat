@@ -396,7 +396,7 @@ onMounted(() => {
       :items="chat.getContactList"
       :item-height="setting.isMobileSize ? '4.2rem' : '4.5rem'"
       max-height="100%"
-      wrap-class="w-full relative h-full px-0 sm:(px-2 pb-1.5) "
+      wrap-class="w-full relative h-full p-0 sm:(p-2 shadow-sm shadow-inset)"
       :class-name="['contact-list', isAnimateDelay ? STOP_TRANSITION_KEY : '']"
       item-class="contact-item"
       :get-item-key="(room) => room.roomId"
@@ -484,7 +484,7 @@ onMounted(() => {
   --at-apply: "z-4 h-full flex flex-shrink-0 flex-col select-none overflow-hidden border-0 border-0 rounded-0 sm:(relative left-0 top-0 w-1/4 pl-0)";
 }
 .main-bg-color {
-  --at-apply: "bg-color-3 sm:bg-color";
+  --at-apply: "bg-color-3 sm:(bg-white dark:bg-[#111111])";
 }
 
 .contact-sky {
@@ -496,7 +496,7 @@ onMounted(() => {
 
   .contact {
     // transition: background-color 100ms ease-in-out;
-    --at-apply: "h-full card-bg-color dark:bg-transparent flex items-center gap-3 p-4 sm:(h-17 border-transparent p-3 w-full text-color card-rounded-df mb-2 card-bg-color)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+    --at-apply: "h-full bg-color sm:(bg-transparent) dark:bg-transparent flex items-center gap-3 p-4 sm:(h-17 border-transparent p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
     .text {
       --at-apply: "transition-none";
     }
@@ -505,7 +505,7 @@ onMounted(() => {
       --at-apply: "mx-0.5em pt-0.2em h-1.4em w-1.4em text-theme-primary dark:text-theme-info";
     }
     &.is-pin {
-      --at-apply: "bg-light-3 dark:bg-dark-6";
+      --at-apply: "bg-light-4 dark:bg-dark-8";
     }
     &.is-checked {
       --at-apply: "!sm:(bg-[var(--el-color-primary)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) text-white";
@@ -528,7 +528,7 @@ onMounted(() => {
   }
 }
 .header {
-  --at-apply: "sm:(h-20 px-4) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height  card-bg-color";
+  --at-apply: "card-bg-color sm:(h-20 px-4 bg-transparent) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
   :deep(.el-input) {
     .el-input__wrapper {
       --at-apply: "!shadow-none !outline-none !input-bg-color";

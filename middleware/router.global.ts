@@ -166,6 +166,12 @@ function handleMobileWebNavigation(
       return from.path && from.path !== "/login" ? from.path : "/";
     }
   }
+
+  // 扩展页面权限检查
+  if (to.path.startsWith("/extend") && !from.path.startsWith("/extend")) {
+    window.open(to.path, "_blank");
+    return abortNavigation();
+  }
 }
 
 /**

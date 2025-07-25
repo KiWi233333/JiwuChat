@@ -129,6 +129,7 @@ onUnmounted(() => {
     id="setting-page"
     :class="{
       'user-none': IS_PROD,
+      'stop-transition': showAnima,
     }"
     class="h-full flex flex-col bg-color-2 sm:bg-color"
   >
@@ -185,7 +186,7 @@ onUnmounted(() => {
         wrap-class="h-full w-full pb-4 sm:pb-20 flex flex-1 flex-col px-4"
         :class="{
           'settinlink-animated': showAnima,
-          'translate-x-full css-will-change': !activeMenu,
+          'translate-x-full css-will-change': showAnima && !activeMenu,
         }"
       >
         <h3 v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b py-3 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
