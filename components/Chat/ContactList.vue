@@ -394,9 +394,9 @@ onMounted(() => {
       ref="scrollbarRef"
       :overscan="20"
       :items="chat.getContactList"
-      :item-height="setting.isMobileSize ? '4.5rem' : '5rem'"
+      :item-height="setting.isMobileSize ? '4.2rem' : '4.5rem'"
       max-height="100%"
-      wrap-class="w-full relative h-full p-0 sm:p-2 "
+      wrap-class="w-full relative h-full px-0 sm:(px-2 pb-1.5) "
       :class-name="['contact-list', isAnimateDelay ? STOP_TRANSITION_KEY : '']"
       item-class="contact-item"
       :get-item-key="(room) => room.roomId"
@@ -428,13 +428,13 @@ onMounted(() => {
             :hidden="!room.unreadCount"
             :max="99"
             :value="room.unreadCount"
-            class="badge h-3em w-3em flex-shrink-0"
+            class="badge h-10 w-10 flex-shrink-0"
           >
             <CardElImage
               :error-class="contactTypeIconClassMap[(room as ChatContactVO).type]"
               :default-src="room.avatar"
               fit="cover"
-              class="h-full w-full card-rounded-df card-bg-color-2 object-cover shadow-sm"
+              class="h-full w-full rounded-full card-bg-color-2 object-cover shadow"
             />
           </el-badge>
           <div class="flex flex-1 flex-col justify-between truncate">
@@ -477,11 +477,11 @@ onMounted(() => {
   --at-apply: "z-4 h-full flex flex-shrink-0 flex-col select-none overflow-hidden border-0 border-0 rounded-0 sm:(relative left-0 top-0 w-1/4 pl-0)";
 }
 .main-bg-color {
-  --at-apply: "sm:card-bg-color-2 bg-color-3";
+  --at-apply: "bg-color-3 sm:bg-color";
 }
 
 .contact-sky {
-  --at-apply: "h-18 card-bg-color dark:bg-transparent flex items-center gap-3 p-4 sm:(h-18 border-transparent p-3 w-full text-color card-rounded-df mb-2 card-bg-color)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+  --at-apply: "h-17 card-bg-color dark:bg-transparent flex items-center gap-3 p-4 sm:(h-17 border-transparent p-3 w-full text-color card-rounded-df mb-2 card-bg-color)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
 }
 
 .contact-list {
@@ -489,7 +489,7 @@ onMounted(() => {
 
   .contact {
     // transition: background-color 100ms ease-in-out;
-    --at-apply: " h-full card-bg-color dark:bg-transparent flex items-center gap-3 p-4 sm:(h-18 border-transparent p-3 w-full text-color card-rounded-df mb-2 card-bg-color)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+    --at-apply: "h-full card-bg-color dark:bg-transparent flex items-center gap-3 p-4 sm:(h-17 border-transparent p-3 w-full text-color card-rounded-df mb-2 card-bg-color)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
     .text {
       --at-apply: "transition-none";
     }
@@ -498,15 +498,15 @@ onMounted(() => {
       --at-apply: "mx-0.5em pt-0.2em h-1.4em w-1.4em text-theme-primary dark:text-theme-info";
     }
     &.is-pin {
-      --at-apply: "bg-transparent dark:bg-dark-5 sm:(!border-default-2 shdow-sm card-bg-color)";
+      --at-apply: "bg-light-3 dark:bg-dark-6";
     }
     &.is-checked {
-      --at-apply: "!sm:(bg-[var(--el-color-primary)] color-white dark:text-light  dark:bg-[var(--el-color-primary-light-3)] hover:op-90)  ";
+      --at-apply: "!sm:(bg-[var(--el-color-primary-light-9)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) text-white";
       .text {
-        --at-apply: "sm:(color-white dark:text-light)";
+        --at-apply: "sm:(color-white dark:text-white)";
       }
       .ai-icon {
-        --at-apply: "sm:!text-light";
+        --at-apply: "sm:!text-white";
       }
     }
 
@@ -543,8 +543,13 @@ onMounted(() => {
 
 :deep(.el-scrollbar__bar) {
   right: 1px;
-  --at-apply: "!hidden sm:block";
+  // --at-apply: "!hidden sm:block";
   --el-scrollbar-bg-color: #9292928a;
+
+  &:active {
+    --el-scrollbar-bg-color: #9292928a;
+  }
+
 
   .el-scrollbar__thumb {
     width: 6px;

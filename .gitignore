@@ -19,3 +19,4 @@ errors.json
 .env.*.local
 report.html
 .trae
+.cursorignore
