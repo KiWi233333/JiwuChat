@@ -3,7 +3,7 @@ export const appEnName = "JiwuChat";
 export const appTitle = `${appEnName} | ${appName} - 轻量、高效的即时通讯平台`;
 export const appDescription = "极物聊天应用 - 一款集成聊天、群聊、AI助手、音视频通话、消息通知及跨平台支持的智能通信平台，支持用户管理、好友系统、模型切换、商城扩展等多种功能，全面满足个人与团队的社交与协作需求。";
 export const appKeywords = "JiwuChat, 即时通讯, IM系统, 聊天平台, 群聊功能, AI聊天, 多模型AI, 视频通话, 语音通话, 好友管理, 消息同步, WebRTC, 消息推送, 多端适配, 跨平台通信, 用户管理, 系统通知, 智能助手, 翻译工具, 文件管理, 深色主题, 自适应布局, Kimi, DeepSeek, Gmini, 硅基流动AI";
-
+export const appBlogHost = "https://blog.jiwuchat.top/";
 export const appTerms = `
 ## 欢迎您使用极物聊天！
 

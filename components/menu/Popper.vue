@@ -4,11 +4,15 @@ interface Props {
 }
 interface MenuItem {
   label: string
-  icon: string
-  hidden?: boolean
+  icon?: string
+  component?: any // 添加自定义组件支持
+  componentProps?: Record<string, any> // 自定义组件的 props
+  hidden?: boolean | ComputedRef<boolean>
   customClass?: string
   customIconClass?: string
   attrs?: Record<string, any>
+  divider?: boolean
+  dividerClass?: string
   onClick?: () => any
 }
 const {
@@ -32,30 +36,44 @@ const list = computed(() => menuList?.filter(p => p.hidden !== true));
     </template>
     <slot name="default" :data="menuList">
       <div class="menu-list">
-        <div
+        <template
           v-for="(p, i) in list" :key="i"
-          class="menu-item"
-          v-bind="p.attrs"
-          @click="p.onClick"
         >
-          <div
-            v-if="(p.icon as string)?.startsWith?.('i-')"
-            :title="p.label"
-            class="icon mr-2"
-            :class="{
-              [`${p.icon}`]: p.icon,
-              [`${p.customClass}`]: p.customClass,
-            }"
+          <!-- 自定义组件渲染 -->
+          <component
+            :is="p.component"
+            v-if="p.component"
+            v-bind="{ ...p.componentProps, ...p.attrs }"
+            @click="p.onClick"
           />
-          <img
-            v-else-if="p.icon"
-            class="icon mr-2"
-            :class="p.customIconClass"
-            :src="p.icon"
-            :alt="p.label || 'X'"
+          <!-- 默认菜单项渲染 -->
+          <div
+            v-else
+            class="menu-item"
+            v-bind="p.attrs"
+            @click="p.onClick"
           >
-          <span>{{ p.label }}</span>
-        </div>
+            <div
+              v-if="p.icon && (p.icon as string)?.startsWith?.('i-')"
+              :title="p.label"
+              class="icon mr-2"
+              :class="{
+                [`${p.icon}`]: p.icon,
+                [`${p.customClass}`]: p.customClass,
+              }"
+            />
+            <CardElImage
+              v-else-if="p.icon"
+              class="icon mr-2"
+              :class="p.customIconClass"
+              :src="p.icon"
+              :alt="p.label || 'X'"
+            />
+            <span truncate text-sm>{{ p.label }}</span>
+          </div>
+          <!-- 分割线 -->
+          <div v-if="p.divider" :class="p.dividerClass" class="mx-a w-9/10 border-default-2-b" />
+        </template>
       </div>
     </slot>
   </el-popover>

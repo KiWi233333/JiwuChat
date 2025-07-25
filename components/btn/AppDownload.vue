@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { giteeReportUrl, githubReportUrl } from "~/constants";
+import { appBlogHost, giteeReportUrl, githubReportUrl } from "~/constants";
 
 const setting = useSettingStore();
 const downloadUrl = ref();
@@ -43,7 +43,7 @@ onMounted(async () => {
   <template v-if="setting.isWeb">
     <el-tooltip content="JiwuChat 官网" placement="bottom">
       <a
-        href="https://blog.jiwuchat.top/" target="_blank"
+        :href="appBlogHost" target="_blank"
         title="JiwuChat 官网"
         class="h-2rem w-2rem flex-row-c-c cursor-pointer border-default card-default rounded-full shadow-sm sm:(h-1.8rem w-1.8rem)"
         v-bind="$attrs"

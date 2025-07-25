@@ -2,6 +2,7 @@
 import { FriendOptType } from "~/composables/api/chat/friend";
 import { applyUserSearchInputDomId } from "~/composables/utils/chat";
 import { DEFAULT_THEME_TOGGLE_ID, useModeToggle } from "~/composables/utils/useToggleThemeAnima";
+import { appBlogHost } from "~/constants";
 
 const setting = useSettingStore();
 const user = useUserStore();
@@ -53,11 +54,21 @@ const menuList = reactive([
       };
     },
   },
+  // {
+  //   label: "重载应用",
+  //   icon: "i-solar:restart-circle-outline",
+  //   attrs: { title: "刷新页面" },
+  //   onClick: reloadPage,
+  // },
   {
-    label: "重载应用",
-    icon: "i-solar:restart-circle-outline",
-    attrs: { title: "刷新页面" },
-    onClick: reloadPage,
+    label: computed(() => user.userInfo?.nickname),
+    icon: computed(() => BaseUrlImg + user.userInfo?.avatar),
+    customIconClass: "rounded-full",
+    attrs: {
+      class: "max-w-10em truncate",
+      title: computed(() => `${user.userInfo?.nickname} - 前往主页`),
+    },
+    onClick: () => navigateTo("/user"),
   },
   {
     label: computed(() => colorMode.value === "light" ? "浅色主题" : "深色主题"),
@@ -81,10 +92,9 @@ const menuList = reactive([
   {
     label: "关于",
     icon: "i-solar:info-circle-outline",
-    onClick: () => {
-      // TODO: 实现关于页面或弹窗
-      console.log("显示关于信息");
-    },
+    onClick: () => useOpenUrl(appBlogHost),
+    divider: true,
+    dividerClass: "!my-1",
   },
   {
     label: "退出登录",

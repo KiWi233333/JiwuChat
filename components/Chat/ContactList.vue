@@ -410,7 +410,14 @@ onMounted(() => {
       <!-- 添加骨架屏 -->
       <template #pre>
         <div v-if="isReload" key="skeleton" class="main-bg-color absolute left-0 top-0 z-2 h-100vh w-full flex-1 overflow-y-hidden">
-          <ChatContactSkeleton v-for="i in 10" :key="i" class="contact-sky" />
+          <div v-for="i in 10" :key="i" class="contact-sky">
+            <div class="h-10 w-10 flex-shrink-0 flex-shrink-0 rounded-full bg-color object-cover" />
+            <!-- 信息 -->
+            <div class="info-skeleton">
+              <div class="nickname-skeleton h-3 w-8em rounded bg-color" />
+              <div class="mt-4 h-3 w-10em rounded bg-color" />
+            </div>
+          </div>
         </div>
       </template>
       <template #default="{ item: room }">
@@ -481,7 +488,7 @@ onMounted(() => {
 }
 
 .contact-sky {
-  --at-apply: "h-17 card-bg-color dark:bg-transparent flex items-center gap-3 p-4 sm:(h-17 border-transparent p-3 w-full text-color card-rounded-df mb-2 card-bg-color)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+  --at-apply: "h-17 op-60 bg-color-2 dark:bg-transparent flex items-center gap-3 p-4 sm:(h-17 border-transparent p-3 w-full text-color card-rounded-df mb-2 )  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
 }
 
 .contact-list {
@@ -501,7 +508,7 @@ onMounted(() => {
       --at-apply: "bg-light-3 dark:bg-dark-6";
     }
     &.is-checked {
-      --at-apply: "!sm:(bg-[var(--el-color-primary-light-9)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) text-white";
+      --at-apply: "!sm:(bg-[var(--el-color-primary)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) text-white";
       .text {
         --at-apply: "sm:(color-white dark:text-white)";
       }

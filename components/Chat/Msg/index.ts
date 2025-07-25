@@ -1,5 +1,4 @@
 import ContextMenu from "@imengyu/vue3-context-menu";
-import { openUrl } from "@tauri-apps/plugin-opener";
 
 // @unocss-include
 // 常量定义
@@ -153,12 +152,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
           const url = String((e?.target as HTMLElement)?.getAttribute?.("url") || "");
           if (!url)
             return;
-          if (setting.isDesktop) {
-            openUrl(url);
-          }
-          else {
-            window.open(url, "_blank");
-          }
+          useOpenUrl(url);
         },
       },
     ],
@@ -630,7 +624,6 @@ type Token
     data: {
       title?: string;
       description?: string;
-
       url: string;
       altTitle?: string;
     };
@@ -641,6 +634,9 @@ type Token
  * 解析消息内容
  *
  * @description 替换@提及和链接
+ * @param content 消息文本内容
+ * @param mentions 提及列表（每个提及只替换一次）
+ * @param urlMap 链接映射（全文匹配所有出现的位置）
  */
 function parseMessageContent(
   content: string,
@@ -656,15 +652,16 @@ function parseMessageContent(
     type: "mention" | "url";
     data: any;
     displayText: string;
+    priority: number; // 优先级：mention > url
   }> = [];
 
-  // 创建副本以避免修改原始数据
-  const remainingMentions = [...mentions];
-  const remainingUrlMap = { ...urlMap };
+  // 处理@提及（每个提及只替换一次）
+  const usedMentions = new Set<string>(); // 用于跟踪已使用的提及
+  mentions.forEach((mention) => {
+    if (usedMentions.has(mention.uid)) {
+      return; // 该用户的提及已经处理过，跳过
+    }
 
-  // 处理@提及
-  remainingMentions.forEach((mention, mentionIndex) => {
-    // 查找@mention的位置，支持多种格式：@username、@[username]等
     const index = content.indexOf(mention.displayName);
     if (index !== -1) {
       replacements.push({
@@ -673,42 +670,64 @@ function parseMessageContent(
         type: "mention",
         data: mention,
         displayText: mention.displayName,
+        priority: 1, // 提及优先级高于链接
       });
-      // 移除已匹配的mention，防止重复匹配
-      remainingMentions.splice(mentionIndex, 1);
+      usedMentions.add(mention.uid); // 标记该用户的提及已使用
     }
   });
 
-  // 处理URL链接
-  Object.entries(remainingUrlMap).forEach(([originalUrl, urlInfo]) => {
-    const index = content.indexOf(originalUrl);
-    if (index !== -1) {
+  // 处理URL链接（全文匹配所有出现的位置）
+  Object.entries(urlMap).forEach(([originalUrl, urlInfo]) => {
+    let searchIndex = 0;
+
+    // 查找所有出现的位置
+    while (true) {
+      const index = content.indexOf(originalUrl, searchIndex);
+      if (index === -1) {
+        break; // 没有更多匹配
+      }
+
       replacements.push({
         start: index,
         end: index + originalUrl.length,
         type: "url",
         data: {
           ...urlInfo,
-          url: originalUrl, // 确保URL信息包含原始链接
+          url: originalUrl,
           altTitle: `${urlInfo.title?.replace(/^(\S{8})\S+(\S{4})$/, "$1...$2") || "未知网站"} (${originalUrl})`,
         },
         displayText: originalUrl,
+        priority: 2, // 链接优先级低于提及
       });
-      // 移除已匹配的URL，防止重复匹配
-      delete remainingUrlMap[originalUrl];
+
+      // 继续从下一个位置搜索
+      searchIndex = index + originalUrl.length;
     }
   });
 
-  // 按位置排序，避免重叠
-  replacements.sort((a, b) => a.start - b.start);
-
-  // 去除重叠的替换项
-  const filteredReplacements = replacements.filter((current, index) => {
-    if (index === 0)
-      return true;
-    const previous = replacements[index - 1];
-    return current.start >= (previous?.end || 0);
+  // 按位置排序，优先级高的在前（同位置时）
+  replacements.sort((a, b) => {
+    if (a.start !== b.start) {
+      return a.start - b.start;
+    }
+    return a.priority - b.priority; // 优先级高的在前
   });
+
+  // 去除重叠的替换项（优先级高的保留）
+  const filteredReplacements: typeof replacements = [];
+  replacements.forEach((current) => {
+    // 检查是否与已添加的替换项重叠
+    const hasOverlap = filteredReplacements.some((existing) => {
+      return !(current.end <= existing.start || current.start >= existing.end);
+    });
+
+    if (!hasOverlap) {
+      filteredReplacements.push(current);
+    }
+  });
+
+  // 重新按位置排序（移除重叠后可能顺序有变）
+  filteredReplacements.sort((a, b) => a.start - b.start);
 
   // 构建token列表
   let currentIndex = 0;
@@ -810,3 +829,4 @@ return {
   renderMessageContent,
 };
 }
+
