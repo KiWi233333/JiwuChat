@@ -129,6 +129,11 @@ export function useSettingInit() {
     })
     .catch(console.error);
 
+
+  // 10、监听主题
+  const { startWatchers } = useThemeCustomization();
+  startWatchers();
+
   return () => {
   };
 }

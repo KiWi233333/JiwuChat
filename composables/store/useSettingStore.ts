@@ -165,6 +165,9 @@ export const useSettingStore = defineStore(
             { name: "夜间", value: "dark" },
           ],
         },
+        // 主题
+        customThemeConfig: null as ThemeConfig | null,
+
         // 翻译
         translation: {
           value: 1,
@@ -189,8 +192,7 @@ export const useSettingStore = defineStore(
       };
     }
     const openShadow = computed(() => appPlatform.value !== "windows" || settingPage.value.isWindow10Shadow);
-    // 自定义主题配置
-    const customThemeConfig = ref<ThemeConfig | null>(null);
+    // 翻译工具
     const translationTool = computed(() => settingPage.value.translation.list.find(item => item.value === settingPage.value.translation.value));
     const isDefaultRtcCallBell = computed(() => settingPage.value.rtcCallBellUrl === DEFAULT_RTC_CALL_BELL_URL);
     const isChatFold = ref(false);
@@ -559,7 +561,6 @@ export const useSettingStore = defineStore(
       selectExtendMenuList.value = [];
       fileDownloadMap.value = {};
       appDataDownloadDirUrl.value = "";
-      customThemeConfig.value = null;
       loadSystemFonts();
       if (!isWeb.value) {
         await nextTick();
@@ -626,7 +627,6 @@ export const useSettingStore = defineStore(
       isWeb,
       isDefaultRtcCallBell,
       selectExtendMenuList,
-      customThemeConfig,
       openShadow,
       // actions
       checkUpdates,

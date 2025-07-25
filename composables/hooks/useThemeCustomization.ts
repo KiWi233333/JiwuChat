@@ -438,7 +438,7 @@ export function useThemeCustomization() {
     });
 
     // 保存当前主题配置到设置中
-    setting.customThemeConfig = config;
+    setting.settingPage.customThemeConfig = config;
   }
 
   // 使用常量定义的预设主题
@@ -447,7 +447,7 @@ export function useThemeCustomization() {
   const storyThemes = ref<ThemeConfig[]>(STORY_THEMES);
 
   // 获取当前主题配置
-  const getCurrentThemeConfig = computed(() => setting.customThemeConfig || defaultTheme.value);
+  const getCurrentThemeConfig = computed(() => setting.settingPage.customThemeConfig || defaultTheme.value);
   // 重置为默认主题
   function reset() {
     if (!defaultTheme.value) {
@@ -459,40 +459,38 @@ export function useThemeCustomization() {
 
   // 从设置中恢复主题
   function restore() {
-    if (setting.customThemeConfig) {
-      apply(setting.customThemeConfig);
+    if (setting.settingPage.customThemeConfig) {
+      apply(setting.settingPage.customThemeConfig);
     }
   } // 防抖应用主题，避免频繁更新
   const debouncedApply = useDebounceFn(apply, 100);
 
   // 优化的监听器
-  const stopWatchers = [
+  const startWatchers = () => {
     // 监听主题配置变化（深度监听，防抖处理）
     watch(
-      () => setting.customThemeConfig,
+      () => setting.settingPage.customThemeConfig,
       (newConfig) => {
         if (newConfig) {
           debouncedApply(newConfig);
         }
       },
       { deep: true },
-    ),
-
+    );
     // 监听深色模式切换
     watch(
       () => colorMode.value,
       () => {
-        const currentConfig = setting.customThemeConfig || defaultTheme.value;
+        const currentConfig = setting.settingPage.customThemeConfig || defaultTheme.value;
         if (currentConfig) {
           debouncedApply(currentConfig);
         }
       },
-    ),
-  ];
+    );
+  };
 
   // 清理函数
   const cleanup = () => {
-    stopWatchers.forEach(stop => stop());
     colorCache.clear();
   };
 
@@ -510,6 +508,7 @@ export function useThemeCustomization() {
     elementPlusVars,
     customVars,
     colorUtils,
+    startWatchers,
     // 预设主题
     presetThemes,
     defaultTheme,
@@ -543,7 +542,7 @@ export function initThemeCustomization() {
   themeCustomizationInstance = useThemeCustomization();
 
   // 初始化时应用当前主题配置
-  const customThemeConfig = setting.customThemeConfig;
+  const customThemeConfig = setting.settingPage.customThemeConfig;
   if (customThemeConfig) {
     themeCustomizationInstance.apply(customThemeConfig);
   }
