@@ -245,6 +245,11 @@ export const useChatStore = defineStore(
           roomMapCache.value[theRoomId.value]!.isReload = val;
       },
     });
+
+    // 群所有成员
+    const groupMemberMap = shallowRef<Record<string, ChatMemberSeVO>>({});
+
+    // 群成员
     const memberPageInfo = computed({ // 缓存当前房间的分页信息
       get: () => currentRoomCache.value?.pageInfo || { cursor: undefined, isLast: false, size: 20 } as PageInfo,
       set: (newPageInfo) => {
@@ -1083,6 +1088,7 @@ export const useChatStore = defineStore(
       isMemberReload,
       inviteMemberForm,
       roomMapCache,
+      groupMemberMap,
       // 申请
       applyUnReadCount,
       // 方法

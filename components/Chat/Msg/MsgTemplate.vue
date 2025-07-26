@@ -50,6 +50,9 @@ const showTranslation = computed(() => !!body.value?._textTranslation);
 // 多个URL
 const isMultipleUrl = Object.keys(urlContentMap || {}).length > 1;
 const showMentionUrls = ref(false);
+const member = chat.groupMemberMap[data.fromUser.userId];
+const roleName = chatRoomRoleTextMap[member?.role || ChatRoomRoleEnum.MEMBER];
+const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | ChatRoomRoleEnum.OWNER];
 </script>
 
 <template>
@@ -67,8 +70,9 @@ const showMentionUrls = ref(false);
     <!-- 消息体 -->
     <div class="body">
       <!-- 昵称和插槽区域 -->
-      <div class="flex-res">
-        <small class="nickname flex-1 truncate" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
+      <div class="flex-res items-center">
+        <small class="nickname truncate text-mini" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
+        <small v-if="roleClass" v-once class="role h-fit w-fit rounded px-1 py-0.5 text-0.7rem leading-0.8rem" :class="roleClass">{{ roleName }}</small>
         <slot name="name-after" />
         <!-- 发送状态 + 上传 -->
         <ChatMsgSendStatus v-if="sendStatus" :oss-file="data?._ossFile" :status="sendStatus" :msg-id="data.message.id" />

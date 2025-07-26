@@ -284,6 +284,7 @@ export interface ChatMemberSeVO {
   userId: string
   nickName: string
   username: string
+  role: ChatRoomRoleEnum
   avatar?: string
 }
 
@@ -310,6 +311,13 @@ export const chatRoomRoleTextMap = {
   [ChatRoomRoleEnum.OWNER]: "群主",
   [ChatRoomRoleEnum.ADMIN]: "管理员",
   [ChatRoomRoleEnum.MEMBER]: "成员",
+};
+// @unocss-include
+export const chatRoomRoleClassMap: Record<ChatRoomRoleEnum.ADMIN | ChatRoomRoleEnum.OWNER | `${ChatRoomRoleEnum.ADMIN}-border` | `${ChatRoomRoleEnum.OWNER}-border`, string> = {
+  [ChatRoomRoleEnum.ADMIN]: "text-theme-info bg-[--el-color-info-light-7] shadow-sm drop-shadow-color-theme-info",
+  [ChatRoomRoleEnum.OWNER]: "text-theme-warning bg-[--el-color-warning-light-7] shadow-sm drop-shadow-color-theme-warning",
+  [`${ChatRoomRoleEnum.ADMIN}-border`]: "text-theme-info bg-[--el-color-info-light-7] border-default border-color-[--el-color-info-light-5]",
+  [`${ChatRoomRoleEnum.OWNER}-border`]: "text-theme-warning bg-[--el-color-warning-light-7] border-default border-color-[--el-color-warning-light-5]",
 };
 /**
  * InsertRoomGroupDTO

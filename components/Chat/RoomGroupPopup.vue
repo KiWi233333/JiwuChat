@@ -279,16 +279,11 @@ async function changShieldStatus() {
             >
               我
             </el-tag>
-            <el-tag
-              v-if="member.roleType !== null && member.roleType !== ChatRoomRoleEnum.MEMBER"
-              class="mr-1"
-              style="font-size: 0.6em;border-radius: 2rem;"
-              size="small"
-              effect="dark"
-              type="info"
-            >
-              {{ ChatRoomRoleEnumMap[(member.roleType as ChatRoomRoleEnum) || ChatRoomRoleEnum.MEMBER] as string }}
-            </el-tag>
+            <small
+              v-if="member.roleType && member.roleType !== ChatRoomRoleEnum.MEMBER"
+              class="role h-fit w-fit rounded-8 p-1 px-3 text-0.7rem font-500 leading-0.8rem"
+              :class="chatRoomRoleClassMap[`${member.roleType}-border`]"
+            >{{ chatRoomRoleTextMap[member.roleType] }}</small>
           </div>
         </div>
       </template>

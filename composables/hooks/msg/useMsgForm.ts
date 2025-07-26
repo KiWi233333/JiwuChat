@@ -157,7 +157,7 @@ export function useLoadAtUserList() {
 // AT @相关
   const chat = useChatStore();
   const user = useUserStore();
-  const userOptions = ref<AtChatMemberOption[]>([]);
+  const userOptions = shallowRef<AtChatMemberOption[]>([]);
   const userAtOptions = computed(() => chat.theContact.type === RoomType.GROUP ? userOptions.value.filter(u => !chat.atUserList.find(a => a.userId === u.userId)) : []); // 过滤已存在的用户
 
   /**
@@ -178,14 +178,22 @@ export function useLoadAtUserList() {
 
     const { data, code } = await getRoomGroupAllUser(chat.theRoomId!, user.getToken);
     if (data && code === StatusCode.SUCCESS) {
-      const list = (data || []).map((u: ChatMemberSeVO) => ({
-        label: u.nickName,
-        value: `${u.nickName}(#${u.username})`,
-        userId: u.userId,
-        avatar: u.avatar,
-        username: u.username,
-        nickName: u.nickName,
-      })).filter((u: AtChatMemberOption) => u.userId !== user.userInfo.id);
+      const list: AtChatMemberOption[] = [];
+      (data || []).forEach((u: ChatMemberSeVO) => {
+        const obj = {
+          label: u.nickName,
+          value: `${u.nickName}(#${u.username})`,
+          userId: u.userId,
+          avatar: u.avatar,
+          username: u.username,
+          nickName: u.nickName,
+          role: u.role,
+        };
+        chat.groupMemberMap[u.userId] = obj;
+        if (u.userId !== user.userInfo.id) {
+          list.push(obj);
+        }
+      });
 
       userOptions.value = list;
 
