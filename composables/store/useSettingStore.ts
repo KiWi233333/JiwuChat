@@ -189,6 +189,13 @@ export const useSettingStore = defineStore(
         isWindow10Shadow: false, // 是否启用 Windows 10 窗口阴影
         notificationType: isWeb.value ? NotificationEnums.SYSTEM : NotificationEnums.TRAY, // 托盘通知
         rtcCallBellUrl: DEFAULT_RTC_CALL_BELL_URL, // 呼叫铃声铃声
+        // 音频设备设置
+        audioDevice: {
+          defaultMicrophone: "default" as string, // 默认麦克风设备ID，"default"表示系统默认
+          microphoneList: [] as MediaDeviceInfo[], // 可用麦克风列表
+          lastSelectedMicrophone: "" as string, // 上次选择的麦克风ID
+          autoDetectDevice: true, // 是否自动检测新设备
+        },
       };
     }
     const openShadow = computed(() => appPlatform.value !== "windows" || settingPage.value.isWindow10Shadow);

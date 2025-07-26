@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Component } from "vue";
-import { SettingAppearance, SettingFunction, SettingNotification, SettingShortcuts, SettingStorage, SettingSystem, SettingTools } from "#components";
+import { SettingAppearance, SettingAudioDevice, SettingFunction, SettingNotification, SettingShortcuts, SettingStorage, SettingSystem, SettingTools } from "#components";
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { appKeywords, appName } from "~/constants";
@@ -35,6 +35,7 @@ const setting = useSettingStore();
 const menuOptions = computed<MenuItem[]>(() => [
   { label: "通知", tip: "系统通知、自定义铃声", value: "notification", icon: "i-solar:bell-outline", activeIcon: "i-solar:bell-bold light:op-70", component: SettingNotification },
   { label: "主题与字体", tip: "自定义主题和字体", value: "appearance", icon: "i-solar:pallete-2-line-duotone", activeIcon: "i-solar:pallete-2-bold", component: SettingAppearance },
+  { label: "音频设置", tip: "麦克风设备选择与管理", value: "audio-device", icon: "i-solar:microphone-3-line-duotone", activeIcon: "i-solar:microphone-3-bold", component: SettingAudioDevice },
   { label: "快捷键", tip: "快捷键自定义", value: "shortcut", hidden: setting.isMobileSize, icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", component: SettingShortcuts },
   { label: "工具", tip: "翻译等工具", value: "tools", icon: "i-solar:inbox-archive-line-duotone", activeIcon: "i-solar:inbox-archive-bold", component: SettingTools },
   { label: "新特性", tip: "自定义动画、窗口阴影", value: "function", icon: "i-solar:telescope-outline", activeIcon: "i-solar:telescope-bold", component: SettingFunction },

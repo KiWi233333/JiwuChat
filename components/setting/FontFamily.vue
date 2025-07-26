@@ -10,7 +10,6 @@ const fontSize = computed({
     setting.settingPage.fontSize.value = value;
   },
 });
-const tempFontSize = debouncedRef(fontSize, 140);
 </script>
 
 <template>
