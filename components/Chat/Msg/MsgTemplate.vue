@@ -70,8 +70,8 @@ const showMentionUrls = ref(false);
       <div class="flex-res">
         <small class="nickname flex-1 truncate" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
         <slot name="name-after" />
-        <!-- 发送状态 -->
-        <ChatMsgSendStatus v-if="sendStatus" :status="sendStatus" :msg-id="data.message.id" />
+        <!-- 发送状态 + 上传 -->
+        <ChatMsgSendStatus v-if="sendStatus" :oss-file="data?._ossFile" :status="sendStatus" :msg-id="data.message.id" />
       </div>
 
       <!-- 内容 - 使用渲染函数 -->
@@ -114,7 +114,6 @@ const showMentionUrls = ref(false);
         <i class="reply-icon i-solar:forward-2-bold-duotone mr-1 p-2" />
         {{ `${body?.reply?.nickName} : ${body?.reply?.body?.substring(0, 50) || ''}` }}
       </small>
-
       <!-- URL -->
       <div
         class="url-group"

@@ -126,7 +126,7 @@ onMounted(() => {
       case "play-dbsound":
         status.value = type === "play" ? "playing" : "play-dbsound";
         videoInfo.value = {
-          url: payload.url.startsWith("http") ? payload.url : "",
+          url: payload.url,
           muted: status.value === "play-dbsound",
           mouseX: payload.mouseX || undefined,
           mouseY: payload.mouseY || undefined,

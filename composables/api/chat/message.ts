@@ -236,7 +236,7 @@ export const msgBodyVOBuilderMap = {
       size: body.size,
       fileName: body.fileName || "其他文件名",
       mimeType: body.mimeType,
-      fileType: body.fileType,
+      // fileType: body.fileType,
     };
   },
   [MessageType.AI_CHAT]: (formData: ChatMessageDTO): AiChatBodyMsgVO => { // AI发起消息
@@ -288,6 +288,11 @@ export interface ChatMessageVO<T = any> {
    * 用于标记消息
    */
   clientId?: string
+
+  /**
+   * 上传文件 - 客户端才存在 用于监听进度
+   */
+  _ossFile?: OssFile;
 }
 
 /**
@@ -477,7 +482,7 @@ export interface FileBodyMsgVO {
   size: number;
   fileName: string;
   mimeType?: string;
-  fileType?: FileBodyMsgTypeEnum;
+  // fileType?: FileBodyMsgTypeEnum;
   // 其他消息
   urlContentMap: { [key: string]: UrlInfoDTO };
   mentionList?: MentionInfo[];
@@ -631,6 +636,7 @@ export interface TextBodyDTO {
 
 export interface MentionInfo {
   uid: string;
+  /** 展示的名称 @ 开头 */
   displayName: string;
 }
 export interface ImgBodyDTO {
@@ -641,7 +647,6 @@ export interface ImgBodyDTO {
   replyMsgId?: number;
 }
 export interface SoundBodyDTO {
-  fileName: string;
   url: string;
   translation?: string;
   second: number;

@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import type { ElForm } from "#components";
-import type { OssConstantItemType } from "~/init/system";
-import ContextMenuGlobal from "@imengyu/vue3-context-menu";
 
 const emit = defineEmits<{
   (e: "submit", newMsg: ChatMessageVO): void
@@ -9,7 +7,6 @@ const emit = defineEmits<{
 const user = useUserStore();
 const chat = useChatStore();
 const setting = useSettingStore();
-const route = useRoute();
 
 // 表单
 const isSending = ref(false);
@@ -17,17 +14,30 @@ const isDisabledFile = computed(() => !user?.isLogin || chat.theContact.selfExis
 const isLord = computed(() => chat.theContact.type === RoomType.GROUP && chat.theContact.member?.role === ChatRoomRoleEnum.OWNER); // 群主
 const isSelfRoom = computed(() => chat.theContact.type === RoomType.SELFT); // 私聊
 const isAiRoom = computed(() => chat.theContact.type === RoomType.AICHAT); // 机器人
-const maxContentLen = computed(() => setting.systemConstant.msgInfo[chat.msgForm.msgType]?.maxLength || 0); // 对话文本长度
+const maxContentLen = computed(() => setting.systemConstant.msgInfo[chat.msgForm.msgType]?.maxLength || 0);
 // 状态
 const showGroupNoticeDialog = ref(false);
-const loadInputDone = ref(false); // 用于移动尺寸动画
+const loadInputDone = ref(false);
 const loadInputTimer = shallowRef<NodeJS.Timeout>();
 // ref
-const formRef = useTemplateRef<InstanceType<typeof ElForm>>("formRef"); // 表单
+const formRef = useTemplateRef<InstanceType<typeof ElForm>>("formRef");
 
-// hooks
-const isDisableUpload = computed(() => isAiRoom.value || route.path !== "/");
+// =================================================================
+// 核心 Hooks
+// =================================================================
 
+
+// 1. 新的文件上传管理 Hook
+const { uploadFile, releaseFile } = useOssFileUpload();
+
+// 2. 新的文件操作 Hook
+const fileActions = useFileActions((files) => {
+  if (files && files.length > 0) {
+    processFiles(Array.from(files)); // 确保传入的是数组
+  }
+});
+
+// 3. 消息输入框相关 Hook (保持不变)
 const {
   // 核心 refs 和状态
   inputFocus,
@@ -37,9 +47,9 @@ const {
 
   // 管理器
   imageManager,
+  fileManager,
+  videoManager,
   selectionManager,
-
-  // @ 和 AI 选择状态
   showAtOptions,
   showAiOptions,
   selectedAtItemIndex,
@@ -54,8 +64,6 @@ const {
 
   // 状态
   isReplyAI,
-
-  // 滚动条引用
   atScrollbar,
   aiScrollbar,
 
@@ -66,8 +74,7 @@ const {
   // 内容管理
   updateFormContent,
   clearInputContent,
-  getInputVaildText,
-  resolveContentAtUsers,
+  getInputDTOByText,
 
   // 选区和范围
   updateSelectionRange,
@@ -81,6 +88,9 @@ const {
   handleSelectAtUser,
   handleSelectAiRobot,
 
+  // 消息构建
+  constructMsgFormDTO,
+
   // 事件处理器
   handleInput,
   handleKeyDown,
@@ -90,7 +100,6 @@ const {
   aiScrollbarRef: "aiScrollbar",
 }, 160, "focusRef");
 
-// 是否在房间
 const isNotExistOrNorFriend = computed(() => {
   const res = chat.theContact.selfExist === isTrue.FALESE;
   if (res) {
@@ -100,759 +109,301 @@ const isNotExistOrNorFriend = computed(() => {
   return res;
 }); // 自己不存在 或 不是好友  || chat.contactMap?.[chat.theRoomId!]?.isFriend === isTrue.FALESE
 
-const {
-  imgList,
-  fileList,
-  videoList,
-  isUploadImg,
-  isUploadFile,
-  isUploadVideo,
-  isDragDropOver,
-  uploadFile,
-  onSubmitImg,
-  onSubmitFile,
-  onSubmitVideo,
-  listenDragDrop,
-  unlistenDragDrop,
-  showVideoDialog,
-  inputOssImgUploadRef,
-  inputOssVideoUploadRef,
-  inputOssFileUploadRef,
-} = useFileUpload({ img: "inputOssImgUploadRef", file: "inputOssFileUploadRef", video: "inputOssVideoUploadRef" }, isDisableUpload);
 
-// 移动端上传预览
-const showUploadPreview = computed({
-  get() {
-    return setting.isMobileSize && (imgList.value.length > 0 || fileList.value.length > 0 || videoList.value.length > 0);
-  },
-  set(val) {
-    if (!val)
-      resetForm();
-  },
-});
+// =================================================================
+// 文件处理流程
+// =================================================================
 
-// 拖拽区域处理
+// 流程 1: 行为 (选择、拖拽、粘贴)
+// 1.1 选择文件 - fileActions.selectImageFiles
+// 1.2 拖拽文件
 const { isOverDropZone } = useDropZone(focusRef, {
   onDrop: (files: File[] | null) => {
-    if (!files || files.length === 0)
-      return;
-    // 遍历处理每个文件
-    files.forEach((file) => {
-      const type = getSimpleOssTypeByExtName(file.name);
-      if (!type) {
-        ElMessage.warning(`不支持的文件类型！`);
-        return;
-      }
-      resolveFileUpload(type?.type, file);
-    });
-  },
-  // 接受所有文件类型
-  dataTypes: undefined,
-  // 支持多文件拖拽
-  multiple: true,
-  // 对未处理的事件不阻止默认行为
-  preventDefaultForUnhandled: false,
-});
-
-onMounted(() => {
-  listenDragDrop(resolveFileUpload);
-});
-onUnmounted(() => {
-  unlistenDragDrop();
-});
-
-// 处理图片插入输入框
-function onOssImgChange(imgRaws: File[]) {
-  for (const imgRaw of imgRaws) {
-    if (imgRaw instanceof File && imgRaw.type?.startsWith("image/")) {
-      // 插入图片到输入框
-      imageManager.insert(imgRaw);
+    if (files && files.length > 0) {
+      processFiles(files);
     }
-  }
-}
+  },
+});
 
-/**
- * 处理文件上传
- *
- * @param fileType 文件类型
- * @param file 文件对象
- */
-async function resolveFileUpload(fileType: OssConstantItemType, file: File) {
-  // 图片
-  if (fileType === "image" && !setting.isMobileSize) {
-    imageManager.insert(file);
-    return;
-  }
-
-  // 文件 | 视频
-  const done = await uploadFile(fileType, file);
-  if (!done) {
-    return;
-  }
-
-  // 移动端显示预览弹窗
-  if (setting.isMobileSize) {
-    // showUploadPreview.value = true;
-  }
-}
-
-// 录音
-const {
-  isChating,
-  second, // 获取录音时间
-  theAudioFile,
-  speechRecognition,
-  audioTransfromText,
-  isPalyAudio,
-  pressHandleRef,
-  reset: resetAudio,
-  start: startAudio,
-  handlePlayAudio, // 播放录音
-} = useRecording({ pressHandleRefName: "pressHandleRef", timeslice: 1000 });
-const isUploadSound = ref(false);
-// computed
-const isBtnLoading = computed(() => isSending.value || isUploadImg.value || isUploadFile.value || isUploadVideo.value || isUploadSound.value);
-const isSoundRecordMsg = computed(() => chat.msgForm.msgType === MessageType.SOUND);
-
-
-/**
- * 处理粘贴事件
- *
- * @param e 剪贴板事件
- */
+// 1.3 粘贴文件
 async function handlePasteEvent(e: ClipboardEvent) {
-  // 使用 hook 中的增强粘贴处理
   e.preventDefault();
   const clipboardData = e.clipboardData;
   if (!clipboardData)
     return;
 
-  // 判断粘贴上传
-  if (!e.clipboardData?.items?.length) {
-    return false;
-  }
-  // 拿到粘贴板上的 image file 对象
-  const fileArr = Array.from(e.clipboardData.items).filter(v => v.kind === "file");
-  if (!fileArr.length) { // 处理文本
-    const text = clipboardData.getData("text/plain");
-    if (text) {
-      document.execCommand("insertText", false, text);
-      updateFormContent();
-    }
-    return false;
-  }
+  // 优先处理文件
+  const pastedFiles = Array.from(clipboardData.items)
+    .filter(item => item.kind === "file")
+    .map(item => item.getAsFile())
+    .filter((file): file is File => file !== null);
 
-  if (isDisableUpload?.value) // 处理文件
-    return false;
-
-  for (let i = 0; i < fileArr.length; i++) {
-    const item = fileArr[i];
-    if (!item || item.kind !== "file") {
-      continue;
-    }
-    const file = item.getAsFile();
-    let type: OssConstantItemType | undefined;
-    if (item.type.includes("image")) {
-      type = "image";
-    }
-    else if (item.type.includes("video")) {
-      type = "video";
-    }
-    else if (FILE_TYPE_ICON_MAP[item.type]) {
-      type = "file";
-    }
-    else {
-      type = "file"; // TODO: 允许上传任意类型文件
-    }
-    // if (type !== undefined) {
-    file && await resolveFileUpload(type, file);
-    // }
-  }
-}
-
-/**
- * 发送消息
- */
-async function handleSubmit() {
-  if (isSending.value)
-    return;
-
-  const content = getInputVaildText();
-
-  // 检查编辑器中是否有图片需要处理
-  const imageFiles = imageManager.getFiles();
-  if (!content && chat.msgForm.msgType === MessageType.TEXT && imageFiles.length === 0)
-    return;
-
-  chat.msgForm.content = content;
-
-  // 如果有图片，先发送图片
-  if (imageFiles.length > 0) {
-    if (imageFiles.length >= MAX_UPLOAD_IMAGE_COUNT) {
-      ElMessage.warning(`最多只能发送${MAX_UPLOAD_IMAGE_COUNT}张图片！`);
+  if (pastedFiles.length > 0) {
+    if (isDisabledFile.value)
       return;
-    }
-    chat.msgForm.msgType = MessageType.IMG;
-    // 发送图片
-    await handleImageSubmit(imageFiles);
+    await processFiles(pastedFiles);
     return;
   }
 
   // 处理文本
-  // if (!content || content.length > maxContentLen.value) {
-  //   ElMessage.warning(`消息长度应小于${maxContentLen.value}字符！`);
-  //   return;
-  // }
-
-  // 发送请求
-  isSending.value = true;
-  await onSubmit().finally(() => {
-    isSending.value = false;
-  });
+  const text = clipboardData.getData("text/plain");
+  if (text) {
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(document.createTextNode(text));
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    updateFormContent();
+  }
 }
 
+// 流程 2 & 4: 分析文件类型 & 解析插入文件 (加入管理队列)
 /**
- * 处理图片发送
+ * 统一的文件处理入口
+ * @param files - 从选择、拖拽、粘贴等来源获取的 File 对象数组
  */
-async function handleImageSubmit(files: File[]) {
-  try {
-    isSending.value = true;
-    // 上传每一张图片
-    let doneCount = 0;
-    for (const file of files) {
-      const done = await uploadFile("image", file);
-      if (done) {
-        doneCount += 1;
-      }
+async function processFiles(files: File[]) {
+  for (const file of files) {
+    const analysis = fileActions.analyzeFile(file);
+    if (!analysis.isValid) {
+      ElMessage.warning(`不支持的文件类型: ${file.name}`);
+      continue;
     }
-    // 校验
-    if (doneCount === 0) {
-      return false;
+    if (isAiRoom.value) {
+      ElMessage.warning("AI对话暂不支持附件输入！");
+      return;
     }
-    else if (doneCount !== files.length) {
-      console.log("部分上传失败！");
-      return false;
+    switch (analysis.type) {
+      case "image":
+        imageManager.insert(file);
+        break;
+      case "video":
+        videoManager.insert(file);
+        break;
+      case "file":
+        fileManager.insert(file);
+        break;
+      default:
+        // 其他类型暂不处理
+        break;
     }
-    await onSubmit();
+  }
+}
 
-    // 清空编辑器
-    clearInputContent();
-    imageManager.clear();
+// 录音处理 (单独触发，但上传逻辑统一)
+const {
+  isChating,
+  second,
+  theAudioFile,
+  speechRecognition,
+  audioTransfromText,
+  isPalyAudio,
+  pressHandleRef,
+  stop: stopRecord,
+  reset: resetRecord,
+  start: startRecord,
+  handlePlayAudio, // 播放录音
+} = useRecording({ pressHandleRefName: "pressHandleRef", timeslice: 1000 });
+const isUploadSound = ref(false); // 用于UI状态
+const isSoundRecordMsg = computed(() => chat.msgForm.msgType === MessageType.SOUND);
+
+// =================================================================
+// 发送逻辑
+// =================================================================
+const isBtnLoading = computed(() => isSending.value || isUploadSound.value);
+
+/**
+ * 主提交函数
+ */
+async function handleSubmit() {
+  if (isBtnLoading.value)
+    return;
+
+  isSending.value = true;
+  try {
+    const analysisTextFormData = getInputDTOByText();
+    const soundOpt = isSoundRecordMsg.value && second.value ? { customUploadType: OssFileType.SOUND } : undefined;
+    // 新增：获取聊天框内所有图片、视频、文件类型的文件
+    const ossFiles: OssFile[] = [
+      ...(imageManager.getFiles() || []),
+      ...(fileManager.getFiles() || []),
+      ...(videoManager.getFiles() || []),
+    ];
+    if (soundOpt) {
+      // 停止语音
+      stopRecord();
+      await nextTick();
+      ossFiles.unshift(theAudioFile.value as OssFile);
+      chat.msgForm = {
+        ...chat.msgForm,
+        msgType: MessageType.SOUND,
+        body: {
+          ...chat.msgForm.body,
+          translation: audioTransfromText.value,
+          second: second.value,
+        } as SoundBodyDTO,
+      };
+    }
+
+    // 1. 上传文件并发送消息
+    const uploadAndSendPromises = ossFiles.map(async (ossFile, index) => {
+      const isLastMsg = index === ossFiles.length - 1;
+      const { getFormData, previewFormDataTemp, time, ackId } = constructMsgFormDTO(
+        fileActions,
+        ossFile,
+        isLastMsg && !soundOpt ? analysisTextFormData : soundOpt ? chat.msgForm : {},
+        soundOpt ? OssFileType.SOUND : undefined,
+      );
+      const sendMsg = async () => {
+        const uploadResult = await uploadFile(
+          ossFile as OssFile,
+          soundOpt ? { customUploadType: OssFileType.SOUND } : undefined,
+        );
+        if (!uploadResult.success)
+          throw new Error(uploadResult.error || "上传失败，请稍后再试！");
+
+        return sendChatMessage(getFormData() as ChatMessageDTO, user.getToken);
+      };
+      // 提交到消息队列
+      return submitToQueue(time, ackId, previewFormDataTemp.value, sendMsg, { _skipReset: !isLastMsg }).finally(() => releaseFile(ossFile));
+    });
+    if (uploadAndSendPromises.length > 0) {
+      return await (uploadAndSendPromises.length > 1 ? Promise.allSettled(uploadAndSendPromises) : uploadAndSendPromises[0]);
+    }
+
+    // 2. 文本相关
+    if (!analysisTextFormData?.content) {
+      return;
+    }
+    else if (analysisTextFormData?.content.length > maxContentLen.value) {
+      ElMessage.warning(`消息长度不能超过${maxContentLen.value}字！`);
+      return;
+    }
+    const { getFormData, time, ackId, previewFormDataTemp } = constructMsgFormDTO(fileActions, undefined, analysisTextFormData);
+    const sendMsg = async () => {
+      return sendChatMessage(getFormData() as ChatMessageDTO, user.getToken);
+    };
+    // 提交到消息队列
+    return submitToQueue(time, ackId, previewFormDataTemp.value, sendMsg).finally(() => {});
   }
   catch (error) {
-    console.error("发送图片失败:", error);
-    ElMessage.error("发送图片失败，请稍后再试！");
+    console.error("Submit failed:", error);
+    ElMessage.error("发送失败，请稍后重试。");
   }
   finally {
+    // 确保在所有操作后重置表单，除非有特殊情况
+    resetForm();
+    // 统一在各处理函数内部或此处重置状态
     isSending.value = false;
   }
 }
 
-async function onSubmit() {
-  const formDataTemp = JSON.parse(JSON.stringify(chat.msgForm));
-  // 文本类
-  if (chat.msgForm.content) {
-    if (chat.theContact.type === RoomType.GROUP) { // 处理 @用户
-      const atUidList = resolveContentAtUsers();
-      if (atUidList?.length) {
-        chat.atUserList = atUidList;
-        // 将 atUidList 转换为 mentionList 格式
-        formDataTemp.body.mentionList = atUidList.map(item => ({
-          uid: item.userId,
-          displayName: `@${item.nickName}`,
-        }));
-      }
-    }
-
-    // 处理 AI机器人 TODO: 可改为全体呼叫
-    const { replaceText, aiRobitUidList } = resolveAiReply(formDataTemp.content, aiOptions.value, chat.askAiRobotList);
-    if (aiRobitUidList.length > 0) {
-      if (!replaceText)
-        return false;
-      formDataTemp.content = replaceText;
-      formDataTemp.body = {
-        // userId: aiRobitUidList?.[0],
-        // modelCode: 1,
-        userIds: aiRobitUidList.length > 0 ? aiRobitUidList : undefined,
-        businessCode: AiBusinessType.TEXT,
-      } as AiChatBodyDTO;
-      formDataTemp.msgType = MessageType.AI_CHAT; // 设置对应消息类型
-    }
-  };
-  // 图片
-  if (formDataTemp.msgType === MessageType.IMG) {
-    if (isUploadImg.value) {
-      ElMessage.warning("图片正在上传中，请稍等！");
-      return false;
-    }
-    if (imgList.value.length > 1) {
-      return await multiSubmitImg(formDataTemp);
-    }
+// 文件拖拽上传监听
+const {
+  isDragDropOver,
+  unlistenDragDrop,
+  listenDragDrop,
+} = useFileLinstener(async (files: File[]) => {
+  if (files && files.length > 0) {
+    await processFiles(files);
   }
-  // 文件
-  if (formDataTemp.msgType === MessageType.FILE) {
-    if (isUploadFile.value) {
-      ElMessage.warning("文件正在上传中，请稍等！");
-      return false;
-    }
-    if (fileList.value.length > 1) {
-      return await multiSubmitFile(formDataTemp);
-    }
-  }
-  // 视频
-  if (formDataTemp.msgType === MessageType.VIDEO) {
-    if (isUploadVideo.value) {
-      ElMessage.warning("视频正在上传中，请稍等！");
-      return false;
-    }
-    if (videoList.value.length > 1) {
-      return await multiSubmitVideo(formDataTemp);
-    }
-  }
-  // 开始提交
-  isSending.value = true;
-  // 1) 语音消息
-  if (formDataTemp.msgType === MessageType.SOUND) {
-    formDataTemp.body.translation = audioTransfromText.value;
-    formDataTemp.body.second = second.value;
-    const soundKey = await onSubmitSound();
-    if (!soundKey) {
-      return false;
-    }
-    formDataTemp.body.url = soundKey;
-    submitToQueue(formDataTemp);
-    return true;
-  }
-  // 2) AI私聊
-  if (isAiRoom.value) {
-    const content = formDataTemp.content?.trim();
-    if (!content)
-      return false;
-    if (!chat.theContact?.targetUid) {
-      if (!chat.theContact.roomId || !chat.theContact.type) {
-        ElMessage.error("房间信息不完整！");
-        return false;
-      }
-      await chat.reloadBaseContact(chat.theContact.roomId, chat.theContact.type);
-    }
-    await submitToQueue({
-      roomId: chat.theRoomId!,
-      msgType: MessageType.AI_CHAT, // AI消息
-      content,
-      body: {
-        userIds: [chat.theContact?.targetUid],
-        businessCode: AiBusinessType.TEXT,
-      } as AiChatBodyDTO,
-    });
-    return true;
-  }
-  // 3) 普通消息
-  await submitToQueue(formDataTemp);
-  return true;
-}
+});
 
-/**
- * 消息发送配置接口
- */
-interface MessageSubmitConfig extends ChatMessageDTO {
-  _skipReset?: boolean;
-  validateFn?: () => boolean | string;
-  prepareData?: () => Partial<ChatMessageDTO>;
-}
-
-/**
- * 统一的消息提交方法
- */
-async function submitMessage(
-  config: MessageSubmitConfig | ChatMessageDTO,
-  callback?: (msg: ChatMessageVO) => void,
-) {
-  const roomId = chat.theRoomId!;
-
-  // 如果传入的是ChatMessageDTO，直接使用
-  let formData: ChatMessageDTO;
-  if ("msgType" in config && typeof config.msgType === "number") {
-    formData = config as ChatMessageDTO;
-  }
-  else {
-    const msgConfig = config as MessageSubmitConfig;
-
-    // 执行验证
-    if (msgConfig.validateFn) {
-      const validation = msgConfig.validateFn();
-      if (typeof validation === "string") {
-        ElMessage.error(validation);
-        return;
-      }
-      if (!validation)
-        return;
-    }
-
-    // 准备数据
-    const preparedData = msgConfig.prepareData?.() || {};
-
-    formData = {
-      roomId,
-      msgType: msgConfig.msgType as CanSendMessageType,
-      content: msgConfig.content || "",
-      body: { ...msgConfig.body, ...preparedData.body },
-      ...preparedData,
-    };
-  }
-
-  // 添加到消息队列
-  chat.addToMessageQueue(formData, (msg: ChatMessageVO) => {
-    emit("submit", msg);
-    if (!(config as MessageSubmitConfig)._skipReset) {
-      resetForm();
-    }
-    callback?.(msg);
-  });
-
-  if (!(config as MessageSubmitConfig)._skipReset) {
-    resetForm();
-  }
-  isSending.value = false;
-}
-
-/**
- * 批量发送图片消息
- */
-async function multiSubmitImg(rawMsgFormData: ChatMessageDTO) {
-  isSending.value = true;
-  const uploadedFiles = new Set();
-
-  // 批量发送图片
-  for (const file of imgList.value) {
-    await submitMessage({
-      roomId: chat.theRoomId!,
-      msgType: MessageType.IMG,
-      content: "",
-      body: {
-        url: file.key!,
-        width: file.width || 0,
-        height: file.height || 0,
-        size: file?.file?.size || 0,
-      },
-      _skipReset: true,
-    });
-    uploadedFiles.add(file.key);
-  }
-
-  // 清理已上传的图片
-  imgList.value = imgList.value.filter(file => !uploadedFiles.has(file.key));
-
-  // 发送文本消息
-  if (rawMsgFormData.content) {
-    await submitMessage({
-      roomId: chat.theRoomId!,
-      msgType: MessageType.TEXT,
-      content: rawMsgFormData.content,
-      body: {
-        ...rawMsgFormData.body,
-        url: undefined,
-        width: undefined,
-        height: undefined,
-        size: undefined,
-      },
-      _skipReset: true,
+// 监听拖拽上传（仅桌面端）
+onMounted(() => {
+  if (setting.isDesktop) {
+    listenDragDrop(async (fileType, file) => {
+      await processFiles([file]);
     });
   }
+});
+onUnmounted(() => {
+  unlistenDragDrop();
+});
 
-  resetForm();
-  isSending.value = false;
-}
 
-/**
- * 批量发送文件消息
- */
-async function multiSubmitFile(rawMsgFormData: ChatMessageDTO) {
-  isSending.value = true;
-  const uploadedFiles = new Set();
-
-  // 批量发送文件
-  for (const file of fileList.value) {
-    await submitMessage({
-      roomId: chat.theRoomId!,
-      msgType: MessageType.FILE,
-      content: "",
-      body: {
-        fileName: file?.file?.name || Date.now().toString(),
-        url: file.key!,
-        size: file?.file?.size || 0,
-      },
-      _skipReset: true,
-    });
-    uploadedFiles.add(file.key);
-  }
-
-  // 清理已上传的文件
-  fileList.value = fileList.value.filter(file => !uploadedFiles.has(file.key));
-
-  // 发送文本消息
-  if (rawMsgFormData.content) {
-    await submitMessage({
-      roomId: chat.theRoomId!,
-      msgType: MessageType.TEXT,
-      content: rawMsgFormData.content,
-      body: {
-        ...rawMsgFormData.body,
-        fileName: undefined,
-        url: undefined,
-        size: undefined,
-      },
-      _skipReset: true,
-    });
-  }
-
-  resetForm();
-  isSending.value = false;
-}
-
-/**
- * 批量发送视频消息
- */
-async function multiSubmitVideo(rawMsgFormData: ChatMessageDTO) {
-  isSending.value = true;
-  const uploadedFiles = new Set();
-
-  // 批量发送视频
-  for (const file of videoList.value) {
-    const thumb = file.children?.[0];
-    await submitMessage({
-      roomId: chat.theRoomId!,
-      msgType: MessageType.VIDEO,
-      content: "",
-      body: {
-        url: file.key,
-        size: file.file?.size || 0,
-        duration: thumb?.duration || 0,
-        thumbUrl: thumb?.key,
-        thumbSize: thumb?.thumbSize,
-        thumbWidth: thumb?.thumbWidth,
-        thumbHeight: thumb?.thumbHeight,
-      },
-      _skipReset: true,
-    });
-    uploadedFiles.add(file.key);
-  }
-
-  // 清理已上传的视频
-  videoList.value = videoList.value.filter(file => !uploadedFiles.has(file.key));
-
-  // 发送文本消息
-  if (rawMsgFormData.content) {
-    await submitMessage({
-      roomId: chat.theRoomId!,
-      msgType: MessageType.TEXT,
-      content: rawMsgFormData.content,
-      body: {
-        ...rawMsgFormData.body,
-        url: undefined,
-        size: undefined,
-        duration: undefined,
-        thumbUrl: undefined,
-        thumbSize: undefined,
-        thumbWidth: undefined,
-        thumbHeight: undefined,
-      },
-      _skipReset: true,
-    });
-  }
-
-  resetForm();
-  isSending.value = false;
-}
-
-/**
- * 将消息提交到队列
- */
-async function submitToQueue(formData: ChatMessageDTO = chat.msgForm, callback?: (msg: ChatMessageVO) => void) {
-  const roomId = chat.theRoomId!;
-
-  // 添加到消息队列
-  chat.addToMessageQueue({
-    ...formData,
-    roomId,
-  }, (msg: ChatMessageVO) => {
-    // 发送信息后触发
-    emit("submit", msg);
-    typeof callback === "function" && callback(msg); // 执行回调
-  });
-
-  // 重置表单
-  resetForm();
-  isSending.value = false;
-}
 /**
  * 发送群通知消息
  */
-function onSubmitGroupNoticeMsg(formData: ChatMessageDTO) {
-  const replyMsgId = chat.msgForm?.body?.replyMsgId;
+async function onSubmitGroupNoticeMsg(formData: ChatMessageDTO) {
+  const replyMsgId = chat.replyMsg?.message?.id;
   const body = formData?.body as any;
-
-  submitMessage({
+  if (!isLord.value) {
+    return "仅群主可发送群通知消息！";
+  }
+  const time = Date.now();
+  const ackId = `temp_${time}_${Math.floor(Math.random() * 100)}`;
+  const formDataTemp = {
     roomId: chat.theRoomId!,
-    msgType: MessageType.GROUP_NOTICE,
+    msgType: MessageType.GROUP_NOTICE as CanSendMessageType,
     content: formData.content,
-    validateFn: () => {
-      if (!isLord.value) {
-        return "仅群主可发送群通知消息！";
-      }
-      return true;
-    },
+    clientId: ackId,
     body: {
       noticeAll: body?.noticeAll,
       imgList: body?.imgList,
       replyMsgId: body?.replyMsgId || replyMsgId || undefined,
     },
-  });
-}
+  };
 
-// onSubmitUploadPreview
-function onSubmitUploadPreview(content?: string) {
-  // content
-  chat.msgForm.content = content || "";
-  onSubmit();
+  const sendMsg = async () => sendChatMessage(formDataTemp, user.getToken);
+  await submitToQueue(time, ackId, formDataTemp, sendMsg, { _skipReset: true });
 }
 
 /**
- * 发送语音
+ * 统一的消息提交到队列
  */
-async function onSubmitSound(): Promise<string | null> {
-  if (!theAudioFile.value || !theAudioFile?.value?.id) {
-    isSending.value = false;
-    return null;
-  }
-  isUploadSound.value = true;
-  try {
-    const data = await new Promise<string>((resolve, reject) => {
-      useOssUpload(OssFileType.SOUND, theAudioFile.value as OssFile, user.getToken, {
-        callback(event, data, file) {
-          if (event === "error") {
-            reject(new Error("发送语音失败，请稍后再试！"));
-          }
-          else if (event === "success") {
-            resolve(data);
-          }
-        },
-      });
-    });
-
-    isUploadSound.value = false;
-    return data;
-  }
-  catch (error) {
-    ElMessage.error("发送语音失败，请稍后再试！");
-    isSending.value = false;
-    isUploadSound.value = false;
-    return null;
+async function submitToQueue(time: number, ackId: any, formData: ChatMessageDTO, sendMsg: () => Promise<Result<ChatMessageVO>>, options: { _skipReset?: boolean } = {}) {
+  formData.clientId = ackId;
+  chat.addToMessageQueue(time, formData, sendMsg, msg => emit("submit", msg));
+  if (!options._skipReset) {
+    resetForm();
   }
 }
+
 
 // 重置表单
 function resetForm() {
   chat.msgForm = {
     roomId: chat.theRoomId!,
-    msgType: MessageType.TEXT, // 默认
+    msgType: MessageType.TEXT,
     content: "",
-    body: {
-      mentionList: [],
-    },
+    body: { mentionList: [] },
   };
   clearInputContent();
-  imageManager.clear();
-  imgList.value = [];
-  fileList.value = [];
-  videoList.value = []; // 清空视频
-  // store
   chat.atUserList.splice(0);
   chat.askAiRobotList.splice(0);
-
-  // 重置上传
-  inputOssImgUploadRef.value?.resetInput?.();
-  inputOssFileUploadRef.value?.resetInput?.();
-  inputOssVideoUploadRef.value?.resetInput?.();
   isSending.value = false;
   chat.setReplyMsg({});
-  resetAudio();
-
-  // 清除@和AI选择
+  resetRecord();
   resetOptions();
+  // 清空编辑器
+  imageManager?.clear?.();
+  fileManager?.clear?.();
+  videoManager?.clear?.();
 }
 
-/**
- * 右键菜单
- * @param e 事件对象
- * @param key key
- * @param index 索引
- */
-function onContextFileMenu(e: MouseEvent, key?: string, index: number = 0, type: OssFileType = OssFileType.IMAGE) {
-  e.preventDefault();
-  const textMap = {
-    [OssFileType.IMAGE]: "图片",
-    [OssFileType.FILE]: "文件",
-    [OssFileType.VIDEO]: "视频",
-    [OssFileType.SOUND]: "语音",
-  } as Record<OssFileType, string>;
-  const opt = {
-    x: e.x,
-    y: e.y,
-    theme: setting.contextMenuTheme,
-    items: [
-      {
-        customClass: "group",
-        icon: "i-solar:trash-bin-minimalistic-outline group-btn-danger",
-        label: `撤销${textMap[type]}`,
-        onClick: async () => {
-          if (!key)
-            return;
-          removeOssFile(type, key, index);
-        },
-      },
-    ],
-  };
-  ContextMenuGlobal.showContextMenu(opt);
-}
-
-function removeOssFile(type: OssFileType = OssFileType.IMAGE, key?: string, index: number = 0) {
-  const filesMap: Record<OssFileType, (Ref<OssFile[]> | undefined)> = {
-    [OssFileType.IMAGE]: imgList,
-    [OssFileType.FILE]: fileList,
-    [OssFileType.VIDEO]: videoList,
-    [OssFileType.SOUND]: undefined,
-    [OssFileType.FONT]: undefined,
-  };
-
-  const targetList = filesMap[type];
-  if (!targetList || !key)
-    return;
-
-  const item = targetList.value.find(f => f.key === key);
-  if (item) {
-    item.subscribe.unsubscribe();
-    const keys = [key, ...(item.children || []).map(f => f.key)];
-    keys.forEach(k => k && deleteOssFile(k, user.getToken));
-  }
-
-  // 重置上传组件
-  ElMessage.closeAll("error");
-  const resetFunctions = [
-    inputOssFileUploadRef?.value?.resetInput,
-    inputOssImgUploadRef?.value?.resetInput,
-    inputOssVideoUploadRef?.value?.resetInput,
-  ];
-  resetFunctions.forEach(fn => fn?.());
-
-  // 移除文件
-  targetList.value.splice(index, 1);
-
-  // 如果列表为空，重置消息类型
-  if (targetList.value.length === 0) {
-    chat.msgForm.msgType = MessageType.TEXT;
-    chat.msgForm.body.url = undefined;
-  }
-}
+// // 右键菜单
+// function onContextFileMenu(e: MouseEvent, ossFile: OssFIle) {
+//   e.preventDefault();
+//   ContextMenuGlobal.showContextMenu({
+//     x: e.x,
+//     y: e.y,
+//     theme: setting.contextMenuTheme,
+//     items: [
+//       {
+//         label: `撤销文件`,
+//         icon: "i-solar:trash-bin-minimalistic-outline group-btn-danger",
+//         onClick: () => {
+//           // deleteFile(); // 使用新的删除方法
+//         },
+//       },
+//     ],
+//   });
+// }
 
 // 移动端工具栏
 const showMobileTools = ref(false);
@@ -867,7 +418,6 @@ watch(
     deep: true,
   },
 );
-
 // 移动端工具栏配置
 interface ToolItem {
   id: string;
@@ -884,7 +434,7 @@ const mobileTools = computed(() => {
       icon: "i-solar:album-bold",
       label: "相册",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ accept: "image/*" }),
+      onClick: () => fileActions.selectImageFiles(),
     },
     // 拍摄
     {
@@ -892,14 +442,14 @@ const mobileTools = computed(() => {
       icon: "i-solar:camera-bold",
       label: "拍摄",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ accept: "image/*", capture: "environment" }),
+      onClick: () => fileActions.selectImageFiles("environment"),
     },
     {
       id: "video",
       icon: "i-solar:video-library-line-duotone",
       label: "视频",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssVideoUploadRef.value?.openSelector?.({ accept: "video/*" }),
+      onClick: () => fileActions.selectVideoFiles(),
     },
     // 录视频
     {
@@ -907,14 +457,14 @@ const mobileTools = computed(() => {
       icon: "i-solar:videocamera-add-bold",
       label: "录视频",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssVideoUploadRef.value?.openSelector?.({ accept: "video/*", capture: "environment" }),
+      onClick: () => fileActions.selectVideoFiles("environment"),
     },
     {
       id: "file",
       icon: "i-solar-folder-with-files-bold",
       label: "文件",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssFileUploadRef.value?.openSelector?.({ }),
+      onClick: () => fileActions.selectAnyFiles(),
     },
   ];
 
@@ -998,11 +548,10 @@ watch(() => chat.replyMsg?.message?.id, (val) => {
 // 生命周期
 onMounted(() => {
   // 监听快捷键
-  window.addEventListener("keydown", startAudio);
+  window.addEventListener("keydown", startRecord);
 
   nextTick(() => {
-    selectionManager.focusAtEnd()
-    ;
+    selectionManager.focusAtEnd();
   });
   // At 用户
   mitter.on(MittEventType.CHAT_AT_USER, (e) => {
@@ -1084,7 +633,7 @@ onUnmounted(() => {
   mitter.off(MittEventType.CAHT_ASK_AI_ROBOT);
   mitter.off(MittEventType.CHAT_AT_USER);
   loadInputTimer.value && clearTimeout(loadInputTimer.value);
-  window.removeEventListener("keydown", startAudio);
+  window.removeEventListener("keydown", startRecord);
 });
 
 onDeactivated(() => {
@@ -1093,7 +642,6 @@ onDeactivated(() => {
 
 defineExpose({
   resetForm,
-  onContextFileMenu,
   onClickOutside: () => {
     showMobileTools.value = false;
   },
@@ -1129,7 +677,7 @@ defineExpose({
       </Transition>
     </Teleport>
     <!-- 预览 -->
-    <ChatMsgAttachview
+    <!-- <ChatMsgAttachview
       :img-list="[]"
       :video-list="setting.isMobileSize ? [] : videoList"
       :file-list="setting.isMobileSize ? [] : fileList"
@@ -1141,7 +689,34 @@ defineExpose({
       @show-video="showVideoDialog"
       @clear-reply="chat.setReplyMsg({})"
       @scroll-bottom="setReadAndScrollBottom"
-    />
+    /> -->
+    <div class="absolute w-full flex flex-col p-2 -transform-translate-y-full" @click.prevent>
+      <!-- 滚动底部 -->
+      <div
+        v-show="!chat.isScrollBottom"
+        data-fade
+        class="mb-2 ml-a mr-2 w-fit btn-info border-default-hover rounded-full card-bg-color px-3 text-right shadow-lg"
+        @click="setReadAndScrollBottom"
+      >
+        <i class="i-solar:double-alt-arrow-down-line-duotone block h-5 w-5 transition-200" />
+      </div>
+      <!-- 回复 -->
+      <div
+        v-if="chat.replyMsg?.fromUser"
+        prop="body.replyMsgId"
+        class="w-full text-sm"
+      >
+        <div class="w-full flex animate-[300ms_fade-in] items-center border-default-2-hover card-default-br p-2 shadow">
+          <el-tag effect="dark" size="small" class="mr-2 shrink-0">
+            回复
+          </el-tag>
+          <div class="max-w-4/5 truncate">
+            {{ `${chat.replyMsg?.fromUser?.nickName}: ${chat.replyMsg ? resolveMsgReplyText(chat.replyMsg as ChatMessageVO) : '未知'}` }}
+          </div>
+          <div class="i-solar:close-circle-bold ml-a h-6 w-6 btn-default text-dark op-80 transition-200 transition-color sm:(h-5 w-5) dark:text-light hover:text-[var(--el-color-danger)]" @click="chat.setReplyMsg({})" />
+        </div>
+      </div>
+    </div>
     <div class="form-contain">
       <!-- 工具栏 TODO: AI机器人暂不支持 -->
       <template v-if="!isAiRoom">
@@ -1171,7 +746,7 @@ defineExpose({
                 </div>
               </BtnElButton>
             </div>
-            <div v-show=" theAudioFile?.id" class="absolute-center-x">
+            <div v-show="theAudioFile?.id" class="absolute-center-x">
               <i p-2.4 />
               <BtnElButton
                 type="primary"
@@ -1203,66 +778,11 @@ defineExpose({
           <template v-else>
             <div v-show="!setting.isMobileSize" class="grid cols-4 items-center gap-3 sm:flex sm:gap-4">
               <!-- 图片 -->
-              <InputOssFileUpload
-                ref="inputOssImgUploadRef"
-                v-model="imgList"
-                :multiple="true"
-                :preview="false"
-                :size="setting.systemConstant.ossInfo?.image?.fileSize"
-                :min-size="1024"
-                :limit="9"
-                :auto-upload="false"
-                :disable="isDisabledFile"
-                class="i-solar:album-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)"
-                pre-class="hidden"
-                :upload-type="OssFileType.IMAGE"
-                input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
-                @error-msg="(msg:string) => {
-                  ElMessage.error(msg)
-                }"
-                @submit="onSubmitImg"
-                @on-change="onOssImgChange"
-              />
+              <i class="i-solar:album-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" @click.stop="fileActions.selectImageFiles()" />
               <!-- 视频 -->
-              <InputOssFileUpload
-                ref="inputOssVideoUploadRef"
-                v-model="videoList"
-                :size="setting.systemConstant.ossInfo?.video?.fileSize"
-                :min-size="1024"
-                :multiple="true"
-                :limit="9"
-                :preview="false"
-                :disable="isDisabledFile"
-                class="i-solar:video-library-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)"
-                pre-class="hidden"
-                :upload-type="OssFileType.VIDEO"
-                input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
-                accept=".mp4,.webm,.mpeg,.flv"
-                @error-msg="(msg:string) => {
-                  ElMessage.error(msg)
-                }"
-                @submit="onSubmitVideo"
-              />
+              <i class="i-solar:video-library-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" @click.stop="fileActions.selectVideoFiles()" />
               <!-- 文件 -->
-              <InputOssFileUpload
-                ref="inputOssFileUploadRef"
-                v-model="fileList"
-                :size="setting.systemConstant.ossInfo?.file?.fileSize"
-                :min-size="1024"
-                :preview="false"
-                :multiple="true"
-                :limit="9"
-                :disable="isDisabledFile"
-                class="i-solar-folder-with-files-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)"
-                pre-class="hidden"
-                :upload-type="OssFileType.FILE"
-                input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
-                :accept="FILE_UPLOAD_ACCEPT"
-                @error-msg="(msg:string) => {
-                  ElMessage.error(msg)
-                }"
-                @submit="onSubmitFile"
-              />
+              <i class="i-solar:folder-with-files-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" @click.stop="fileActions.selectFile({ multiple: true, directory: false })" />
             </div>
             <!-- AI机器人选择器 -->
             <el-select
@@ -1347,7 +867,7 @@ defineExpose({
         <!-- 录音 -->
         <p
           v-if="isSoundRecordMsg"
-          class="relative max-h-3.1rem min-h-3.1rem w-full flex-row-c-c flex-1 overflow-y-auto text-wrap text-small sm:(h-fit max-h-full p-6)"
+          class="relative max-h-2.6rem min-h-2.6rem w-full flex-row-c-c flex-1 overflow-y-auto text-wrap text-small sm:(h-fit max-h-full p-6)"
         >
           {{ (isChating && speechRecognition.isSupported || theAudioFile?.id) ? (audioTransfromText || '...') : `识别你的声音 🎧${speechRecognition.isSupported ? '' : '（不支持）'}` }}
         </p>
@@ -1527,7 +1047,7 @@ defineExpose({
   <!-- 新建通知 -->
   <ChatGroupNoticeMsgDialog v-model:show="showGroupNoticeDialog" @submit="onSubmitGroupNoticeMsg" />
   <!-- 上传预览弹窗 -->
-  <ChatUploadPreviewDialog
+  <!-- <ChatUploadPreviewDialog
     v-model:show="showUploadPreview"
     :target-contact="chat.theContact"
     :img-list="imgList"
@@ -1541,289 +1061,9 @@ defineExpose({
     @clear-reply="chat.setReplyMsg({})"
     @scroll-bottom="setReadAndScrollBottom"
     @submit="onSubmitUploadPreview"
-  />
+  /> -->
 </template>
 
 <style lang="scss" scoped>
-.form-contain {
-  --at-apply: "card-bg-color sm:(!bg-transparent h-62) relative flex flex-col justify-between px-4 pb-4 pt-1  sm:(p-2 pt-1)";
-  box-shadow: rgba(0, 0, 0, 0.04) 0px -4px 16px;
-  .tip {
-    --at-apply: "op-0 transition-100";
-  }
-  &:hover {
-    .tip {
-      --at-apply: "op-100";
-    }
-  }
-}
-
-.input-wrapper {
-  --at-apply: "flex-1 mt-2 sm:mt-0";
-  display: flex;
-  position: relative;
-
-  // 拖拽悬停效果样式
-  .drag-overlay {
-    background: rgba(255, 255, 255, 0.95);
-    animation: fadeInDrag 0.2s ease-in-out;
-
-    .drag-content {
-      border: 2px dashed var(--el-border-color);
-      background: var(--el-bg-color);
-      transition: all 0.3s ease;
-
-      &:hover {
-        border-color: var(--el-color-primary);
-        border-style: solid;
-        color: var(--el-color-primary);
-        transform: scale(1.02);
-      }
-
-      i {
-        color: var(--el-color-primary);
-        font-size: 2rem;
-      }
-    }
-  }
-
-  .rich-editor {
-    --at-apply: "text-0.9em flex-1 w-full h-full min-h-36px p-2 outline-none text-color ";
-    caret-color: var(--el-color-primary);
-    word-break: break-word;
-    white-space: pre-wrap;
-
-    &:empty:before {
-      content: attr(data-placeholder);
-      --at-apply: "text-mini line-height-none";
-      pointer-events: none;
-    }
-
-    &:hover:before {
-      --at-apply: "op-100";
-    }
-     // @用户标签样式
-    :deep(.at-user-tag),
-    // AI机器人标签样式
-    :deep(.ai-robot-tag) {
-      --at-apply: "";
-
-      .at-user-inner {
-        --at-apply: "inline text-0.9em pl-1 text-theme-primary dark:text-theme-info font-500";
-      }
-      .ai-robot-inner {
-        vertical-align: middle;
-        --at-apply: "inline-block w-fit h-fit py-0.2em leading-1.6em pl-1 pr-2 mr-1 cursor-pointer bg-color border-default-2-hover select-none text-0.8em card-rounded-df";
-      }
-      .ai-robot-inner {
-        --at-apply: "text-";
-      }
-      .ai-robot-inner::before {
-        content: "";
-        vertical-align: middle;
-        background: var(--ai-robot-inner-icon) no-repeat center center / cover;
-        --at-apply: "inline-block w-1.4em h-1.4em mr-1 rounded-3em shadow";
-      }
-    }
-
-    // 图片容器样式
-    :deep(.image-container) {
-      --at-apply: "inline-block relative mx-1";
-
-      .inserted-image {
-        --at-apply: "block hover:shadow-sm transition-200 rounded-1 border-default-2";
-      }
-      .image-delete-btn {
-        --at-apply: "absolute -top-2 -right-2 w-5 h-5 text-xs bg-theme-danger text-white rounded-full cursor-pointer flex-row-c-c z-10 sm:opacity-0 transition-all duration-200";
-        &:before {
-          content: "";
-          --at-apply: "i-carbon:close";
-        }
-
-        &:hover {
-          --at-apply:  "scale-110";
-        }
-      }
-      &:hover .image-delete-btn {
-        --at-apply: "opacity-100";
-      }
-    }
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-@keyframes fadeInDrag {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.at-options, .ai-options {
-  --at-apply: "absolute z-99 bg-color border-default rounded-3 -translate-y-full w-160px";
-  box-shadow: var(--el-box-shadow-light);
-
-  :deep(.at-item),
-  :deep(.ai-item) {
-    --at-apply: "flex items-center px-2 py-1 cursor-pointer hover:bg-color-2 card-rounded-df";
-
-    .avatar {
-      --at-apply: "h-6 w-6 rounded-full border-default";
-    }
-
-    .name {
-      --at-apply: "ml-2 flex-1 truncate text-xs";
-    }
-
-    &.active {
-      --at-apply: "bg-color-2";
-    }
-  }
-}
-
-// 语音
-.is-chating {
-  --at-apply: "shadow";
-  --shadow-color: var(--el-color-primary);
-  --shadow-color2: var(--el-color-primary-light-3);
-  outline: none !important;
-  background-size: 400% 400%;
-  transition: all 0.2s;
-  animation: aniamte-poppup-pluse 1s linear infinite;
-  background-image: linear-gradient(to right, var(--shadow-color2) 0%, var(--shadow-color) 50%,var(--shadow-color2) 100%);
-  background-color: var(--shadow-color);
-  border-color: var(--shadow-color);
-  &:deep(.el-button) {
-    outline: none !important;
-  }
-  &:hover .chating-hidden {
-    --at-apply: "hidden";
-  }
-  &:hover .chating-show {
-    --at-apply: "inline-block";
-  }
-  .icon {
-    --at-apply: "animate-pulse";
-  }
-  .text {
-    --at-apply: "w-6rem !sm:w-8rem";
-  }
-  &:hover {
-    --at-apply: "shadow-md";
-    --shadow-color: var(--el-color-danger);
-    --shadow-color2: var(--el-color-danger-light-3);
-    box-shadow: 0 0 0.8rem var(--shadow-color);
-    animation-play-state: paused;
-    background-color: var(-shadow-color);
-    border-color: var(-shadow-color);
-  }
-}
-
-@keyframes aniamte-poppup-pluse {
-  0% {
-    box-shadow: 0 0 0.5rem var(--shadow-color);
-    background-position: 0% 50%;
-  }
-  50% {
-    box-shadow: 0 0 1.2rem var(--shadow-color);
-    background-position: 100% 50%;
-  }
-  100% {
-    box-shadow: 0 0 0.5rem var(--shadow-color);
-    background-position: 0% 50%;
-  }
-}
-
-.play-btn {
-  background-color: #7e7e7e7a;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  --at-apply: "text-white  border-(2px solid #ffffff) bg-(gray-5 op-30) backdrop-blur-3px";
-  .bg-blur {
-    --at-apply: " bg-(gray-5 op-30) backdrop-blur";
-  }
-}
-
-// 添加高度渐变动画
-.slide-height-enter-active,
-.slide-height-leave-active {
-  height: 32vh;
-  will-change: height, opacity;
-  transition: height 0.2s ease, opacity 0.2s ease;
-  opacity: 1;
-  overflow: hidden;
-}
-
-.slide-height-enter-from,
-.slide-height-leave-to {
-  height: 0;
-  opacity: 0;
-}
-.grid-container {
-  transform-origin: top;
-}
-
-.ai-select {
-  :deep(.el-select__wrapper) {
-    --at-apply: "rounded-4 flex-row-c-c pr-3 pl-2 h-7 min-w-9rem w-fit !border-default !sm:border-(1px solid transparent) sm:!bg-transparent !shadow-none";
-    &:hover,
-    &.is-hoving,
-    &.is-focused {
-      --at-apply: "!border-default";
-    }
-    .el-select__placeholder {
-      --at-apply: "!text-color tracking-0.1em op-80";
-    }
-    .el-tag {
-      --at-apply: "text-light rounded-4 !h-fit min-h-5 w-5 p-0 bg-none border-none cursor-pointer";
-      .el-tag__close {
-        --at-apply: "hidden";
-      }
-    }
-    .in-tooltip {
-      --at-apply: "h-fit";
-    }
-    .el-select__tags-text {
-      --at-apply: "flex-row-c-c";
-    }
-    .el-select__selected-item {
-      animation: latter-slice-left 0.3s both;
-      &.el-select__placeholder {
-        animation: none;
-      }
-    }
-  }
-  .robot-select-icon {
-    --at-apply: "text-color p-2.4 i-ri:robot-2-line";
-  }
-
-  &.selected-items {
-    :deep(.el-select__wrapper) {
-      --at-apply: "!border-default";
-      .robot-select-icon {
-        --at-apply: "bg-theme-primary";
-      }
-      .el-select__prefix {
-        --at-apply: "relative";
-        &::after {
-          content: "";
-          --at-apply: "absolute -z-1 inset-0 rounded-full bg-theme-primary animate-ping";
-        }
-      }
-    }
-  }
-}
+@use "./MsgFormV2.scss"
 </style>

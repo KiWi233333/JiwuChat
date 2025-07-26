@@ -13,7 +13,7 @@ const props = defineProps<{
 const { data } = toRefs(props);
 // 具体
 const body: Partial<FileBodyMsgVO> = props.data.message?.body || {};
-const fileName = body?.fileName || `${body?.url?.split("/").pop() || "未知文件"}.${body.fileType?.toLocaleLowerCase()}`;
+const fileName = body?.fileName || `${body?.url?.split("/").pop() || "未知文件"}`;
 const setting = useSettingStore();
 function onDownloadFile(url: string, fileName: string) {
   const item = setting.fileDownloadMap?.[url];
@@ -45,6 +45,7 @@ defineExpose({
 const fileItem = computed(() => setting.fileDownloadMap[BaseUrlFile + body.url]);
 // ctx-name="file"
 const iconSrc = body.mimeType ? (FILE_TYPE_ICON_MAP[body.mimeType] || FILE_TYPE_ICON_DEFAULT) : FILE_TYPE_ICON_DEFAULT;
+const ossFile = (data as any)._ossFile;
 </script>
 
 <template>
@@ -73,6 +74,14 @@ const iconSrc = body.mimeType ? (FILE_TYPE_ICON_MAP[body.mimeType] || FILE_TYPE_
           <small ctx-name="file" class="float-right mt-2 text-xs op-60">
             {{ formatFileSize(body.size || 0) }}
           </small>
+          <el-progress
+            v-if="ossFile"
+            striped
+            :striped-flow="ossFile.status !== 'success'"
+            :duration="10"
+            class="mt-2 w-8em"
+            :percentage="ossFile.percent" :stroke-width="4" :status="ossFile?.status as any || ''"
+          />
         </div>
       </div>
     </template>

@@ -18,12 +18,12 @@ export const MessageSendStatusMap: Record<MessageSendStatus, string> = {
 // 消息队列项接口
 export interface MessageQueueItem {
   id: any; // 消息唯一ID
-  formData: ChatMessageDTO; // 消息数据
+  sendMsg: () => Promise<Result<ChatMessageVO>>; // 发送消息的Promise
+  formData: ChatMessageDTO; // 消息数据(用于msgBuilder)
   status: MessageSendStatus; // 消息状态
-  retryCount: number; // 重试次数
   callback?: (msg: ChatMessageVO) => void; // 回调函数
   createdAt: number; // 创建时间
-  tempMsg?: ChatMessageVO; // 临时消息对象(预构建的消息)
+  tempMsg: ChatMessageVO; // 临时消息对象(预构建的消息)
 }
 
 // 消息队列管理类
@@ -33,7 +33,7 @@ class MessageQueueManager {
 
   // 添加消息到队列
   add = (item: MessageQueueItem): void => {
-    this.queue[item.id] = item; // 直接修改响应式对象
+    this.queue[item.id] = item;
     this.pendingIds.push(item.id);
   };
 
@@ -49,12 +49,6 @@ class MessageQueueManager {
   updateStatus = (id: any, status: MessageSendStatus): void => {
     if (this.queue[id])
       this.queue[id].status = status;
-  };
-
-  // 增加重试次数
-  incrementRetryCount = (id: any): void => {
-    if (this.queue[id])
-      this.queue[id].retryCount++;
   };
 
   // 移除消息
@@ -79,18 +73,17 @@ class MessageQueueManager {
     return Object.values(this.queue);
   };
 
-  // 获取指定ID的消息 - 已经是箭头函数
+  // 获取指定ID的消息
   get = (id: any) => {
     return this.queue[String(id)];
   };
 
   // 清空队列
   clear = (): void => {
-    // 清空响应式对象需要特殊处理
     Object.keys(this.queue).forEach((key) => {
       delete this.queue[key];
     });
-    this.pendingIds.length = 0; // 清空数组
+    this.pendingIds.length = 0;
   };
 
   // 获取队列长度
@@ -102,15 +95,13 @@ class MessageQueueManager {
 export function useMessageQueue() {
   const queueManager = new MessageQueueManager();
   const isProcessingQueue = ref(false);
-  // const processingDelay = 80; // 处理间隔(ms)
   const user = useUserStore();
 
-  // 消息队列的响应式引用 - 不再需要computed，因为队列本身已经是响应式的
+  // 消息队列的响应式引用
   const messageQueue = computed(() => queueManager.getAll());
 
-  // 消息构建器 - 预先构建消息对象 - 已经是箭头函数
+  // 消息构建器 - 预先构建消息对象
   const msgBuilder = (formData: ChatMessageDTO, tempId: any, time: number): ChatMessageVO => {
-    // 构建临时消息对象
     return {
       fromUser: {
         userId: user.userId,
@@ -124,7 +115,7 @@ export function useMessageQueue() {
         sendTime: time,
         content: formData.content,
         type: formData.msgType,
-        body: msgBodyVOBuilderMap[formData.msgType]?.(formData), // 消息体
+        body: msgBodyVOBuilderMap[formData.msgType]?.(formData),
       },
     } as ChatMessageVO<any>;
   };
@@ -149,31 +140,12 @@ export function useMessageQueue() {
     queueManager.updateStatus(currentItem.id, MessageSendStatus.SENDING);
 
     try {
-      // 发送消息
-      const roomId = currentItem.formData.roomId;
-      const clientId = currentItem.id;
-      const user = useUserStore();
-      const res = await sendChatMessage({
-        ...currentItem.formData,
-        roomId,
-        clientId, // 用于辨识同一条消息
-      }, user.getToken);
-      if (res.code === StatusCode.SUCCESS) { // 发送成功
-        if (!queueManager.get(currentItem.id)) {
-          return;
-        }
-        queueManager.updateStatus(currentItem.id, MessageSendStatus.SUCCESS);
-        mitter.emit(MittEventType.MESSAGE_QUEUE, {
-          type: "success",
-          payload: { queueItem: currentItem, msg: res.data },
-        });
-        if (typeof currentItem.callback === "function") {
-          currentItem.callback(res.data);
-        }
-        // 从队列中移除
-        queueManager.remove(currentItem.id);
+      // 调用外部传入的发送Promise
+      const result = await currentItem.sendMsg();
+      if (!result || result.code !== StatusCode.SUCCESS) {
+        throw new Error(result?.message || "发送失败");
       }
-      else if (res.message === "您和对方已不是好友！") { // 特殊错误处理
+      else if (result.message === "您和对方已不是好友！") { // 特殊错误处理
         queueManager.updateStatus(currentItem.id, MessageSendStatus.ERROR);
         mitter.emit(MittEventType.MESSAGE_QUEUE, {
           type: "error",
@@ -181,69 +153,84 @@ export function useMessageQueue() {
         });
         queueManager.removePending(currentItem.id);
       }
-      else { // 其他错误
-        queueManager.updateStatus(currentItem.id, MessageSendStatus.ERROR);
-        mitter.emit(MittEventType.MESSAGE_QUEUE, {
-          type: "error",
-          payload: { queueItem: currentItem },
-        });
-        queueManager.removePending(currentItem.id);
-        // throw new Error(res.message);
+
+      // 检查消息是否还在队列中(可能被删除了)
+      if (!queueManager.get(currentItem.id)) {
+        return;
       }
+
+      // 发送成功
+      queueManager.updateStatus(currentItem.id, MessageSendStatus.SUCCESS);
+
+      // 触发成功事件
+      mitter.emit(MittEventType.MESSAGE_QUEUE, {
+        type: "success",
+        payload: { queueItem: currentItem, msg: result.data },
+      });
+
+      // 执行回调
+      if (typeof currentItem.callback === "function") {
+        currentItem.callback(result.data);
+      }
+
+      // 从队列中移除
+      queueManager.remove(currentItem.id);
     }
-    catch (error) { // 发送失败
+    catch (error) {
+      // 发送失败
       queueManager.updateStatus(currentItem.id, MessageSendStatus.ERROR);
-      // // 触发事件通知
-      // mitter.emit(MittEventType.MESSAGE_QUEUE, {
-      //   type: "error",
-      //   payload: { queueItem: currentItem },
-      // });
-      // // 如果未超过最大重试次数，则重试
-      // if (currentItem.retryCount < maxRetryCount) {
-      //   queueManager.incrementRetryCount(currentItem.id);
-      //   queueManager.updateStatus(currentItem.id, MessageSendStatus.PENDING);
-      //   // 触发重试事件
-      //   mitter.emit(MittEventType.MESSAGE_QUEUE, {
-      //     type: "retry",
-      //     payload: { queueItem: currentItem },
-      //   });
-      // }
+
+      // 触发错误事件
+      mitter.emit(MittEventType.MESSAGE_QUEUE, {
+        type: "error",
+        payload: { queueItem: currentItem },
+      });
+
+      // 从pending列表中移除
+      queueManager.removePending(currentItem.id);
     }
     finally {
       isProcessingQueue.value = false;
-      // 延迟一段时间后继续处理队列
+
+      // 继续处理队列中的其他消息
       if (queueManager.length > 0) {
         processMessageQueue();
       }
     }
   };
 
-  // 添加消息到队列 - 已经是箭头函数
-  const addToMessageQueue = (formData: ChatMessageDTO, callback?: (msg: ChatMessageVO) => void) => {
-    const time = Date.now();
-    const id = `temp_${time}_${Math.floor(Math.random() * 100)}`;
-    const tempMsg = msgBuilder(formData, id, time);
-    // 生成唯一ID
+  // 生成临时消息ID
+
+  // 添加消息到队列 - 重构后只需要三个参数
+  const addToMessageQueue = (
+    time: number,
+    formData: ChatMessageDTO & { _ossFile?: OssFile },
+    sendMsg: () => Promise<Result<ChatMessageVO>>,
+    callback?: (msg: ChatMessageVO) => void,
+  ) => {
+    const tempMsg = msgBuilder(formData, formData.clientId, time);
+    (tempMsg as ChatMessageVO<any> & { _ossFile?: OssFile })._ossFile = formData._ossFile;
+    // 生成队列项
     const queueItem: MessageQueueItem = {
-      id,
-      formData: JSON.parse(JSON.stringify(formData)),
+      id: formData.clientId, // 临时id
+      sendMsg,
+      formData,
       status: MessageSendStatus.PENDING,
-      retryCount: 0,
       callback,
       createdAt: time,
-      tempMsg, // 保存预构建的消息
+      tempMsg,
     };
 
     // 添加到队列
     queueManager.add(queueItem);
 
-    // 触发事件通知
+    // 触发添加事件
     mitter.emit(MittEventType.MESSAGE_QUEUE, {
       type: "add",
       payload: { queueItem, msg: tempMsg },
     });
 
-    // 如果队列没有在处理中，开始处理
+    // 开始处理队列
     if (!isProcessingQueue.value) {
       processMessageQueue();
     }
@@ -260,6 +247,7 @@ export function useMessageQueue() {
     if (!item?.tempMsg || item.status !== MessageSendStatus.ERROR) {
       return;
     }
+
     // 从消息列表中删除错误消息
     const chat = useChatStore();
     const roomId = item.tempMsg.message.roomId;
@@ -276,7 +264,10 @@ export function useMessageQueue() {
       }
       delete contact.msgMap[messageId];
     }
-    addToMessageQueue(item.formData, item.callback);
+
+    // 重新添加到队列
+    addToMessageQueue(Date.now(), item.formData, item.sendMsg, item.callback);
+
     // 触发重试事件
     mitter.emit(MittEventType.MESSAGE_QUEUE, {
       type: "retry",
@@ -286,6 +277,7 @@ export function useMessageQueue() {
       },
     });
   };
+
   // 删除未发送的消息
   const deleteUnSendMessage = (messageId: any) => {
     const item = queueManager.get(messageId);
@@ -330,19 +322,22 @@ export function useMessageQueue() {
     });
   };
 
-  // 处理
+  // 处理队列项(外部调用用于处理成功的消息)
   const resolveQueueItem = (clientId: string, msg: ChatMessageVO) => {
     queueManager.updateStatus(clientId, MessageSendStatus.SUCCESS);
     const currentItem = queueManager.get(clientId);
     if (!currentItem)
       return;
+
     mitter.emit(MittEventType.MESSAGE_QUEUE, {
       type: "success",
       payload: { queueItem: currentItem, msg },
     });
+
     if (typeof currentItem.callback === "function") {
       currentItem.callback(msg);
     }
+
     // 从队列中移除
     queueManager.remove(clientId);
   };

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { InputHTMLAttributes } from "vue";
+import type { InputHTMLAttributes, ShallowReactive } from "vue";
 import type { OssFile } from "@/composables/api/res";
 import * as qiniu from "qiniu-js";
 import { deleteOssFile, getOssErrorCode, getResToken, OssFileType, uploadOssFileSe } from "@/composables/api/res";
@@ -160,13 +160,13 @@ async function hangdleChange(e: Event) {
   if (limit === 1) {
     if (fileList.value.length)
       fileList.value.splice(0);
-    const ossFile: OssFile = {
+    const ossFile: OssFile = shallowReactive({
       id: URL.createObjectURL(t.files[0] as Blob | MediaSource),
       key: undefined,
       status: "",
       percent: 0,
       file: t.files[0],
-    };
+    });
     await onUpload(ossFile);
   }
   else {
@@ -181,14 +181,14 @@ async function hangdleChange(e: Event) {
       error.value = "";
     }
     const data = [...t.files].map((p) => {
-      return {
+      return shallowReactive<OssFile>({
         id: URL.createObjectURL(p as Blob | MediaSource),
         key: undefined,
         status: "",
         percent: 0,
         file: p,
-      };
-    }) as OssFile[];
+      });
+    });
 
     // 并发上传多个文件
     await Promise.allSettled(data.map(p => onUpload(p)));
@@ -199,7 +199,7 @@ async function hangdleChange(e: Event) {
  * 上传文件
  * @param ossFile 文件对象
  */
-async function onUpload(ossFile: OssFile): Promise<boolean> {
+async function onUpload(ossFile: ShallowReactive<OssFile>): Promise<boolean> {
   // 文件校验
   if (fileList.value.length + 1 > limit) { // 限制上传数量
     error.value = `最多只能上传${limit}个文件`;
@@ -258,11 +258,9 @@ async function onUpload(ossFile: OssFile): Promise<boolean> {
       const url = window.URL || window.webkitURL;
       const img = new Image();
       img.src = url.createObjectURL(ossFile.file!);
-      console.log(ossFile.file);
       img.onload = () => {
         ossFile.width = img.width;
         ossFile.height = img.height;
-        console.log(ossFile.width, ossFile.height);
         resolve(true);
       };
     });

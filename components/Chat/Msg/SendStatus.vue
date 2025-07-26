@@ -1,12 +1,16 @@
 <script lang="ts" setup>
+import { CardLoading } from "#components";
+
 const {
   status,
+  ossFile,
 } = defineProps<{
   status: MessageSendStatus
   msgId: any
+  ossFile?: OssFile
 }>();
 const chat = useChatStore();
-const titleMap: Record<MessageSendStatus, { title: string, className?: string, closeName?: string }> = {
+const titleMap: Record<MessageSendStatus, { title: string, className?: string, closeName?: string, iconComponent?: string }> = {
   [MessageSendStatus.ERROR]: {
     title: "发送失败，点击重试",
     className: "i-solar:refresh-linear  bg-theme-danger hover:rotate-180 btn-danger",
@@ -18,7 +22,8 @@ const titleMap: Record<MessageSendStatus, { title: string, className?: string, c
   },
   [MessageSendStatus.SENDING]: {
     title: "发送中...",
-    className: "i-tabler:loader-2 animate-spin op-40",
+    className: "animate-spin op-40",
+    iconComponent: CardLoading,
   },
   [MessageSendStatus.SUCCESS]: {
     title: "",
@@ -36,6 +41,8 @@ function confirmDeleteMessage(event: MouseEvent, msgId: any) {
       center: true,
     },
   ).then(() => {
+    // 停止上传
+    ossFile?.subscribe?.unsubscribe?.();
     // 确认删除消息
     chat.deleteUnSendMessage(msgId);
   }).catch(() => {
@@ -45,8 +52,22 @@ function confirmDeleteMessage(event: MouseEvent, msgId: any) {
 </script>
 
 <template>
-  <i
-    v-if="status"
+  <!-- 上传状态 -->
+  <el-progress
+    v-if="ossFile?.percent !== 100"
+    type="circle"
+    :percentage="ossFile?.percent || 0"
+    :show-text="false"
+    title="上传文件"
+    class="upload-icon !flex-row-c-c"
+    :stroke-width="3"
+    :status="ossFile?.status || ''"
+    :width="16"
+  />
+  <!-- 发送状态 -->
+  <component
+    :is="types?.iconComponent || 'i'"
+    v-else-if="status"
     :title="types?.title"
     class="my-a inline-block h-4.5 w-4.5"
     :class="types?.className"
@@ -62,4 +83,9 @@ function confirmDeleteMessage(event: MouseEvent, msgId: any) {
 </template>
 
 <style lang="scss" scoped>
+.upload-icon {
+  :deep(.el-progress-circle__track) {
+    stroke: rgba(128, 128, 128, 0.178);
+  }
+}
 </style>

@@ -21,9 +21,10 @@ const { width, height } = getImgSize(body?.width, body?.height);
 body.showWidth = width;
 body.showHeight = height;
 
+const getUrl = computed(() => body?.url?.startsWith("blob") ? body?.url : BaseUrlImg + body?.url);
 // 处理图片点击预览
 function handleImagePreview() {
-  if (!body?.url)
+  if (!getUrl.value)
     return;
 
   // 获取当前房间的所有图片
@@ -34,8 +35,8 @@ function handleImagePreview() {
     );
   if (!imgs?.length)
     return;
-  const currentImgUrl = BaseUrlImg + body?.url;
-  const imgsUrl = imgs.map(msg => BaseUrlImg + msg.message?.body?.url);
+  const currentImgUrl = getUrl.value;
+  const imgsUrl = imgs.map(msg => msg.message?.body?.url?.startsWith("blob") ? msg.message?.body?.url : BaseUrlImg + msg.message?.body?.url);
   useImageViewer.open({
     urlList: imgsUrl,
     index: imgsUrl.indexOf(currentImgUrl),
@@ -61,7 +62,7 @@ function handleImagePreview() {
         @click="handleImagePreview"
       >
         <CardElImage
-          :src="BaseUrlImg + body?.url"
+          :src="getUrl"
           load-class="sky-loading block absolute  top-0"
           class="h-full w-full card-rounded-df"
           :alt="body?.url"

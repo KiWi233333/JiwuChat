@@ -1,9 +1,10 @@
 import ContextMenuGlobal from "@imengyu/vue3-context-menu";
 
 export const MAX_UPLOAD_IMAGE_COUNT = 9;
+export const AT_USER_TAG_CLASSNAME = "at-user-tag";
 // @unocss-include
 // 安全工具类
-class SecurityUtils {
+export class SecurityUtils {
   static sanitizeInput(input: string): string {
     if (typeof input !== "string")
       return "";
@@ -26,7 +27,7 @@ class SecurityUtils {
 }
 
 // DOM缓存管理器
-class DomCacheManager {
+export class DomCacheManager {
   private cache = new Map<string, Element[]>();
   private cacheTimeout = 5000;
   private cacheClearTimer: NodeJS.Timeout | null = null;
@@ -61,7 +62,7 @@ class DomCacheManager {
 }
 
 // 选区管理器
-class SelectionManager {
+export class SelectionManager {
   constructor(private inputRef: Ref<HTMLElement | null>) {}
 
   getCurrent(): Selection | null {
@@ -147,7 +148,7 @@ class TagManager<T> {
 
   insert(
     element: HTMLElement,
-    tagData: { type: string; uid: string; username: string; text: string },
+    tagData: { type: string; uid: string; nickName: string; text: string },
     matchRegex: RegExp,
     addSpace = false,
   ): boolean {
@@ -220,163 +221,6 @@ class TagManager<T> {
   }
 }
 
-// 图片管理器
-class ImageManager {
-  private maxCount = 9;
-
-  constructor(
-    private inputRef: Ref<HTMLElement | null>,
-    private selectionManager: SelectionManager,
-    private isAIRoom: ComputedRef<boolean>,
-  ) {}
-
-  insert(file: File | string, alt = ""): Promise<void> {
-    if (!this.inputRef.value) {
-      return Promise.reject(new Error("msgInputRef 不存在"));
-    }
-
-    if (this.isAIRoom.value) {
-      ElMessage.error("AI对话暂不支持图片输入！");
-      return Promise.reject(new Error("AI对话不支持图片"));
-    }
-
-    if (this.getCount() >= this.maxCount) {
-      ElMessage.error(`最多只能添加 ${this.maxCount} 张图片！`);
-      return Promise.reject(new Error("图片数量超限"));
-    }
-
-    return new Promise((resolve, reject) => {
-      this.inputRef.value!.focus();
-
-      nextTick(() => {
-        try {
-          const range = this.selectionManager.getRange() || this.selectionManager.createRangeAtEnd();
-          this.insertAtRange(file, alt, range).then(resolve).catch(reject);
-        }
-        catch (error) {
-          reject(error);
-        }
-      });
-    });
-  }
-
-  private insertAtRange(file: File | string, alt: string, range: Range): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const container = SecurityUtils.createSafeElement("span", "image-container", {
-        "data-type": "image",
-        "contenteditable": "false",
-        "role": "img",
-        "tabindex": "0",
-        "draggable": "false",
-      }) as any;
-
-      const img = document.createElement("img");
-      img.className = "inserted-image";
-      img.style.cssText = "max-width: 12rem; max-height: 9rem; border-radius: 0.3rem; cursor: pointer;";
-
-      let objectUrl: string | null = null;
-
-      img.onerror = () => {
-        if (objectUrl)
-          URL.revokeObjectURL(objectUrl);
-        reject(new Error("图片加载失败"));
-      };
-
-      img.onload = () => {
-        if (objectUrl) {
-          URL.revokeObjectURL(objectUrl);
-          objectUrl = null;
-        }
-        resolve();
-      };
-
-      if (typeof file === "string") {
-        img.src = file;
-        img.alt = alt || "图片";
-      }
-      else {
-        objectUrl = URL.createObjectURL(file);
-        img.src = objectUrl;
-        img.alt = alt || file.name || "图片";
-        container.__imageFile = file;
-        container.__objectUrl = objectUrl;
-      }
-
-      const deleteBtn = SecurityUtils.createSafeElement("span", "image-delete-btn", {
-        title: "删除图片",
-        role: "button",
-        tabindex: "0",
-      });
-
-      container.addEventListener("click", (e: Event) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const target = e.target as HTMLElement;
-
-        if (target.classList.contains("image-delete-btn")) {
-          if (container.__objectUrl) {
-            URL.revokeObjectURL(container.__objectUrl);
-          }
-          container.remove();
-        }
-        else if (target.tagName === "IMG") {
-          // 创建图片查看器
-          const url = URL.createObjectURL(container.__imageFile || file);
-          useImageViewer.open({
-            urlList: [url],
-            initialIndex: 0,
-            closeCallback() {
-              URL.revokeObjectURL(url);
-            },
-          });
-        }
-      });
-
-      container.appendChild(img);
-      container.appendChild(deleteBtn);
-
-      requestAnimationFrame(() => {
-        range.deleteContents();
-        range.insertNode(container);
-        range.setStartAfter(container);
-        range.collapse(true);
-
-        const selection = this.selectionManager.getCurrent();
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-
-        this.inputRef.value?.focus();
-      });
-    });
-  }
-
-  getCount(): number {
-    return this.inputRef.value?.querySelectorAll(".image-container").length || 0;
-  }
-
-  getFiles(): File[] {
-    if (!this.inputRef.value)
-      return [];
-
-    const containers = this.inputRef.value.querySelectorAll(".image-container");
-    return Array.from(containers)
-      .map(container => (container as any).__imageFile)
-      .filter(file => file instanceof File);
-  }
-
-  clear() {
-    if (!this.inputRef.value)
-      return;
-
-    const containers = this.inputRef.value.querySelectorAll(".image-container");
-    containers.forEach((container) => {
-      const objectUrl = (container as any).__objectUrl;
-      if (objectUrl)
-        URL.revokeObjectURL(objectUrl);
-      container.remove();
-    });
-  }
-}
 
 // 输入检测器
 class InputDetector {
@@ -488,6 +332,8 @@ export function useMsgInputForm(
   const selectionManager = new SelectionManager(msgInputRef);
   const tagManager = new TagManager(msgInputRef, domCache, selectionManager);
   const imageManager = new ImageManager(msgInputRef, selectionManager, computed(() => chat.isAIRoom || isReplyAI.value));
+  const fileManager = new FileManager(msgInputRef, selectionManager, computed(() => chat.isAIRoom || isReplyAI.value));
+  const videoManager = new VideoManager(msgInputRef, selectionManager, computed(() => chat.isAIRoom || isReplyAI.value));
 
   // Hooks
   const { userOptions, userAtOptions, loadUser } = useLoadAtUserList();
@@ -622,12 +468,11 @@ export function useMsgInputForm(
     resolveContentAiAsk();
   }
   function resolveContentAtUsers() {
-    const users = tagManager.parseFromDom(".at-user-tag", (tag) => {
+    const users = tagManager.parseFromDom(`.${AT_USER_TAG_CLASSNAME}`, (tag) => {
       const uid = tag.getAttribute("data-uid");
-      const username = tag.getAttribute("data-username");
-      const nickName = tag.textContent?.replace(/^@/, "");
+      const nickName = tag.getAttribute("data-nickName");
 
-      if (!uid || !username || !nickName)
+      if (!uid || !nickName || !nickName)
         return null;
 
       const userInfo = userOptions.value.find(u => u.userId === uid);
@@ -635,7 +480,6 @@ export function useMsgInputForm(
         label: userInfo?.label || nickName,
         value: userInfo?.value || nickName,
         userId: uid,
-        username,
         nickName,
         avatar: userInfo?.avatar,
       } as AtChatMemberOption;
@@ -647,10 +491,9 @@ export function useMsgInputForm(
   function resolveContentAiAsk() {
     const aiRobots = tagManager.parseFromDom(".ai-robot-tag", (tag) => {
       const uid = tag.getAttribute("data-uid");
-      const username = tag.getAttribute("data-username");
-      const nickName = tag.textContent;
+      const nickName = tag.getAttribute("data-nickName");
 
-      if (!uid || !username || !nickName)
+      if (!uid || !nickName || !nickName)
         return null;
 
       const robotInfo = aiOptions.value.find(r => r.userId === uid);
@@ -658,7 +501,6 @@ export function useMsgInputForm(
         label: robotInfo?.label || nickName,
         value: robotInfo?.value || nickName,
         userId: uid,
-        username,
         nickName,
         avatar: robotInfo?.avatar,
         aiRobotInfo: robotInfo?.aiRobotInfo,
@@ -675,13 +517,14 @@ export function useMsgInputForm(
     if (!chat.atUserList.some(u => u.userId === user.userId)) {
       chat.atUserList.push(user);
     }
+    console.log(user);
 
-    const outer = SecurityUtils.createSafeElement("span", "at-user-tag", {
+    const outer = SecurityUtils.createSafeElement("span", AT_USER_TAG_CLASSNAME, {
       "data-type": "at-user",
       "data-uid": user.userId,
-      "data-username": user.username || "",
+      "data-nickName": user.nickName || "",
       "draggable": "false",
-      "title": `@${SecurityUtils.sanitizeInput(user.nickName)} (${SecurityUtils.sanitizeInput(user.username || "")})`,
+      "title": `@${SecurityUtils.sanitizeInput(user.nickName)} (${SecurityUtils.sanitizeInput(user.nickName || "")})`,
     });
 
     const inner = SecurityUtils.createSafeElement("span", "at-user-inner");
@@ -691,7 +534,7 @@ export function useMsgInputForm(
     tagManager.insert(outer, {
       type: "at-user",
       uid: user.userId,
-      username: user.username || "",
+      nickName: user.nickName || "",
       text: `@${user.nickName}`,
     }, /@[^@\s]*$/, true);
   }
@@ -708,8 +551,8 @@ export function useMsgInputForm(
       "data-type": "ai-robot",
       "data-uid": robot.userId,
       "draggable": "false",
-      "data-username": robot.username || "",
-      "title": `${SecurityUtils.sanitizeInput(robot.nickName)} (${SecurityUtils.sanitizeInput(robot.username || "")})`,
+      "data-nickName": robot.nickName || "",
+      "title": `${SecurityUtils.sanitizeInput(robot.nickName)} (${SecurityUtils.sanitizeInput(robot.nickName || "")})`,
     });
 
     const inner = SecurityUtils.createSafeElement("span", "ai-robot-inner");
@@ -721,7 +564,7 @@ export function useMsgInputForm(
     tagManager.insert(outer, {
       type: "ai-robot",
       uid: robot.userId,
-      username: robot.username || "",
+      nickName: robot.nickName || "",
       text: robot.nickName,
     }, /\/[^/\s]*$/);
   }
@@ -770,48 +613,77 @@ export function useMsgInputForm(
     }
   }
 
-  function getInputVaildText(isAllContent = false): string {
-    try {
-      if (isReplyAI.value) { // TODO: AI对话只遍历获取纯文本
-        let content = "";
-        if (isAllContent) {
-          // 获取所有子节点的内容
-          msgInputRef.value?.childNodes.forEach((node) => {
-            if (node.nodeType === Node.TEXT_NODE) {
-              content += node.textContent || "";
-            }
-            else if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).tagName === "IMG") {
-              content += `[图片]`;
-            }
-            else if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains("at-user-tag")) {
-              const atUser = node as HTMLElement;
-              content += `@${atUser.dataset.username || "未知"}`;
-            }
-            else if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains("ai-robot-tag")) {
-              const aiRobot = node as HTMLElement;
-              content += `/${aiRobot.dataset.username || "未知"}`;
-            }
-          });
-        }
-        else {
-        // 遍历所有子节点，获取纯文本内容
-          msgInputRef.value?.childNodes.forEach((node) => {
-            if (node.nodeType === Node.TEXT_NODE) {
-              content += node.textContent || "";
-            }
-          });
-        }
-        return content;
-      }
+  function checkExistChildren(): boolean {
+    if (msgInputRef.value?.textContent?.trim()) {
+      return true;
+    }
+    else if (msgInputRef.value?.innerHTML.trim() === "<br>") {
+      return false;
+    }
+    return !![...(msgInputRef.value?.childNodes || [])].filter(node => node.nodeType !== Node.TEXT_NODE).length;
+  }
 
-      // 默认 （包括 @ ）
-      const content = msgInputRef.value?.textContent || "";
-      inputTextContent.value = content;
-      return content.trim();
+  function getInputDTOByText() {
+    try {
+      // 获取输入框内容
+      const formDataTemp: Partial<ChatMessageDTO> = {
+        msgType: MessageType.TEXT,
+        content: "",
+        body: {
+          mentionList: [],
+        },
+      };
+      msgInputRef.value?.childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          formDataTemp.content += node.textContent || "";
+        }
+        else if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).classList.contains(AT_USER_TAG_CLASSNAME)) {
+          formDataTemp.content += node.textContent || "";
+        }
+      });
+
+      // 处理 @ 和 AI
+      // 文本类
+      if (formDataTemp.content) {
+        if (chat.theContact.type === RoomType.GROUP) { // 处理 @用户
+          const atUidList = resolveContentAtUsers();
+          if (atUidList?.length) {
+            chat.atUserList = atUidList;
+            // 将 atUidList 转换为 mentionList 格式
+            formDataTemp.body.mentionList = atUidList.map(item => ({
+              uid: item.userId,
+              displayName: `@${item.nickName}`,
+            }));
+          }
+        }
+
+        // 处理 AI机器人 TODO: 可改为全体呼叫
+        const { replaceText, aiRobitUidList } = resolveAiReply(formDataTemp.content!, aiOptions.value, chat.askAiRobotList);
+        if (aiRobitUidList.length > 0 && replaceText) { // AI消息
+          formDataTemp.content = replaceText;
+          formDataTemp.body = {
+            userIds: aiRobitUidList.length > 0 ? aiRobitUidList : undefined,
+            businessCode: AiBusinessType.TEXT,
+          } as AiChatBodyDTO;
+          formDataTemp.msgType = MessageType.AI_CHAT; // 设置对应消息类型
+        }
+        else if (chat.theContact.type === RoomType.AICHAT) { // 私聊机器人
+          console.log(chat.theContact);
+
+          formDataTemp.content = replaceText;
+          formDataTemp.body = {
+            userIds: [chat.theContact.targetUid], // 个人
+            businessCode: AiBusinessType.TEXT, // 文本
+          } as AiChatBodyDTO;
+          formDataTemp.msgType = MessageType.AI_CHAT; // 设置对应消息类型
+        }
+      };
+
+      return formDataTemp;
     }
     catch (error) {
       console.warn("Get input valid text error:", error);
-      return "";
+      return undefined;
     }
   }
 
@@ -1108,10 +980,171 @@ export function useMsgInputForm(
     }
   });
   setting.shortcutManager.updateShortHandlers("switch-chat", (e) => {
-    if (!getInputVaildText(true)) {
+    if (!checkExistChildren()) {
       chat.onDownUpChangeRoom(e.key === "ArrowDown" ? "down" : "up");
     }
   });
+
+
+  /**
+   * 根据上传成功的 OssFile 构造消息体
+   */
+  function constructMsgFormDTO(fileActions: ReturnType<typeof useFileActions>, oss?: OssFile, formData?: Partial<ChatMessageDTO>, customUploadType?: OssFileType) {
+    const time = Date.now();
+    const ackId = `temp_${time}_${Math.floor(Math.random() * 100)}`;
+
+    const baseMessage = {
+      ...(chat.msgForm || {}),
+      roomId: chat.theRoomId!,
+      clientId: ackId,
+      content: formData?.content,
+      msgType: formData?.msgType || MessageType.TEXT,
+      body: {
+        ...(chat.msgForm?.body || {}),
+        ...formData?.body,
+      },
+    };
+    const previewFormDataTemp = computed<ChatMessageDTO & { _ossFile?: OssFile }>(() => {
+      if (!oss?.file) {
+        return baseMessage;
+      }
+
+      const analysis = fileActions.analyzeFile(oss.file, customUploadType);
+      const type = analysis.type;
+
+      switch (type) {
+        case OssFileType.IMAGE:
+          return {
+            ...baseMessage,
+            msgType: MessageType.IMG,
+            body: {
+              ...baseMessage.body,
+              url: oss.id!,
+              width: oss.width || 0,
+              height: oss.height || 0,
+              size: oss.file?.size,
+            },
+            _ossFile: oss,
+          };
+
+        case OssFileType.VIDEO:
+          const thumb = oss?.children?.[0];
+          return {
+            ...baseMessage,
+            msgType: MessageType.VIDEO,
+            body: {
+              ...baseMessage.body,
+              url: oss.id!,
+              size: oss.file?.size || 0,
+              duration: oss.duration || 0,
+              thumbUrl: thumb?.id,
+              thumbSize: thumb?.thumbSize || 0,
+              thumbWidth: thumb?.thumbWidth || 0,
+              thumbHeight: thumb?.thumbHeight || 0,
+            },
+            _ossFile: oss,
+          };
+
+        case OssFileType.FILE:
+          return {
+            ...baseMessage,
+            msgType: MessageType.FILE,
+            body: {
+              ...baseMessage.body,
+              fileName: oss.file?.name || "",
+              url: oss.key!,
+              size: oss.file?.size || 0,
+            },
+            _ossFile: oss,
+          };
+
+        case OssFileType.SOUND:
+          return {
+            ...baseMessage,
+            msgType: MessageType.SOUND,
+            body: {
+              ...baseMessage.body,
+              url: oss.key,
+              second: oss.duration || 0,
+            },
+            _ossFile: oss,
+          };
+
+        default:
+          return baseMessage;
+      }
+    });
+
+    const getFormData
+    = () => {
+      if (!oss?.file) {
+        return baseMessage;
+      }
+
+      const analysis = fileActions.analyzeFile(oss.file, customUploadType);
+      const type = analysis.type;
+
+      switch (type) {
+        case OssFileType.IMAGE:
+          return {
+            ...baseMessage,
+            msgType: MessageType.IMG,
+            body: {
+              ...baseMessage.body,
+              url: oss.key!,
+              width: oss.width || 0,
+              height: oss.height || 0,
+              size: oss.file?.size,
+            },
+          };
+
+        case OssFileType.VIDEO:
+          const thumb = oss?.children?.[0];
+          return {
+            ...baseMessage,
+            msgType: MessageType.VIDEO,
+            body: {
+              ...baseMessage.body,
+              url: oss.key,
+              size: oss.file?.size || 0,
+              duration: oss.duration || 0,
+              thumbUrl: thumb?.key,
+              thumbSize: thumb?.thumbSize,
+              thumbWidth: thumb?.thumbWidth,
+              thumbHeight: thumb?.thumbHeight,
+            },
+          };
+
+        case OssFileType.FILE:
+          return {
+            ...baseMessage,
+            msgType: MessageType.FILE,
+            body: {
+              ...baseMessage.body,
+              fileName: oss.file?.name || "",
+              url: oss.key!,
+              size: oss.file?.size || 0,
+            },
+          };
+
+        case OssFileType.SOUND:
+          return {
+            ...baseMessage,
+            msgType: MessageType.SOUND,
+            body: {
+              ...baseMessage.body,
+              url: oss.key,
+              second: oss.duration || 0,
+            },
+          };
+
+        default:
+          return baseMessage;
+      }
+    };
+
+    return { getFormData, previewFormDataTemp, time, ackId };
+  }
 
   return {
     // 核心 refs 和状态
@@ -1123,6 +1156,8 @@ export function useMsgInputForm(
 
     // 管理器
     imageManager,
+    fileManager,
+    videoManager,
     tagManager,
     selectionManager,
 
@@ -1158,7 +1193,8 @@ export function useMsgInputForm(
     // 内容管理
     updateFormContent,
     clearInputContent,
-    getInputVaildText,
+    checkExistChildren,
+    getInputDTOByText,
     resolveContentAtUsers,
 
     // 选区和范围
@@ -1174,6 +1210,9 @@ export function useMsgInputForm(
     handleSelectAtUser,
     handleSelectAiRobot,
     scrollToSelectedItem,
+
+    // 提交处理器
+    constructMsgFormDTO,
 
     // 事件处理器
     handleInput: debouncedHandleInput,

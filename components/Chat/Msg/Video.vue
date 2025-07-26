@@ -12,7 +12,8 @@ const props = defineProps<{
 const { data } = toRefs(props);
 // 具体
 const body = props.data.message?.body;
-const thumbUrl = computed(() => (body?.thumbUrl ? BaseUrlImg + body.thumbUrl : ""));
+const ossFile = props.data._ossFile;
+const thumbUrl = computed(() => (body?.thumbUrl ? (body.thumbUrl.startsWith("blob") ? body.thumbUrl : BaseUrlImg + body.thumbUrl) : ossFile?.children?.[0]?.id));
 
 // 时长
 const minutes = Math.floor((body?.duration || 0) / 60);
@@ -27,7 +28,6 @@ function showVideoDetail(e: MouseEvent) {
     payload: {
       mouseX: e.clientX,
       mouseY: e.clientY,
-
       url: BaseUrlVideo + body.url,
       duration: body.duration,
       thumbUrl: BaseUrlVideo + body.thumbUrl,
@@ -38,7 +38,7 @@ function showVideoDetail(e: MouseEvent) {
     },
   });
 }
-const { width, height } = getImgSize(body?.thumbWidth, body?.thumbHeight);
+const size = computed(() => getImgSize(props.data.message.body?.thumbWidth || props.data._ossFile?.thumbWidth, props.data.message.body?.thumbHeight || props.data._ossFile?.thumbHeight));
 </script>
 
 <template>
@@ -53,7 +53,7 @@ const { width, height } = getImgSize(body?.thumbWidth, body?.thumbHeight);
         class="relative max-h-50vh max-w-76vw flex-row-c-c cursor-pointer border-default-hover card-default md:(max-h-18rem max-w-18rem)"
         title="点击播放[视频]"
         ctx-name="video"
-        :style="{ width, height }"
+        :style="{ width: size.width, height: size.height }"
         @click.stop="showVideoDetail($event)"
       >
         <template
