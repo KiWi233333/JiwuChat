@@ -136,6 +136,11 @@ export default defineNuxtConfig({
     "@/assets/styles/index.scss",
     "@/assets/styles/animate.scss",
   ],
+  nitro: {
+    devProxy: {
+      host: "localhost",
+    },
+  },
   // alias: {
   //   "~": "/<srcDir>",
   //   "@": "/<srcDir>",

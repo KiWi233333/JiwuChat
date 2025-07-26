@@ -54,7 +54,7 @@ function confirmDeleteMessage(event: MouseEvent, msgId: any) {
 <template>
   <!-- 上传状态 -->
   <el-progress
-    v-if="ossFile?.percent !== 100"
+    v-if="ossFile && ossFile?.percent !== 100"
     type="circle"
     :percentage="ossFile?.percent || 0"
     :show-text="false"
