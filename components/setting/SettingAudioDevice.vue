@@ -92,7 +92,7 @@ function handleAutoDetectChange(value: boolean) {
         >
           申请权限
         </el-button>
-        <div v-else class="text-color-3 flex items-center gap-2 text-sm">
+        <div v-else class="text-color-3 flex items-center gap-2 text-xs">
           <i class="i-solar:check-circle-bold text-green-500" />
           权限已获取
         </div>

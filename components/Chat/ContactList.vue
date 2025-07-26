@@ -434,6 +434,7 @@ onMounted(() => {
           <el-badge
             :hidden="!room.unreadCount"
             :max="99"
+            :offset="[-5, 5]"
             :value="room.unreadCount"
             class="badge h-10 w-10 flex-shrink-0"
           >
@@ -517,9 +518,9 @@ onMounted(() => {
       // }
     }
 
-    // :deep(.el-badge__content) {
-    //   --at-apply: "border-none";
-    // }
+    :deep(.el-badge__content) {
+      --at-apply: "border-none p-0 w-4 h-4 text-xs";
+    }
     &.is-shield {
       :deep(.el-badge__content) {
         --at-apply: "bg-gray text-white border-none dark:(bg-dark-2)";

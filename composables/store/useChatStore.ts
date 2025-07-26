@@ -1021,7 +1021,7 @@ export const useChatStore = defineStore(
       }
 
       // 映射到消息内容并排除不存在的数据
-      return msgIds.map(id => contact.msgMap[id]).filter(Boolean) as ChatMessageVO[];
+      return msgIds.map(id => contact.msgMap[id]) as ChatMessageVO[];
     }
 
 
