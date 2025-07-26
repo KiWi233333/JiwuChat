@@ -396,7 +396,7 @@ onMounted(() => {
       :items="chat.getContactList"
       :item-height="setting.isMobileSize ? '4.2rem' : '4.5rem'"
       max-height="100%"
-      wrap-class="w-full relative h-full p-0 sm:(p-2 shadow-sm shadow-inset)"
+      wrap-class="w-full relative h-full sm:(p-2)"
       :class-name="['contact-list', isAnimateDelay ? STOP_TRANSITION_KEY : '']"
       item-class="contact-item"
       :get-item-key="(room) => room.roomId"
@@ -508,13 +508,13 @@ onMounted(() => {
       --at-apply: "bg-light-4 dark:bg-dark-8";
     }
     &.is-checked {
-      --at-apply: "!sm:(bg-[var(--el-color-primary)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) text-white";
+      --at-apply: "!sm:(bg-[var(--el-color-primary-light-9)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) ";
       .text {
-        --at-apply: "sm:(color-white dark:text-white)";
+        --at-apply: "dark:text-white";
       }
-      .ai-icon {
-        --at-apply: "sm:!text-white";
-      }
+      // .ai-icon {
+      //   --at-apply: "sm:!text-white";
+      // }
     }
 
     // :deep(.el-badge__content) {
@@ -528,7 +528,7 @@ onMounted(() => {
   }
 }
 .header {
-  --at-apply: "card-bg-color sm:(h-20 px-4 bg-transparent) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
+  --at-apply: "sm:(h-20 px-4) bg-color sm:(bg-white dark:bg-[#111111]) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
   :deep(.el-input) {
     .el-input__wrapper {
       --at-apply: "!shadow-none !outline-none !input-bg-color";

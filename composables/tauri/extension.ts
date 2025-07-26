@@ -8,7 +8,7 @@ export function useOpenExtendWind() {
   const setting = useSettingStore();
   // 打开扩展窗口
   const open = async (item: ExtendItem, log: boolean = true) => {
-    if (!item.url || item.loading) {
+    if (!item.url) {
       return;
     }
     if (item.disabled) {
@@ -32,6 +32,10 @@ export function useOpenExtendWind() {
         });
         return;
       }
+    }
+    else {
+      window.open(item.url, "_blank");
+      return;
     }
     item.loading = true;
     createWindow(EXTEND_WINDOW_LABEL, {

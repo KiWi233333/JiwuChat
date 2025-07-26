@@ -170,7 +170,7 @@ function createItem() {
             'not-link': item.disabled,
             [`${item.class || ''}`]: item.class,
           }"
-          @click.stop="!item.disabled && open(item)"
+          @click.capture="!item.disabled && open(item)"
         >
           <div mx-a h-1.8em w-1.8em flex-row-c-c>
             <i

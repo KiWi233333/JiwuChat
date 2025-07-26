@@ -93,8 +93,6 @@ const menuList = reactive([
     label: "关于",
     icon: "i-solar:info-circle-outline",
     onClick: () => useOpenUrl(appBlogHost),
-    divider: true,
-    dividerClass: "!my-1",
   },
   {
     label: "退出登录",
