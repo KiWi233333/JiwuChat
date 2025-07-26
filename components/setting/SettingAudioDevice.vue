@@ -109,6 +109,7 @@ function handleAutoDetectChange(value: boolean) {
           :size="size"
           :disabled="!audioDeviceManager.hasPermission.value || audioDeviceManager.isLoading.value"
           class="inputs ml-a"
+          style="width: 12rem; max-width: 60%;"
           placeholder="选择麦克风设备"
           :teleported="false"
           placement="bottom"

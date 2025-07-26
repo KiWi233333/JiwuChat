@@ -154,10 +154,10 @@ onUnmounted(() => {
     </MenuHeaderMenuBar>
     <main :class="mainClass" class="relative h-full flex-1 sm:flex">
       <menu
-        class="transition-anima h-full w-full sm:(max-w-14rem min-w-fit border-default-2-r shadow-lg)"
+        class="h-full w-full transition-360 sm:(max-w-14rem min-w-fit border-default-2-r shadow-lg)"
         :class="[
           menuClass,
-          activeItem?.value && setting.isMobileSize ? '-translate-x-1/2 css-will-change' : '',
+          activeItem?.value && setting.isMobileSize ? '-translate-x-1/2 scale-95 css-will-change' : '',
         ]"
       >
         <h3 flex items-center class="px-7 pt-8 text-lg">
@@ -183,11 +183,11 @@ onUnmounted(() => {
       </menu>
       <el-scrollbar
         ref="scrollbarRef"
-        class="transition-anima left-0 top-0 h-full w-full flex-1 bg-color-3 pt-4 shadow-lg !fixed !z-999 sm:(z-1 card-bg-color-2 pt-10 shadow-none transition-none) !sm:static"
+        class="left-0 top-0 h-full w-full flex-1 bg-color-3 pt-4 shadow-lg transition-360 !fixed !z-999 sm:(z-1 card-bg-color-2 pt-10 shadow-none) !sm:static !sm:transition-none"
         wrap-class="h-full w-full pb-4 sm:pb-20 flex flex-1 flex-col px-4"
         :class="{
           'settinlink-animated': showAnima,
-          'translate-x-full css-will-change': showAnima && !activeMenu,
+          'translate-x-full css-will-change': !activeMenu,
         }"
       >
         <h3 v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b py-3 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
@@ -288,9 +288,6 @@ onUnmounted(() => {
   100% {
     border-color: transparent !important;
   }
-}
-.transition-anima {
-  transition: transform 0.3s ease-in-out;
 }
 .css-will-change {
   will-change: transform;
