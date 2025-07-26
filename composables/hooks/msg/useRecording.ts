@@ -19,6 +19,7 @@ interface RecordingState {
   isPlaying: boolean;
   audioElement?: HTMLAudioElement;
   transformTextList: string[];
+  cachedDeviceId?: string; // 缓存的设备ID
 }
 
 /**
@@ -161,10 +162,11 @@ function useRecordingCore(state: Ref<RecordingState>, options: { timeslice: numb
       ElMessage.warning(`录音时间过短，至少需要${MIN_CHAT_SECONDS}秒`);
       return false;
     }
-    if (seconds >= MAX_CHAT_SECONDS) {
-      ElMessage.warning(`录音时间过长，最多支持${MAX_CHAT_SECONDS}秒`);
-      return false;
-    }
+    else
+      if (seconds >= MAX_CHAT_SECONDS) {
+        ElMessage.warning(`录音时间过长，最多支持${MAX_CHAT_SECONDS}秒`);
+        return false;
+      }
     return true;
   };
 
@@ -176,30 +178,47 @@ function useRecordingCore(state: Ref<RecordingState>, options: { timeslice: numb
     return true;
   };
 
-  const createMediaRecorder = async (): Promise<MediaRecorder | null> => {
+  const createMediaRecorder = async (forceRecreate = false): Promise<MediaRecorder | null> => {
     try {
       if (!navigator?.mediaDevices?.getUserMedia) {
         throw new Error("设备不支持录音功能");
       }
 
-      // 获取设置中的默认麦克风设备
       const setting = useSettingStore();
-      const selectedDeviceId = setting.settingPage.audioDevice.defaultMicrophone;
+      const currentDeviceId = setting.settingPage.audioDevice.defaultMicrophone;
 
-      // 构造音频约束条件
-      const audioConstraints: MediaTrackConstraints | boolean = selectedDeviceId === "default"
-        ? true // 使用系统默认设备
-        : { deviceId: { exact: selectedDeviceId } }; // 使用指定设备
+      // 检查是否需要重新创建
+      const deviceChanged = state.value.cachedDeviceId !== currentDeviceId;
+      const needRecreate = forceRecreate || deviceChanged || !state.value.mediaRecorder;
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: audioConstraints,
-        video: false,
-      });
+      if (!needRecreate && state.value.mediaRecorder) {
+        // 复用现有的 MediaRecorder
+        return state.value.mediaRecorder;
+      }
+
+      // 尝试复用共享音频流
+      const microphoneTest = useMicrophoneTest();
+      let stream = await microphoneTest.getSharedStream();
+
+      // 如果无法获取共享流，则回退到传统方式
+      if (!stream) {
+        const audioConstraints: MediaTrackConstraints | boolean = currentDeviceId === "default"
+          ? true
+          : { deviceId: { exact: currentDeviceId } };
+
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: audioConstraints,
+          video: false,
+        });
+      }
 
       const recorder = new MediaRecorder(stream, {
         audioBitsPerSecond: AUDIO_BITS_PER_SECOND,
         mimeType: RECORDER_MIME_TYPE,
       });
+
+      // 缓存设备ID
+      state.value.cachedDeviceId = currentDeviceId;
 
       return recorder;
     }
@@ -333,6 +352,19 @@ export function useRecording(options: {
     fileSizeLimit: fileSizeLimit.value,
   });
 
+  // 监听设备切换
+  const unwatchDevice = watch(
+    () => setting.settingPage.audioDevice.defaultMicrophone,
+    () => {
+      // 设备切换时，如果当前正在录音，需要重新创建录音器
+      if (state.value.isRecording) {
+        // 设备切换时会由 useMicrophoneTest 自动处理音频流切换
+        // 这里只需要清除缓存的设备ID，下次录音时会自动重新创建
+        state.value.cachedDeviceId = undefined;
+      }
+    },
+  );
+
   // 核心方法
   const startRecording = async (): Promise<boolean> => {
     if (state.value.isRecording)
@@ -434,6 +466,7 @@ export function useRecording(options: {
 
   // 组件卸载时清理资源
   onBeforeUnmount(() => {
+    unwatchDevice();
     recordingCore.cleanupResources();
   });
 

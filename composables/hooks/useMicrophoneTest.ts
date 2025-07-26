@@ -206,11 +206,38 @@ export function useMicrophoneTest() {
     unWatchMicrophone();
   });
 
+  /**
+   * 获取共享的音频流（供录音等功能复用）
+   */
+  const getSharedStream = async (deviceId?: string): Promise<MediaStream | null> => {
+    const targetDeviceId = deviceId || audioDeviceManager.selectedDevice.value;
+
+    // 如果正在测试且设备相同，直接返回当前流
+    if (isTesting.value && mediaStream
+      && (targetDeviceId === audioDeviceManager.selectedDevice.value || !deviceId)) {
+      return mediaStream;
+    }
+
+    // 否则获取新的流
+    return await audioDeviceManager.getCurrentDeviceStream(targetDeviceId);
+  };
+
+  /**
+   * 获取当前活跃的音频流
+   */
+  const getCurrentStream = (): MediaStream | null => {
+    return mediaStream;
+  };
+
   return {
     // 状态
     isTesting: readonly(isTesting),
     testError: readonly(testError),
     audioLevel: readonly(audioLevel),
+
+    // 音频流相关
+    getSharedStream,
+    getCurrentStream,
 
     // 方法
     startTest,

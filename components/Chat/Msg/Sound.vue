@@ -106,10 +106,10 @@ function resetPlaySounder() {
         :class="{ 'animate-pulse': chat.playSounder?.url === body?.url && chat.playSounder?.state === 'play' }"
       >
         <p ctx-name="sound" @click="playSound(body?.url)">
-          <i ctx-name="sound" :class="chat.playSounder?.url === body.url && chat.playSounder?.state === 'loading' ? 'i-solar:menu-dots-bold-duotone animate-spin ' : 'i-solar:volume-loud-outline'" p-2 />
-          <span class="mx-1">{{ chat.playSounder?.url === body.url ? getSoundText : getSoundTextRaw }}</span>
+          <i pointer-events-none :class="chat.playSounder?.url === body.url && chat.playSounder?.state === 'loading' ? 'i-solar:menu-dots-bold-duotone animate-spin ' : 'i-solar:volume-loud-outline'" p-2 />
+          <span class="pointer-events-none mx-1">{{ chat.playSounder?.url === body.url ? getSoundText : getSoundTextRaw }}</span>
         </p>
-        <small v-if="body?.translation && showTranslation" ctx-name="sound-translation" class="mt-2 block border-t-(1px #8585828e solid) pt-1.5">
+        <small v-if="body?.translation && showTranslation" pointer-events-none ctx-name="sound-translation" class="mt-2 block border-t-(1px #8585828e solid) pt-1.5">
           {{ body?.translation }}
         </small>
       </div>
