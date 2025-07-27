@@ -138,7 +138,7 @@ export default defineNuxtConfig({
   ],
   nitro: {
     devProxy: {
-      host: "localhost",
+      host: "127.0.0.1",
     },
   },
   // alias: {
@@ -214,6 +214,9 @@ export default defineNuxtConfig({
       chunkSizeWarningLimit: 1000, // chunk 大小警告的限制(kb)
       cssCodeSplit: true, // 是否将 CSS 代码拆分为单独的文件
       minify: "terser", // 使用 terser 进行代码压缩
+      commonjsOptions: {
+
+      },
     },
   },
   typescript: {
