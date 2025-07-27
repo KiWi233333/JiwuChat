@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MdPreview } from "md-editor-v3";
-import { appEnName } from "~/constants";
+import { appBlogHost, appEnName } from "~/constants";
 import "md-editor-v3/lib/preview.css";
 
 const setting = useSettingStore();
@@ -83,13 +83,16 @@ const ignoreUpdate = computed({
       <div class="w-20rem p-1">
         <!-- 版本信息 -->
         <div class="top flex">
-          <CardElImage src="/logo.png" class="mr-3 h-10 w-10" />
+          <CardElImage title="去【官网】查看完整更新公告" src="/logo.png" class="mr-3 h-10 w-10" @click="useOpenUrl(`${appBlogHost}versions/v${latestVersionInfo?.version}`)" />
           <div class="flex flex-1 flex-col justify-around text-xs">
             <strong>
               {{ appEnName }}
             </strong>
-            <div class="">
-              v{{ latestVersionInfo?.version.replace(/^v/, '') || '-' }} 版本
+            <div class="flex-row-bt-c">
+              <span>
+                v{{ latestVersionInfo?.version.replace(/^v/, '') || '-' }} 版本
+              </span>
+              <span class="btn-info op-70" title="去【官网】查看完整更新公告" @click="useOpenUrl(`${appBlogHost}versions/v${latestVersionInfo?.version}`)">查看详情</span>
             </div>
           </div>
         </div>
@@ -118,7 +121,7 @@ const ignoreUpdate = computed({
         </div>
         <div v-else class="flex-row-bt-c">
           <span text-mini>操作</span>
-          <el-checkbox v-model="ignoreShowVersionDialog" size="small">
+          <el-checkbox v-model="ignoreShowVersionDialog" style="padding: 0;" size="small">
             不再提示
           </el-checkbox>
         </div>

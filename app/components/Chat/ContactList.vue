@@ -519,7 +519,7 @@ onMounted(() => {
     }
 
     :deep(.el-badge__content) {
-      --at-apply: "border-none p-0 w-4 h-4 text-xs";
+      --at-apply: "border-none p-0 min-w-4 h-4 px-1 text-0.7rem";
     }
     &.is-shield {
       :deep(.el-badge__content) {

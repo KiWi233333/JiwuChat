@@ -22,7 +22,7 @@
   }
   .ai-reply-msg-popper,
   .msg-popper {
-    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full w-fit  p-2 px-3 leading-1.5em bg-color shadow-md";
+    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full w-fit p-2 px-3 leading-1.5em bg-color shadow-md";
     box-shadow:
       rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
@@ -35,7 +35,7 @@
 
   // 回复
   .reply {
-    --at-apply: "text-0.75rem cursor-pointer w-fit card-rounded-df max-w-full truncate  px-2  bg-color dark:text-light-900 border-default-hover";
+    --at-apply: "text-0.7rem cursor-pointer w-fit card-rounded-df max-w-full truncate pl-1 pr-2  bg-color dark:text-light-900 border-default-hover";
   }
   // 翻译
   .translation {
@@ -43,15 +43,15 @@
   }
   // 问答
   .ask-ai {
-    --at-apply: "w-fit flex cursor-pointer items-center truncate p-1 pr-1.5 text-xs card-default border-default-hover ";
+    --at-apply: "w-fit flex cursor-pointer items-center truncate p-1 pr-1.5 text-xs card-default";
   }
   // 通知
   .notice-all {
-    --at-apply: "max-w-full text-0.75rem w-fit  truncate flex-ml-a w-fit cursor-pointer truncate px-2 text-[--el-color-warning] card-default";
+    --at-apply: "max-w-full text-0.7rem w-fit  truncate flex-ml-a w-fit cursor-pointer truncate px-2 text-[--el-color-warning] card-default";
   }
   // @用户
   .at-list {
-    --at-apply: "max-w-full text-0.75rem w-fit  truncate flex-ml-a w-fit cursor-pointer truncate px-2 text-color-info card-default";
+    --at-apply: "max-w-full text-0.7rem w-fit  truncate flex-ml-a w-fit cursor-pointer truncate px-2 text-color-info card-default";
   }
   // url解析
   .url-info {
@@ -71,6 +71,31 @@
     &::before {
       content: "";
       --at-apply: "rounded-4 mr-1 p-1.8 cursor-pointer select-none i-solar:link-line-duotone";
+    }
+  }
+
+  .url-group {
+    --at-apply: "flex flex-col gap-1.5 w-fit";
+
+    .url-info {
+      --at-apply: "max-w-60vw w-16rem rounded-2 bg-color shadow-sm transition-200 sm:(max-w-16rem min-w-12rem) hover:(shadow)";
+    }
+    &.multiple-url {
+      .url-info {
+        --at-apply: "hidden";
+      }
+      .url-info:nth-child(1) {
+        --at-apply: "block mb-2 relative shadow-sm";
+        &::after {
+          content: "";
+          --at-apply: "absolute top-0 left-0 w-full scale-94 mx-a translate-y-2 -z-1 h-full rounded-2 bg-color shadow-sm !bg-op-60";
+        }
+
+        &::before {
+          content: "";
+          --at-apply: "absolute top-0 left-0 w-full scale-90 mx-a translate-y-4 -z-1 h-full rounded-2 bg-color shadow-sm !bg-op-40";
+        }
+      }
     }
   }
 }
@@ -101,7 +126,7 @@
     color: #010101 !important;
   }
   &.msg {
-    --at-apply: "px-2 py-3 ";
+    --at-apply: "px-2 py-3";
   }
   .body {
     align-items: end;

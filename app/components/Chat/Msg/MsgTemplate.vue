@@ -70,7 +70,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
     <!-- 消息体 -->
     <div class="body">
       <!-- 昵称和插槽区域 -->
-      <div class="flex-res min-h-6 items-center">
+      <div class="flex-res min-h-5 items-center">
         <small class="nickname truncate text-mini" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
         <small v-if="roleClass" v-once class="role h-fit w-fit rounded px-1 py-0.5 text-0.7rem leading-0.8rem" :class="roleClass">{{ roleName }}</small>
         <slot name="name-after" />
@@ -151,30 +151,4 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
 
 <style lang="scss" scoped>
 @use './msg.scss';
-
-.url-group {
-  --at-apply: "flex flex-col gap-2 w-fit";
-
-  .url-info {
-    --at-apply: "max-w-60vw w-16rem rounded-2 bg-color shadow-sm transition-200 sm:(max-w-16rem min-w-12rem) hover:(shadow)";
-  }
-  &.multiple-url {
-
-    .url-info {
-      --at-apply: "hidden";
-    }
-    .url-info:nth-child(1) {
-      --at-apply: "block mb-2 relative shadow-sm";
-      &::after {
-        content: "";
-        --at-apply: "absolute top-0 left-0 w-full scale-94 mx-a translate-y-2 -z-1 h-full rounded-2 bg-color shadow-sm !bg-op-60";
-      }
-
-      &::before {
-        content: "";
-        --at-apply: "absolute top-0 left-0 w-full scale-90 mx-a translate-y-4 -z-1 h-full rounded-2 bg-color shadow-sm !bg-op-40";
-      }
-    }
-  }
-}
 </style>
