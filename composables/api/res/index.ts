@@ -39,41 +39,44 @@ export function uploadOssFileSe(
   return qiniu.upload(file, fileName, token, putExtra, config);
 }
 
-const ossErrorCode = new Map([
-  [298, "部分操作执行成功"],
-  [400, "请求报文格式错误"],
-  [401, "认证授权失败"],
-  [403, "权限不足，拒绝访问"],
-  [404, "资源不存在"],
-  [405, "请求方式错误"],
-  [406, "上传的数据 CRC32 校验错误"],
-  [413, "请求资源大小大于指定的最大值"],
-  [419, "用户账号被冻结"],
-  [478, "镜像回源失败"],
-  [502, "错误网关"],
-  [503, "服务端不可用"],
-  [504, "服务端操作超时"],
-  [573, "单个资源访问频率过高"],
-  [579, "上传成功但是回调失败"],
-  [599, "服务端操作失败"],
-  [608, "资源内容被修改"],
-  [612, "指定资源不存在或已被删除"],
-  [614, "目标资源已存在"],
-  [630, "已创建的空间数量达到上限，无法创建新空间"],
-  [631, "指定空间不存在"],
-  [640, "调用列举资源(list)接口时，指定非法的marker参数"],
-  [701, "在断点续上传过程中，后续上传接收地址不正确或ctx信息已过期"],
+const qiniuOssErrorCode = new Map([
+  [298, "部分操作执行成功！"],
+  [400, "请求报文格式错误！"],
+  [401, "认证授权失败！"],
+  [403, "权限不足，拒绝访问！"],
+  [404, "资源不存在！"],
+  [405, "请求方式错误！"],
+  [406, "上传的数据 CRC32 校验错误！"],
+  [413, "请求资源大小大于指定的最大值！"],
+  [419, "用户账号被冻结！"],
+  [478, "镜像回源失败！"],
+  [502, "错误网关！"],
+  [503, "服务端不可用！"],
+  [504, "服务端操作超时！"],
+  [573, "单个资源访问频率过高！"],
+  [579, "上传成功但是回调失败！"],
+  [599, "服务端操作失败！"],
+  [608, "资源内容被修改！"],
+  [612, "指定资源不存在或已被删除！"],
+  [614, "目标资源已存在！"],
+  [630, "已创建的空间数量达到上限，无法创建新空间！"],
+  [631, "指定空间不存在！"],
+  [640, "调用列举资源(list)接口时，指定非法的marker参数！"],
+  [701, "在断点续上传过程中，后续上传接收地址不正确或ctx信息已过期！"],
 ]);
-Object.freeze(ossErrorCode);
+Object.freeze(qiniuOssErrorCode);
 
+const defaultErrorMsg = "上传失败，请稍后再试！";
 /**
  * 获取上传失败错误
  *
- * @param code 错误码
  * @returns 错误提示
  */
-export function getOssErrorCode(code: number): string | undefined {
-  return ossErrorCode.get(code) || "上传失败，请稍后再试！";
+export function getOssErrorCode(e: qiniu.QiniuError | qiniu.QiniuRequestError | qiniu.QiniuNetworkError): string {
+  if ((e as qiniu.QiniuNetworkError).code) {
+    return qiniuOssErrorCode.get((e as qiniu.QiniuNetworkError).code) || defaultErrorMsg;
+  }
+  return defaultErrorMsg;
 }
 
 /**

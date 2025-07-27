@@ -53,7 +53,7 @@ const size = computed(() => getImgSize(props.data.message.body?.thumbWidth || pr
         class="relative max-h-50vh max-w-76vw flex-row-c-c cursor-pointer border-default-hover card-default md:(max-h-18rem max-w-18rem)"
         title="点击播放[视频]"
         ctx-name="video"
-        :style="{ width: size.width, height: size.height }"
+        :style="{ width: size.width || 100, height: size.height || 100 }"
         @click.stop="showVideoDetail($event)"
       >
         <template
@@ -61,6 +61,7 @@ const size = computed(() => getImgSize(props.data.message.body?.thumbWidth || pr
         >
           <CardElImage
             loading="lazy"
+            :style="{ width: size.width || 100, height: size.height || 100 }"
             ctx-name="video"
             error-class="i-solar:file-smile-line-duotone p-2.8"
             :src="thumbUrl"

@@ -208,14 +208,13 @@ export function useOssFileUpload() {
             ossFile.percent = +(res.total.percent?.toFixed?.(2) || 0);
           }
         },
-        error(e) {
+        error(e: qiniu.QiniuError | qiniu.QiniuRequestError | qiniu.QiniuNetworkError) {
           if (ossFile) {
             ossFile.status = "warning";
-            const err = e as any;
             let errorMsg = "上传失败，请稍后再试！";
 
-            if (err?.code) {
-              errorMsg = getOssErrorCode(err?.code) || errorMsg;
+            if (e) {
+              errorMsg = getOssErrorCode(e);
             }
             else {
               ossFile.status = "exception";
@@ -438,13 +437,14 @@ export function useOssFileUpload() {
       markFileCompleted(ossFile);
       return { success: true, file: ossFile };
     }
-    catch (error) {
+    catch (error: Error | any) {
       ossFile.status = "exception";
       // 标记文件为已完成（失败也是完成状态）
       markFileCompleted(ossFile);
+      console.log("上传文件失败:");
       return {
         success: false,
-        error: error instanceof Error ? error.message : "上传失败",
+        error: (error instanceof Error || error?.message) ? error.message : "上传失败，请重试！",
         file: ossFile,
       };
     }

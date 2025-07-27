@@ -263,8 +263,11 @@ async function handleSubmit() {
           ossFile as OssFile,
           soundOpt ? { customUploadType: OssFileType.SOUND } : undefined,
         );
-        if (!uploadResult.success)
-          throw new Error(uploadResult.error || "上传失败，请稍后再试！");
+        if (!uploadResult.success) {
+          const txt = uploadResult.error || "上传失败，请稍后再试！";
+          ElMessage.error(txt);
+          throw new Error(txt);
+        }
 
         return sendChatMessage(getFormData() as ChatMessageDTO, user.getToken);
       };

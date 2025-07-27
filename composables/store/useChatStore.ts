@@ -1020,7 +1020,7 @@ export const useChatStore = defineStore(
 
       if (currentLength > lastSortedIndex) {
         // 使用原生 sort，性能更好
-        msgIds.sort((a, b) => a - b);
+        msgIds.sort();
         contact.lastSortedIndex = currentLength;
         console.log("触发排序");
       }

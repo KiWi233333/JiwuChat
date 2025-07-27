@@ -517,8 +517,6 @@ export function useMsgInputForm(
     if (!chat.atUserList.some(u => u.userId === user.userId)) {
       chat.atUserList.push(user);
     }
-    console.log(user);
-
     const outer = SecurityUtils.createSafeElement("span", AT_USER_TAG_CLASSNAME, {
       "data-type": "at-user",
       "data-uid": user.userId,

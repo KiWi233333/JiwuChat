@@ -70,7 +70,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
     <!-- 消息体 -->
     <div class="body">
       <!-- 昵称和插槽区域 -->
-      <div class="flex-res items-center">
+      <div class="flex-res min-h-6 items-center">
         <small class="nickname truncate text-mini" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
         <small v-if="roleClass" v-once class="role h-fit w-fit rounded px-1 py-0.5 text-0.7rem leading-0.8rem" :class="roleClass">{{ roleName }}</small>
         <slot name="name-after" />

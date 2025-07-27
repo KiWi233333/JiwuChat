@@ -49,16 +49,21 @@ function confirmDeleteMessage(event: MouseEvent, msgId: any) {
     // 用户取消操作
   });
 }
+const OssStatusMap: Record<string, string> = {
+  "": "上传中...",
+  "warning": "上传错误！",
+  "exception": "上传失败，请重试！",
+};
 </script>
 
 <template>
   <!-- 上传状态 -->
   <el-progress
-    v-if="ossFile && ossFile?.percent !== 100"
+    v-if="ossFile && !ossFile?.status"
     type="circle"
     :percentage="ossFile?.percent || 0"
     :show-text="false"
-    title="上传文件"
+    :title="OssStatusMap[ossFile.status || '']"
     class="upload-icon !flex-row-c-c"
     :stroke-width="3"
     :status="ossFile?.status || ''"
