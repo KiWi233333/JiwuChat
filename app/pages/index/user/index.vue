@@ -80,14 +80,14 @@ definePageMeta({
     />
 
     <!-- 按钮 -->
-    <div v-show="!isLoading && otherUserId" class="sticky bottom-6 left-0 w-full flex-row-c-c">
+    <div v-show="!isLoading && otherUserId" class="sticky bottom-6 left-0 w-full flex-row-c-c p-0 sm:(static max-w-30rem py-4)">
       <BtnElButton
         v-if="isFriend"
         key="delete"
         icon-class="i-solar:trash-bin-trash-outline p-2 mr-2"
         style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-danger);"
         plain
-        class="mr-4 op-80 hover:op-100"
+        class="mr-4 bg-color-2"
         @click="deleteFriend"
       >
         删除好友&ensp;

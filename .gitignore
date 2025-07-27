@@ -20,3 +20,5 @@ errors.json
 report.html
 .trae
 .cursorignore
+.commit
+.commit.*
