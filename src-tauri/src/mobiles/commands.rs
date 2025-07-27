@@ -9,7 +9,7 @@ pub struct DirStats {
 }
 
 /// 扫描目录统计信息
-#[command]
+#[tauri::command]
 pub async fn scan_dir_stats(path: PathBuf) -> Result<DirStats, String> {
     use std::fs;
 
