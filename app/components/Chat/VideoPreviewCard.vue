@@ -29,7 +29,7 @@ function deleteFile(e: MouseEvent) {
       <small pointer-events-none class="float-right mt-2 text-xs op-60">
         {{ formatFileSize(size || 0) }}
       </small>
-      <div class="file-delete-btn icon" @click="deleteFile">
+      <div class="icon file-delete-btn" @click="deleteFile">
         <i i-carbon:close pointer-events-none p-2 />
       </div>
     </div>

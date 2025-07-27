@@ -1,6 +1,6 @@
 // @ts-expect-error
 import type { ModuleOptions } from "@vite-pwa/nuxt";
-import { appDescription, appName } from "../constants/index";
+import { appDescription, appName } from "../app/constants/index";
 
 // https://vite-pwa-org.netlify.app/frameworks/nuxt
 // https://www.jianshu.com/p/0a07bd528e08

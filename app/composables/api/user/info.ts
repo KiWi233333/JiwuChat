@@ -1,4 +1,3 @@
-import type { DeviceType } from ".";
 import type { isTrue, Result } from "@/types/result";
 import type { Gender, UserStatus } from "~/types";
 

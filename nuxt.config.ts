@@ -1,7 +1,7 @@
 // 打包分包插件解决潜在循环依赖
 // import { prismjsPlugin } from "vite-plugin-prismjs";
 // import { pwa } from "./config/pwa";
-import { appDescription, appKeywords, appTitle } from "./constants/index";
+import { appDescription, appKeywords, appTitle } from "./app/constants/index";
 import * as packageJson from "./package.json";
 import "dayjs/locale/zh-cn";
 
@@ -41,7 +41,7 @@ export default defineNuxtConfig({
     },
   },
   // spa情况下loading状态 web端使用 "./app/spa-loading-template.html"，桌面端使用 "./app/desktop-loading-template.html"
-  spaLoadingTemplate: "./app/spa-loading-template.html",
+  spaLoadingTemplate: "./spa-loading-template.html",
   // 模块
   modules: [
     // 工具
@@ -55,8 +55,7 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
     "@nuxt/eslint",
   ],
-  srcDir: "",
-  rootDir: "",
+  srcDir: "app/",
   unocss: {
     warn: false,
   },

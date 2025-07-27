@@ -1,3 +1,8 @@
+import type { ChatMessageVO } from "./message";
+import type { RtcBodyMsgVO } from "~/types/chat/WsType";
+import type { Result } from "~/types/result";
+import { useHttp } from "~/composables/utils/useHttp";
+
 /**
  * 发送消息
  * @param roomId 房间ID

@@ -1,4 +1,5 @@
 import { sendNotification } from "@tauri-apps/plugin-notification";
+import { mitter, MittEventType } from "~/composables/utils/useMitt";
 import { sendWebNotification } from "~/composables/utils/useWebToast";
 
 export async function useWsInit() {

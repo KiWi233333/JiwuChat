@@ -17,7 +17,7 @@ defineProps<{
     v-bind="$attrs"
   >
     <template #body>
-      <div class="group notice msg-popper text-left text-0.9rem" ctx-name="content">
+      <div class="group msg-popper notice text-left text-0.9rem" ctx-name="content">
         <div ctx-name="content" mb-2 border-default-b pb-2 text-left text-small dark:text-gray-300>
           <i ctx-name="content" class="i-carbon:bullhorn mr-1 p-2 text-[--el-color-warning] font-500 group-hover:animate-pulse" /> 群通知
         </div>
@@ -28,7 +28,7 @@ defineProps<{
       <small
         v-if="data?.message?.body?.noticeAll"
         ctx-name="mentionList"
-        class="notice-all flex-ml-a"
+        class="flex-ml-a notice-all"
       >
         @所有人
       </small>

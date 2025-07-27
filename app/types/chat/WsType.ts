@@ -1,5 +1,6 @@
 import type { Result } from "postcss";
 import type { ChatMessageVO } from "../../composables/api/chat/message";
+import type { WSRtcCallMsg } from "~/composables/api/chat/rtc";
 
 /**
  * ws 请求 消息类型 1用户认证、2心跳检测
