@@ -329,6 +329,7 @@ defineExpose({
                 key="inputOssFileUploadRef"
                 :multiple="false"
                 :limit="1"
+                accept="image/png, image/jpeg, image/webp, image/svg+xml,image/bmp, image/tiff, image/heic, image/heif, image/jfif, image/pjpeg, image/pjp"
                 input-class="w-7rem h-7rem flex-row-c-c flex-shrink-0  card-default"
                 :upload-quality="0.4"
                 @error-msg="(msg:string) => {

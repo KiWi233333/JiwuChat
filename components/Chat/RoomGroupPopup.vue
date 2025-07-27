@@ -133,6 +133,7 @@ async function changShieldStatus() {
           :disable="!isLord"
           :multiple="false"
           :limit="1"
+          accept="image/png, image/jpeg, image/webp, image/svg+xml,image/bmp, image/tiff, image/heic, image/heif, image/jfif, image/pjpeg, image/pjp"
           input-class="w-3rem mt-1 h-3rem flex-shrink-0 card-default"
           :class="!isLord ? 'cursor-no-drop' : 'cursor-pointer'"
           :upload-quality="0.3"

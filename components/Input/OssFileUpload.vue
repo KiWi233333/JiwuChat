@@ -380,7 +380,7 @@ function qiniuUploadPromise(dist: File, key: string, token: string, file: OssFil
         theFile.status = "warning";
         const err = e as any;
         if (err?.code) {
-          error.value = getOssErrorCode(err?.code) || "上传失败，请稍后再试！";
+          error.value = getOssErrorCode(e) || "上传失败，请稍后再试！";
           emit("errorMsg", error.value);
         }
         else {
@@ -417,7 +417,7 @@ function qiniuUpload(dist: File, key: string, token: string, file: OssFile, isPu
       theFile.status = "warning";
       const err = e as any;
       if (err?.code) {
-        error.value = getOssErrorCode(err?.code) || "上传失败，请稍后再试！";
+        error.value = getOssErrorCode(e) || "上传失败，请稍后再试！";
         emit("errorMsg", error.value);
       }
       else {
