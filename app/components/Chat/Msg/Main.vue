@@ -42,13 +42,14 @@ const showTime = prevMsg?.message?.sendTime && (data.message.sendTime - prevMsg?
 function onClickAvatar() {
   if (!data.fromUser.userId)
     return;
-  chat.setTheFriendOpt(FriendOptType.User, {
-    id: data.fromUser.userId,
-  });
+  // chat.setTheFriendOpt(FriendOptType.User, {
+  //   id: data.fromUser.userId,
+  // });
   nextTick(() => {
     navigateTo({
-      path: "/friend",
+      path: "/user",
       query: {
+        id: data.fromUser.userId,
         dis: 1,
       },
     });

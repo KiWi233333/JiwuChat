@@ -14,16 +14,15 @@ const bgUrl = useLocalStorage("jiwu_user_bg", "/image/user-bg/kiwi-bg-4.jpg");
     <el-popover
       width="fit-content"
       placement="top"
-      transition="popper-fade-up"
-      title="切换壁纸"
       :teleported="true"
       trigger="click"
+      title="切换壁纸"
       class=""
     >
       <template #reference>
         <!-- 切换按钮 -->
         <el-button
-          class="absolute bottom-2rem right-2rem z-999 opacity-0 group-hover:opacity-100"
+          class="absolute bottom-20 right-4 z-999 opacity-0 group-hover:opacity-100"
           type="info"
           plain
           style="padding: 8px; background-color: rgba(97, 255, 163, 0.1); transition: 0.3s"
@@ -35,7 +34,7 @@ const bgUrl = useLocalStorage("jiwu_user_bg", "/image/user-bg/kiwi-bg-4.jpg");
       </template>
       <template #default>
         <ClientOnly>
-          <div class="img-list grid grid-cols-3 mt-4 w-94vw gap-4 sm:w-400px">
+          <div class="img-list grid grid-cols-3 mt-4 w-90vw gap-4 sm:w-400px">
             <card-el-image
               v-for="(p, i) in bgList"
               :key="i"

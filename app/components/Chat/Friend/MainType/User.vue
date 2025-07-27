@@ -11,11 +11,9 @@ interface UserType {
   id: string
 }
 const store = useUserStore();
-const setting = useSettingStore();
 const isLoading = ref(true);
 const isFrend = ref<boolean | undefined>(false);
 const userId = computed(() => panelData.data.id);
-const isSelf = computed(() => userId.value === store.userId);
 const targetUserInfo = ref<Partial<CommUserVO>>({});
 // 年龄
 const getAgeText = computed(() => calculateAge(targetUserInfo.value?.birthday));

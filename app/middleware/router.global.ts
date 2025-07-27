@@ -19,7 +19,7 @@ const MAIN_ROUTES: Record<string, number> = {
 export default defineNuxtRouteMiddleware((to: RouteLocationNormalized, from: RouteLocationNormalized): NavigationGuardReturn => {
   // 处理对话框和弹窗
   const dialogCleanupFunction = checkAndCleanupDialogs();
-  if (dialogCleanupFunction) {
+  if (dialogCleanupFunction && !to.query?.dis) {
     dialogCleanupFunction();
     return abortNavigation();
   }
@@ -28,7 +28,7 @@ export default defineNuxtRouteMiddleware((to: RouteLocationNormalized, from: Rou
   setPageTransition(to.path, from.path);
 
   // 特定路径限制
-  if (shouldBlockNavigation(to, from)) {
+  if (shouldBlockNavigation(to, from) && !to.query?.dis) {
     return abortNavigation(getBlockNavigationMessage(to.path));
   }
 

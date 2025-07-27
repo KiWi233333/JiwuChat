@@ -111,6 +111,7 @@ async function submitUpdateUser(key: string) {
   }
 }
 
+const { share, isSupported } = useShare();
 /**
  * 邀请方法
  */
@@ -122,6 +123,13 @@ function showInvitation() {
     .catch(() => {
       ElMessage.error("链接分享失败！");
     });
+  if (isSupported.value) {
+    share({
+      title: "邀请你加入 Kiwi23333 的个人中心",
+      text: `点击链接访问：${document.URL}?id=${user?.id}`,
+      url: `${document.URL}?id=${user?.id}`,
+    });
+  }
 }
 const nicknameInputRef = useTemplateRef("nicknameInputRef");
 function onFocusNickname() {
@@ -170,18 +178,18 @@ onMounted(() => {
   });
 });
 
-const [autoAnimateRef, enable] = useAutoAnimate({});
-onMounted(() => {
-  const setting = useSettingStore();
-  enable(!setting.settingPage.isCloseAllTransition);
-});
+// 年龄
+const bgUrl = computed(() => localStorage.getItem("jiwu_user_bg") || "/image/user-bg/kiwi-bg-4.jpg");
+const getAgeText = computed(() => calculateAge(user?.birthday));
+const getConstellation = computed(() => computeConstellation(user?.birthday));
+const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
 </script>
 
 <template>
-  <div>
+  <div class="top">
     <div
       v-loading="isLoading"
-      class="avatar card-default-br shadow-md"
+      class="avatar"
     >
       <!-- 上传 -->
       <el-upload
@@ -211,61 +219,49 @@ onMounted(() => {
           />
           <ElIconPlus
             v-else
+            class="avatar-mark h-6em w-6em select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
             size="2em"
           />
-          <!-- <i
-            class="i-solar:camera-broken absolute p-5 opacity-0 transition-300 group-hover:opacity-60"
-          /> -->
         </div>
       </el-upload>
     </div>
-    <div class="text inline-flex flex-col items-start px-2">
-      <div ref="autoAnimateRef" tag="div" class="my-2">
-        <!-- 原 -->
-        <h2
-          v-show="!isEditNickname"
-          key="nickname1"
-          class="group h-2rem w-full flex"
+    <div class="px-2">
+      <!-- 原 -->
+      <h2
+        v-show="!isEditNickname"
+        key="nickname1"
+        class="group h-2rem flex-row-bt-c flex-1"
+      >
+        <span flex-1 truncate title="点击编辑" @click="onFocusNickname()">{{ user.nickname }}</span>
+        <i i-solar:share-bold ml-a btn-info text-4 @click="showInvitation" />
+      </h2>
+      <!-- 昵称 -->
+      <div
+        v-show="isEditNickname"
+        v-if="isEdit"
+        key="nickname-input"
+        class="h-2rem flex-row-c-c"
+      >
+        <el-input
+          ref="nicknameInputRef"
+          v-model.lazy="userCopy.nickname"
+          class="mr-2"
+          style="font-size: 0.9em; font-weight: 700"
+          placeholder="修改用户昵称"
+          @focus="isEditNickname = true"
+          @blur="onBlur()"
+          @keyup.enter="submitUpdateUser('nickname')"
+        />
+        <el-button
+          style="padding: 0 1.5em"
+          type="primary"
+          @click="submitUpdateUser('nickname')"
         >
-          <span max-w-50vw truncate sm:max-w-16em title="点击编辑" @click="onFocusNickname()">{{ user.nickname }}</span>
-          <el-button
-            type="info"
-            size="small"
-            class="ml-4em border-default group-hover:opacity-100 sm:op-0"
-            @click="showInvitation"
-          >
-            分 享
-          </el-button>
-        </h2>
-        <!-- 昵称 -->
-        <div
-          v-show="isEditNickname"
-          v-if="isEdit"
-          key="nickname-input"
-          class="h-2rem flex-row-c-c"
-        >
-          <el-input
-            ref="nicknameInputRef"
-            v-model.lazy="userCopy.nickname"
-            class="mr-2"
-            style="font-size: 0.9em; font-weight: 700"
-            placeholder="修改用户昵称"
-            @focus="isEditNickname = true"
-            @blur="onBlur()"
-            @keyup.enter="submitUpdateUser('nickname')"
-          />
-          <el-button
-            style="padding: 0 1.5em"
-            type="primary"
-            @click="submitUpdateUser('nickname')"
-          >
-            修改
-          </el-button>
-        </div>
+          修改
+        </el-button>
       </div>
-
       <!-- id -->
-      <small class="group small-input cursor-pointer opacity-60">
+      <div class="group mt-2 block text-small">
         ID：{{ user?.id }}
         <el-tooltip
           v-if="user?.id"
@@ -278,69 +274,132 @@ onMounted(() => {
             class="i-solar:copy-broken mx-2 cursor-pointer bg-blueGray p-2 transition-300 hover:bg-[var(--el-color-success)]"
           />
         </el-tooltip>
-      </small>
-      <div mt-4 flex flex-row flex-col flex-wrap gap-2>
-        <!-- 个性签名 -->
-        <div class="small-input mt-3 flex items-center justify-start">
-          <small>签名：</small>
-          <el-input
-            v-if="isEdit"
-            v-model.lazy="userCopy.slogan"
-            class="mr-1"
-            size="small"
-            type="text"
-            style="width: 14em"
-            placeholder="展示你的个性签名吧~ ✨"
-            @keyup.enter="submitUpdateUser('slogan')"
-            @focus="isEditSlogan = true"
-            @blur="onBlur()"
-          />
-          <span
-            v-else
-            class="truncate pl-2 text-xs"
-            :title="userCopy?.slogan"
-          >{{ userCopy?.slogan || "暂无个性签名" }}</span>
-          <el-button
-            v-show="isEditSlogan"
-            key="isEditSlogan-btn"
-            :icon="ElIconSelect"
-            size="small"
-            type="primary"
-            @click="submitUpdateUser('slogan')"
-          />
-        </div>
-        <!-- 生日 -->
-        <div class="small-input mt-3 flex-row-c-c justify-start">
-          <small flex-shrink-0>生日：</small>
-          <el-date-picker
-            v-model.lazy="userCopy.birthday"
-            type="date"
-            placeholder="选择生日"
-            size="small"
-            :disabled="!isEdit"
-            @change="submitUpdateUser('birthday')"
-          />
-        </div>
-        <!-- 性别 -->
-        <div class="small-input mt-3 flex-row-c-c justify-start">
-          <!-- <i i-solar:adhesive-plaster-linear p-1 mr-2></i> -->
-          <small>性别：</small>
-          <el-select
-            v-model="userCopy.gender"
-            placeholder="Select"
-            style="width: 10.5em"
-            size="small"
-            :disabled="!isEdit"
-            @change="submitUpdateUser('gender')"
-          >
-            <el-option
-              v-for="item in genderList"
-              :key="item"
-              :label="item"
-              :value="item"
-            />
-          </el-select>
-        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 详情 -->
+  <div class="detail-info">
+    <p class="user-props truncate text-sm">
+      <i mr-3 p-2 :class="user.gender === Gender.BOY ? 'i-tabler:gender-male text-blue' : user.gender === Gender.GIRL ? 'i-tabler:gender-female text-pink' : 'i-tabler:gender-transgender text-yellow'" />
+      <span class="mr-2 border-default-r pr-2">
+        {{ user.gender }}
+      </span>
+      <template v-if="user.birthday">
+        <span class="mr-2 border-default-r pr-2">
+          {{ getAgeText }}
+        </span>
+        <span class="mr-2 border-default-r pr-2">
+          {{ user.birthday || ' - ' }}
+        </span>
+        <span>
+          {{ getConstellation }}
+        </span>
+      </template>
+    </p>
+    <p class="user-props">
+      <i class="i-carbon:send mr-3 p-2" />
+      签名：
+      <el-input
+        v-if="isEdit"
+        v-model.lazy="userCopy.slogan"
+        class="mr-1"
+        size="small"
+        type="text"
+        style="width: 14em"
+        placeholder="展示你的个性签名吧~ ✨"
+        @keyup.enter="submitUpdateUser('slogan')"
+        @focus="isEditSlogan = true"
+        @blur="onBlur()"
+      />
+      <span
+        v-else
+        class="truncate pl-2 text-xs"
+        :title="userCopy?.slogan"
+      >{{ userCopy?.slogan || "暂无个性签名" }}</span>
+      <el-button
+        v-show="isEditSlogan"
+        key="isEditSlogan-btn"
+        :icon="ElIconSelect"
+        size="small"
+        type="primary"
+        @click="submitUpdateUser('slogan')"
+      />
+    </p>
+    <p class="user-props">
+      <i class="i-tabler:calendar mr-3 p-2" />
+      生日：
+      <el-date-picker
+        v-if="isEdit"
+        v-model.lazy="userCopy.birthday"
+        type="date"
+        placeholder="选择生日"
+        size="small"
+        :disabled="!isEdit"
+        @change="submitUpdateUser('birthday')"
+      />
+      <span v-else class="pl-2 text-xs">
+        距离生日还有：{{ getBirthdayCount || ' - ' }}天
+      </span>
+    </p>
+    <!-- 性别 -->
+    <div class="user-props">
+      <i i-solar:adhesive-plaster-linear mr-3 p-2 />
+      性别：
+      <el-select
+        v-model="userCopy.gender"
+        placeholder="Select"
+        style="width: 10.5em"
+        size="small"
+        :disabled="!isEdit"
+        @change="submitUpdateUser('gender')"
+      >
+        <el-option
+          v-for="item in genderList"
+          :key="item"
+          :label="item"
+          :value="item"
+        />
+      </el-select>
+    </div>
+    <p class="user-props">
+      <i class="i-carbon:user mr-3 p-2" />
+      上次在线：
+      {{ user.lastLoginTime || ' - ' }}
+    </p>
+  </div>
+  <!-- 他的朋友圈 -->
+  <div class="detail-info">
+    <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
+      <i class="i-solar:fire-line-duotone mr-3 p-2" />
+      TA的朋友圈
+      <i class="i-carbon:chevron-right ml-a p-2" />
+    </div>
+    <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
+      <i class="i-solar:gallery-wide-line-duotone mr-3 p-2" />
+      精选图集
+      <i class="i-carbon:chevron-right ml-a p-2" />
+    </div>
+    <div class="img-list">
+      <!-- TODO: 后期添加 -->
+      <CardElImage
+        class="my-2 mr-2 h-18 w-18 rounded-md bg-color-2 object-cover shadow"
+        :default-src="user.avatar"
+        fit="cover"
+        :preview-src-list="[BaseUrlImg + user.avatar]"
+      />
+      <!-- TODO: 后期添加 -->
+      <CardElImage
+        class="my-2 mr-2 h-18 w-18 rounded-md bg-color-2 object-cover shadow"
+        :default-src="bgUrl"
+        fit="cover"
+        :preview-src-list="[BaseUrlImg + bgUrl]"
+      />
+    </div>
+    <div>
+      <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
+        <i class="i-solar:heart-line-duotone mr-3 p-2" />
+        TA的收藏
+        <i class="i-carbon:chevron-right ml-a p-2" />
       </div>
     </div>
   </div>
@@ -352,16 +411,18 @@ onMounted(() => {
   overflow: hidden !important;
 }
 .avatar {
-  width: 6em;
-  height: 6em;
-  border-radius: 50%;
-  overflow: hidden;
+  // width: 100%;
+  // height: 100%;
+  // border-radius: 50%;
+  // overflow: hidden;
+  --at-apply: "overflow-hidden w-6em h-6em rounded-1/2 flex-shrink-0 shadow-md";
 
     :deep(.el-upload) {
-    overflow: hidden;
-    width: 6em;
-    height: 6em;
-    border-radius: 50%;
+      --at-apply: "card-default-br";
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
 
     .el-upload-dragger {
       display: flex;
@@ -385,7 +446,10 @@ onMounted(() => {
   }
 }
 /* stylelint-disable-next-line selector-class-pattern */
-.small-input :deep(.el-input__wrapper) {
+.small-input {
+  --at-apply: "pb-2 mb-2 flex items-center justify-start";
+}
+:deep(.el-input__wrapper) {
   & {
     box-shadow: none;
   }
@@ -393,6 +457,17 @@ onMounted(() => {
     box-shadow: 0 0 0 1px var(--el-input-foucs-border-color) inset;
   }
 }
+:deep(.el-input.el-date-editor) {
+
+  .el-input__wrapper {
+    padding: 0;
+  }
+
+  .el-input__prefix {
+    display: none;
+  }
+}
+
 
 .el-popper-init {
   padding: 2px 4px;
@@ -406,6 +481,27 @@ onMounted(() => {
   .el-select__wrapper {
     background-color: transparent;
     box-shadow: none;
+  }
+}
+
+.top {
+  --at-apply: "!bg-op-50 backdrop-blur-20 rounded-t-4 w-full flex items-center gap-2 p-4 pb-8 -mt-16 sm:( px-8 pt-8)";
+  background: linear-gradient(to bottom, #ffffff85, #FFFFFF);
+}
+.dark {
+  .top {
+    background: linear-gradient(to bottom, #1f1f1f3d, #1f1f1f);
+  }
+}
+
+.detail-info {
+  --at-apply: "w-full px-4 sm:px-8 gap-6 shadow-sm sm:shadow-none bg-color";
+
+  .user-props {
+    --at-apply: "py-3 max-w-full sm:w-30rem truncate text-sm";
+  }
+  .user-props:nth-last-child(1) {
+    --at-apply: "mb-0";
   }
 }
 </style>

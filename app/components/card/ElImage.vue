@@ -17,7 +17,6 @@ const {
   ctxName?: string
 }>();
 const target = computed(() => defaultSrc !== undefined ? BaseUrlImg + defaultSrc : src);
-
 // 打开图片预览
 function openPreview() {
   if (previewSrcList && previewSrcList.length > 0) {
