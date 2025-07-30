@@ -84,23 +84,11 @@ async function saveConfig() {
 const DEV_EnvConfig: EnvConfigMap = {
   VITE_API_BASE_URL: "http://localhost:9090/",
   VITE_API_WS_BASE_URL: "ws://localhost:9091/",
-  VITE_BASE_OSS_PATH: "https://oss.jiwuhub.top/",
-  VITE_XUN_FEI_WSS_URL: "wss://spark-openapi.cn-huabei-1.xf-yun.com/v1/assistants/u8h3bh6wxkq8_v1",
-  VITE_XUN_FEI_APP_ID: "3b3875ac",
-  VITE_TURN_SERVER_URL: "",
-  VITE_TURN_SERVER_USER: "",
-  VITE_TURN_SERVER_PWD: "",
 };
 
 const PROD_EnvConfig: EnvConfigMap = {
   VITE_API_BASE_URL: "https://api.jiwu.kiwi2333.top/",
   VITE_API_WS_BASE_URL: "wss://api.jiwu.kiwi2333.top/websocket",
-  VITE_BASE_OSS_PATH: "https://oss.jiwuhub.top/",
-  VITE_XUN_FEI_WSS_URL: "wss://spark-openapi.cn-huabei-1.xf-yun.com/v1/assistants/u8h3bh6wxkq8_v1",
-  VITE_XUN_FEI_APP_ID: "3b3875ac",
-  VITE_TURN_SERVER_URL: "",
-  VITE_TURN_SERVER_USER: "",
-  VITE_TURN_SERVER_PWD: "",
 };
 
 // 切换默认配置
