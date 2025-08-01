@@ -50,7 +50,7 @@ const showTranslation = computed(() => !!body.value?._textTranslation);
 // 多个URL
 const isMultipleUrl = Object.keys(urlContentMap || {}).length > 1;
 const showMentionUrls = ref(false);
-const member = chat.groupMemberMap[data.fromUser.userId];
+const member = chat.groupMemberMap[`${data.message.roomId}_${data.fromUser.userId}`];
 const roleName = chatRoomRoleTextMap[member?.role || ChatRoomRoleEnum.MEMBER];
 const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | ChatRoomRoleEnum.OWNER];
 </script>

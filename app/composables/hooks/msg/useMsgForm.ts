@@ -189,7 +189,7 @@ export function useLoadAtUserList() {
           nickName: u.nickName,
           role: u.role,
         };
-        chat.groupMemberMap[u.userId] = obj;
+        chat.groupMemberMap[`${roomId}_${u.userId}`] = obj;
         if (u.userId !== user.userInfo.id) {
           list.push(obj);
         }

@@ -246,7 +246,7 @@ export const useChatStore = defineStore(
       },
     });
 
-    // 群所有成员
+    /** 群所有成员 @ 房间号_用户ID */
     const groupMemberMap = shallowRef<Record<string, ChatMemberSeVO>>({});
 
     // 群成员
@@ -1020,7 +1020,7 @@ export const useChatStore = defineStore(
 
       if (currentLength > lastSortedIndex) {
         // 使用原生 sort，性能更好
-        msgIds.sort();
+        msgIds.sort((a, b) => a - b);
         contact.lastSortedIndex = currentLength;
         console.log("触发排序");
       }

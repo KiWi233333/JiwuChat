@@ -666,8 +666,6 @@ export function useMsgInputForm(
           formDataTemp.msgType = MessageType.AI_CHAT; // 设置对应消息类型
         }
         else if (chat.theContact.type === RoomType.AICHAT) { // 私聊机器人
-          console.log(chat.theContact);
-
           formDataTemp.content = replaceText;
           formDataTemp.body = {
             userIds: [chat.theContact.targetUid], // 个人
