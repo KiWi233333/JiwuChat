@@ -177,7 +177,8 @@ pub async fn create_main_window(app_handle: AppHandle, shadow: bool) -> tauri::R
     {
         use tauri::utils::TitleBarStyle;
         wind_builder = wind_builder.title_bar_style(TitleBarStyle::Overlay);
-        wind_builder = wind_builder.shadow(shadow);
+        wind_builder = wind_builder.decorations(true);
+        wind_builder = wind_builder.hidden_title(true);
     }
 
     let main_window = wind_builder.build()?;
@@ -192,11 +193,16 @@ pub async fn create_main_window(app_handle: AppHandle, shadow: bool) -> tauri::R
             WindowEvent::CloseRequested { api, .. } => {
                 println!("关闭请求，窗口将最小化而不是关闭。");
                 api.prevent_close();
-                #[cfg(any(target_os = "windows", target_os = "linux"))]
+
                 main_window
                     .clone()
                     .hide()
                     .unwrap_or_else(|e| eprintln!("隐藏窗口时出错: {:?}", e));
+                #[cfg(target_os = "macos")]
+                {
+                    use tauri::Emitter;
+                    app_handle.emit("close_window", "").unwrap();
+                }
             }
             WindowEvent::Destroyed => {
                 // println!("窗口已销毁，检查剩余窗口。");
@@ -213,25 +219,6 @@ pub async fn create_main_window(app_handle: AppHandle, shadow: bool) -> tauri::R
             }
             _ => {}
         });
-
-    // 仅在构建 macOS 时设置背景颜色
-    #[cfg(target_os = "macos")]
-    {
-        use cocoa::appkit::{NSColor, NSWindow};
-        use cocoa::base::{id, nil};
-
-        let ns_window_main = main_window.ns_window().unwrap() as id;
-        unsafe {
-            let bg_color = NSColor::colorWithRed_green_blue_alpha_(
-                nil,
-                50.0 / 255.0,
-                158.0 / 255.0,
-                163.5 / 255.0,
-                0.0,
-            );
-            ns_window_main.setBackgroundColor_(bg_color);
-        }
-    }
     Ok(())
 }
 
@@ -258,7 +245,10 @@ async fn create_msgbox_window(app_handle: AppHandle, shadow: bool) -> tauri::Res
     #[cfg(target_os = "macos")]
     {
         use tauri::utils::TitleBarStyle;
-        wind_builder = wind_builder.title_bar_style(TitleBarStyle::Overlay);
+        wind_builder = wind_builder.title_bar_style(TitleBarStyle::Transparent);
+        wind_builder = wind_builder.decorations(false);
+        wind_builder = wind_builder.hidden_title(true);
+        wind_builder = wind_builder.shadow(true);
     }
 
     let msgbox_window = wind_builder.build()?;
@@ -283,7 +273,7 @@ async fn create_msgbox_window(app_handle: AppHandle, shadow: bool) -> tauri::Res
     Ok(())
 }
 
-async fn create_login_window(app_handle: AppHandle, shadow: bool) -> tauri::Result<()> {
+pub async fn create_login_window(app_handle: AppHandle, shadow: bool) -> tauri::Result<()> {
     // 只创建登录窗口
     let mut wind_builder =
         WebviewWindowBuilder::new(&app_handle, "login", WebviewUrl::App("/login".into()))
@@ -302,8 +292,12 @@ async fn create_login_window(app_handle: AppHandle, shadow: bool) -> tauri::Resu
 
     #[cfg(target_os = "macos")]
     {
-        use tauri::utils::TitleBarStyle;
+        use tauri::{utils::TitleBarStyle, LogicalPosition};
         wind_builder = wind_builder.title_bar_style(TitleBarStyle::Overlay);
+        wind_builder = wind_builder.decorations(true);
+        wind_builder = wind_builder.hidden_title(true);
+        wind_builder = wind_builder.shadow(true);
+        wind_builder = wind_builder.traffic_light_position(LogicalPosition::new(16.0, 22.0));
     }
 
     let login_window = wind_builder.build()?;
@@ -318,25 +312,6 @@ async fn create_login_window(app_handle: AppHandle, shadow: bool) -> tauri::Resu
             }
             _ => {}
         });
-
-    #[cfg(target_os = "macos")]
-    {
-        use cocoa::appkit::{NSColor, NSWindow};
-        use cocoa::base::{id, nil};
-
-        let ns_window_login = login_window.ns_window().unwrap() as id;
-        unsafe {
-            let bg_color = NSColor::colorWithRed_green_blue_alpha_(
-                nil,
-                50.0 / 255.0,
-                158.0 / 255.0,
-                163.5 / 255.0,
-                0.0,
-            );
-            ns_window_login.setBackgroundColor_(bg_color);
-        }
-    }
-
     Ok(())
 }
 
@@ -372,24 +347,13 @@ async fn create_extend_window(
     // macOS 平台特定配置
     #[cfg(target_os = "macos")]
     {
-        use tauri::utils::TitleBarStyle;
+        use tauri::{utils::TitleBarStyle, LogicalPosition};
         wind_builder = wind_builder.title_bar_style(TitleBarStyle::Overlay);
+        wind_builder = wind_builder.decorations(true);
+        wind_builder = wind_builder.hidden_title(true);
         wind_builder = wind_builder.shadow(true);
-        use cocoa::appkit::{NSColor, NSWindow};
-        use cocoa::base::{id, nil};
-        let main_window = wind_builder.build()?;
-
-        let ns_window_main = main_window.ns_window().unwrap() as id;
-        unsafe {
-            let bg_color = NSColor::colorWithRed_green_blue_alpha_(
-                nil,
-                50.0 / 255.0,
-                158.0 / 255.0,
-                163.5 / 255.0,
-                0.0,
-            );
-            ns_window_main.setBackgroundColor_(bg_color);
-        }
+        wind_builder = wind_builder.traffic_light_position(LogicalPosition::new(24.0, 24.0));
+        wind_builder.build()?;
     }
     Ok(())
 }

@@ -1,6 +1,7 @@
 
 import { useIframeInit } from "./iframe";
 import { useAuthInit, useMsgBoxWebViewInit, userTauriInit } from "./init";
+import { useMacOsInit } from "./macos";
 import { useHotkeyInit, useSettingInit, useWindowVisibilityInit } from "./setting";
 import { initSettingStoreSync } from "./share";
 import { initSystemConstant } from "./system";
@@ -13,6 +14,7 @@ let unMountedHotkeyInit: (() => void) | undefined;
 let unMountedIframeInit: (() => void) | undefined;
 let unMountedWindowVisibilityInit: (() => void) | undefined;
 let unMountedSettingStoreSync: (() => void) | undefined;
+let unMountedMacOsInit: (() => void) | undefined;
 
 
 /**
@@ -37,6 +39,8 @@ export async function useDefaultInit() {
   initThemeCustomization();
   // 跨标签页同步
   unMountedSettingStoreSync = initSettingStoreSync();
+  // macos初始化
+  unMountedMacOsInit = useMacOsInit();
 }
 
 /**

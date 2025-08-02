@@ -199,6 +199,8 @@ export function useShortcuts() {
     shortcuts,
     eventHandlers,
 
+    getShortcutByKey: (eventType: ShortcutEventType) => shortcuts.value.find(s => s.eventType === eventType),
+
     getShortcutsByCategory: (category: ShortcutCategory) => {
       return shortcuts.value.filter(s => s.category === category);
     },

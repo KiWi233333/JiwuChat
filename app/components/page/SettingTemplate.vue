@@ -147,7 +147,7 @@ onUnmounted(() => {
             <!-- web下载推广菜单 -->
             <BtnAppDownload />
             <!-- 菜单按钮 -->
-            <MenuController v-if="!['android', 'web', 'ios'].includes(setting.appPlatform)" size="small" />
+            <MenuController v-if="setting.isDesktop && setting.appPlatform !== 'macos'" size="small" />
           </template>
         </div>
       </template>

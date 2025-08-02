@@ -144,7 +144,7 @@ function createItem() {
     content-class="w-94vw rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
   >
     <template #title>
-      <h3 :data-tauri-drag-region="setting.isDesktop" mb-4 text-center>
+      <h3 :data-tauri-drag-region="setting.isDesktop" mb-4 text-center font-500>
         <i i-solar:widget-line-duotone mr-2 p-2.5 text-small />
         扩展菜单
       </h3>

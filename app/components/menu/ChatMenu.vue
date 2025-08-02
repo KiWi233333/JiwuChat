@@ -119,7 +119,7 @@ export interface MenuItem {
       />
     </div>
     <!-- 菜单 -->
-    <el-scrollbar height="100%" class="relative flex-1" view-class="flex flex-col gap-3 p-2">
+    <el-scrollbar height="100%" class="relative flex-1" :view-class="`flex flex-col gap-3 p-2 ${setting.osType === 'macos' ? 'px-2.8' : ''}`">
       <component
         :is="p.path ? NuxtLink : 'div'"
         v-for="p in menuList"

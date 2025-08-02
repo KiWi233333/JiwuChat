@@ -21,8 +21,8 @@ pub fn setup_desktop() {
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_os::init())
         .setup(|app| {
-            super::tray::setup_tray(app.handle())?;
             super::window::setup_desktop_window(app.handle())?;
+            super::tray::setup_tray(app.handle())?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

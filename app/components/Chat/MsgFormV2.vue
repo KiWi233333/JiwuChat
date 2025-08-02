@@ -19,6 +19,9 @@ const maxContentLen = computed(() => setting.systemConstant.msgInfo[chat.msgForm
 const showGroupNoticeDialog = ref(false);
 const loadInputDone = ref(false);
 const loadInputTimer = shallowRef<NodeJS.Timeout>();
+// 其他
+const sendKeyCodeStr = computed(() => setting.shortcutManager.getShortcutByKey("send-message")?.key || "Enter");
+const lineBreakKeyCodeStr = computed(() => setting.shortcutManager.getShortcutByKey("line-break")?.key || "Shift+Enter");
 // ref
 const formRef = useTemplateRef<InstanceType<typeof ElForm>>("formRef");
 
@@ -990,12 +993,12 @@ defineExpose({
         v-if="!setting.isMobileSize && !isSoundRecordMsg"
         class="hidden items-end sm:flex"
       >
-        <div class="tip ml-a hidden text-mini sm:block">
+        <div class="tip ml-a text-mini">
           <p>
-            <i i-solar:plain-2-line-duotone mr-1.8 p-1.6 />Enter
+            <i i-solar:plain-2-line-duotone mr-1.8 p-1.6 />{{ sendKeyCodeStr }}
           </p>
           <p mt-1>
-            <i i-solar:reply-2-bold-duotone mr-1 p-2 />Shift+Enter
+            <i i-solar:reply-2-bold-duotone mr-1 p-2 />{{ lineBreakKeyCodeStr }}
           </p>
         </div>
         <BtnElButton

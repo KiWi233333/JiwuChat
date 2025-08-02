@@ -24,7 +24,7 @@ onMounted(async () => {
       if (val !== "") {
         // 关闭窗口动画
         const height = val === "login" ? 440 : val === "register" ? 480 : val === "env-config" ? 460 : 460;
-        if (setting.settingPage.isCloseAllTransition) {
+        if (setting.settingPage.isCloseAllTransition || setting.osType === "macos") { // mac动态变化有问题
           wind?.setSize(new LogicalSize(340, height));
           return;
         }
@@ -67,7 +67,7 @@ onMounted(async () => {
           @click="user.showLoginPageType = (user.showLoginPageType === 'env-config' ? 'login' : 'env-config')"
         />
         <BtnAppDownload />
-        <MenuController v-if="setting.isDesktop" key="header" :size="setting.isDesktop ? 'small' : ''" :show-max="false" />
+        <MenuController v-if="setting.isDesktop && setting.appPlatform !== 'macos'" key="header" :size="setting.isDesktop ? 'small' : ''" :show-max="false" />
       </div>
     </div>
     <!-- bg -->

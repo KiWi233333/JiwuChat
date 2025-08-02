@@ -34,7 +34,7 @@ const getRootClass = computed(() =>
   }));
 
 
-onMounted(() => {
+onMounted(async () => {
   if (window) // 判断是否在iframe中
     isIframe.value = window?.self !== undefined && window?.self !== window?.top;
   if (route.path === "/msg" || route.path.startsWith("/extend") || (setting.isDesktop && route.path === "/login") || (setting.isDesktop && route.path.startsWith("/desktop"))) { // 无需链接的情况
@@ -42,6 +42,10 @@ onMounted(() => {
   }
   else {
     useInit();
+  }
+  if (setting.isDesktop) {
+    const v = await useWindowsVersion();
+    isWindow10.value = v === "Windows 10";
   }
 });
 

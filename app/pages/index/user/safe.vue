@@ -22,7 +22,7 @@ watch(activeName, () => {
 
 <template>
   <main class="w-full flex flex-1 flex-col card-bg-color-2 p-4 pt-12 sm:(p-6 pt-10)">
-    <h3 flex items-center>
+    <h3 flex items-center font-500>
       账户与安全
       <i i-solar:devices-bold-duotone ml-2 inline-block p0.6em opacity-60 />
     </h3>

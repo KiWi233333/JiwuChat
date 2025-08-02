@@ -108,7 +108,7 @@ const getAppTitle = computed(() => {
           <!-- web下载推广菜单 -->
           <BtnAppDownload />
           <!-- 菜单按钮 -->
-          <template v-if="!['android', 'web', 'ios'].includes(setting.appPlatform)">
+          <template v-if="setting.isDesktop && setting.appPlatform !== 'macos'">
             <MenuController size="small">
               <template #start="{ data }">
                 <ElButton
