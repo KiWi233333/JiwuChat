@@ -55,7 +55,7 @@ const getAppTitle = computed(() => {
 
 <template>
   <menu
-    class="group"
+    class="group min-h-6"
     :class="navClass"
   >
     <!-- 菜单栏 -->
