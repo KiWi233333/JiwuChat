@@ -43,7 +43,7 @@ export function useOpenSettingWind() {
       transparent: true,
       focus: true,
       center: true,
-      parent: MAIN_WINDOW_LABEL,
+      // parent: MAIN_WINDOW_LABEL,
       backgroundColor: setting.osType === "macos"
         ? {
             red: 0,

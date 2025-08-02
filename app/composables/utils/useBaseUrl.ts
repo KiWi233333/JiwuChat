@@ -48,4 +48,3 @@ export const XUN_FEI_APP_ID = import.meta.env.VITE_XUN_FEI_APP_ID;
 export const TURN_SERVER_URL = import.meta.env.VITE_TURN_SERVER_URL;
 export const TURN_SERVER_USER = import.meta.env.VITE_TURN_SERVER_USER;
 export const TURN_SERVER_PWD = import.meta.env.VITE_TURN_SERVER_PWD;
-console.log(DefaultEnvConfigMap, TURN_SERVER_URL, XUN_FEI_WSS_URL, BaseWSUrl);

@@ -10,7 +10,6 @@ const setting = useSettingStore();
 
 // 表单
 const isSending = ref(false);
-const isDisabledFile = computed(() => !user?.isLogin || chat.theContact.selfExist === 0);
 const isLord = computed(() => chat.theContact.type === RoomType.GROUP && chat.theContact.member?.role === ChatRoomRoleEnum.OWNER); // 群主
 const isSelfRoom = computed(() => chat.theContact.type === RoomType.SELFT); // 私聊
 const isAiRoom = computed(() => chat.theContact.type === RoomType.AICHAT); // 机器人
@@ -102,7 +101,6 @@ const {
   atScrollbarRef: "atScrollbar",
   aiScrollbarRef: "aiScrollbar",
 }, 160, "focusRef");
-
 const isNotExistOrNorFriend = computed(() => {
   const res = chat.theContact.selfExist === isTrue.FALESE;
   if (res) {
@@ -111,7 +109,10 @@ const isNotExistOrNorFriend = computed(() => {
   }
   return res;
 }); // 自己不存在 或 不是好友  || chat.contactMap?.[chat.theRoomId!]?.isFriend === isTrue.FALESE
-
+/**
+ * 禁用上传文件
+ */
+const disabledUploadFile = computed(() => isAiRoom.value);
 
 // =================================================================
 // 文件处理流程
@@ -142,7 +143,7 @@ async function handlePasteEvent(e: ClipboardEvent) {
     .filter((file): file is File => file !== null);
 
   if (pastedFiles.length > 0) {
-    if (isDisabledFile.value)
+    if (disabledUploadFile.value)
       return;
     await processFiles(pastedFiles);
     return;
@@ -180,6 +181,11 @@ async function processFiles(files: File[]) {
       ElMessage.warning("AI对话暂不支持附件输入！");
       return;
     }
+    if (disabledUploadFile.value) {
+      ElMessage.warning("暂不支持文件上传！");
+      return;
+    }
+
     switch (analysis.type) {
       case "image":
         imageManager.insert(file);
@@ -313,11 +319,7 @@ const {
   isDragDropOver,
   unlistenDragDrop,
   listenDragDrop,
-} = useFileLinstener(async (files: File[]) => {
-  if (files && files.length > 0) {
-    await processFiles(files);
-  }
-});
+} = useFileLinstener(disabledUploadFile);
 
 // 监听拖拽上传（仅桌面端）
 onMounted(() => {
@@ -439,7 +441,7 @@ const mobileTools = computed(() => {
       id: "image",
       icon: "i-solar:album-bold",
       label: "相册",
-      disabled: isDisabledFile.value,
+      disabled: disabledUploadFile.value,
       onClick: () => fileActions.selectImageFiles(),
     },
     // 拍摄
@@ -447,14 +449,14 @@ const mobileTools = computed(() => {
       id: "camera",
       icon: "i-solar:camera-bold",
       label: "拍摄",
-      disabled: isDisabledFile.value,
+      disabled: disabledUploadFile.value,
       onClick: () => fileActions.selectImageFiles("environment"),
     },
     {
       id: "video",
       icon: "i-solar:video-library-line-duotone",
       label: "视频",
-      disabled: isDisabledFile.value,
+      disabled: disabledUploadFile.value,
       onClick: () => fileActions.selectVideoFiles(),
     },
     // 录视频
@@ -462,14 +464,14 @@ const mobileTools = computed(() => {
       id: "video-record",
       icon: "i-solar:videocamera-add-bold",
       label: "录视频",
-      disabled: isDisabledFile.value,
+      disabled: disabledUploadFile.value,
       onClick: () => fileActions.selectVideoFiles("environment"),
     },
     {
       id: "file",
       icon: "i-solar-folder-with-files-bold",
       label: "文件",
-      disabled: isDisabledFile.value,
+      disabled: disabledUploadFile.value,
       onClick: () => fileActions.selectAnyFiles(),
     },
   ];
@@ -662,7 +664,7 @@ defineExpose({
     ref="formRef"
     :model="chat.msgForm"
     v-bind="$attrs"
-    :disabled="isDisabledFile"
+    :disabled="disabledUploadFile"
   >
     <!-- 拖拽上传遮罩 -->
     <Teleport to="body">

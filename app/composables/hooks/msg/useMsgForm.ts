@@ -1,4 +1,5 @@
 import type { UnlistenFn } from "@tauri-apps/api/event";
+import type { ShallowRef } from "vue";
 import type { OssConstantItemType } from "~/init/system";
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { readFile, stat } from "@tauri-apps/plugin-fs";
@@ -7,36 +8,7 @@ import { readFile, stat } from "@tauri-apps/plugin-fs";
 /**
  * 监听文件上传(粘贴、拖拽)
  */
-export function useFileLinstener(handleFile: (files: File[]) => void) {
-  // /**
-  //  * 粘贴上传
-  //  * @param e 粘贴事件对象
-  //  * @returns void
-  //  */
-  // async function onPaste(e: ClipboardEvent) {
-  //   // 判断粘贴上传
-  //   if (!e.clipboardData?.items?.length) {
-  //     return;
-  //   }
-  //   // 拿到粘贴板上的 image file 对象
-  //   const fileArr = Array.from(e.clipboardData.items).filter(v => v.kind === "file");
-  //   if (!fileArr.length)
-  //     return;
-  //   e.preventDefault();
-  //   const files = [];
-  //   for (let i = 0; i < fileArr.length; i++) {
-  //     const item = fileArr[i];
-  //     if (!item || item.kind !== "file") {
-  //       continue;
-  //     }
-  //     const file = item.getAsFile();
-  //     if (file) {
-  //       files.push(file);
-  //     }
-  //   }
-  //   handleFile(files);
-  // }
-
+export function useFileLinstener(disabledFile: ShallowRef<boolean> | Ref<boolean>) {
   // 监听拖拽上传
   const isDragDropOver = ref(false);
   const dragDropInfo = ref<{
@@ -63,7 +35,7 @@ export function useFileLinstener(handleFile: (files: File[]) => void) {
     unlisten = await getCurrentWebview().onDragDropEvent(async (event) => {
       if (event.payload.type === "over") {
         if (!isDragDropOver.value) {
-          // isDragDropOver.value = !disabled?.value;
+          isDragDropOver.value = !disabledFile?.value;
           // const { x, y } = event.payload.position;
           // console.log(`User is dragging over ${x}, ${y}`);
         }
@@ -107,7 +79,8 @@ export function useFileLinstener(handleFile: (files: File[]) => void) {
               }
               // const url = convertFileSrc(path); // 生成本地url
               readFile(path).then((blod) => {
-                const file = new File([blod], path.replaceAll("\\", "/")?.split("/").pop() || `${Date.now()}.${path.split(".").pop()}`, {
+                const blob = new Blob([blod.slice()], { type: typeInfo.mineType || "application/octet-stream" });
+                const file = new File([blob], path.replaceAll("\\", "/")?.split("/").pop() || `${Date.now()}.${path.split(".").pop()}`, {
                   type: typeInfo.mineType || "application/octet-stream",
                 });
                 // 上传文件
