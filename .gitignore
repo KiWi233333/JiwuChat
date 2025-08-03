@@ -22,3 +22,6 @@ report.html
 .cursorignore
 .commit
 .commit.*
+# 除了 extentsions.json 文件外，其他文件都忽略
+!.vscode/extensions.json
+.vscode/*

@@ -421,7 +421,7 @@ defineExpose({
           <i class="i-carbon:close p-3" />
         </div>
         <!-- 工具栏 -->
-        <div class="pointer-events-auto absolute bottom-10 left-1/2 flex transform gap-4 card-default-br rounded-2 p-2.5 p-x-3.75 -translate-x-1/2">
+        <div class="pointer-events-auto absolute bottom-10 left-1/2 flex transform items-center gap-4 card-default-br rounded-2 p-2.5 p-x-3.75 -translate-x-1/2">
           <el-icon-d-arrow-left
             v-if="showPrev"
             class="btn"
@@ -447,7 +447,7 @@ defineExpose({
           />
           <!-- reset -->
           <span
-            class="btn i-tabler:maximize"
+            class="btn i-tabler:maximize !p-3"
             @click.stop="resetImage"
           />
           <el-icon-refresh-left

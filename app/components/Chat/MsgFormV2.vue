@@ -223,13 +223,13 @@ const isSoundRecordMsg = computed(() => chat.msgForm.msgType === MessageType.SOU
 // =================================================================
 // 发送逻辑
 // =================================================================
-const isBtnLoading = computed(() => isSending.value || isUploadSound.value);
+const isDisableSubmit = computed(() => isSending.value || isUploadSound.value || !user.isLogin || isNotExistOrNorFriend.value);
 
 /**
  * 主提交函数
  */
 async function handleSubmit() {
-  if (isBtnLoading.value)
+  if (isDisableSubmit.value)
     return;
 
   isSending.value = true;
@@ -288,7 +288,7 @@ async function handleSubmit() {
     }
 
     // 2. 文本相关
-    if (!analysisTextFormData?.content) {
+    if (!analysisTextFormData?.content?.trim()) {
       return;
     }
     else if (analysisTextFormData?.content.length > maxContentLen.value) {
@@ -664,7 +664,7 @@ defineExpose({
     ref="formRef"
     :model="chat.msgForm"
     v-bind="$attrs"
-    :disabled="disabledUploadFile"
+    :disabled="isDisableSubmit"
   >
     <!-- 拖拽上传遮罩 -->
     <Teleport to="body">
@@ -771,12 +771,12 @@ defineExpose({
               />
             </div>
             <BtnElButton
-              :disabled="!user.isLogin || isSending || isNotExistOrNorFriend"
               type="primary"
               round
               style="height: 1.8rem !important;"
               class="ml-a w-3.6rem text-xs tracking-0.1em"
-              :loading="isBtnLoading"
+              :disabled="isDisableSubmit"
+              :loading="isDisableSubmit"
               @click="handleSubmit()"
             >
               发送
@@ -979,11 +979,11 @@ defineExpose({
 
         <BtnElButton
           v-if="setting.isMobileSize"
-          :disabled="!user.isLogin || isSending || isNotExistOrNorFriend"
           type="primary"
           style="height: 2.2rem !important;"
           class="ml-2 mt-a w-4.4rem"
-          :loading="isBtnLoading"
+          :disabled="isDisableSubmit"
+          :loading="isDisableSubmit"
           @click="handleSubmit()"
         >
           发送
@@ -1006,10 +1006,10 @@ defineExpose({
         <BtnElButton
           class="group ml-a overflow-hidden card-rounded-df tracking-0.2em shadow sm:ml-2"
           type="primary"
-          :disable="isNotExistOrNorFriend"
           :icon-class="isSending || isNotExistOrNorFriend ? '' : 'i-solar:plain-2-line-duotone mr-1.6'"
           size="small"
-          :loading="isBtnLoading"
+          :disabled="isDisableSubmit"
+          :loading="isDisableSubmit"
           style="padding: 0.8rem;width: 6rem;"
           @click="handleSubmit()"
         >
