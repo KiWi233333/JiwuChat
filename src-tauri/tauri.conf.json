@@ -11,7 +11,8 @@
         "default-capability",
         "desktop-capability",
         "mobile-capability"
-      ]   
+      ],
+      "csp": null
     },
     "macOSPrivateApi": true
   },

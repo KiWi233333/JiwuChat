@@ -86,8 +86,8 @@ function handleAutoDetectChange(value: boolean) {
         </div>
         <el-button
           v-if="!audioDeviceManager.hasPermission.value"
-          :size="size"
           type="primary"
+          size="small"
           @click="handleRequestPermission"
         >
           申请权限
