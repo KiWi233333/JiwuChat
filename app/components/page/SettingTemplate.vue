@@ -160,7 +160,7 @@ onUnmounted(() => {
           activeItem?.value && setting.isMobileSize ? '-translate-x-1/2 scale-95 css-will-change' : '',
         ]"
       >
-        <h3 flex items-center class="px-7 pt-8 text-lg">
+        <h3 flex items-center class="px-7 pt-8 text-lg font-500">
           <i i-solar:settings-bold mr-2 inline-block p-3 opacity-60 hover:animate-spin />
           设置
         </h3>
@@ -190,7 +190,7 @@ onUnmounted(() => {
           'translate-x-full css-will-change': !activeMenu,
         }"
       >
-        <h3 v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b py-3 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
+        <h3 v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b py-3 font-500 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
           <i i-solar:alt-arrow-left-line-duotone mr-1 p-3 sm:hidden />
           {{ activeItem?.label }}
         </h3>

@@ -273,9 +273,14 @@ export async function downloadFile(url: string, fileName: string, options: {
  */
 export function computedPath(path: string) {
   const setting = useSettingStore();
-  if (["andriod", "linux"].includes(setting.osType)) { // 安卓 linux
+  // 统一处理所有平台的路径分隔符
+  if (["android", "andriod", "linux", "darwin", "macos"].includes(setting.osType)) { // 安卓、Linux、MacOS
     return path.replace(/\\/g, "/");
   }
+  if (["windows"].includes(setting.osType)) { // Windows
+    return path.replace(/\//g, "\\");
+  }
+  // 其他未知平台，默认返回原始路径
   return path;
 }
 

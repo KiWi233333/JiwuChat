@@ -230,7 +230,9 @@ export function useHotkeyInit() {
     e.preventDefault();
   };
 
-  window.addEventListener("contextmenu", onContextMenu);
+  if (import.meta.env.PROD) {
+    window.addEventListener("contextmenu", onContextMenu);
+  }
 
   return () => {
     unMountedShortcuts();

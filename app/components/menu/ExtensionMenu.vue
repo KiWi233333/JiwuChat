@@ -139,7 +139,7 @@ function createItem() {
 <template>
   <DialogPopup
     v-model="isShow"
-    :duration="400"
+    :duration="200"
     :min-scale="0.9"
     content-class="w-94vw rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
   >

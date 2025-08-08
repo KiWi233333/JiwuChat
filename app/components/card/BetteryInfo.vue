@@ -34,8 +34,9 @@ const betteryInfo = useBattery(window);
   <div
     v-else
     v-bind="$attrs"
+    class="p-2"
   >
-    <small text-light> 电池监控暂不支持</small>
+    <small text-color> 电池监控暂不支持</small>
   </div>
 </template>
 

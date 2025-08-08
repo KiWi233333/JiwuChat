@@ -377,7 +377,7 @@ function toLoginForm() {
     :model="formUser"
     class="form relative"
   >
-    <div my-4 text-lg font-bold tracking-0.2em op-80 sm:mb-6>
+    <div my-4 text-lg font-500 tracking-0.2em op-80 sm:mb-6>
       开启你的专属圈子✨
     </div>
     <!-- 切换注册 -->

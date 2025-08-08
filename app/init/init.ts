@@ -80,7 +80,7 @@ export async function userTauriInit() {
   }
   // 3、获取文件路径
   if (!await existsFile(setting.appDataDownloadDirUrl))
-    setting.appDataDownloadDirUrl = `${await appDataDir()}\\downloads`;
+    setting.appDataDownloadDirUrl = setting.osType === "windows" ? `${await appDataDir()}\\downloads` : `${await appDataDir()}/downloads`;
 
   return () => {
     unListenRouter?.();

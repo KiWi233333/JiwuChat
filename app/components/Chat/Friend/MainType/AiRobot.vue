@@ -20,7 +20,7 @@ defineProps<{
       view-class="w-full flex-1 h-full"
       class="w-full flex-1"
     >
-      <h3 mb-8 mt-2 hidden text-center text-1.2em tracking-0.1em sm:mb-8 sm:block>
+      <h3 mb-8 mt-2 hidden text-center text-1.2em font-500 tracking-0.1em sm:mb-8 sm:block>
         AI点亮日常，智趣触手可及
       </h3>
       <ChatFriendRobotList />

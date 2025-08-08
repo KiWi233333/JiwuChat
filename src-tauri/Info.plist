@@ -32,5 +32,63 @@
     <true/>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
+
+    <!-- 浏览器相关权限 -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>此应用需要访问您的位置信息以提供基于位置的服务。</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>此应用需要持续访问您的位置信息以提供相关功能。</string>
+    <key>NSLocationUsageDescription</key>
+    <string>此应用需要访问您的位置信息以提升用户体验。</string>
+    <key>NSContactsUsageDescription</key>
+    <string>此应用需要访问您的联系人以便于相关功能的实现。</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>此应用需要访问您的日历以实现日程相关功能。</string>
+    <key>NSRemindersUsageDescription</key>
+    <string>此应用需要访问您的提醒事项以实现提醒相关功能。</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>此应用需要访问您的照片库以实现图片上传等功能。</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>此应用需要向您的照片库添加图片以实现保存图片等功能。</string>
+    <key>NSMotionUsageDescription</key>
+    <string>此应用需要访问您的运动与健身数据以实现相关功能。</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>此应用需要使用语音识别以实现语音输入等功能。</string>
+    <key>NSAppleMusicUsageDescription</key>
+    <string>此应用需要访问您的音乐库以实现音乐相关功能。</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>此应用需要请求跟踪权限以提升广告和分析体验。</string>
+    <key>NSSystemAdministrationUsageDescription</key>
+    <string>此应用需要系统管理权限以实现部分高级功能。</string>
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>此应用需要访问您的下载文件夹以实现文件管理等功能。</string>
+    <key>NSNetworkVolumesUsageDescription</key>
+    <string>此应用需要访问网络卷以实现文件共享等功能。</string>
+    <key>NSFileProviderDomainUsageDescription</key>
+    <string>此应用需要访问文件提供者域以实现文件同步等功能。</string>
+    <key>NSDesktopFolderUsageDescription</key>
+    <string>此应用需要访问您的桌面文件夹以实现文件管理等功能。</string>
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>此应用需要访问您的文稿文件夹以实现文件管理等功能。</string>
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>此应用需要访问您的下载文件夹以实现文件管理等功能。</string>
+    <key>NSNetworkVolumesUsageDescription</key>
+    <string>此应用需要访问网络卷以实现文件共享等功能。</string>
+    <key>NSFileProviderDomainUsageDescription</key>
+    <string>此应用需要访问文件提供者域以实现文件同步等功能。</string>
+    <key>NSDesktopFolderUsageDescription</key>
+    <string>此应用需要访问您的桌面文件夹以实现文件管理等功能。</string>
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>此应用需要访问您的文稿文件夹以实现文件管理等功能。</string>
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>此应用需要访问您的下载文件夹以实现文件管理等功能。</string>
+    <key>NSNetworkVolumesUsageDescription</key>
+    <string>此应用需要访问网络卷以实现文件共享等功能。</string>
+    <key>NSFileProviderDomainUsageDescription</key>
+    <string>此应用需要访问文件提供者域以实现文件同步等功能。</string>
+    <key>NSDesktopFolderUsageDescription</key>
+    <string>此应用需要访问您的桌面文件夹以实现文件管理等功能。</string>
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>此应用需要访问您的文稿文件夹以实现文件管理等功能。</string>
   </dict>
 </plist>

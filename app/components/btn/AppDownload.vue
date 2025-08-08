@@ -24,7 +24,7 @@ watch([() => setting.isWeb, () => setting.isMobileSize, latestVersion], async ([
     else if (ua.includes("iPhone"))
       downloadUrl.value = `${BaseUrlAppFile}/app/${res.version}/JiwuChat_${res.version}.apk`;
     else
-      downloadUrl.value = "https://kiwi233.top/%E9%A1%B9%E7%9B%AE/%E6%9E%81%E7%89%A9%E8%81%8A%E5%A4%A9.html#%F0%9F%92%BB-%E4%B8%8B%E8%BD%BD";
+      downloadUrl.value = appBlogHost;
   }
 }, { immediate: true });
 
@@ -93,10 +93,12 @@ onMounted(async () => {
         </div>
       </template>
     </el-popconfirm>
+    <!-- APP下载 -->
     <el-tooltip :content="`v ${latestVersion?.version}`" placement="bottom">
       <a
         :href="downloadUrl"
         target="_blank"
+        download
         rel="noopener noreferrer"
         v-bind="$attrs"
         class="h-1.8rem flex-row-c-c btn-info-bg border-default card-default rounded-4rem pl-4 pr-6 text-xs"

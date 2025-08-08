@@ -55,7 +55,6 @@ onMounted(() => {
     width="fit-content"
     :teleported="true"
     popper-class="popover"
-    transition="popper-fade"
     trigger="click"
     append-to="body"
     :hide-after="0"

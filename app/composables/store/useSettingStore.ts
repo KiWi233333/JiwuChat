@@ -342,8 +342,15 @@ export const useSettingStore = defineStore(
         item.status = FileStatus.NOT_FOUND;
         return;
       }
-      // 去除文件名
-      const folderPath = computedPath(item.localPath.split("\\").slice(0, -1).join("\\"));
+      // 全平台统一去除文件名，兼容不同操作系统的路径分隔符
+      let folderPath = "";
+      if (item.localPath.includes("\\")) { // Windows
+        folderPath = computedPath(item.localPath.split("\\").slice(0, -1).join("\\"));
+      }
+      else {
+        // 其他平台路径
+        folderPath = computedPath(item.localPath.split("/").slice(0, -1).join("/"));
+      }
       try {
         if (!await existsFile(folderPath)) {
           ElMessage.error("文件夹不存在！");
@@ -572,7 +579,7 @@ export const useSettingStore = defineStore(
       if (!isWeb.value) {
         await nextTick();
         await resetAllWindow();
-        appDataDownloadDirUrl.value = `${await appDataDir()}\\downloads`;
+        appDataDownloadDirUrl.value = `${await appDataDir()}/downloads`;
         if (appDataDownloadDirUrl.value && !await existsFile(appDataDownloadDirUrl.value))
           await mkdirFile(appDataDownloadDirUrl.value);
         setTimeout(async () => { // 延迟300ms，防止闪屏
