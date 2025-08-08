@@ -78,6 +78,7 @@
     "@unocss/eslint-plugin": "66.4.2",
     "@unocss/nuxt": "66.4.2",
     "@vueuse/nuxt": "13.6.0",
+    "code-inspector-plugin": "^1.0.4",
     "eslint": "9.32.0",
     "eslint-plugin-format": "1.0.1",
     "husky": "9.1.7",

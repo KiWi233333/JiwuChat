@@ -1123,7 +1123,7 @@ html.stop-transition-all {
   }
 }
 
-// popper 进入动画
+// popper 进入动画 el-popper
 $popper-placements: (
   "bottom": center top,
   "bottom-end": right top,
@@ -1283,28 +1283,51 @@ $popper-placements: (
 }
 
 // el-popver
+// .el-zoom-in-top-enter-active,
+// .el-zoom-in-top-leave-active {
+//   opacity: 1;
+//   transform: translateY(0) scale(1) !important;
+//   transform-origin: center top;
+//   transition: 0.25s $animate-cubic;
+// }
+// .el-zoom-in-top-enter-from,
+// .el-zoom-in-top-leave-active {
+//   opacity: 0;
+//   transform: translateY(-5%) scale(0.9) !important;
+// }
+// .el-zoom-in-bottom-enter-active,
+// .el-zoom-in-bottom-leave-active {
+//   opacity: 1;
+//   transform: translateY(0) scale(1) !important;
+//   transform-origin: center bottom;
+//   transition: 0.25s $animate-cubic !important;
+// }
+// .el-zoom-in-bottom-enter-from,
+// .el-zoom-in-bottom-leave-active {
+//   opacity: 0;
+//   transform: translateY(10%) scale(0.9) !important;
+// }
 .el-zoom-in-top-enter-active,
 .el-zoom-in-top-leave-active {
   opacity: 1;
-  transform: translateY(0) scale(1) !important;
-  transform-origin: center top;
-  transition: 0.25s $animate-cubic;
+  transform: translateY(0) scale3d(1, 1, 1) !important;
+  transition-duration: 0.2s !important;
+  transition-timing-function: $animate-cubic !important;
 }
 .el-zoom-in-top-enter-from,
 .el-zoom-in-top-leave-active {
-  opacity: 0;
-  transform: translateY(-5%) scale(0.9) !important;
+  opacity: 0.5;
+  transform: translateY(-1%) scale3d(0.97, 0.98, 1) !important;
 }
 .el-zoom-in-bottom-enter-active,
 .el-zoom-in-bottom-leave-active {
   opacity: 1;
-  transform: translateY(0) scale(1) !important;
-  transform-origin: center bottom;
-  transition: 0.25s $animate-cubic !important;
+  transform: translateY(0) scale3d(1, 1, 1) !important;
+  transition-duration: 0.2s !important;
+  transition-timing-function: $animate-cubic !important;
 }
 .el-zoom-in-bottom-enter-from,
 .el-zoom-in-bottom-leave-active {
-  opacity: 0;
-  transform: translateY(10%) scale(0.9) !important;
+  opacity: 0.5;
+  transform: translateY(1%) scale3d(0.97, 0.98, 1) !important;
 }
-
