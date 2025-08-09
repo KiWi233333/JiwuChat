@@ -604,7 +604,7 @@ defineExpose({
     --at-apply: "mx-0 h-8 w-8";
   }
   .title {
-    --at-apply: "ml-3 pr-2 text-lg font-500 tracking-0.1em";
+    --at-apply: "ml-3 pr-2 text-lg font-500 tracking-0.2em text-5.2";
   }
 }
 .has-account {

@@ -95,6 +95,11 @@ const menuList = reactive([
     onClick: () => useOpenUrl(appBlogHost),
   },
   {
+    label: "重载",
+    icon: "i-solar:restart-circle-outline",
+    onClick: reloadPage,
+  },
+  {
     label: "退出登录",
     icon: "i-solar:logout-3-broken",
     onClick: () => user.exitLogin(),

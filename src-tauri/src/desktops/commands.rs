@@ -244,10 +244,11 @@ async fn create_msgbox_window(app_handle: AppHandle, shadow: bool) -> tauri::Res
 
     #[cfg(target_os = "macos")]
     {
-        use tauri::utils::TitleBarStyle;
-        wind_builder = wind_builder.title_bar_style(TitleBarStyle::Transparent);
-        wind_builder = wind_builder.decorations(false);
+        use tauri::{utils::TitleBarStyle, LogicalPosition};
+        wind_builder = wind_builder.title_bar_style(TitleBarStyle::Overlay);
+        wind_builder = wind_builder.decorations(true);
         wind_builder = wind_builder.hidden_title(true);
+        wind_builder = wind_builder.traffic_light_position(LogicalPosition::new(-30.0, -30.0));
         wind_builder = wind_builder.shadow(true);
     }
 
