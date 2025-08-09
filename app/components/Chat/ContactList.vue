@@ -459,7 +459,7 @@ onMounted(() => {
             <p class="text mt-1 flex text-small">
               <small
                 class="h-1.5em flex-1 truncate"
-                :class="{ 'text-[var(--el-color-info)] font-600': room.unreadCount && room.shieldStatus !== isTrue.TRUE }"
+                :class="{ 'text-[var(--el-color-info)] font-500': room.unreadCount && room.shieldStatus !== isTrue.TRUE }"
               >
                 {{ room.text }}
               </small>

@@ -12,6 +12,7 @@ import { LoginType } from "~/types/user/index.js";
 
 const user = useUserStore();
 const loginType = useLocalStorage<LoginType>("loginType", LoginType.EMAIL);
+
 const {
   historyAccounts,
   addHistoryAccount,

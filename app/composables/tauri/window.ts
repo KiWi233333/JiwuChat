@@ -249,7 +249,7 @@ export async function useFlashTray() {
       if (!tray)
         return;
       if (icon === null)
-        icon = setting.osType === "linux" ? activeIcon.value : null; // 兼容Linux系统
+        icon = ["linux", "macos"].includes(setting.osType) ? activeIcon.value : null; // 兼容Linux\macos系统
       tray?.setIcon(icon);
     }
     catch (err) {

@@ -46,7 +46,8 @@ export default defineConfig({
     ["text-small-50", "text-sm text-dark-50 dark:text-[#717171]"],
     ["text-small-color", "text-dark-50 dark:text-[#979898]"],
     // 边框
-    ["wind-border-default", "border-1px border-solid border-gray-300 dark:border-dark-300"],
+    // ["wind-border-default", "border-1px border-solid border-gray-300 dark:border-dark-300"],
+    ["wind-border-default", "border-1px border-solid border-gray-200 dark:border-dark-300"],
     ["border-default", "border-1px border-solid border-gray-200 dark:border-dark-300"],
     ["border-default-r", "border-solid border-gray-200 border-0 border-r-1px  dark:border-dark-300"],
     ["border-default-l", "border-solid border-gray-200 border-0 border-l-1px  dark:border-dark-300"],

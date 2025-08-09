@@ -3,20 +3,29 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow, LogicalSize } from "@tauri-apps/api/window";
 import { appDescription, appKeywords } from "@/constants/index";
 
+const setting = useSettingStore();
+const user = useUserStore();
+
 useSeoMeta({
   title: "登录 - 极物聊天",
   description: appDescription,
   keywords: appKeywords,
 });
-const user = useUserStore();
 
 definePageMeta({
   key: route => route.fullPath,
   layout: "default",
 });
 
-const setting = useSettingStore();
-onMounted(async () => {
+
+onMounted(() => {
+  initWindowAnimate();
+});
+
+/**
+ * 初始化窗口动画
+ */
+function initWindowAnimate() {
   user.showLoginPageType = "login";
   if (setting.isDesktop) {
     const wind = getCurrentWindow();
@@ -41,55 +50,72 @@ onMounted(async () => {
       immediate: true,
     });
   }
-});
+}
 </script>
 
 <template>
   <div
-    class="main-box relative overflow-hidden bg-color shadow"
-    grid="~ cols-1 md:cols-2" :class="{
+    class="main-box relative overflow-hidden drop-shadow-color-blue-1"
+    :class="{
       'img-none is-desktop': setting.isDesktop,
       'is-mobile': setting.isMobileSize,
       'show-register': user.showLoginPageType === 'register',
       'show-env-config': user.showLoginPageType === 'env-config',
     }"
   >
-    <div :data-tauri-drag-region="setting.isDesktop" class="absolute right-0 z-1000 w-100vw flex cursor-move items-center gap-2 sm:w-50vw">
-      <div class="group ml-a flex flex items-center gap-2 p-2 sm:px-3">
-        <BtnTheme
-          :class="setting.isDesktop ? 'op-50 h-2rem w-2rem card-rounded-df group-hover:op-100' : ' h-2rem w-2rem rounded-1/2 card-default border-default' "
-          title="切换主题"
+    <!-- 背景 -->
+    <Teleport to="body">
+      <div v-if="setting.isWeb && !setting.isMobileSize" class="fixed left-0 top-0 h-full w-full -z-1">
+        <OtherLoginBg
+          :enable-rainbow="false"
+          :grid-color="$colorMode.value === 'dark' ? '#7429ff' : '#000000'"
+          :ripple-intensity="0.02"
+          :grid-size="20"
+          :fade-distance="1"
+          :grid-thickness="30"
+          :vignette-strength="$colorMode.value === 'dark' ? 2 : 1"
+          :mouse-interaction="false"
+          :opacity="$colorMode.value === 'dark' ? 0.6 : 0.1"
         />
-        <BtnEnvConfig
-          :class="setting.isDesktop ? 'scale-90 op-50 group-hover:op-100' : ' !h-2rem !w-2rem  !card-bg-color rounded-1/2 !border-default' "
-          :size="setting.isDesktop ? 'small' : ''"
-          :icon-class="user.showLoginPageType === 'env-config' ? 'i-solar:settings-minimalistic-bold-duotone text-0.9em' : 'i-solar:settings-minimalistic-outline text-1em'"
-          @click="user.showLoginPageType = (user.showLoginPageType === 'env-config' ? 'login' : 'env-config')"
-        />
-        <BtnAppDownload />
-        <MenuController v-if="setting.isDesktop && setting.appPlatform !== 'macos'" key="header" :size="setting.isDesktop ? 'small' : ''" :show-max="false" />
       </div>
-    </div>
-    <!-- bg -->
-    <div
-      class="hidden h-full w-full select-none border-0 border-default border-r-1px shadow-md shadow-inset md:block"
-    >
-      <ElImage
-        src="https://oss.jiwuhub.top/user_bg/login_bg.jpg" fit="cover"
-        class="h-full w-full select-none overflow-hidden card-default rounded-r-0"
-      />
-    </div>
+      <div
+        :data-tauri-drag-region="setting.isDesktop"
+        class="controls absolute right-0 top-0 z-1000 w-100vw flex items-center gap-2"
+        :class="{
+          'cursor-move': setting.isDesktop,
+        }"
+      >
+        <!-- 标题 -->
+        <HeadrHeaderLogo v-if="!setting.isMobileSize" class="ml-4" />
+        <!-- 菜单按钮 -->
+        <div class="group ml-a flex flex items-center gap-2 p-2 sm:px-3">
+          <BtnTheme
+            :class="setting.isDesktop ? 'op-50 h-1.5rem w-2rem card-rounded-df group-hover:op-100' : ' h-2rem w-2rem rounded-1/2 card-default border-default' "
+            title="切换主题"
+          />
+          <BtnEnvConfig
+            :class="setting.isDesktop ? 'scale-90 op-50 group-hover:op-100' : ' !h-2rem !w-2rem  !card-bg-color rounded-1/2 !border-default' "
+            :size="setting.isDesktop ? 'small' : ''"
+            :icon-class="user.showLoginPageType === 'env-config' ? 'i-solar:settings-minimalistic-bold-duotone text-0.9em' : 'i-solar:settings-minimalistic-outline text-1em'"
+            title="环境切换"
+            @click="user.showLoginPageType = (user.showLoginPageType === 'env-config' ? 'login' : 'env-config')"
+          />
+          <BtnAppDownload />
+          <MenuController v-if="setting.isDesktop && setting.appPlatform !== 'macos'" key="header" :size="setting.isDesktop ? 'small' : ''" :show-max="false" />
+        </div>
+      </div>
+    </Teleport>
     <!-- 表单 -->
     <div
-      class="flex select-none rounded-t-8 bg-color px-6 py-4 shadow-lg sm:(mt-0 h-full animate-none border-0 rounded-t-0 shadow-none)"
+      class="flex select-none rounded-t-8 px-6 py-4 shadow-lg sm:(mt-0 h-full animate-none border-0 rounded-t-0 shadow-none)"
       :class="[
-        setting.isDesktop ? 'w-full h-full !rounded-0 mt-a animate-none' : 'h-fit flex-row-c-c sm:static absolute bottom-0 left-0 w-full shadow-lg border-default-t',
+        setting.isDesktop ? 'w-full h-full !rounded-0 flex-row-c-c animate-none' : 'h-fit flex-row-c-c sm:static absolute bottom-0 left-0 w-full shadow-lg border-default-t',
         setting.isWeb && !setting.isMobileSize ? '' : 'login-bg',
         setting.isMobileSize ? 'min-h-62vh' : '',
       ]"
       data-fade
     >
-      <div data-fades class="form-main mx-a my-a w-full text-center sm:(my-a max-w-3/5 w-24rem text-left)">
+      <div data-fades class="form-main mx-a my-a w-full text-center sm:px-4">
         <!-- 登录 -->
         <FormLoginForm
           v-if="user.showLoginPageType === 'login'"
@@ -117,6 +143,12 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style lang="scss">
+body > .controls {
+  --at-apply: 'sm:(fixed top-0 left-0)';
+}
+</style>
 
 <style lang="scss" scoped>
 @media (max-width: 640px) {

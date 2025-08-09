@@ -55,6 +55,7 @@
     "element-china-area-data": "6.1.0",
     "element-plus": "2.10.6",
     "md-editor-v3": "5.8.4",
+    "ogl": "^1.0.11",
     "pinia": "3.0.3",
     "pinia-plugin-persistedstate": "4.4.1",
     "qiniu-js": "3.4.3",

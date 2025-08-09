@@ -55,8 +55,8 @@ onMounted(() => {
 
 
 // 显示窗口
-function handleMouseEnter() {
-  appWindow.setFocus();
+async function handleMouseEnter() {
+  await appWindow.setFocus();
 }
 // 隐藏窗口
 function handleMouseLeave() {
