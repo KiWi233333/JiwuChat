@@ -84,6 +84,17 @@ const _show = computed({
             />
           </div>
 
+          <!-- 消息滚动动画 -->
+          <div class="setting-item">
+            <span class="setting-label">消息滚动</span>
+            <el-switch
+              v-model="setting.settingPage.animation.msgListScrollBottomAnimate"
+              class="transition-opacity hover:op-80"
+              :size="size"
+              inline-prompt
+            />
+          </div>
+
           <div class="setting-item">
             <span class="setting-label" title="骨架屏加载动画">消息列表动画
               <span class="tip border-default rounded-8 px-2 py-0.2em text-mini">骨架屏</span>

@@ -23,14 +23,6 @@ onMounted(async () => {
       <!-- 流畅模式 -->
       <div class="setting-item">
         流畅模式
-        <BtnElButton
-          class="ml-a mr-2 h-5 !border-default-hover"
-          icon-class="i-solar:pen-2-bold text-1em mr-1"
-          title="定制化动画"
-          text bg round
-          size="small"
-          @click="showCustomTransitionPanel = true"
-        />
         <el-switch
           v-model="setting.settingPage.isCloseAllTransition"
           class="transition-opacity hover:op-80"
@@ -39,10 +31,23 @@ onMounted(async () => {
           :title="!setting.settingPage.isCloseAllTransition ? '关闭动画' : '开启动画'"
         />
       </div>
+      <!-- 动画配置 -->
+      <div class="setting-item">
+        动画配置
+        <span class="tip mx-2 border-default rounded-8 bg-color-2 px-2 py-0 text-0.7rem text-mini">精细化页面、主题等动画</span>
+        <BtnElButton
+          class="ml-a h-5 !border-default-hover"
+          icon-class="i-solar:pen-2-bold text-1em mr-1"
+          title="定制化动画"
+          round
+          size="small"
+          @click="showCustomTransitionPanel = true"
+        />
+      </div>
       <!-- Window10阴影 -->
       <div v-if="setting.isDesktop && isWindow10" class="setting-item">
         窗口阴影
-        <span class="tip mx-2 border-default rounded-8 px-2 py-0.2em text-mini">Window 10</span>
+        <span class="tip mx-2 border-default rounded-8 px-2 py-0 text-0.7rem text-mini">Window 10</span>
         <el-switch
           v-model="setting.settingPage.isWindow10Shadow"
           :title="!setting.settingPage.isWindow10Shadow ? '开启窗口阴影，Windows 10 不兼容圆角' : '关闭窗口阴影，窗口采用圆角'"

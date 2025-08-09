@@ -185,6 +185,7 @@ export const useSettingStore = defineStore(
           messageTransition: true, // 消息气泡动画
           themeTransition: true, // 主题切换动画
           hardwareAcceleration: false, // 硬件加速
+          msgListScrollBottomAnimate: false, // 消息列表滚动到底部动画
         },
         isWindow10Shadow: false, // 是否启用 Windows 10 窗口阴影
         notificationType: isWeb.value ? NotificationEnums.SYSTEM : NotificationEnums.TRAY, // 托盘通知

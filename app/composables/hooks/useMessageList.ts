@@ -31,10 +31,23 @@ export function useMessageList() {
   const scrollbarRef = ref<ScrollbarRefType>();
   const timer = ref<number | null>(null);
 
-  // 防抖函数 - 消息已读上报
-  const debounceReadList = useDebounceFn((theRoomId: number) => {
-    chat.setReadRoom(theRoomId);
-  }, 500);
+  // 自定义防抖Hook，首次无定时器时立即执行
+  function useDebounceReadList(fn: (theRoomId: number) => void, delay = 500) {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    return (theRoomId: number) => {
+      if (!timer) {
+        fn(theRoomId); // 首次无定时器时立即执行
+      }
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        timer = null;
+      }, delay);
+    };
+  }
+  // 防抖函数 - 消息已读上报（首次立即执行）
+  const debounceReadList = useDebounceReadList((theRoomId: number) => chat.setReadRoom(theRoomId), 500);
 
   /**
    * 取消计时器
@@ -314,12 +327,15 @@ export function useMessageList() {
     const isAtBottom = e.scrollTop >= (scrollbarRef?.value?.wrapRef?.scrollHeight || 0) + offset.value;
 
     if (isAtBottom) {
-      // 更新状态并触发已读上报
-      const lastMsg = msgList.value[msgList.value.length - 1];
-      const isLastMessageFromAI = lastMsg?.message?.type === MessageType.AI_CHAT_REPLY;
-      chat.shouldAutoScroll = isLastMessageFromAI;
-      chat.isScrollBottom = true;
+      chat.shouldAutoScroll = true;
+      chat.isScrollBottom = false;
       debounceReadList(chat.theRoomId);
+      // 更新状态并触发已读上报
+      // const lastMsg = msgList.value[msgList.value.length - 1];
+      // const isLastMessageFromAI = lastMsg?.message?.type === MessageType.AI_CHAT_REPLY;
+      // // chat.shouldAutoScroll = isLastMessageFromAI;
+      // chat.isScrollBottom = true;
+      // debounceReadList(chat.theRoomId);
     }
     else {
       chat.isScrollBottom = false;

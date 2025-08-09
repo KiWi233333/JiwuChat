@@ -679,6 +679,7 @@ export const useChatStore = defineStore(
     }
     /**
      * 设置消息已读
+     * 先消费消息并缓存消息数，请求失败再回退
      */
     async function setReadRoom(roomId: number, isSender = false) {
       if (!roomId)
@@ -689,21 +690,43 @@ export const useChatStore = defineStore(
       if (!contactMap.value[roomId]?.unreadCount && !contact?.unreadCount && !isSender) {
         return true;
       }
-      // 标记已读
+
+      // 缓存原始未读数和未读消息列表
+      const oldUnreadCount = contact?.unreadCount || 0;
+      const oldUnreadMsgList = contact?.unreadMsgList ? [...contact.unreadMsgList] : [];
+
+      // 先消费消息
       if (roomId === contact?.roomId) {
         const lastMsgId = contact.msgIds[contact.msgIds.length - 1];
         const lastMsg = lastMsgId ? contact.msgMap[lastMsgId] : undefined;
-        // contact.unreadCount = 0;
-        // contact.text = msg ? resolveMsgContactText(msg) : contact?.text;
         contact.unreadMsgList = [];
         contact.lastMsgId = lastMsg?.message?.id || contact?.lastMsgId;
+        contact.unreadCount = 0;
       }
-      if (readDebounceTimers[roomId])
+
+      if (readDebounceTimers[roomId]) {
         clearTimeout(readDebounceTimers[roomId]);
-      else
-        markMsgRead(roomId); // 立即标记已读
+      }
+      else {
+        markMsgRead(roomId).catch(() => {
+          // 请求失败，回退未读数和未读消息列表
+          if (contact) {
+            contact.unreadCount = oldUnreadCount;
+            contact.unreadMsgList = oldUnreadMsgList;
+          }
+        });
+      } // 立即标记已读
+
       // 标记已读请求（优化错误处理）
-      readDebounceTimers[roomId] = setTimeout(() => markMsgRead(roomId), 300);
+      readDebounceTimers[roomId] = setTimeout(() => {
+        markMsgRead(roomId).catch(() => {
+          // 请求失败，回退未读数和未读消息列表
+          if (contact) {
+            contact.unreadCount = oldUnreadCount;
+            contact.unreadMsgList = oldUnreadMsgList;
+          }
+        });
+      }, 300);
     }
 
     // 标记全部已读

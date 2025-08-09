@@ -66,6 +66,11 @@ async function resolveNewMsg(msg: ChatMessageVO) {
     contact.text = contact.type === RoomType.GROUP ? `${msg.fromUser.nickName}: ${body}` : body;
     contact.lastMsgId = msg.message.id;
     contact.activeTime = Date.now();
+    if (chat.shouldAutoScroll) { // 在底部
+      requestAnimationFrame(() => {
+        chat.scrollBottom(setting.settingPage.animation.msgListScrollBottomAnimate);
+      });
+    }
   });
   if (!targetCtx) {
     ws.wsMsgList.newMsg.splice(0);
@@ -100,9 +105,7 @@ async function resolveNewMsg(msg: ChatMessageVO) {
   ws.wsMsgList.newMsg.splice(0);
 }
 function handleAIReplayMsg() {
-  nextTick(() => {
-    useChatStore().scrollBottom(true);
-  });
+  useChatStore().scrollBottom(true);
 }
 
 /**
@@ -185,9 +188,7 @@ function handleRTCMsg(msg: ChatMessageVO<RtcLiteBodyMsgVO>) {
   const targetCtx = chat.contactMap?.[msg.message.roomId];
   // 更新滚动位置
   if (targetCtx && msg.message.roomId === targetCtx.roomId && rtcMsg.senderId === user.userInfo.id) {
-    nextTick(() => {
-      chat.scrollBottom(true);
-    });
+    chat.scrollBottom(true);
   }
 }
 
