@@ -7,18 +7,15 @@
     "withGlobalTauri": true,
     "windows": [],
     "security": {
-      "capabilities": [
-        "default-capability",
-        "desktop-capability",
-        "mobile-capability"
-      ],
+      "capabilities": ["default-capability", "desktop-capability", "mobile-capability"],
       "csp": null
     },
     "macOSPrivateApi": true
   },
   "build": {
     "frontendDist": "../.output/public",
-    "devUrl": "http://localhost:3000"
+    "devUrl": "http://localhost:3000",
+    "removeUnusedCommands": true
   },
   "plugins": {
     "updater": {
@@ -35,9 +32,7 @@
     "longDescription": "",
     "licenseFile": "./LICENSE/LICENSE.txt",
     "createUpdaterArtifacts": true,
-    "resources": [
-      "./res/**/*"
-    ],
+    "resources": ["./res/**/*"],
     "shortDescription": "",
     "windows": {
       "nsis": {
@@ -68,7 +63,7 @@
       },
       "deb": {
         "files": {
-          "/usr/share/README.md": "../README.md", 
+          "/usr/share/README.md": "../README.md",
           "/usr/share/public": "../public/"
         }
       }

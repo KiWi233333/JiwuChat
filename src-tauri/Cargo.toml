@@ -44,3 +44,13 @@ tauri-plugin-updater = "2"
 [target."cfg(target_os =\"macos\")".dependencies]
 objc2 = "0.6.1"
 objc2-app-kit = "0.3.1"
+
+[profile.dev]
+incremental = true # 以更小的步骤编译二进制文件。
+
+[profile.release]
+codegen-units = 1 # 允许LLVM进行更好的优化。
+lto = true # 启用链接时优化。
+opt-level = "s" # 优先减小二进制体积。如需更高速度可用`3`。
+panic = "abort" # 通过禁用panic处理器提升性能。
+strip = true # 确保移除调试符号。
