@@ -200,7 +200,15 @@ export default defineNuxtConfig({
         : undefined,
       watch: {
         // 告诉 Vite 忽略监听 `src-tauri` 目录
-        ignored: ["**/src-tauri/**"],
+        ignored: [
+          "**/src-tauri/**",
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/.git/**",
+          "**/.nuxt/**",
+          "**/public/**",
+          "**/.output/**",
+        ],
       },
     },
     css: {

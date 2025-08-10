@@ -1,6 +1,6 @@
 [package]
 name = "jiwuchat"
-version = "1.7.0"
+version = "1.7.2"
 description = "A Tauri App"
 authors = ["Kiwi2333"]
 edition = "2021"
@@ -15,10 +15,16 @@ name = "app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.0", features = [] }
+tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2.0.0", features = [ "macos-private-api", "tray-icon", "image-png", "image-ico"] }
+tauri = { version = "2.6.2", features = [
+    "macos-private-api",
+    "tray-icon",
+    "image-ico",
+    "rustls-tls"
+] }
+# tauri = { version = "2", features = [ "macos-private-api", "tray-icon", "image-png", "image-ico"] }
 tauri-plugin-shell = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -33,7 +39,7 @@ tauri-plugin-opener = "2"
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
 tauri-plugin-autostart = "2"
-tauri-plugin-single-instance = "2.3.0"
+tauri-plugin-single-instance = "2"
 tauri-plugin-updater = "2"
 # tauri-plugin-window-state = "2"
     # permission// "window-state:default",
