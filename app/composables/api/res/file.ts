@@ -114,9 +114,9 @@ export const FILE_UPLOAD_ACCEPT = Object.keys(FILE_TYPE_ICON_MAP).join(",");
 export const FILE_TYPE_ICON_DEFAULT = "/images/icon/DEFAULT.png";
 
 // 定制fs实现任意路径 https://github.com/lencx/tauri-tutorial/discussions/13
-export const existsFile = (path: string) => invoke<boolean>("exist_file", { path });
-export const removeFile = (path: string) => invoke<boolean>("remove_file", { path });
-export const mkdirFile = (path: string) => invoke<boolean>("mkdir_file", { path });
+export const existsFile = (path: string) => invoke<boolean>("exist_file", { path: computedPath(path) });
+export const removeFile = (path: string) => invoke<boolean>("remove_file", { path: computedPath(path) });
+export const mkdirFile = (path: string) => invoke<boolean>("mkdir_file", { path: computedPath(path) });
 
 /**
  * 目录统计信息
@@ -228,6 +228,10 @@ export async function downloadFile(url: string, fileName: string, options: {
   }
 
   const finalFullPath = computedPath(targetPath || `${dir}\\${fileName}`);
+  const dirPath = computedDirPath(finalFullPath);
+  if (!await existsFile(dirPath)) {
+    await mkdirFile(dirPath);
+  }
   // 文件下载
   setting.fileDownloadMap[url] = {
     url,
@@ -284,6 +288,19 @@ export function computedPath(path: string) {
   return path;
 }
 
+/**
+ * 计算路径
+ * @param path 路径
+ * @returns 新的路径
+ */
+export function computedDirPath(path: string) {
+  const setting = useSettingStore();
+  if (["android", "andriod", "linux", "darwin", "macos"].includes(setting.osType)) { // 安卓、Linux、MacOS
+    return path.split("/").slice(0, -1).join("/");
+  }
+  // 不爱哦
+  return path;
+}
 /**
  * 下载文件 by streamSaver web端
  * https://segmentfault.com/a/1190000044342886

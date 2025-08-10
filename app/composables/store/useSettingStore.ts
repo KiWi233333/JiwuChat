@@ -580,7 +580,7 @@ export const useSettingStore = defineStore(
       if (!isWeb.value) {
         await nextTick();
         await resetAllWindow();
-        appDataDownloadDirUrl.value = `${await appDataDir()}/downloads`;
+        appDataDownloadDirUrl.value = computedPath(`${await appDataDir()}/downloads`);
         if (appDataDownloadDirUrl.value && !await existsFile(appDataDownloadDirUrl.value))
           await mkdirFile(appDataDownloadDirUrl.value);
         setTimeout(async () => { // 延迟300ms，防止闪屏
