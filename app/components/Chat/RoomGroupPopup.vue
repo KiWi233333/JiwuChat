@@ -185,7 +185,7 @@ async function changShieldStatus() {
           @blur="submitUpdateRoom('notice', theContactClone?.roomGroup?.detail?.notice)"
         />
         <el-scrollbar v-else max-height="8em" class="scroll-bar card-rounded-df border-none bg-transparent text-small transition-200" @click.stop="isLord && (editFormField = 'notice')">
-          {{ theContactClone?.roomGroup?.detail?.notice || "未填写" }}
+          {{ theContactClone?.roomGroup?.detail?.notice || "暂无公告" }}
         </el-scrollbar>
       </div>
     </div>

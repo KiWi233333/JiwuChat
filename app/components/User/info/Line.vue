@@ -103,7 +103,10 @@ async function submitUpdateUser(key: string) {
       });
     }
     else {
-      ElMessage.error(message || "修改失败，请稍后重试！");
+      userCopy.nickname = user?.nickname;
+      userCopy.slogan = user?.slogan;
+      userCopy.birthday = user?.birthday;
+      userCopy.gender = user?.gender;
     }
     // 关闭
     isEditNickname.value = false;
@@ -154,7 +157,13 @@ function onBlur() {
         center: true,
       })
         .then(() => submitUpdateUser("nickname"))
-        .catch(() => { userCopy.nickname = user?.nickname; });
+        .catch(() => {
+          // 恢复所有表单
+          userCopy.nickname = user?.nickname;
+          userCopy.slogan = user?.slogan;
+          userCopy.birthday = user?.birthday;
+          userCopy.gender = user?.gender;
+        });
     }
     // 检查个性签名是否修改
     else if (userCopy.slogan !== user?.slogan) {
@@ -246,7 +255,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
           ref="nicknameInputRef"
           v-model.lazy="userCopy.nickname"
           class="mr-2"
-          style="font-size: 0.9em; font-weight: 700"
+          style="font-size: 0.9em; font-weight: 500"
           placeholder="修改用户昵称"
           @focus="isEditNickname = true"
           @blur="onBlur()"
