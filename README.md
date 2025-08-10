@@ -5,27 +5,27 @@
  <h2 align=center style="margin: 2em 0;">极物聊天 Tauri APP</h2>
 
 <div>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri" target="_blank">
+      <a href="https://github.com/Kiwi233333/JiwuChat" target="_blank">
         <img class="disabled-img-view" src="https://img.shields.io/badge/Github-项目地址-blueviolet.svg?style=plasticr" alt="项目地址" >
       </a>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/stargazers" target="_blank">
+      <a href="https://github.com/Kiwi233333/JiwuChat/stargazers" target="_blank">
         <img class="disabled-img-view" alt="License"
-          src="https://img.shields.io/github/stars/Kiwi233333/jiwu-mall-chat-tauri.svg?style=social">
+          src="https://img.shields.io/github/stars/Kiwi233333/JiwuChat.svg?style=social">
       </a>
     </div>
     <div>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/commits" target="_blank">
+      <a href="https://github.com/Kiwi233333/JiwuChat/commits" target="_blank">
         <img class="disabled-img-view" alt="Commit"
-          src="https://img.shields.io/github/commit-activity/m/Kiwi233333/jiwu-mall-chat-tauri">
+          src="https://img.shields.io/github/commit-activity/m/Kiwi233333/JiwuChat">
       </a>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/issues" target="_blank">
-        <img class="disabled-img-view" alt="Issues" src="https://img.shields.io/github/issues/Kiwi233333/jiwu-mall-chat-tauri">
+      <a href="https://github.com/Kiwi233333/JiwuChat/issues" target="_blank">
+        <img class="disabled-img-view" alt="Issues" src="https://img.shields.io/github/issues/Kiwi233333/JiwuChat">
       </a>
     </div>
     <div>
-      <a href="`https://github.com/Kiwi233333/jiwu-mall-chat-tauri/blob/main/LICENSE`" target="_blank">
+      <a href="`https://github.com/Kiwi233333/JiwuChat/blob/main/LICENSE`" target="_blank">
           <img class="disabled-img-view" alt="License"
-          src="https://img.shields.io/github/license/Kiwi233333/jiwu-mall-chat-tauri">
+          src="https://img.shields.io/github/license/Kiwi233333/JiwuChat">
       </a>
       <a href="https://app.netlify.com/sites/jiwuchat/deploys" target="_blank">
           <img src="https://api.netlify.com/api/v1/badges/b68ad9ac-53e5-4c5a-ac56-a8882ffe7697/deploy-status" alt="+QQ群"/>
@@ -142,19 +142,19 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 - 移动端适配
 
 <div>
- <img src="./.doc/chat12.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat14.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat13.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat7.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/rtc2.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/rtc_remove_desktop.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat8.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat10.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat15.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat11.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat17.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat16.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat9.png" width = "190" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat12.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat14.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat13.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat7.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/rtc2.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/rtc_remove_desktop.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat8.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat10.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat15.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat11.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat17.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat16.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src="./.doc/chat9.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
 </div>
 
 ## 🌌 系统功能
@@ -192,14 +192,9 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 
 ## ⏳ 起步
 
-### 📦 安装依赖
+### 📦 前置操作
 
-```sh
-# node 版本 > = 20
-npm install -g pnpm
-
-pnpm install
-```
+- 前置环境、配置 [Tauri 官方文档](<https://tauri.app/zh-cn/start/prerequisites/>)
 
 ### ✨ 开发
 
@@ -221,9 +216,36 @@ pnpm install
 | 类型检查     | TypeScript         | 5.3.2        |
 | 样式处理     | Sass               | 1.77.6       |
 
+## ❓ 常见问题 | FAQ
+
+- **MacOS 用户安装出现错误：**  
+  
+<!-- 折叠 -->
+<details>
+macOS 系统下载并安装本项目时，可能会提示“安装包已损坏”或遇到证书相关问题，这是由于系统安全机制所致。请按以下步骤操作：
+
+  1. 打开「系统设置」-「安全性与隐私」，勾选允许“任何来源”下载的 App 运行（如图所示：img_10.png）。
+  2. 若仍有报错，请在终端执行以下命令：
+
+     **安装前执行：**
+
+     ```shell
+     sudo xattr -rd com.apple.quarantine 你的安装包路径/下载的安装包名称
+     ```
+
+     **如果已经安装，则执行：**
+
+     ```shell
+     sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
+     ```
+
+</details>
+
+- 如有常见问题，欢迎在 [Issues](https://github.com/KiWi233333/JiwuChat/Issues) 区留言，或通过下方联系方式反馈，我们会及时补充与解答。
+
 ## 🦾  趋势
 
-![JiwuChat Star History Chart](https://api.star-history.com/svg?repos=KiWi233333/jiwu-mall-chat-tauri&type=Date)
+![JiwuChat Star History Chart](https://api.star-history.com/svg?repos=KiWi233333/JiwuChat&type=Date)
 
 ## 💬 联系方式
 
