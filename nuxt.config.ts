@@ -182,7 +182,7 @@ export default defineNuxtConfig({
     // 为 Tauri 命令输出提供更好的支持
     clearScreen: false,
     // 启用环境变量 其他环境变量可以在如下网页中获知：https://v2.tauri.app/reference/environment-variables/
-    envPrefix: ["VITE_", "TAURI_ENV_*"],
+    envPrefix: ["VITE_", "TAURI_"],
     plugins: [
       codeInspectorPlugin({
         bundler: "vite",

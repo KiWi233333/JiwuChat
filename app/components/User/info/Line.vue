@@ -377,7 +377,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
     </p>
   </div>
   <!-- 他的朋友圈 -->
-  <div class="detail-info">
+  <div class="detail-info pb-18vh">
     <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
       <i class="i-solar:fire-line-duotone mr-3 p-2" />
       TA的朋友圈
