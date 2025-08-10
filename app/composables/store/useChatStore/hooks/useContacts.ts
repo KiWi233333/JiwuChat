@@ -54,22 +54,34 @@ export function createContactsModule(ctx: ContactsContext) {
   });
   const isNewMsg = computed(() => unReadContactList.value.length > 0 || applyUnReadCount.value > 0);
 
-  // 更新会话基础信息
+  // 优化后的更新会话基础信息方法
   function refreshContact(vo: ChatContactVO, oldVo?: ChatContactExtra) {
-    if (!vo.roomId) {
+    if (!vo?.roomId) {
       console.warn("refreshContact error: roomId is undefined");
       return;
     }
+
+    // 合并新旧数据，优先保留旧数据中的消息相关字段
+    const prev = oldVo || contactMap.value[vo.roomId] || {} as ChatContactExtra;
+    // 只拷贝非空字段，避免污染
+    const cleanVo: Record<string, any> = {};
+    Object.keys(vo).forEach((key) => {
+      const val = (vo as any)[key];
+      if (val !== undefined && val !== null) {
+        cleanVo[key] = val;
+      }
+    });
+
+    // 保证消息相关字段不会被新数据覆盖
     contactMap.value[vo.roomId] = {
-      ...(oldVo || {
-        msgMap: {},
-        msgIds: [],
-        unreadMsgList: [],
-        isReload: false,
-        isLoading: false,
-        pageInfo: { cursor: undefined, isLast: false, size: 20 } as PageInfo,
-      }),
-      ...vo,
+      ...prev,
+      ...cleanVo,
+      msgMap: prev.msgMap || {},
+      msgIds: prev.msgIds || [],
+      unreadMsgList: prev.unreadMsgList || [],
+      isReload: prev.isReload || false,
+      isLoading: prev.isLoading || false,
+      pageInfo: prev.pageInfo || { cursor: undefined, isLast: false, size: 20 } as PageInfo,
     };
   }
 

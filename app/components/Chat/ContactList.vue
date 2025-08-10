@@ -328,6 +328,9 @@ const menuList = [
 onMounted(() => {
   reload();
 
+  if (historyContactId.value) {
+    chat.onChangeRoom(historyContactId.value);
+  }
   // 监听
   mitter.on(MittEventType.WS_SYNC, ({ lastDisconnectTime, reconnectTime }) => {
     // 重连

@@ -766,7 +766,7 @@ defineExpose({
                 <i :class="isPalyAudio ? 'i-solar:stop-bold' : 'i-solar:play-bold'" class="icon" ml-2 p-1 />
               </BtnElButton>
               <i
-                i-solar:trash-bin-minimalistic-broken ml-3 btn-danger p-2.4
+                i-solar:trash-bin-minimalistic-broken ml-3 btn-danger rounded-0 p-2.4
                 @click="handlePlayAudio('del')"
               />
             </div>
@@ -875,7 +875,7 @@ defineExpose({
         <!-- 录音 -->
         <p
           v-if="isSoundRecordMsg"
-          class="relative max-h-2.6rem min-h-2.6rem w-full flex-row-c-c flex-1 overflow-y-auto text-wrap text-small sm:(h-fit max-h-full p-6)"
+          class="relative max-h-2.6rem min-h-2.6rem w-full flex-row-c-c flex-1 overflow-y-auto rounded-0 text-wrap text-small sm:(h-fit max-h-full p-6)"
         >
           {{ (isChating && speechRecognition.isSupported || theAudioFile?.id) ? (audioTransfromText || '...') : `识别你的声音 🎧${speechRecognition.isSupported ? '' : '（不支持）'}` }}
         </p>
