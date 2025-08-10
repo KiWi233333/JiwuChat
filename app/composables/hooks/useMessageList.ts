@@ -1,5 +1,4 @@
 import type { ElScrollbar } from "element-plus";
-import type { PageInfo } from "~/composables/store/useChatStore";
 
 const PAGINATION_SIZE = 20;
 const HIGHLIGHT_DURATION = 2000;

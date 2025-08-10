@@ -1,0 +1,234 @@
+import { acceptHMRUpdate, defineStore } from "pinia";
+import { useMessageQueue } from "../../hooks/msg/useMessageQueue";
+import { createComposeInputModule, createContactListsModule, createContactsModule, createMessagesModule, createRtcModule, createUIModule } from "./hooks";
+
+export interface PlaySounder {
+  state?: "play" | "pause" | "stop" | "loading" | "error"
+  url?: string
+  msgId?: number
+  currentSecond?: number
+  duration?: number
+  audio?: HTMLAudioElement
+}
+// @unocss-include
+export const defaultLoadingIcon = `<svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M12 4.5a7.5 7.5 0 1 0 0 15a7.5 7.5 0 0 0 0-15M1.5 12C1.5 6.201 6.201 1.5 12 1.5S22.5 6.201 22.5 12S17.799 22.5 12 22.5S1.5 17.799 1.5 12" opacity=".1"/><path fill="currentColor" d="M12 4.5a7.46 7.46 0 0 0-5.187 2.083a1.5 1.5 0 0 1-2.075-2.166A10.46 10.46 0 0 1 12 1.5a1.5 1.5 0 0 1 0 3"/></g></svg>`;
+// @unocss-include
+// https://pinia.web3doc.top/ssr/nuxt.html#%E5%AE%89%E8%A3%85
+export const useChatStore = defineStore(
+  CHAT_STORE_KEY,
+  () => {
+    /** ---------------------------- 发送消息 ---------------------------- */
+    // 组合式模块改造
+    const theRoomId = ref<number | undefined>(undefined);
+    const contactMap = ref<Record<number, ChatContactExtra>>({});
+    const ui = createUIModule();
+    const compose = createComposeInputModule();
+    const contacts = createContactsModule({ contactMap, theRoomId });
+    const messages = createMessagesModule({ contactMap });
+    const members = createMembersModule({ theRoomId, contactMap, refreshContact: (vo, oldVo) => contacts.refreshContact(vo, oldVo) });
+    const rtc = createRtcModule();
+    const lists = createContactListsModule();
+
+    const roomGroupPageInfo = ref({ cursor: null as null | string, isLast: false, size: 15 });
+    const playSounder = ref<PlaySounder>({ state: "stop", url: "", msgId: 0, currentSecond: 0, duration: 0, audio: undefined });
+
+    // 消息队列
+    const { messageQueue, isProcessingQueue, isExsist: isExsistQueue, get: getMsgQueue, addToMessageQueue, resolveQueueItem, processMessageQueue, retryMessage, deleteUnSendMessage, clearMessageQueue, msgBuilder } = useMessageQueue();
+    const unReadCount = computed(() => contacts.unReadContactList.value.reduce((acc, cur) => acc + cur.unreadCount, 0));
+
+    // 消息队列事件
+    mitter.on(MittEventType.MESSAGE_QUEUE, ({ type, payload }) => {
+      const { msg, queueItem } = payload || {};
+      if (type === "add" && msg) {
+        if (theRoomId.value && theRoomId.value === msg.message.roomId) {
+          messages.appendMsg(msg);
+          nextTick(() => ui.scrollBottom?.(false));
+        }
+      }
+      else if (type === "success" && msg) {
+        if (queueItem && queueItem.id) {
+          const roomId = msg.message.roomId;
+          if (queueItem.id && roomId) {
+            const contact = contactMap.value[roomId];
+            if (contact && contact.msgMap[queueItem.id]) {
+              contact.msgMap[queueItem.id] = msg as ChatMessageVO;
+            }
+          }
+          if (msg.message.roomId) {
+            messages.setReadRoom(msg.message.roomId, true);
+          }
+          messages.appendMsg(msg);
+        }
+      }
+    });
+
+    /** ------------------------------------------- 联系人面板管理 ------------------------------------------- */
+    const theFriendOpt = ref<TheFriendOpt>({
+      type: -1,
+      data: {},
+    });
+    function setTheFriendOpt(type: FriendOptType, data?: any) {
+      theFriendOpt.value = {
+        type,
+        data,
+      };
+    }
+    const showTheFriendPanel = computed({
+      get: () => theFriendOpt.value.type !== FriendOptType.Empty,
+      set: (val) => {
+        if (!val) {
+          setTheFriendOpt(FriendOptType.Empty);
+        }
+      },
+    }) as Ref<boolean>;
+    // 退出群聊操作
+    function setDelGroupId(roomId: number | undefined) {
+      if (!roomId)
+        return;
+      mitter.emit(MittEventType.GROUP_CONTRONLLER, {
+        type: "delete",
+        payload: {
+          roomId,
+        },
+      });
+    }
+
+
+    /** ------------------------------------------- 重置 ------------------------------------------- */
+    function resetStore() {
+      contacts.resetContacts();
+      ui.resetUI();
+      rtc.resetRtc();
+      members.resetMembers();
+      compose.resetCompose();
+      messages.isVisible.value = false;
+      roomGroupPageInfo.value = { cursor: null, isLast: false, size: 15 } as any;
+      playSounder.value = { state: "stop", url: "", msgId: 0, currentSecond: 0, duration: 0, audio: undefined };
+    }
+
+    return {
+      /** ---------------------------- 基础/会话状态 ---------------------------- */
+      theRoomId,
+      contactMap,
+      theContact: contacts.theContact,
+      isAIRoom: contacts.isAIRoom,
+      isGroupRoom: contacts.isGroupRoom,
+      isFriendRoom: contacts.isFriendRoom,
+      searchKeyWords: contacts.searchKeyWords,
+      getContactList: contacts.getContactList,
+      unReadContactList: contacts.unReadContactList,
+      isNewMsg: contacts.isNewMsg,
+      applyUnReadCount: contacts.applyUnReadCount,
+      unReadCount,
+
+      /** ---------------------------- 输入与草稿 ---------------------------- */
+      msgForm: compose.msgForm,
+      replyMsg: compose.replyMsg,
+      setReplyMsg: compose.setReplyMsg,
+
+      /** ---------------------------- 艾特与机器人 ---------------------------- */
+      atUserList: compose.atUserList,
+      setAtUid: compose.setAtUid,
+      removeAtByUsername: compose.removeAtByUsername,
+      askAiRobotList: compose.askAiRobotList,
+      setAskAiUid: compose.setAskAiUid,
+      removeAskAiByUsername: compose.removeAskAiByUsername,
+
+      /** ---------------------------- 群成员 ---------------------------- */
+      isOpenGroupMember: members.isOpenGroupMember,
+      atMemberRoomMap: members.atMemberRoomMap,
+      memberPageInfo: members.memberPageInfo,
+      currentRoomCache: members.currentRoomCache,
+      currentMemberList: members.currentMemberList,
+      isMemberLoading: members.isMemberLoading,
+      isMemberReload: members.isMemberReload,
+      inviteMemberForm: members.inviteMemberForm,
+      inviteMemberFormReset: members.inviteMemberFormReset,
+      roomMapCache: members.roomMapCache,
+      groupMemberMap: members.groupMemberMap,
+      exitGroupConfirm: members.exitGroupConfirm,
+
+      /** ---------------------------- 联系人与会话操作 ---------------------------- */
+      isOpenContact: contacts.isOpenContact,
+      setContact: contacts.setContact,
+      refreshContact: contacts.refreshContact,
+      reloadBaseContact: contacts.reloadBaseContact,
+      reloadContact: contacts.reloadContact,
+      updateContact: contacts.updateContact,
+      toContactSendMsg: contacts.toContactSendMsg,
+      deleteContactConfirm: contacts.deleteContactConfirm,
+      removeContact: contacts.removeContact,
+      setPinContact: contacts.setPinContact,
+      setShieldContact: contacts.setShieldContact,
+      theFriendOpt,
+      showTheFriendPanel,
+      setTheFriendOpt,
+      setDelGroupId,
+
+      /** ---------------------------- 消息相关 ---------------------------- */
+      recallMsgMap: messages.recallMsgMap,
+      appendMsg: messages.appendMsg,
+      findMsg: messages.findMsg,
+      setRecallMsg: messages.setRecallMsg,
+      getMessageList: messages.getMessageList,
+      setReadRoom: messages.setReadRoom,
+      clearAllUnread: messages.clearAllUnread,
+      isVisible: messages.isVisible,
+
+      /** ---------------------------- 消息队列 ---------------------------- */
+      messageQueue,
+      isProcessingQueue,
+      isExsistQueue,
+      getMsgQueue,
+      addToMessageQueue,
+      resolveQueueItem,
+      processMessageQueue,
+      retryMessage,
+      deleteUnSendMessage,
+      clearMessageQueue,
+      msgBuilder,
+
+      /** ---------------------------- 好友/群组列表管理器 ---------------------------- */
+      friendManager: lists.friendManager,
+      groupManager: lists.groupManager,
+
+      /** ---------------------------- UI/滚动/对话框 ---------------------------- */
+      showExtension: ui.showExtension,
+      pageTransition: ui.pageTransition,
+      showVideoDialog: ui.showVideoDialog,
+      notDialogShow: ui.notDialogShow,
+      shouldAutoScroll: ui.shouldAutoScroll,
+      isScrollBottom: ui.isScrollBottom,
+      scrollReplyMsg: ui.scrollReplyMsg,
+      saveScrollTop: ui.saveScrollTop,
+      scrollTop: ui.scrollTop,
+      scrollBottom: ui.scrollBottom,
+
+      /** ---------------------------- RTC 通话 ---------------------------- */
+      showRtcCall: rtc.showRtcCall,
+      rtcCallType: rtc.rtcCallType,
+      openRtcCall: rtc.openRtcCall,
+      rollbackCall: rtc.rollbackCall,
+      useChatWebRTC: rtc.useChatWebRTC,
+      confirmRtcFn: rtc.confirmRtcFn,
+
+      /** ---------------------------- 其他 ---------------------------- */
+      roomGroupPageInfo,
+      playSounder,
+      onChangeRoom: contacts.onChangeRoom,
+      onDownUpChangeRoom: contacts.onDownUpChangeRoom,
+      resetStore,
+    };
+  },
+  {
+    // https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
+    persist: false,
+    // persist: {
+    //   storage: persistedState.localStorage,
+    // },
+  },
+);
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(useChatStore, import.meta.hot));
+
+
