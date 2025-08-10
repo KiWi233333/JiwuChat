@@ -15,6 +15,16 @@ export interface PlaySounder {
 
 export interface PageInfo { cursor?: string, isLast: boolean, size: number }
 export interface RoomChacheData { pageInfo: PageInfo; userList: ChatMemberVO[], isReload: boolean, cacheTime: number, isLoading: boolean }
+export interface MemberListManager<T> {
+  list: Ref<T[]>
+  pageInfo: Ref<PageInfo>
+  isLoading: Ref<boolean>
+  isReload: Ref<boolean>
+  lastLoadTime: Ref<number | undefined>
+  load: () => Promise<void>
+  reload: () => Promise<void>
+  ensureFresh: () => Promise<void>
+}
 export interface ChatContactExtra extends ChatContactDetailVO {
   msgMap: Record<number, ChatMessageVO>, // 消息对象，key为消息ID
   msgIds: number[], // 消息ID数组，用于保持顺序
@@ -59,6 +69,126 @@ export const useChatStore = defineStore(
 
     /** ---------------------------- 好友 ---------------------------- */
     const applyUnReadCount = useLocalStorage(() => `applyUnReadCount_${useUserStore().userId}`, 0); // 申请未读数
+
+    /** ---------------------------- 好友/群组列表 ---------------------------- */
+    // 好友列表
+    const friendList = ref<ChatUserFriendVO[]>([]);
+    const friendPageInfo = ref<PageInfo>({ cursor: undefined, isLast: false, size: 10 });
+    const friendIsLoading = ref<boolean>(false);
+    const friendIsReload = ref<boolean>(true);
+    const friendLastLoadTime = ref<number | undefined>(undefined);
+
+    // 群组列表
+    const groupList = ref<ChatRoomGroupVO[]>([]);
+    const groupPageInfo = ref<PageInfo>({ cursor: undefined, isLast: false, size: 10 });
+    const groupIsLoading = ref<boolean>(false);
+    const groupIsReload = ref<boolean>(true);
+    const groupLastLoadTime = ref<number | undefined>(undefined);
+
+    // 加载好友列表
+    async function loadFriendList() {
+      if (friendIsLoading.value || friendPageInfo.value.isLast)
+        return;
+      friendIsLoading.value = true;
+      try {
+        const { data } = await getChatFriendPage(
+          friendPageInfo.value.size,
+          friendPageInfo.value.cursor || null,
+          useUserStore().getToken,
+        );
+        if (data?.list)
+          friendList.value.push(...(data.list as any[]));
+        friendPageInfo.value.isLast = data.isLast;
+        friendPageInfo.value.cursor = (data.cursor as any) || undefined;
+      }
+      catch (e) {
+        console.error(e);
+      }
+      finally {
+        friendIsLoading.value = false;
+      }
+    }
+
+    // 重新加载好友列表
+    async function reloadFriendList() {
+      friendPageInfo.value.cursor = undefined;
+      friendPageInfo.value.isLast = false;
+      friendLastLoadTime.value = Date.now();
+      friendList.value = [];
+      friendIsReload.value = true;
+      await loadFriendList();
+      friendIsReload.value = false;
+    }
+
+    // 加载群组列表
+    async function loadGroupRoomList() {
+      if (groupIsLoading.value || groupPageInfo.value.isLast)
+        return;
+      groupIsLoading.value = true;
+      try {
+        const { data } = await getChatGroupRoomPage(
+          groupPageInfo.value.size,
+          groupPageInfo.value.cursor || null,
+          useUserStore().getToken,
+        );
+        if (data?.list)
+          groupList.value.push(...(data.list as any[]));
+        groupPageInfo.value.isLast = data.isLast;
+        groupPageInfo.value.cursor = (data.cursor as any) || undefined;
+      }
+      catch (e) {
+        console.error(e);
+      }
+      finally {
+        groupIsLoading.value = false;
+      }
+    }
+
+    // 重新加载群组列表
+    async function reloadGroupRoomList() {
+      groupPageInfo.value.cursor = undefined;
+      groupPageInfo.value.isLast = false;
+      groupLastLoadTime.value = Date.now();
+      groupList.value = [];
+      groupIsReload.value = true;
+      await loadGroupRoomList();
+      groupIsReload.value = false;
+    }
+
+    // 按需刷新（5分钟缓存）
+    async function ensureGroupListFresh(type: "friend" | "group") {
+      const now = Date.now();
+      if (type === "friend") {
+        if (!friendLastLoadTime.value || (now - friendLastLoadTime.value > CONTACT_CACHE_TIME))
+          await reloadFriendList();
+      }
+      else {
+        if (!groupLastLoadTime.value || (now - groupLastLoadTime.value > CONTACT_CACHE_TIME))
+          await reloadGroupRoomList();
+      }
+    }
+
+    // 管理器聚合
+    const friendManager: MemberListManager<ChatUserFriendVO> = {
+      list: friendList,
+      pageInfo: friendPageInfo,
+      isLoading: friendIsLoading,
+      isReload: friendIsReload,
+      lastLoadTime: friendLastLoadTime,
+      load: loadFriendList,
+      reload: reloadFriendList,
+      ensureFresh: async () => ensureGroupListFresh("friend"),
+    };
+    const groupManager: MemberListManager<ChatRoomGroupVO> = {
+      list: groupList,
+      pageInfo: groupPageInfo,
+      isLoading: groupIsLoading,
+      isReload: groupIsReload,
+      lastLoadTime: groupLastLoadTime,
+      load: loadGroupRoomList,
+      reload: reloadGroupRoomList,
+      ensureFresh: async () => ensureGroupListFresh("group"),
+    };
 
     /** ---------------------------- 会话 ---------------------------- */
     const searchKeyWords = ref("");
@@ -133,7 +263,6 @@ export const useChatStore = defineStore(
     const unReadCount = computed(() => unReadContactList.value.reduce((acc, cur) => acc + cur.unreadCount, 0));
 
     // 监听消息队列事件
-    mitter.off(MittEventType.MESSAGE_QUEUE);
     mitter.on(MittEventType.MESSAGE_QUEUE, ({ type, payload }) => {
       const { msg, queueItem } = payload || {};
       if (type === "add" && msg) { // 添加消息
@@ -1114,6 +1243,9 @@ export const useChatStore = defineStore(
       groupMemberMap,
       // 申请
       applyUnReadCount,
+      // 好友/群组列表管理器
+      friendManager,
+      groupManager,
       // 方法
       inviteMemberFormReset,
       refreshContact,

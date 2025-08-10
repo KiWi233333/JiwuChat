@@ -1,90 +1,30 @@
 <script lang="ts" setup>
+import { useGroupList } from "./hook";
+
 interface Props {
   type: "friend" | "group"
   immediate?: boolean
   autoStop?: boolean
 }
-//  { type: "friend"; data: ChatUserFriendVO } | { type: "group"; data: ChatRoomGroupVO };
-// 根据type判断数据类型
-type DataVO = ChatUserFriendVO | ChatRoomGroupVO;
 
 const props = withDefaults(defineProps<Props>(), {
   immediate: true,
   autoStop: true,
 });
 
-const isLoading = ref<boolean>(false);
-const lastLoadTime = ref<number>();
-const chat = useChatStore();
-const user = useUserStore();
-
-const pageInfo = ref({
-  cursor: undefined as undefined | string,
-  isLast: false,
-  size: 10,
-});
-const list = ref<DataVO[]>([]);
-const isReload = ref(true);
-
-// 加载数据
-async function loadData() {
-  if (isLoading.value || pageInfo.value.isLast)
-    return;
-  isLoading.value = true;
-  try {
-    const { data } = props.type === "friend"
-      ? await getChatFriendPage(pageInfo.value.size, pageInfo.value.cursor || null, user.getToken)
-      : await getChatGroupRoomPage(pageInfo.value.size, pageInfo.value.cursor || null, user.getToken);
-
-    if (data?.list)
-      list.value.push(...data.list as any[]);
-    pageInfo.value.isLast = data.isLast;
-    pageInfo.value.cursor = data.cursor || undefined;
-  }
-  catch (e) {
-    console.error(e);
-  }
-  finally {
-    isLoading.value = false;
-  }
-}
-
-// 重新加载数据
-async function reloadData() {
-  pageInfo.value.cursor = undefined;
-  pageInfo.value.isLast = false;
-  lastLoadTime.value = Date.now();
-  list.value = [];
-  isReload.value = true;
-  await loadData();
-  isReload.value = false;
-}
-
-// 首次加载动画
-const isFirstLoad = ref(false);
-const isFriendPanel = computed(() => props.type === "friend");
-// 页面是否有焦点
-function checkIsFocus(p: DataVO) {
-  return isFriendPanel.value ? chat.theFriendOpt?.data?.id === (p as ChatUserFriendVO).userId : chat.theFriendOpt?.data?.roomId === p.roomId;
-}
-
-onMounted(() => {
-  reloadData();
-  isFirstLoad.value = true;
-});
-onUnmounted(() => {
-  isFirstLoad.value = false;
-});
-onDeactivated(() => {
-  isFirstLoad.value = false;
-});
-// 页面激活 5分钟内不重新加载
-onActivated(() => {
-  if (lastLoadTime.value && Date.now() - lastLoadTime.value > 1000 * 60 * 5) { // 5分钟内不再加载
-    reloadData();
-  }
-});
-
+const {
+  isLoading,
+  lastLoadTime,
+  chat,
+  pageInfo,
+  list,
+  isReload,
+  loadData,
+  reloadData,
+  isFirstLoad,
+  isFriendPanel,
+  checkIsFocus,
+} = useGroupList(props.type);
 
 /**
  * 好友相关监听
