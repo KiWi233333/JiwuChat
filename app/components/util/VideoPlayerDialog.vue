@@ -239,7 +239,7 @@ const videoSize = computed(() => {
               @click.stop="saveVideoLocal(videoInfo.url)"
             >
               <i
-                class="i-solar:download-minimalistic-linear"
+                class="i-solar:download-minimalistic-linear rounded-0"
                 title="另存为"
                 btn-info p-2.4 filter-drop-shadow-lg
               />
@@ -250,11 +250,11 @@ const videoSize = computed(() => {
               <i
                 :class="isFullscreen ? 'i-tabler:minimize' : 'i-tabler:maximize'"
                 title="全屏"
-                btn-info p-2.4 filter-drop-shadow-lg
+                btn-info rounded-0 p-2.4 filter-drop-shadow-lg
               />
             </div>
             <div @click.stop="closeDialog">
-              <i title="关闭" i-carbon:close btn-danger p-2.8 filter-drop-shadow-lg />
+              <i title="关闭" i-carbon:close btn-danger rounded-0 p-2.8 filter-drop-shadow-lg />
             </div>
           </div>
         </div>

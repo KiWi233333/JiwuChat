@@ -237,7 +237,7 @@ async function changShieldStatus() {
     <ListVirtualScrollList
       :items="memberList"
       item-height="2.75rem"
-      max-height="20rem"
+      height="15rem"
       :overscan="20"
       :get-item-key="item => `${chat.theRoomId!}_${item.userId}`"
       class-name="min-h-14rem card-rounded-df scroll-2 relative"
@@ -249,7 +249,6 @@ async function changShieldStatus() {
       pull-release-text="释放刷新"
       pull-refreshing-text="正在刷新..."
       @refresh="reload"
-      @item-click="handleMemberClick"
       @end-reached="handleEndReachedMember"
     >
       <template #default="{ item: member }">
@@ -282,7 +281,7 @@ async function changShieldStatus() {
             </el-tag>
             <small
               v-if="member.roleType && member.roleType !== ChatRoomRoleEnum.MEMBER"
-              class="role h-fit w-fit rounded-8 p-1 px-3 text-0.7rem font-500 leading-0.8rem"
+              class="role h-fit w-fit rounded-8 px-3 py-0.5 text-0.8rem font-500 leading-0.7rem"
               :class="chatRoomRoleClassMap[`${member.roleType}-border`]"
             >{{ chatRoomRoleTextMap[member.roleType] }}</small>
           </div>

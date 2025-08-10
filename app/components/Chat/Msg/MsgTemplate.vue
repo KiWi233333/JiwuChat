@@ -48,7 +48,8 @@ const showTranslation = computed(() => !!body.value?._textTranslation);
 
 
 // 多个URL
-const isMultipleUrl = Object.keys(urlContentMap || {}).length > 1;
+const urls = Object.keys(urlContentMap || {});
+const isMultipleUrl = urls.length > 1;
 const showMentionUrls = ref(false);
 const member = chat.groupMemberMap[`${data.message.roomId}_${data.fromUser.userId}`];
 const roleName = chatRoomRoleTextMap[member?.role || ChatRoomRoleEnum.MEMBER];
@@ -95,10 +96,10 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
           {{ body?._textTranslation?.tool?.label || '' }}
           <NuxtLink
             :to="TranslationPagePath"
-            ctx-name="translation" class="ml-1 text-theme-info op-80 hover:op-100" title="前往更改"
+            ctx-name="translation" class="ml-1 flex-row-c-c text-theme-info op-80 hover:op-100" title="前往更改"
           >
             {{ translationLangMap.get(body?._textTranslation?.sourceLang) || "自动" }}
-            <i ctx-name="translation" class="i-solar:alt-arrow-right-linear mr-1 p-2" />
+            <i ctx-name="translation" class="i-solar:alt-arrow-right-linear mr-1 inline-block h-4 w-4" />
             {{ translationLangMap.get(body?._textTranslation?.targetLang) || "自动" }}
           </NuxtLink>
           <i ctx-name="translation" class="i-solar:close-circle-outline float-right btn-danger p-2.4 sm:(op-0 group-hover:op-100)" @click.stop="clearTranslation" />
@@ -112,14 +113,15 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
         v-if="showReply"
         title="点击跳转"
         ctx-name="reply"
-        class="reply"
+        class="reply flex-row-c-c"
         @click="chat.scrollReplyMsg(body?.reply?.id || 0, body?.reply?.gapCount, false)"
       >
-        <i class="reply-icon i-solar:forward-2-bold-duotone mr-1 p-2" />
+        <i class="reply-icon i-solar:forward-2-bold-duotone mr-1 inline-block h-4 w-4" />
         {{ `${body?.reply?.nickName} : ${body?.reply?.body?.substring(0, 50) || ''}` }}
       </small>
       <!-- URL -->
       <div
+        v-if="urls.length"
         class="url-group"
         :class="{
           'multiple-url': isMultipleUrl && !showMentionUrls,

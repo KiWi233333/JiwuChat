@@ -241,7 +241,7 @@ function handleProgressUpdate(
   data: WSAiStreamMsg,
   contact: ChatContactDetailVO,
   oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
-  count = 3,
+  count = 30,
   delay = 50,
 ) {
   // 初始化缓冲区
@@ -383,7 +383,9 @@ function handleFinalState(
     // AI消息完成时，如果应该自动滚动，则滚动到底部
     const chat = useChatStore();
     if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
-      chat.scrollBottom(true);
+      nextTick(() => {
+        chat.scrollBottom(true);
+      });
     }
   }
 }

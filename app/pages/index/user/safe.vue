@@ -32,13 +32,13 @@ watch(activeName, () => {
       class="tabs mt-6 flex-1 overflow-hidden rounded-2 bg-transparent"
     >
       <el-tab-pane name="security" label="账号" lazy>
-        <UserSafeUpdateCards :data-fade="isAnim" />
+        <UserSafeUpdateCards style="--anima: blur-in;--anima-duration: 200ms;" :data-fade="isAnim" />
       </el-tab-pane>
       <el-tab-pane name="account" label="安全管理" lazy>
-        <UserSafeDeviceList :data-fade="isAnim" />
+        <UserSafeDeviceList style="--anima: blur-in;--anima-duration: 200ms;" :data-fade="isAnim" />
       </el-tab-pane>
       <el-tab-pane name="system" label="系统信息" lazy>
-        <UserSafeSystemInfo :data-fade="isAnim" />
+        <UserSafeSystemInfo style="--anima: blur-in;--anima-duration: 200ms;" :data-fade="isAnim" />
       </el-tab-pane>
     </el-tabs>
   </main>

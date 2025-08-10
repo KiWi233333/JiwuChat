@@ -289,7 +289,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
   <!-- 详情 -->
   <div class="detail-info">
     <p class="user-props truncate text-sm">
-      <i mr-3 p-2 :class="user.gender === Gender.BOY ? 'i-tabler:gender-male text-blue' : user.gender === Gender.GIRL ? 'i-tabler:gender-female text-pink' : 'i-tabler:gender-transgender text-yellow'" />
+      <i mr-3 inline-block h-4 w-4 :class="user.gender === Gender.BOY ? 'i-tabler:gender-male text-blue' : user.gender === Gender.GIRL ? 'i-tabler:gender-female text-pink' : 'i-tabler:gender-transgender text-yellow'" />
       <span class="mr-2 border-default-r pr-2">
         {{ user.gender }}
       </span>
@@ -306,7 +306,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
       </template>
     </p>
     <p class="user-props">
-      <i class="i-carbon:send mr-3 p-2" />
+      <i class="i-carbon:send mr-3 inline-block h-4 w-4" />
       签名：
       <el-input
         v-if="isEdit"
@@ -335,7 +335,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
       />
     </p>
     <p class="user-props">
-      <i class="i-tabler:calendar mr-3 p-2" />
+      <i class="i-tabler:calendar mr-3 inline-block h-4 w-4" />
       生日：
       <el-date-picker
         v-if="isEdit"
@@ -352,7 +352,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
     </p>
     <!-- 性别 -->
     <div class="user-props">
-      <i i-solar:adhesive-plaster-linear mr-3 p-2 />
+      <i i-solar:adhesive-plaster-linear mr-3 inline-block h-4 w-4 />
       性别：
       <el-select
         v-model="userCopy.gender"
@@ -371,13 +371,13 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
       </el-select>
     </div>
     <p class="user-props">
-      <i class="i-carbon:user mr-3 p-2" />
+      <i class="i-carbon:user mr-3 inline-block h-4 w-4" />
       上次在线：
       {{ user.lastLoginTime || ' - ' }}
     </p>
   </div>
   <!-- 他的朋友圈 -->
-  <div class="detail-info pb-18vh">
+  <div class="detail-info pb-15vh">
     <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
       <i class="i-solar:fire-line-duotone mr-3 p-2" />
       TA的朋友圈
@@ -406,7 +406,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
     </div>
     <div>
       <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
-        <i class="i-solar:heart-line-duotone mr-3 p-2" />
+        <i class="i-solar:heart-line-duotone mr-3 inline-block h-4 w-4" />
         TA的收藏
         <i class="i-carbon:chevron-right ml-a p-2" />
       </div>
@@ -507,7 +507,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
   --at-apply: "w-full px-4 sm:px-8 gap-6 shadow-sm sm:shadow-none bg-color";
 
   .user-props {
-    --at-apply: "py-3 max-w-full sm:w-30rem truncate text-sm";
+    --at-apply: "flex items-center py-3 max-w-full sm:w-30rem truncate text-sm";
   }
   .user-props:nth-last-child(1) {
     --at-apply: "mb-0";

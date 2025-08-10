@@ -127,9 +127,6 @@ export function useAudioDeviceManager() {
         denied: false,
         prompt: false,
       };
-
-      ElMessage.success("麦克风权限获取成功");
-
       // 权限获取成功后，枚举设备
       await enumerateAudioDevices();
 
