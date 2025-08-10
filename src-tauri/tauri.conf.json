@@ -49,12 +49,12 @@
       "minimumSystemVersion": "13.0"
     },
     "macOS": {
-      "entitlements": null,
       "exceptionDomain": "",
       "frameworks": [],
       "providerShortName": null,
       "signingIdentity": null,
-      "minimumSystemVersion": "10.13"
+      "minimumSystemVersion": "10.13",
+      "entitlements": "Entitlements.plist"
     },
     "linux": {
       "appimage": {

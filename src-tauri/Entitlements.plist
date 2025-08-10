@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- 麦克风权限 -->
+    <key>com.apple.security.device.microphone</key>
+    <true/>
+    <!-- 音频输入权限 -->
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+    <!-- 相机权限 -->
+    <key>com.apple.security.device.camera</key>
+    <true/>
+    <!-- 文件读写权限 -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <!-- 网络客户端权限 -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <!-- 网络服务端权限 -->
+    <key>com.apple.security.network.server</key>
+    <true/>
+    <!-- 蓝牙权限 -->
+    <key>com.apple.security.device.bluetooth</key>
+    <true/>
+    <!-- 本地通知权限 -->
+    <key>com.apple.security.notifications</key>
+    <true/>
+    <!-- 自动化苹果事件权限
+    <key>com.apple.security.automation.apple-events</key>
+    <true/> -->
+    <!-- 应用沙盒 -->
+    <!-- <key>com.apple.security.app-sandbox</key>
+    <true/> -->
+  </dict>
+</plist>
