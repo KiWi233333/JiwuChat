@@ -126,7 +126,7 @@ export function useMicrophoneTest() {
   };
 
   /**
-   * 启动麦克风测试
+   * 启动麦克风测试（兼容 webkit）
    */
   const startTest = async (deviceId?: string): Promise<boolean> => {
     try {
@@ -141,16 +141,29 @@ export function useMicrophoneTest() {
         throw new Error("无法获取音频流");
       }
 
-      // 创建音频上下文和分析器
-      audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      // 兼容 webkit 创建音频上下文
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) {
+        throw new Error("当前浏览器不支持 AudioContext");
+      }
+      audioContext = new AudioContextClass();
       analyser = audioContext.createAnalyser();
 
       // 配置分析器
       analyser.fftSize = 256;
       analyser.smoothingTimeConstant = 0.8;
 
-      // 连接音频源
-      const source = audioContext.createMediaStreamSource(mediaStream);
+      // 兼容 webkit 创建音频源
+      let source: MediaStreamAudioSourceNode;
+      if (audioContext.createMediaStreamSource) {
+        source = audioContext.createMediaStreamSource(mediaStream);
+      }
+      else if ((audioContext as any).webkitCreateMediaStreamSource) {
+        source = (audioContext as any).webkitCreateMediaStreamSource(mediaStream);
+      }
+      else {
+        throw new Error("当前浏览器不支持 createMediaStreamSource");
+      }
       source.connect(analyser);
 
       // 开始分析音频数据

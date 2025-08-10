@@ -1,6 +1,7 @@
 /**
  * 音频设备管理 Hook
  * 用于管理麦克风设备的枚举、选择和权限检查
+ * 兼容 webkit
  */
 
 interface AudioDevicePermissionStatus {
@@ -43,17 +44,50 @@ export function useAudioDeviceManager() {
   ]);
 
   /**
+   * 获取兼容的 mediaDevices
+   */
+  function getMediaDevices(): MediaDevices | null {
+    if (navigator.mediaDevices) {
+      return navigator.mediaDevices;
+    }
+    // webkit 兼容
+    if ((navigator as any).webkitGetUserMedia) {
+      // 简单封装成 mediaDevices 形式
+      return {
+        getUserMedia: (constraints: MediaStreamConstraints) => {
+          return new Promise<MediaStream>((resolve, reject) => {
+            (navigator as any).webkitGetUserMedia(
+              constraints,
+              (stream: MediaStream) => resolve(stream),
+              (err: any) => reject(err),
+            );
+          });
+        },
+        enumerateDevices: async () => {
+          // webkit 下 enumerateDevices 可能不可用
+          ElMessage.error("当前浏览器不支持设备枚举");
+          return [];
+        },
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      } as any;
+    }
+    return null;
+  }
+
+  /**
    * 枚举音频输入设备
    */
   const enumerateAudioDevices = async (): Promise<MediaDeviceInfo[]> => {
     try {
-      if (!navigator?.mediaDevices?.enumerateDevices) {
+      const mediaDevices = getMediaDevices();
+      if (!mediaDevices?.enumerateDevices) {
         throw new Error("浏览器不支持设备枚举");
       }
 
       isLoading.value = true;
 
-      const devices = await navigator.mediaDevices.enumerateDevices();
+      const devices = await mediaDevices.enumerateDevices();
       const audioInputDevices = devices.filter(device => device.kind === "audioinput");
 
       // 更新设置中的设备列表
@@ -75,13 +109,14 @@ export function useAudioDeviceManager() {
    */
   const requestMicrophonePermission = async (): Promise<boolean> => {
     try {
-      if (!navigator?.mediaDevices?.getUserMedia) {
+      const mediaDevices = getMediaDevices();
+      if (!mediaDevices?.getUserMedia) {
         ElMessage.error("您的浏览器不支持麦克风功能");
         return false;
       }
 
       // 请求访问麦克风
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await mediaDevices.getUserMedia({ audio: true });
 
       // 立即释放流
       stream.getTracks().forEach(track => track.stop());
@@ -105,14 +140,14 @@ export function useAudioDeviceManager() {
 
       let message = "麦克风权限获取失败";
       if (error.name === "NotAllowedError") {
-        message = "麦克风权限被拒绝，请在浏览器设置中允许访问麦克风";
+        message = "麦克风权限被拒绝，请在设置中允许访问麦克风";
         permissionStatus.value.denied = true;
       }
       else if (error.name === "NotFoundError") {
         message = "未找到可用的麦克风设备";
       }
       else if (error.name === "NotSupportedError") {
-        message = "您的浏览器不支持麦克风功能";
+        message = "不支持麦克风功能，请检查设置";
       }
 
       ElMessage.error(message);
@@ -126,6 +161,7 @@ export function useAudioDeviceManager() {
    */
   const checkMicrophonePermission = async (): Promise<boolean> => {
     try {
+      // webkit 下没有 permissions API
       if (!navigator?.permissions?.query) {
         // 浏览器不支持权限API，尝试直接请求权限
         return await requestMicrophonePermission();
@@ -213,13 +249,19 @@ export function useAudioDeviceManager() {
         return false;
       }
 
+      const mediaDevices = getMediaDevices();
+      if (!mediaDevices?.getUserMedia) {
+        ElMessage.error("您的浏览器不支持麦克风功能");
+        return false;
+      }
+
       const constraints: MediaStreamConstraints = {
         audio: targetDeviceId === "default"
           ? true
           : { deviceId: { exact: targetDeviceId } },
       };
 
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const stream = await mediaDevices.getUserMedia(constraints);
 
       // 简单测试：检查是否有音频轨道
       const audioTracks = stream.getAudioTracks();
@@ -260,7 +302,20 @@ export function useAudioDeviceManager() {
       const targetDeviceId = deviceId || selectedDevice.value;
 
       if (!hasPermission.value) {
-        throw new Error("没有麦克风权限");
+        // throw new Error("没有麦克风权限");
+        // 获取权限
+        await requestMicrophonePermission();
+        if (!hasPermission.value) {
+          ElMessage.error("没有麦克风权限");
+          return null;
+        }
+        return await getCurrentDeviceStream(targetDeviceId);
+      }
+
+      const mediaDevices = getMediaDevices();
+      if (!mediaDevices?.getUserMedia) {
+        ElMessage.error("您的浏览器不支持麦克风功能");
+        return null;
       }
 
       const constraints: MediaStreamConstraints = {
@@ -269,7 +324,7 @@ export function useAudioDeviceManager() {
           : { deviceId: { exact: targetDeviceId } },
       };
 
-      return await navigator.mediaDevices.getUserMedia(constraints);
+      return await mediaDevices.getUserMedia(constraints);
     }
     catch (error) {
       console.error("获取设备流失败:", error);
@@ -287,14 +342,31 @@ export function useAudioDeviceManager() {
     }
 
     // 监听设备变化
-    if (navigator?.mediaDevices?.addEventListener) {
-      navigator.mediaDevices.addEventListener("devicechange", () => {
+    // webkit 下 addEventListener 可能不可用
+    const mediaDevices = getMediaDevices();
+    if (mediaDevices && typeof mediaDevices.addEventListener === "function") {
+      mediaDevices.addEventListener("devicechange", () => {
         if (hasPermission.value && setting.settingPage.audioDevice.autoDetectDevice) {
           enumerateAudioDevices();
         }
       });
     }
+    else if (navigator && (navigator as any).ondevicechange !== undefined) {
+      // 某些 webkit 可能支持 ondevicechange
+      (navigator as any).ondevicechange = () => {
+        if (hasPermission.value && setting.settingPage.audioDevice.autoDetectDevice) {
+          enumerateAudioDevices();
+        }
+      };
+    }
   });
+
+
+  // 默认获取权限
+  onMounted(async () => {
+    await requestMicrophonePermission();
+  });
+
 
   return {
     // 状态

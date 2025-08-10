@@ -218,10 +218,13 @@ export default defineNuxtConfig({
     build: {
       chunkSizeWarningLimit: 1000, // chunk 大小警告的限制(kb)
       cssCodeSplit: true, // 是否将 CSS 代码拆分为单独的文件
-      minify: "terser", // 使用 terser 进行代码压缩
+      minify: "terser", // 使用 esbuild 进行代码压缩
       commonjsOptions: {
-
       },
+      target:
+      process.env.TAURI_ENV_PLATFORM === "windows"
+        ? "chrome105"
+        : "safari13",
     },
   },
   typescript: {

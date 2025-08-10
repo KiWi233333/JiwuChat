@@ -587,62 +587,23 @@ function analyzeFile(file: File, uploadType?: OssFileType): FileAnalysis {
  * 文件操作Hook - 提供文件选择等操作
  */
 export function useFileActions(onChangeHandler: (files: FileList | null) => void) {
-  /**
-   * 选择文件
-   */
-  function selectFile(config: FileSelectConfig = {}): Promise<File[]> {
-    const {
-      accept = "*",
-      multiple = false,
-      directory = false,
-      capture = undefined,
-    } = config;
-
-    return new Promise((resolve, reject) => {
-      const {
-        files: selectedFiles,
-        open,
-        reset,
-        onChange,
-        onCancel,
-      } = useFileDialog({
-        accept,
-        multiple,
-        directory,
-        reset: true,
-        capture,
-      });
-
-      // 监听文件选择
-      const stopWatchFiles = watch(selectedFiles, (files) => {
-        if (files && files.length > 0) {
-          resolve(Array.from(files));
-        }
-      });
-      const { off: offOnChange } = onChange(onChangeHandler);
-
-
-      // 监听取消事件
-      onCancel(() => {
-        cleanup();
-      });
-
-      // 清理函数
-      function cleanup() {
-        stopWatchFiles();
-        offOnChange();
-        reset();
-      }
-
-      // 打开文件选择器
-      open();
-    });
-  }
-
+  const {
+    open,
+    onChange,
+    reset,
+    onCancel,
+  } = useFileDialog({
+    reset: true,
+    multiple: false,
+    directory: false,
+    accept: "*/*",
+  });
+  // 监听文件选择
+  const { off: offOnChange } = onChange(onChangeHandler);
   /**
    * 根据文件类型获取预设配置
    */
-  function getPresetConfig(type: OssFileType, capture?: string): FileUploadConfig {
+  function getPresetConfig(type: OssFileType, capture?: "user" | "environment"): FileUploadConfig {
     const setting = useSettingStore();
     const ossInfo = setting.systemConstant.ossInfo;
 
@@ -699,33 +660,48 @@ export function useFileActions(onChangeHandler: (files: FileList | null) => void
   /**
    * 快速选择特定类型文件
    */
-  async function selectImageFiles(capture?: string): Promise<File[]> {
+  async function selectImageFiles(capture?: "user" | "environment") {
     const config = getPresetConfig(OssFileType.IMAGE, capture);
-    return selectFile({
-      accept: config.accept,
-      multiple: config.multiple,
-      directory: config.directory,
-      capture: config.capture,
-    });
+    return open(config.capture
+      ? {
+          reset: true,
+          accept: config.accept,
+          multiple: config.multiple,
+          directory: config.directory,
+          capture: config.capture,
+        }
+      : {
+          accept: config.accept,
+          multiple: config.multiple,
+          directory: config.directory,
+        });
   }
 
-  async function selectVideoFiles(capture?: string): Promise<File[]> {
+  async function selectVideoFiles(capture?: "user" | "environment") {
     const config = getPresetConfig(OssFileType.VIDEO, capture);
-    return selectFile({
-      accept: config.accept,
-      multiple: config.multiple,
-      directory: config.directory,
-      capture: config.capture,
-    });
+    return open(config.capture
+      ? {
+          reset: true,
+          accept: config.accept,
+          multiple: config.multiple,
+          directory: config.directory,
+          capture: config.capture,
+        }
+      : {
+          reset: true,
+          accept: config.accept,
+          multiple: config.multiple,
+          directory: config.directory,
+        });
   }
 
-  async function selectAnyFiles(): Promise<File[]> {
-    return selectFile({ accept: "*/*", multiple: true });
+  async function selectAnyFiles() {
+    return open({ accept: "*/*", multiple: true });
   }
 
   return {
     // 核心方法
-    selectFile,
+    selectFile: open,
     analyzeFile,
     getPresetConfig,
 
