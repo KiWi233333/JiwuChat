@@ -320,10 +320,15 @@ export const useSettingStore = defineStore(
 
     // 切换下载目录
     async function changeDownloadDir() {
-      const setting = useSettingStore();
+      const isDesktop = useSettingStore().isDesktop;
+      if (!isDesktop) { // 移动端
+        appDataDownloadDirUrl.value = computedPath(await appDataDir());
+        return appDataDownloadDirUrl.value;
+      }
+      // 桌面端
       const path = await openDialog({
         multiple: false,
-        directory: !!setting.isDesktop, // 仅桌面端支持选择文件夹
+        directory: !!isDesktop, // 仅桌面端支持选择文件夹
       });
       if (!path)
         return;
@@ -331,7 +336,7 @@ export const useSettingStore = defineStore(
         ElMessage.error("选择路径不存在，请重新选择！");
         return;
       }
-      appDataDownloadDirUrl.value = computedPath(setting.isDesktop ? path : path.split("\\").slice(0, -1).join("\\")); // 兼容移动端
+      appDataDownloadDirUrl.value = computedPath(`${await appDataDir()}/downloads`);
       ElMessage.success("下载路径已更改！");
       return appDataDownloadDirUrl.value;
     }

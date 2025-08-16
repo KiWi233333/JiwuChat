@@ -224,9 +224,9 @@ export async function downloadFile(url: string, fileName: string, options: {
     if (!newDir) {
       return ElMessage.warning("请选择下载目录");
     }
+
     dir = newDir;
   }
-
   const finalFullPath = computedPath(targetPath || `${dir}\\${fileName}`);
   const dirPath = computedDirPath(finalFullPath);
   if (!await existsFile(dirPath)) {
@@ -295,10 +295,12 @@ export function computedPath(path: string) {
  */
 export function computedDirPath(path: string) {
   const setting = useSettingStore();
-  if (["android", "andriod", "linux", "darwin", "macos"].includes(setting.osType)) { // 安卓、Linux、MacOS
+  if (["android", "linux", "darwin", "macos"].includes(setting.osType)) { // 安卓、Linux、MacOS
     return path.split("/").slice(0, -1).join("/");
   }
-  // 不爱哦
+  else if (["windows"].includes(setting.osType)) { // Windows
+    return path.split("\\").slice(0, -1).join("\\");
+  }
   return path;
 }
 /**
