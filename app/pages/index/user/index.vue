@@ -80,7 +80,7 @@ definePageMeta({
     />
 
     <!-- 按钮 -->
-    <div v-show="!isLoading && otherUserId" class="sticky bottom-6 left-0 w-full flex-row-c-c p-0 sm:(static max-w-30rem py-4)">
+    <div v-show="!isLoading && otherUserId" class="w-full flex-row-c-c bg-color p-0 py-8 sm:(static max-w-30rem py-4)">
       <BtnElButton
         v-if="isFriend"
         key="delete"

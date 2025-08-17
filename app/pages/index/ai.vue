@@ -287,8 +287,8 @@ onDeactivated(() => {
 <template>
   <div class="h-full w-full flex flex-1 flex-col sm:(px-4 pb-4)">
     <!-- header -->
-    <p class="nav-padding-top-6 my-4 pl-4 text-[var(--el-color-primary)] font-600 tracking-0.2em sm:pl-0">
-      <i class="i-solar:ghost-bold mr-2 p-0.8em" />
+    <p class="nav-padding-top-6 my-4 pl-4 text-[var(--el-color-primary)] font-500 sm:pl-0">
+      <i class="i-solar:ghost-bold mr-2 p-3" />
       极物AI
       <!-- <span float-right mr-3 rounded bg-theme-primary px-2 py-1 text-0.65rem text-light>AI生成内容，仅供参考！</span> -->
     </p>
