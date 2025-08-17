@@ -336,7 +336,7 @@ export const useSettingStore = defineStore(
         ElMessage.error("选择路径不存在，请重新选择！");
         return;
       }
-      appDataDownloadDirUrl.value = computedPath(`${await appDataDir()}/downloads`);
+      appDataDownloadDirUrl.value = computedPath(path || `${await appDataDir()}/downloads`);
       ElMessage.success("下载路径已更改！");
       return appDataDownloadDirUrl.value;
     }

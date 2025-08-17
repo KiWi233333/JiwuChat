@@ -205,18 +205,20 @@ async function processFiles(files: File[]) {
 
 // 录音处理 (单独触发，但上传逻辑统一)
 const {
-  isChating,
-  second,
-  theAudioFile,
+  isRecording,
+  recordingDuration,
+  audioFile,
   speechRecognition,
-  audioTransfromText,
-  isPalyAudio,
+  audioTransformText,
+  isPlayingAudio,
   pressHandleRef,
   stop: stopRecord,
   reset: resetRecord,
   start: startRecord,
   handlePlayAudio, // 播放录音
+  onError,
 } = useRecording({ pressHandleRefName: "pressHandleRef", timeslice: 1000 });
+onError(msg => ElMessage.warning(msg));
 const isUploadSound = ref(false); // 用于UI状态
 const isSoundRecordMsg = computed(() => chat.msgForm.msgType === MessageType.SOUND);
 
@@ -235,7 +237,7 @@ async function handleSubmit() {
   isSending.value = true;
   try {
     const analysisTextFormData = getInputDTOByText();
-    const soundOpt = isSoundRecordMsg.value && second.value ? { customUploadType: OssFileType.SOUND } : undefined;
+    const soundOpt = isSoundRecordMsg.value || recordingDuration.value > 1 ? { customUploadType: OssFileType.SOUND } : undefined;
     // 新增：获取聊天框内所有图片、视频、文件类型的文件
     const ossFiles: OssFile[] = [
       ...(imageManager.getFiles() || []),
@@ -244,16 +246,22 @@ async function handleSubmit() {
     ];
     if (soundOpt) {
       // 停止语音
-      stopRecord();
+      if (isRecording.value) {
+        stopRecord();
+        return;
+      }
       await nextTick();
-      ossFiles.unshift(theAudioFile.value as OssFile);
+      if (!audioFile.value) {
+        return;
+      }
+      ossFiles.unshift(audioFile.value as OssFile);
       chat.msgForm = {
         ...chat.msgForm,
         msgType: MessageType.SOUND,
         body: {
           ...chat.msgForm.body,
-          translation: audioTransfromText.value,
-          second: second.value,
+          translation: audioTransformText.value,
+          second: recordingDuration.value,
         } as SoundBodyDTO,
       };
     }
@@ -738,32 +746,32 @@ defineExpose({
           </el-tooltip>
           <!-- 语音 -->
           <template v-if="isSoundRecordMsg">
-            <div v-show="!theAudioFile?.id" class="absolute-center-x">
+            <div v-show="!audioFile?.id" class="absolute-center-x">
               <BtnElButton
                 ref="pressHandleRef"
                 type="primary" class="group tracking-0.1em hover:shadow"
-                :class="{ 'is-chating': isChating }"
+                :class="{ 'is-chating': isRecording }"
                 style="padding: 0.8rem 3rem;"
                 round
                 size="small"
               >
                 <i i-solar:soundwave-line-duotone class="icon" p-2.5 />
                 <div class="text w-5rem truncate text-center transition-width group-hover:(w-6rem sm:w-8rem) sm:w-8rem">
-                  <span class="chating-hidden">{{ isChating ? `正在输入 ${second}s` : '语音' }}</span>
-                  <span hidden class="chating-show">停止录音 {{ second ? `${second}s` : '' }}</span>
+                  <span class="chating-hidden">{{ isRecording ? `正在输入 ${recordingDuration}s` : '语音' }}</span>
+                  <span hidden class="chating-show">停止录音 {{ recordingDuration ? `${recordingDuration}s` : '' }}</span>
                 </div>
               </BtnElButton>
             </div>
-            <div v-show="theAudioFile?.id" class="absolute-center-x">
+            <div v-show="audioFile?.id" class="absolute-center-x">
               <i p-2.4 />
               <BtnElButton
                 type="primary"
-                class="group tracking-0.1em op-60 hover:op-100" :class="{ 'is-chating !op-100': isPalyAudio }"
+                class="group tracking-0.1em op-60 hover:op-100" :class="{ 'is-chating !op-100': isPlayingAudio }"
                 style="padding: 0.8rem 3rem;" round size="small"
-                @click="handlePlayAudio(isPalyAudio ? 'stop' : 'play', theAudioFile?.id)"
+                @click="handlePlayAudio(isPlayingAudio ? 'stop' : 'play', audioFile?.id)"
               >
-                {{ second ? `${second}s` : '' }}
-                <i :class="isPalyAudio ? 'i-solar:stop-bold' : 'i-solar:play-bold'" class="icon" ml-2 p-1 />
+                {{ recordingDuration ? `${recordingDuration}s` : '' }}
+                <i :class="isPlayingAudio ? 'i-solar:stop-bold' : 'i-solar:play-bold'" class="icon" ml-2 p-1 />
               </BtnElButton>
               <i
                 i-solar:trash-bin-minimalistic-broken ml-3 btn-danger rounded-0 p-2.4
@@ -877,7 +885,7 @@ defineExpose({
           v-if="isSoundRecordMsg"
           class="relative max-h-2.6rem min-h-2.6rem w-full flex-row-c-c flex-1 overflow-y-auto rounded-0 text-wrap text-small sm:(h-fit max-h-full p-6)"
         >
-          {{ (isChating && speechRecognition.isSupported || theAudioFile?.id) ? (audioTransfromText || '...') : `识别你的声音 🎧${speechRecognition.isSupported ? '' : '（不支持）'}` }}
+          {{ (isRecording && speechRecognition.isSupported || audioFile?.id) ? (audioTransformText || '...') : `识别你的声音 🎧${speechRecognition.isSupported ? '' : '（不支持）'}` }}
         </p>
       </template>
       <!-- 富文本输入框 -->

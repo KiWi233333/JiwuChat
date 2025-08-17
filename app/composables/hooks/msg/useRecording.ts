@@ -42,30 +42,30 @@ function createInitialState(): RecordingState {
 /**
  * 音频播放管理器
  */
-function useAudioPlayer(state: Ref<RecordingState>) {
+function useAudioPlayer(state: RecordingState, onError: { trigger: (msg: string) => void }) {
   const playAudio = (url?: string) => {
-    const audioUrl = url || state.value.audioFile?.id;
-    if (!audioUrl || state.value.isPlaying)
+    const audioUrl = url || state.audioFile?.id;
+    if (!audioUrl || state.isPlaying)
       return;
 
     const audio = new Audio(audioUrl);
-    state.value.audioElement = audio;
-    state.value.isPlaying = true;
+    state.audioElement = audio;
+    state.isPlaying = true;
 
     audio.play().catch(() => {
-      state.value.isPlaying = false;
-      ElMessage.error("音频播放失败");
+      state.isPlaying = false;
+      onError.trigger("音频播放失败");
     });
 
     audio.addEventListener("ended", () => {
-      state.value.isPlaying = false;
+      state.isPlaying = false;
     });
   };
 
   const stopAudio = () => {
-    if (state.value.audioElement && state.value.isPlaying) {
-      state.value.audioElement.pause();
-      state.value.isPlaying = false;
+    if (state.audioElement && state.isPlaying) {
+      state.audioElement.pause();
+      state.isPlaying = false;
     }
   };
 
@@ -75,7 +75,7 @@ function useAudioPlayer(state: Ref<RecordingState>) {
 /**
  * 语音转文字管理器
  */
-function useSpeechToText(state: Ref<RecordingState>) {
+function useSpeechToText(state: RecordingState, onError: { trigger: (msg: string) => void }) {
   const speechRecognition = useSpeechRecognition({
     continuous: true,
     interimResults: true,
@@ -84,7 +84,7 @@ function useSpeechToText(state: Ref<RecordingState>) {
 
   const startSpeechRecognition = () => {
     if (!speechRecognition.isSupported) {
-      ElMessage.error("当前设备不支持语音转文字功能");
+      onError.trigger("当前设备不支持语音转文字功能");
       return false;
     }
 
@@ -94,9 +94,8 @@ function useSpeechToText(state: Ref<RecordingState>) {
       speechRecognition.recognition?.addEventListener("result", (event) => {
         for (let i = 0; i < event.results.length; i++) {
           const result = event.results[i];
-          if (result?.[0]) {
-            state.value.transformTextList[i] = result[0].transcript;
-          }
+          if (result?.[0])
+            state.transformTextList[i] = result[0].transcript;
         }
       });
 
@@ -127,52 +126,54 @@ function useSpeechToText(state: Ref<RecordingState>) {
 /**
  * 录音核心功能管理器
  */
-function useRecordingCore(state: Ref<RecordingState>, options: { timeslice: number; fileSizeLimit: number }) {
+function useRecordingCore(
+  state: RecordingState,
+  options: { timeslice: number; fileSizeLimit: number },
+  onError: { trigger: (msg: string) => void },
+) {
   const { timeslice, fileSizeLimit } = options;
 
   const cleanupResources = () => {
     // 释放音频元素
-    if (state.value.audioElement) {
-      state.value.audioElement.pause();
-      state.value.audioElement = undefined;
+    if (state.audioElement) {
+      state.audioElement.pause();
+      state.audioElement = undefined;
     }
 
     // 释放 MediaRecorder
-    if (state.value.mediaRecorder) {
+    if (state.mediaRecorder) {
       try {
-        state.value.mediaRecorder.stop();
+        state.mediaRecorder.stop();
       }
       catch (error) {
         console.warn("停止录音器失败:", error);
       }
-      state.value.mediaRecorder = undefined;
+      state.mediaRecorder = undefined;
     }
 
     // 释放 URL 对象
-    if (state.value.audioFile?.id && state.value.audioFile.id.startsWith("blob:")) {
-      URL.revokeObjectURL(state.value.audioFile.id);
-    }
+    if (state.audioFile?.id && state.audioFile.id.startsWith("blob:"))
+      URL.revokeObjectURL(state.audioFile.id);
 
     // 重置状态
-    Object.assign(state.value, createInitialState());
+    Object.assign(state, createInitialState());
   };
 
   const validateRecordingTime = (seconds: number): boolean => {
     if (seconds < MIN_CHAT_SECONDS) {
-      ElMessage.warning(`录音时间过短，至少需要${MIN_CHAT_SECONDS}秒`);
+      onError.trigger(`录音时间过短，至少需要${MIN_CHAT_SECONDS}秒`);
       return false;
     }
-    else
-      if (seconds >= MAX_CHAT_SECONDS) {
-        ElMessage.warning(`录音时间过长，最多支持${MAX_CHAT_SECONDS}秒`);
-        return false;
-      }
+    else if (seconds >= MAX_CHAT_SECONDS) {
+      onError.trigger(`录音时间过长，最多支持${MAX_CHAT_SECONDS}秒`);
+      return false;
+    }
     return true;
   };
 
   const validateFileSize = (file: File): boolean => {
     if (file.size > fileSizeLimit) {
-      ElMessage.error(`文件大小超过限制，最大支持 ${formatFileSize(fileSizeLimit)}`);
+      onError.trigger(`文件大小超过限制，最大支持 ${formatFileSize(fileSizeLimit)}`);
       return false;
     }
     return true;
@@ -180,20 +181,19 @@ function useRecordingCore(state: Ref<RecordingState>, options: { timeslice: numb
 
   const createMediaRecorder = async (forceRecreate = false): Promise<MediaRecorder | null> => {
     try {
-      if (!navigator?.mediaDevices?.getUserMedia) {
+      if (!navigator?.mediaDevices?.getUserMedia)
         throw new Error("设备不支持录音功能");
-      }
 
       const setting = useSettingStore();
       const currentDeviceId = setting.settingPage.audioDevice.defaultMicrophone;
 
       // 检查是否需要重新创建
-      const deviceChanged = state.value.cachedDeviceId !== currentDeviceId;
-      const needRecreate = forceRecreate || deviceChanged || !state.value.mediaRecorder;
+      const deviceChanged = state.cachedDeviceId !== currentDeviceId;
+      const needRecreate = forceRecreate || deviceChanged || !state.mediaRecorder;
 
-      if (!needRecreate && state.value.mediaRecorder) {
+      if (!needRecreate && state.mediaRecorder) {
         // 复用现有的 MediaRecorder
-        return state.value.mediaRecorder;
+        return state.mediaRecorder;
       }
 
       // 尝试复用共享音频流
@@ -218,22 +218,19 @@ function useRecordingCore(state: Ref<RecordingState>, options: { timeslice: numb
       });
 
       // 缓存设备ID
-      state.value.cachedDeviceId = currentDeviceId;
+      state.cachedDeviceId = currentDeviceId;
 
       return recorder;
     }
     catch (error: any) {
       let message = "录音权限获取失败";
-      if (error.code === 0 || error.name === "NotAllowedError") {
+      if (error.code === 0 || error.name === "NotAllowedError")
         message = "请允许使用麦克风权限";
-      }
-      else if (error.name === "NotFoundError") {
+      else if (error.name === "NotFoundError")
         message = "未找到可用的录音设备，请检查麦克风设置";
-      }
-      else if (error.name === "OverconstrainedError") {
+      else if (error.name === "OverconstrainedError")
         message = "选定的麦克风设备不可用，请重新选择";
-      }
-      ElMessage.error(message);
+      onError.trigger(message);
       return null;
     }
   };
@@ -242,31 +239,30 @@ function useRecordingCore(state: Ref<RecordingState>, options: { timeslice: numb
     recorder.addEventListener("dataavailable", (event) => {
       if (event.data.size > 0) {
         const blob = new Blob([event.data], { type: AUDIO_MIME_TYPE });
-        state.value.audioChunks.push(blob);
-        state.value.endTime = Date.now();
+        state.audioChunks.push(blob);
+        state.endTime = Date.now();
 
-        const currentSeconds = Math.floor((state.value.endTime - state.value.startTime) / 1000);
-        if (currentSeconds >= MAX_CHAT_SECONDS) {
+        const currentSeconds = Math.floor((state.endTime - state.startTime) / 1000);
+        if (currentSeconds >= MAX_CHAT_SECONDS)
           recorder.stop();
-        }
       }
     });
 
     recorder.addEventListener("stop", () => {
-      const seconds = Math.floor((state.value.endTime - state.value.startTime) / 1000);
+      const seconds = Math.floor((state.endTime - state.startTime) / 1000);
 
       if (!validateRecordingTime(seconds)) {
         cleanupResources();
         return;
       }
 
-      if (state.value.audioChunks.length === 0) {
-        ElMessage.warning("录音数据为空");
+      if (state.audioChunks.length === 0) {
+        onError.trigger("录音数据为空");
         cleanupResources();
         return;
       }
 
-      const file = new File(state.value.audioChunks, `${Date.now()}.mp3`, {
+      const file = new File(state.audioChunks, `${Date.now()}.mp3`, {
         type: AUDIO_MIME_TYPE,
       });
 
@@ -276,7 +272,7 @@ function useRecordingCore(state: Ref<RecordingState>, options: { timeslice: numb
       }
 
       const url = URL.createObjectURL(file);
-      state.value.audioFile = {
+      state.audioFile = {
         id: url,
         key: undefined,
         status: "",
@@ -291,7 +287,7 @@ function useRecordingCore(state: Ref<RecordingState>, options: { timeslice: numb
 
     recorder.addEventListener("error", (event: any) => {
       console.error("录音错误:", event.error);
-      ElMessage.error("录音过程中发生错误");
+      onError.trigger("录音过程中发生错误");
       cleanupResources();
     });
   };
@@ -320,13 +316,14 @@ export function useRecording(options: {
   const chat = useChatStore();
 
   // 状态管理
-  const state = ref<RecordingState>(createInitialState());
+  const state = reactive<RecordingState>(createInitialState());
 
   // 模板引用
   const pressHandleRef = useTemplateRef<HTMLElement>(pressHandleRefName);
 
   // 事件钩子
   const onEndChat = createEventHook<File>();
+  const onError = createEventHook<string>();
 
   // 计算属性
   const fileSizeLimit = computed(() =>
@@ -334,55 +331,58 @@ export function useRecording(options: {
   );
 
   const recordingDuration = computed(() => {
-    if (state.value.startTime > 0 && state.value.endTime > 0) {
-      return Math.floor((state.value.endTime - state.value.startTime) / 1000);
-    }
+    if (state.startTime > 0 && state.endTime > 0)
+      return Math.floor((state.endTime - state.startTime) / 1000);
     return 0;
   });
 
   const audioTransformText = computed(() =>
-    state.value.transformTextList.join(""),
+    state.transformTextList.join(""),
   );
 
   // 子功能模块
-  const audioPlayer = useAudioPlayer(state);
-  const speechToText = useSpeechToText(state);
-  const recordingCore = useRecordingCore(state, {
-    timeslice,
-    fileSizeLimit: fileSizeLimit.value,
-  });
+  const audioPlayer = useAudioPlayer(state, onError);
+  const speechToText = useSpeechToText(state, onError);
+  const recordingCore = useRecordingCore(
+    state,
+    {
+      timeslice,
+      fileSizeLimit: fileSizeLimit.value,
+    },
+    onError,
+  );
 
   // 监听设备切换
   const unwatchDevice = watch(
     () => setting.settingPage.audioDevice.defaultMicrophone,
     () => {
       // 设备切换时，如果当前正在录音，需要重新创建录音器
-      if (state.value.isRecording) {
+      if (state.isRecording) {
         // 设备切换时会由 useMicrophoneTest 自动处理音频流切换
         // 这里只需要清除缓存的设备ID，下次录音时会自动重新创建
-        state.value.cachedDeviceId = undefined;
+        state.cachedDeviceId = undefined;
       }
     },
   );
 
   // 核心方法
   const startRecording = async (): Promise<boolean> => {
-    if (state.value.isRecording)
+    if (state.isRecording)
       return false;
 
     const recorder = await recordingCore.createMediaRecorder();
     if (!recorder)
       return false;
 
-    state.value.mediaRecorder = recorder;
-    state.value.audioChunks = [];
-    state.value.transformTextList = [];
-    state.value.startTime = Date.now();
-    state.value.endTime = 0;
-    state.value.isRecording = true;
+    state.mediaRecorder = recorder;
+    state.audioChunks = [];
+    state.transformTextList = [];
+    state.startTime = Date.now();
+    state.endTime = 0;
+    state.isRecording = true;
 
     recordingCore.setupRecorderListeners(recorder, (file) => {
-      state.value.isRecording = false;
+      state.isRecording = false;
       onEndChat.trigger(file);
     });
 
@@ -393,19 +393,19 @@ export function useRecording(options: {
   };
 
   const stopRecording = () => {
-    if (!state.value.isRecording || !state.value.mediaRecorder)
+    if (!state.isRecording || !state.mediaRecorder)
       return;
 
     speechToText.stopSpeechRecognition();
-    state.value.mediaRecorder.stop();
-    state.value.isRecording = false;
+    state.mediaRecorder.stop();
+    state.isRecording = false;
   };
 
   const toggle = async () => {
-    if (state.value.isRecording) {
-      const seconds = Math.floor((Date.now() - state.value.startTime) / 1000);
+    if (state.isRecording) {
+      const seconds = Math.floor((Date.now() - state.startTime) / 1000);
       if (seconds < MIN_CHAT_SECONDS) {
-        ElMessage.warning("录音时间过短！");
+        onError.trigger("录音时间过短！");
         recordingCore.cleanupResources();
         return;
       }
@@ -438,12 +438,12 @@ export function useRecording(options: {
 
   // 键盘快捷键处理
   const start = async (e: KeyboardEvent) => {
-    if (e.key === "t" && e.ctrlKey && !state.value.isRecording) {
+    if (e.key === "t" && e.ctrlKey && !state.isRecording) {
       e.preventDefault();
       await startRecording();
       chat.msgForm.msgType = MessageType.SOUND;
     }
-    else if (e.key === "c" && e.ctrlKey && state.value.isRecording) {
+    else if (e.key === "c" && e.ctrlKey && state.isRecording) {
       e.preventDefault();
       stopRecording();
       chat.msgForm.msgType = MessageType.SOUND;
@@ -474,17 +474,18 @@ export function useRecording(options: {
   return {
     fileSizeLimit,
     pressHandleRef,
-    isChating: computed(() => state.value.isRecording), // 保持原名称
-    second: recordingDuration,
-    theAudioFile: computed(() => state.value.audioFile), // 保持原名称
-    audioTransfromText: audioTransformText, // 保持原名称（包含拼写错误）
+    isRecording: computed(() => state.isRecording),
+    recordingDuration,
+    audioFile: computed(() => state.audioFile),
+    audioTransformText,
     speechRecognition: speechToText.speechRecognition,
-    isPalyAudio: computed(() => state.value.isPlaying), // 保持原名称（包含拼写错误）
+    isPlayingAudio: computed(() => state.isPlaying),
     toggle,
     start,
     stop: stopRecording,
     reset,
     onEndChat: onEndChat.on,
+    onError: onError.on,
     handlePlayAudio,
   };
 }
