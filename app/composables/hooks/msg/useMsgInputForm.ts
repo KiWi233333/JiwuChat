@@ -981,6 +981,32 @@ export function useMsgInputForm(
     }
   });
 
+  // 输入法组合事件处理
+  function handleCompositionStart() {
+    setting.shortcutManager.startComposition();
+  }
+
+  function handleCompositionEnd() {
+    setting.shortcutManager.endComposition();
+  }
+
+  // 监听输入法组合事件
+  watch(msgInputRef, (newRef) => {
+    if (newRef) {
+      // 添加输入法组合事件监听器
+      newRef.addEventListener("compositionstart", handleCompositionStart);
+      newRef.addEventListener("compositionend", handleCompositionEnd);
+    }
+  }, { immediate: true });
+
+  // 清理输入法事件监听器
+  onUnmounted(() => {
+    if (msgInputRef.value) {
+      msgInputRef.value.removeEventListener("compositionstart", handleCompositionStart);
+      msgInputRef.value.removeEventListener("compositionend", handleCompositionEnd);
+    }
+  });
+
 
   /**
    * 根据上传成功的 OssFile 构造消息体

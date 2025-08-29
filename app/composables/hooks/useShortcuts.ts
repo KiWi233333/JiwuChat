@@ -151,6 +151,9 @@ export function useShortcuts() {
   const user = useUserStore();
   const colorMode = useColorMode();
 
+  // 输入法组合状态
+  const isComposing = ref(false);
+
   // 响应式快捷键配置
   const shortcuts = useLocalStorage<ShortcutConfig[]>(() => `shortcuts_${user.userId}`, [
     {
@@ -301,6 +304,10 @@ export function useShortcuts() {
       const { key } = e;
 
       if (bestMatch.eventType === "send-message") { // 发送消息
+        // 检查是否正在使用输入法组合
+        if (isComposing.value) {
+          return false; // 输入法组合时，不触发发送消息
+        }
         e.preventDefault();
         handler(e);
         return true;
@@ -361,6 +368,7 @@ export function useShortcuts() {
   return {
     shortcuts,
     eventHandlers,
+    isComposing, // 暴露输入法组合状态
 
     getShortcutByKey: (eventType: ShortcutEventType) => shortcuts.value.find(s => s.eventType === eventType),
 
@@ -395,6 +403,20 @@ export function useShortcuts() {
      */
     updateShortHandlers: (type: ShortcutEventType, handler: ShortcutEventHandler) => {
       eventHandlers.value[type] = handler;
+    },
+
+    /**
+     * 开始输入法组合
+     */
+    startComposition: () => {
+      isComposing.value = true;
+    },
+
+    /**
+     * 结束输入法组合
+     */
+    endComposition: () => {
+      isComposing.value = false;
     },
 
     handleKeyEvent,
