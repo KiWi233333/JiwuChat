@@ -594,3 +594,13 @@ export function useDateFadeAnimation(initVal: boolean = true) {
   });
   return isAnimated;
 }
+
+
+/**
+ * 判断当前操作系统是否为Mac
+ *
+ * @returns 是否为Mac
+ */
+export function isMac(): boolean {
+  return /macintosh|mac os x/i.test(navigator.userAgent);
+}
