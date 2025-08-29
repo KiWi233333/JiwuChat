@@ -110,9 +110,6 @@ const updateSucess: UploadProps["onSuccess"] = async (data: Result<string>, uplo
     avatarUrl.value = data.data;
     ElMessage.success("更换头像成功！");
   }
-  else {
-    ElMessage.error(data.message);
-  }
 };
 
 // 用户信息更新方法
@@ -151,12 +148,10 @@ async function submitUpdateUser(key: string) {
       Object.assign(user, userCopy);
     }
     else {
-      ElMessage.error(message || "修改失败");
       resetUserCopy();
     }
   }
   catch (error) {
-    ElMessage.error("网络错误，请重试");
     resetUserCopy();
   }
   finally {
@@ -279,15 +274,17 @@ onMounted(() => {
       >
         <div class="group relative flex-row-c-c">
           <CardAvatar
-            v-if="avatarUrl"
             alt="Design By Kiwi23333"
             :src="BaseUrlImg + avatarUrl"
             class="avatar-mark h-6em w-6em select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
-          />
-          <ElIconPlus
-            v-else-if="isEdit"
-            class="avatar-mark h-1/2 w-1/2 select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
-          />
+          >
+            <template #empty>
+              <ElIconPlus
+                v-if="isEdit"
+                class="avatar-mark h-1/2 w-1/2 select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
+              />
+            </template>
+          </CardAvatar>
         </div>
       </el-upload>
     </div>

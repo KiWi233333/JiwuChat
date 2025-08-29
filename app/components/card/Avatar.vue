@@ -30,7 +30,7 @@ function openPreview() {
 
 <template>
   <el-image
-    v-if="src !== `${BaseUrlImg}`"
+    v-if="src !== `${BaseUrlImg}` && src !== ''"
     :src="target"
     fit="cover"
     :draggable="false"
@@ -53,9 +53,11 @@ function openPreview() {
     </template>
   </el-image>
   <template v-else>
-    <div :ctx-name="ctxName" class="flex-row-c-c text-mini" :class="$attrs.class">
-      <i :ctx-name="ctxName" class="icon i-solar-user-line-duotone op-60" :class="errorClass" />
-    </div>
+    <slot name="empty">
+      <div :ctx-name="ctxName" class="flex-row-c-c text-mini" :class="$attrs.class">
+        <i :ctx-name="ctxName" class="icon i-solar-user-line-duotone op-60" :class="errorClass" />
+      </div>
+    </slot>
   </template>
 </template>
 
