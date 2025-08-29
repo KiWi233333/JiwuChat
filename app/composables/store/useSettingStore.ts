@@ -30,6 +30,7 @@ export const DEFAULT_FONT_FAMILY_LIST = [
   { name: "钉钉进步体", value: "DingTalk-JinBuTi", url: `${BaseUrlFont}/DingTalk-JinBuTi.woff2`, baseFontWeight: 300 },
   { name: "0xProtoNerdFont", value: "0xProtoNerdFont", url: `${BaseUrlFont}/0xProtoNerdFont.ttf` },
   { name: "HarmonyOS_Sans_SC", value: "HarmonyOS_Sans_SC", url: `${BaseUrlFont}/HarmonyOS_Sans_SC.woff2` },
+  { name: "系统字体", value: "", url: "" },
 ];
 
 
@@ -145,7 +146,7 @@ export const useSettingStore = defineStore(
       return {
         // 字体
         fontFamily: {
-          value: "AlimamaFangYuanTiVF",
+          value: !isMac() ? "AlimamaFangYuanTiVF" : "",
           list: [] as { name: string; value: string; url?: string; baseFontWeight?: number }[],
         },
         fontSize: {
