@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ChatAIEllipsisBody } from "#components";
 import { MdPreview } from "md-editor-v3";
+import sanitizeHtml from "sanitize-html";
 import "md-editor-v3/lib/style.css";
 
 /**
@@ -71,6 +72,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
           :is="isFold ? ChatAIEllipsisBody : MdPreview"
           :id="`msg-md-${data.message.id}`"
           language="zh-CN"
+          :sanitize="sanitizeHtml"
           show-code-row-number
           :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
           code-theme="a11y"
