@@ -67,7 +67,7 @@ async function resolveNewMsg(msg: ChatMessageVO) {
     contact.lastMsgId = msg.message.id;
     contact.activeTime = Date.now();
     if (chat.shouldAutoScroll) { // 在底部
-      requestAnimationFrame(() => {
+      nextTick(() => {
         chat.scrollBottom(setting.settingPage.animation.msgListScrollBottomAnimate);
       });
     }
@@ -105,7 +105,10 @@ async function resolveNewMsg(msg: ChatMessageVO) {
   ws.wsMsgList.newMsg.splice(0);
 }
 function handleAIReplayMsg() {
-  useChatStore().scrollBottom(true);
+  nextTick(() => {
+    const chat = useChatStore();
+    chat.scrollBottom(false);
+  });
 }
 
 /**
@@ -188,7 +191,7 @@ function handleRTCMsg(msg: ChatMessageVO<RtcLiteBodyMsgVO>) {
   const targetCtx = chat.contactMap?.[msg.message.roomId];
   // 更新滚动位置
   if (targetCtx && msg.message.roomId === targetCtx.roomId && rtcMsg.senderId === user.userInfo.id) {
-    chat.scrollBottom(true);
+    chat.scrollBottom(false);
   }
 }
 
@@ -265,7 +268,7 @@ function handleProgressUpdate(
   if (chat.theRoomId === data.roomId) { // 当前房间
     // 如果没有正在进行的更新，启动渐入效果
     if (chat.shouldAutoScroll) { // AI消息更新时自动滚动到底部
-      chat.scrollBottom(true);
+      chat.scrollBottom(false);
     }
     function handleAiFlowIntervalFn() {
       // 每次更新s字符
@@ -283,7 +286,7 @@ function handleProgressUpdate(
       // AI消息更新时自动滚动到底部
       const chat = useChatStore();
       if (chat.shouldAutoScroll) {
-        chat.scrollBottom(true);
+        chat.scrollBottom(false);
       }
 
       // 应用更新
@@ -313,7 +316,7 @@ function handleProgressUpdate(
     clearTimeout(buffer.timer);
     buffer.timer = setTimeout(() => {
       applyBufferUpdate(oldMsg, buffer);
-    }, 1000); // 延迟1s更新
+    }, 100); // 延迟100ms更新
   }
 }
 
@@ -384,7 +387,7 @@ function handleFinalState(
     const chat = useChatStore();
     if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
       nextTick(() => {
-        chat.scrollBottom(true);
+        chat.scrollBottom(false);
       });
     }
   }

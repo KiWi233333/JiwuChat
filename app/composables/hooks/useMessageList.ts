@@ -20,7 +20,7 @@ export function useMessageList() {
   const isLoading = computed(() => !!chat?.theContact?.isLoading);
   const isReload = computed(() => !!chat?.theContact?.isReload);
   const isSyncing = computed(() => !!chat?.theContact?.isSyncing);
-  const offset = computed(() => setting.isMobileSize ? -730 : -678);
+  const offset = computed(() => 40);
 
   // 将msgMap和msgIds转换为有序的消息数组，供组件使用
   const msgList = computed(() => chat.getMessageList(chat.theRoomId));
@@ -307,6 +307,9 @@ export function useMessageList() {
    * 滚动到指定位置
    */
   function scrollTop(size: number, animated = false) {
+    if (scrollbarRef.value?.wrapRef && !animated) {
+      scrollbarRef.value.wrapRef.scrollTop = size;
+    }
     // 执行滚动
     scrollbarRef?.value?.scrollTo({
       top: size,
@@ -323,7 +326,13 @@ export function useMessageList() {
       return;
 
     // 计算是否到达底部
-    const isAtBottom = e.scrollTop >= (scrollbarRef?.value?.wrapRef?.scrollHeight || 0) + offset.value;
+    const wrapRef = scrollbarRef?.value?.wrapRef;
+    if (!wrapRef)
+      return;
+
+    // 容忍偏移量，防止浮点误差导致无法触发
+    const tolerance = offset.value || 2;
+    const isAtBottom = (e.scrollTop + wrapRef.clientHeight) >= (wrapRef.scrollHeight - tolerance);
 
     if (isAtBottom) {
       chat.shouldAutoScroll = true;
