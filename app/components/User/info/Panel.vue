@@ -4,16 +4,37 @@ import type { UpdateInfo } from "@/composables/api/user/info";
 import { updateInfoByDTO } from "@/composables/api/user/info";
 import { compareObjects } from "@/composables/utils";
 
-const { data } = defineProps<{
-  data: Partial<UserInfoVO>
+const { data, isEdit } = defineProps<{
+  data?: Partial<UserInfoVO>
   isEdit?: boolean
 }>();
 
-const user = reactive<Partial<UserInfoVO>>(data);
+// 响应式状态管理
 const store = useUserStore();
 const formData = new FormData();
-// 表单
+
+// 加载状态
+const isLoading = ref<boolean>(false);
+const isDataLoading = ref<boolean>(true);
+
+// 用户数据状态
+const user = reactive<Partial<UserInfoVO>>({});
+const userCopy = reactive<Partial<UserInfoVO>>({
+  nickname: undefined,
+  slogan: undefined,
+  gender: undefined,
+  birthday: undefined,
+});
+
+// 编辑状态
+const isEditSlogan = ref<boolean>(false);
+const isEditNickname = ref<boolean>(false);
+
+// 表单引用
 const avatatRef = ref();
+const nicknameInputRef = useTemplateRef("nicknameInputRef");
+
+// 计算属性
 const avatarUrl = computed({
   get() {
     return user?.avatar;
@@ -22,36 +43,71 @@ const avatarUrl = computed({
     user.avatar = val;
   },
 });
-const isLoading = ref<boolean>(false);
-/**
- * 上传之前验证类型
- */
+
+const bgUrl = computed(() => localStorage.getItem("jiwu_user_bg") || "/image/user-bg/kiwi-bg-4.jpg");
+const getAgeText = computed(() => calculateAge(user?.birthday));
+const getConstellation = computed(() => computeConstellation(user?.birthday));
+const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
+
+// 常量
 const imageTypeList = ref<string[]>(["image/png", "image/jpg", "image/jpeg", "image/svg"]);
+const genderList = ref<string[]>(["男", "女", "保密"]);
+
+// 监听 props.data 变化，处理异步加载
+watch(
+  () => data,
+  (newData) => {
+    if (newData && Object.keys(newData).length > 0) {
+      initializeUserData(newData);
+      isDataLoading.value = false;
+    }
+  },
+  { immediate: true, deep: true },
+);
+
+// 初始化用户数据
+function initializeUserData(userData: Partial<UserInfoVO>) {
+  // 清空现有数据
+  Object.keys(user).forEach(key => delete user[key as keyof UserInfoVO]);
+  Object.keys(userCopy).forEach(key => delete userCopy[key as keyof UpdateInfo]);
+
+  // 设置用户数据
+  Object.assign(user, userData);
+
+  // 设置表单副本数据
+  userCopy.nickname = userData.nickname;
+  userCopy.slogan = userData.slogan;
+  userCopy.gender = userData.gender;
+  userCopy.birthday = userData.birthday;
+}
+
+// 头像上传相关方法
 const beforeUpload: UploadProps["beforeUpload"] = (rawFile: File) => {
   isLoading.value = true;
+
   if (!imageTypeList.value.includes(rawFile.type)) {
     isLoading.value = false;
     ElMessage.error("文件格式不是图片格式!");
     return false;
   }
-  else if (rawFile.size / 1024 / 1024 > 2) {
+
+  if (rawFile.size / 1024 / 1024 > 2) {
     isLoading.value = false;
     ElMessage.error("头像需要小于2MB!");
     return false;
   }
-  // check success
+
   formData.append("file", rawFile);
   return true;
 };
-/**
- * 更新头像
- */
+
 const updateSucess: UploadProps["onSuccess"] = async (data: Result<string>, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
-  isLoading.value = false; // check success
+  isLoading.value = false;
   avatatRef.value?.clearFiles();
+
   if (data.code === StatusCode.SUCCESS) {
     user.avatar = data.data;
-    avatarUrl.value = data.data || "";
+    avatarUrl.value = data.data;
     ElMessage.success("更换头像成功！");
   }
   else {
@@ -59,32 +115,23 @@ const updateSucess: UploadProps["onSuccess"] = async (data: Result<string>, uplo
   }
 };
 
-const genderList = ref<string[]>(["男", "女", "保密"]);
-// 用户基本信息
-const userCopy = reactive<UpdateInfo>({
-  nickname: user?.nickname,
-  slogan: user?.slogan,
-  gender: user?.gender,
-  birthday: user?.birthday,
-});
-
-// 是否开启slogan编辑
-const isEditSlogan = ref<boolean>(false);
-const isEditNickname = ref<boolean>(false);
-
-/**
- * 更新用户基本信息
- * @param key dto key
- */
+// 用户信息更新方法
 async function submitUpdateUser(key: string) {
-  // 判空
-  if (Object.keys(userCopy).includes(key)) {
-    if (!JSON.parse(JSON.stringify(userCopy))[key])
-      return ElMessage.error("内容不能为空！");
-    if (isLoading.value)
-      return;
+  if (!Object.keys(userCopy).includes(key))
+    return;
 
-    // 网络请求
+  const value = userCopy[key as keyof UpdateInfo];
+  if (!value) {
+    ElMessage.error("内容不能为空！");
+    return;
+  }
+
+  if (isLoading.value)
+    return;
+
+  try {
+    isLoading.value = true;
+
     const { code, message } = await updateInfoByDTO(
       compareObjects({
         nickname: user?.nickname,
@@ -94,47 +141,45 @@ async function submitUpdateUser(key: string) {
       }, { ...userCopy }),
       store.getToken,
     );
+
     if (code === StatusCode.SUCCESS) {
       ElMessage.success("修改成功！");
+      // 更新 store 和本地数据
       store.$patch({
-        userInfo: {
-          ...userCopy,
-        },
+        userInfo: { ...userCopy },
       });
+      Object.assign(user, userCopy);
     }
     else {
-      userCopy.nickname = user?.nickname;
-      userCopy.slogan = user?.slogan;
-      userCopy.birthday = user?.birthday;
-      userCopy.gender = user?.gender;
+      ElMessage.error(message || "修改失败");
+      resetUserCopy();
     }
-    // 关闭
-    isEditNickname.value = false;
-    isEditSlogan.value = false;
+  }
+  catch (error) {
+    ElMessage.error("网络错误，请重试");
+    resetUserCopy();
+  }
+  finally {
+    isLoading.value = false;
+    closeEditMode();
   }
 }
 
-const { share, isSupported } = useShare();
-/**
- * 邀请方法
- */
-function showInvitation() {
-  useAsyncCopyText(`${document.URL}?id=${user?.id}`)
-    .then(() => {
-      ElMessage.success("链接已复制到剪切板！");
-    })
-    .catch(() => {
-      ElMessage.error("链接分享失败！");
-    });
-  if (isSupported.value) {
-    share({
-      title: "邀请你加入 Kiwi23333 的个人中心",
-      text: `点击链接访问：${document.URL}?id=${user?.id}`,
-      url: `${document.URL}?id=${user?.id}`,
-    });
-  }
+// 重置表单数据
+function resetUserCopy() {
+  userCopy.nickname = user?.nickname;
+  userCopy.slogan = user?.slogan;
+  userCopy.birthday = user?.birthday;
+  userCopy.gender = user?.gender;
 }
-const nicknameInputRef = useTemplateRef("nicknameInputRef");
+
+// 关闭编辑模式
+function closeEditMode() {
+  isEditNickname.value = false;
+  isEditSlogan.value = false;
+}
+
+// 昵称编辑相关方法
 function onFocusNickname() {
   isEditNickname.value = true;
   nextTick(() => {
@@ -144,10 +189,9 @@ function onFocusNickname() {
 
 function onBlur() {
   setTimeout(() => {
-    if (!isEditNickname.value && !isEditNickname.value)
+    if (!isEditNickname.value && !isEditSlogan.value)
       return;
-    isEditNickname.value = false;
-    isEditSlogan.value = false;
+
     // 检查昵称是否修改
     if (userCopy.nickname !== user?.nickname) {
       ElMessageBox.confirm("是否确认修改昵称？", "提示", {
@@ -157,16 +201,12 @@ function onBlur() {
         center: true,
       })
         .then(() => submitUpdateUser("nickname"))
-        .catch(() => {
-          // 恢复所有表单
-          userCopy.nickname = user?.nickname;
-          userCopy.slogan = user?.slogan;
-          userCopy.birthday = user?.birthday;
-          userCopy.gender = user?.gender;
-        });
+        .catch(() => resetUserCopy());
+      return;
     }
+
     // 检查个性签名是否修改
-    else if (userCopy.slogan !== user?.slogan) {
+    if (userCopy.slogan !== user?.slogan) {
       ElMessageBox.confirm("是否确认修改个性签名？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -174,24 +214,42 @@ function onBlur() {
         center: true,
       })
         .then(() => submitUpdateUser("slogan"))
-        .catch(() => { userCopy.slogan = user?.slogan; });
+        .catch(() => resetUserCopy());
+      return;
     }
+
+    closeEditMode();
   }, 100);
 }
 
-onMounted(() => {
-  nextTick(() => {
-    userCopy.slogan = user?.slogan;
-    userCopy.birthday = user?.birthday;
-    userCopy.gender = user?.gender;
-  });
-});
+// 分享相关方法
+const { share, isSupported } = useShare();
 
-// 年龄
-const bgUrl = computed(() => localStorage.getItem("jiwu_user_bg") || "/image/user-bg/kiwi-bg-4.jpg");
-const getAgeText = computed(() => calculateAge(user?.birthday));
-const getConstellation = computed(() => computeConstellation(user?.birthday));
-const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
+function showInvitation() {
+  useAsyncCopyText(`${document.URL}?id=${user?.id}`)
+    .then(() => {
+      ElMessage.success("链接已复制到剪切板！");
+    })
+    .catch(() => {
+      ElMessage.error("链接分享失败！");
+    });
+
+  if (isSupported.value) {
+    share({
+      title: "邀请你加入 Kiwi23333 的个人中心",
+      text: `点击链接访问：${document.URL}?id=${user?.id}`,
+      url: `${document.URL}?id=${user?.id}`,
+    });
+  }
+}
+
+// 生命周期
+onMounted(() => {
+  // 如果没有初始数据，设置加载状态
+  if (!data || Object.keys(data).length === 0) {
+    isDataLoading.value = true;
+  }
+});
 </script>
 
 <template>
@@ -227,9 +285,8 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
             class="avatar-mark h-6em w-6em select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
           />
           <ElIconPlus
-            v-else
-            class="avatar-mark h-6em w-6em select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
-            size="2em"
+            v-else-if="isEdit"
+            class="avatar-mark h-1/2 w-1/2 select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
           />
         </div>
       </el-upload>
@@ -239,6 +296,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
       <h2
         v-show="!isEditNickname"
         key="nickname1"
+        font-500
         class="group h-2rem flex-row-bt-c flex-1"
       >
         <span flex-1 truncate title="点击编辑" @click="onFocusNickname()">{{ user.nickname }}</span>

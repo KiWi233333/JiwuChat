@@ -73,9 +73,9 @@ definePageMeta({
     <!-- 壁纸 -->
     <UserInfoBgToggle class="fixed left-0 top-0 z-0 w-full" />
     <!-- 用户信息面板 -->
-    <UserInfoLine
-      v-if="user"
+    <UserInfoPanel
       :data="user"
+      data-fade
       :is-edit="isSelf"
     />
 
