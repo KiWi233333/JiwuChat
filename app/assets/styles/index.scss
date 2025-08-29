@@ -246,6 +246,16 @@ body .el-message {
 
 /**  ------------------------------markdown---------------------------------------  **/
 
+.md-editor-preview {
+  a {
+    &:hover{ 
+      border: none !important;
+    }
+    &::after {
+      display: none !important;
+    }
+  }
+}
 // .md-editor {
 //   .md-editor-preview-wrapper {
 //     img {

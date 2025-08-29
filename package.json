@@ -54,12 +54,12 @@
     "@vueuse/core": "13.8.0",
     "element-china-area-data": "6.1.0",
     "element-plus": "2.11.1",
+    "markdown-it-link-attributes": "^4.0.1",
     "md-editor-v3": "5.8.4",
     "ogl": "^1.0.11",
     "pinia": "3.0.3",
     "pinia-plugin-persistedstate": "4.5.0",
     "qiniu-js": "3.4.3",
-    "sanitize-html": "^2.17.0",
     "streamsaver": "2.0.6"
   },
   "devDependencies": {

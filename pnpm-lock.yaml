@@ -59,6 +59,9 @@ importers:
       element-plus:
         specifier: 2.11.1
         version: 2.11.1(vue@3.5.18(typescript@5.9.2))
+      markdown-it-link-attributes:
+        specifier: ^4.0.1
+        version: 4.0.1
       md-editor-v3:
         specifier: 5.8.4
         version: 5.8.4(vue@3.5.18(typescript@5.9.2))
@@ -74,9 +77,6 @@ importers:
       qiniu-js:
         specifier: 3.4.3
         version: 3.4.3
-      sanitize-html:
-        specifier: ^2.17.0
-        version: 2.17.0
       streamsaver:
         specifier: 2.0.6
         version: 2.0.6
@@ -4183,10 +4183,6 @@ packages:
     resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
     engines: {node: '>=8'}
 
-  is-plain-object@5.0.0:
-    resolution: {integrity: sha512-VRSzKkbMm5jMDoKLbltAkFQ5Qr7VDiTFGXxYFXXowVj387GeGNOCsOH6Msy00SGZ3Fp84b1Naa1psqgcCIEP5Q==}
-    engines: {node: '>=0.10.0'}
-
   is-reference@1.2.1:
     resolution: {integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==}
 
@@ -4482,6 +4478,9 @@ packages:
     engines: {node: '>=12.0.0'}
     peerDependencies:
       markdown-it: '*'
+
+  markdown-it-link-attributes@4.0.1:
+    resolution: {integrity: sha512-pg5OK0jPLg62H4k7M9mRJLT61gUp9nvG0XveKYHMOOluASo9OEF13WlXrpAp2aj35LbedAy3QOCgQCw0tkLKAQ==}
 
   markdown-it-sub@2.0.0:
     resolution: {integrity: sha512-iCBKgwCkfQBRg2vApy9vx1C1Tu6D8XYo8NvevI3OlwzBRmiMtsJ2sXupBgEA7PPxiDwNni3qIUkhZ6j5wofDUA==}
@@ -5022,9 +5021,6 @@ packages:
   parse-path@7.1.0:
     resolution: {integrity: sha512-EuCycjZtfPcjWk7KTksnJ5xPMvWGA/6i4zrLYhRG0hGvC3GPU/jGUj3Cy+ZR0v30duV3e23R95T1lE2+lsndSw==}
 
-  parse-srcset@1.0.2:
-    resolution: {integrity: sha512-/2qh0lav6CmI15FzA3i/2Bzk2zCgQhGMkvhOhKNcBVQ1ldgpbfiNTVslmooUmWJcADi1f1kIeynbDRVzNlfR6Q==}
-
   parse-statements@1.0.11:
     resolution: {integrity: sha512-HlsyYdMBnbPQ9Jr/VgJ1YF4scnldvJpJxCVx6KgqPL4dxppsWrJHCIIxQXMJrqGnsRkNPATbeMJ8Yxu7JMsYcA==}
 
@@ -5550,9 +5546,6 @@ packages:
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
-
-  sanitize-html@2.17.0:
-    resolution: {integrity: sha512-dLAADUSS8rBwhaevT12yCezvioCA+bmUTPH/u57xKPT8d++voeYE6HeluA/bPbQ15TwDBG2ii+QZIEmYx8VdxA==}
 
   sass@1.91.0:
     resolution: {integrity: sha512-aFOZHGf+ur+bp1bCHZ+u8otKGh77ZtmFyXDo4tlYvT7PWql41Kwd8wdkPqhhT+h2879IVblcHFglIMofsFd1EA==}
@@ -11154,8 +11147,6 @@ snapshots:
 
   is-plain-obj@2.1.0: {}
 
-  is-plain-object@5.0.0: {}
-
   is-reference@1.2.1:
     dependencies:
       '@types/estree': 1.0.8
@@ -11454,6 +11445,8 @@ snapshots:
   markdown-it-image-figures@2.1.1(markdown-it@14.1.0):
     dependencies:
       markdown-it: 14.1.0
+
+  markdown-it-link-attributes@4.0.1: {}
 
   markdown-it-sub@2.0.0: {}
 
@@ -12394,8 +12387,6 @@ snapshots:
     dependencies:
       protocols: 2.0.2
 
-  parse-srcset@1.0.2: {}
-
   parse-statements@1.0.11: {}
 
   parse-url@9.2.0:
@@ -12905,15 +12896,6 @@ snapshots:
   safe-stable-stringify@2.5.0: {}
 
   safer-buffer@2.1.2: {}
-
-  sanitize-html@2.17.0:
-    dependencies:
-      deepmerge: 4.3.1
-      escape-string-regexp: 4.0.0
-      htmlparser2: 8.0.2
-      is-plain-object: 5.0.0
-      parse-srcset: 1.0.2
-      postcss: 8.5.6
 
   sass@1.91.0:
     dependencies:
