@@ -113,11 +113,13 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
         v-if="showReply"
         title="点击跳转"
         ctx-name="reply"
-        class="reply flex-row-c-c"
+        class="reply flex items-center"
         @click="chat.scrollReplyMsg(body?.reply?.id || 0, body?.reply?.gapCount, false)"
       >
         <i class="reply-icon i-solar:forward-2-bold-duotone mr-1 inline-block h-4 w-4" />
-        {{ `${body?.reply?.nickName} : ${body?.reply?.body?.substring(0, 50) || ''}` }}
+        <span class="truncate">
+          {{ `${body?.reply?.nickName} : ${body?.reply?.body?.substring(0, 50) || ''}` }}
+        </span>
       </small>
       <!-- URL -->
       <div

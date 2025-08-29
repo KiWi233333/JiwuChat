@@ -27,13 +27,13 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
 <template>
   <div class="h-full w-full flex flex-1">
     <div
-      class="w-full transition-all sm:(relative mx-auto w-320px border-default-r p-0)"
+      class="w-full transition-all sm:(relative mx-auto w-320px shrink-0 border-default-r p-0)"
     >
       <!-- 好友列表 -->
       <ChatFriendTabs class="nav-padding-top-6 relative mx-a h-full flex-shrink-0 p-4 pb-0" />
     </div>
     <div
-      class="bg z-1 h-full flex-1 flex-shrink-0 flex-col bg-color-2 sm:card-bg-color-2"
+      class="bg z-1 h-full min-w-0 flex-1 flex-col bg-color-2 sm:card-bg-color-2"
       :class="chat.showTheFriendPanel ? 'flex absolute sm:(p-0 relative) left-0 w-full' : 'hidden sm:flex'"
     >
       <template v-if="isEmptyPanel">
