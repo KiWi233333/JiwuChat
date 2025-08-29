@@ -345,14 +345,14 @@ onMounted(() => {
   <div class="detail-info">
     <p class="user-props truncate text-sm">
       <i mr-3 inline-block h-4 w-4 :class="user.gender === Gender.BOY ? 'i-tabler:gender-male text-blue' : user.gender === Gender.GIRL ? 'i-tabler:gender-female text-pink' : 'i-tabler:gender-transgender text-yellow'" />
-      <span class="mr-2 pr-2">
+      <span class="mr-2 border-default-r pr-2">
         {{ user.gender }}
       </span>
       <template v-if="user.birthday">
-        <span class="mr-2 border-default-l pr-2">
+        <span class="mr-2 border-default-r pr-2">
           {{ getAgeText }}
         </span>
-        <span class="mr-2 border-default-l pr-2">
+        <span class="mr-2 border-default-r pr-2">
           {{ user.birthday || ' - ' }}
         </span>
         <span>
