@@ -58,6 +58,13 @@ body {
   * {
     font-family: var(--font-family);
   }
+
+  // 表单自动填充背景色去除
+  input:-webkit-autofill,
+  textarea:-webkit-autofill
+  {
+    -webkit-text-fill-color: transparent !important;
+  }
 }
 ::selection {
   background-color: var(--el-color-primary);
