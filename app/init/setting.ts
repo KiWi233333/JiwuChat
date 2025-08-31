@@ -190,7 +190,8 @@ async function initFontAndFamily() {
     if (fontItem?.url) {
       await loadWebFont(fontItem);
     }
-    const fontStack = `${fontValue}, AlimamaFangYuanTiVF, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+    // 如果 fontValue 是一个有效的字体名称，则将其作为首选字体，否则回退到系统默认字体
+    const fontStack = `${fontValue}, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif`;
     document.documentElement.style.setProperty("--font-family", fontStack);
   }
 

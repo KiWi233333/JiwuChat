@@ -26,7 +26,6 @@ const fontSize = computed({
       fit-input-width
       allow-create
       filterable
-      default-first-option
       placeholder="选择系统字体"
     >
       <el-option
