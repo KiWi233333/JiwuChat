@@ -117,7 +117,7 @@ const getRoleText = computed(() => room.value.role !== undefined ? chatRoomRoleT
         style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-danger);"
         plain
         class="mr-4 op-60 hover:op-100"
-        @click="chat.exitGroupConfirm(chat.theRoomId, isGroupOwner, () => {
+        @click="chat.exitGroupConfirm(roomId, isGroupOwner, () => {
           chat.setTheFriendOpt(FriendOptType.Empty, {});
           chat.setDelGroupId(roomId);
         })"
