@@ -13,7 +13,6 @@ const REPLY_SEARCH_INTERVAL = 120;
 export function useMessageList() {
   const chat = useChatStore();
   const user = useUserStore();
-  const setting = useSettingStore();
 
   // 响应式状态
   const pageInfo = computed(() => chat?.theContact?.pageInfo);
@@ -395,7 +394,9 @@ export function useMessageList() {
         clearTimer();
         // 检查是否需要同步消息
         const contact = chat?.contactMap?.[val];
-        if (contact && (!contact.msgIds.length || contact.lastMsgId !== contact?.lastMsgId)) {
+        const lastMsgId = contact?.msgIds?.[contact?.msgIds.length - 1];
+        // console.log(`当前房间：${val}，最后一条消息ID：${lastMsgId} ${contact?.lastMsgId}`);
+        if (contact && (!contact.msgIds.length || lastMsgId !== contact?.lastMsgId)) {
           reload(val);
         }
         else {

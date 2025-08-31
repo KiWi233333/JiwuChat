@@ -397,7 +397,7 @@ onMounted(() => {
       ref="scrollbarRef"
       :overscan="20"
       :items="chat.getContactList"
-      :item-height="setting.isMobileSize ? '4.2rem' : '4.5rem'"
+      :item-height="setting.isMobileSize ? '4.75rem' : '4.25rem'"
       max-height="100%"
       wrap-class="w-full relative h-full sm:(p-2)"
       :class-name="['contact-list', isAnimateDelay ? STOP_TRANSITION_KEY : '']"
@@ -492,7 +492,7 @@ onMounted(() => {
 }
 
 .contact-sky {
-  --at-apply: "h-17 op-60 bg-color-2 dark:bg-transparent flex items-center gap-3 p-4 sm:(h-17 border-transparent p-3 w-full text-color card-rounded-df mb-2 )  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+  --at-apply: "h-19 op-60 bg-color-2 dark:bg-transparent flex items-center gap-3 p-4 sm:(h-16 border-transparent p-3 w-full text-color card-rounded-df mb-2 )  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
 }
 
 .contact-list {
@@ -500,13 +500,13 @@ onMounted(() => {
 
   .contact {
     // transition: background-color 100ms ease-in-out;
-    --at-apply: "h-full bg-color sm:(bg-transparent) dark:bg-transparent flex items-center gap-3 p-4 sm:(h-17 border-transparent p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+    --at-apply: "h-full bg-color sm:(bg-transparent) dark:bg-transparent flex items-center gap-3 p-4 sm:(h-16 border-transparent p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
     .text {
       --at-apply: "transition-none";
     }
 
     .ai-icon {
-      --at-apply: "mx-0.5em pt-0.2em h-1.4em w-1.4em text-theme-primary dark:text-theme-info";
+      --at-apply: "mx-0.5em pt-0.2em h-1.2em w-1.2em text-theme-primary dark:text-theme-info";
     }
     &.is-pin {
       --at-apply: "bg-light-4 dark:bg-dark-8";

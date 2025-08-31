@@ -8,7 +8,7 @@ const { data } = defineProps<{
 
 <template>
   <div class="item flex flex-col border-1px border-default-dashed p-4 leading-1.5em transition-all">
-    <small class="mb-1 flex-row-bt-c font-600">
+    <small class="mb-1 flex-row-bt-c font-400">
       {{ data?.ipInfo?.country && data?.ipInfo?.country !== "0" ? data?.ipInfo?.country : "未知" }}
       {{ data?.ipInfo?.province && data?.ipInfo?.province !== "0" ? data?.ipInfo?.province : "未知" }}
       {{ data?.ipInfo?.city && data?.ipInfo?.city !== "0" ? data?.ipInfo?.city : "未知" }}

@@ -32,7 +32,9 @@ const form = ref({
     >
       <div class="flex items-center">
         <CardAvatar class="h-12 w-12 border-default-2 card-default rounded-1/2" :src="BaseUrlImg + user.userInfo.avatar" />
-        <strong class="ml-3 block">{{ user.userInfo.username }}</strong>
+        <p class="ml-3 block font-500">
+          {{ user.userInfo.username }}
+        </p>
         <i
           opacity-0
           transition-300
