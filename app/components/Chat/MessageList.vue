@@ -102,7 +102,9 @@ defineExpose({
 
 <style lang="scss" scoped>
 .shadow-inner-bg {
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 8px 0px inset, rgba(0, 0, 0, 0.1) 0px -2px 8px 0px inset;
+  box-shadow:
+    rgba(0, 0, 0, 0.1) 0px 2px 8px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -2px 8px 0px inset;
 }
 // .msg-list { // 禁止复用
 // }

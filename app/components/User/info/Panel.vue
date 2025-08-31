@@ -481,12 +481,12 @@ onMounted(() => {
   // overflow: hidden;
   --at-apply: "overflow-hidden w-6em h-6em rounded-1/2 flex-shrink-0 shadow-md";
 
-    :deep(.el-upload) {
-      --at-apply: "card-default-br";
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
+  :deep(.el-upload) {
+    --at-apply: "card-default-br";
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 
     .el-upload-dragger {
       display: flex;
@@ -522,7 +522,6 @@ onMounted(() => {
   }
 }
 :deep(.el-input.el-date-editor) {
-
   .el-input__wrapper {
     padding: 0;
   }
@@ -531,7 +530,6 @@ onMounted(() => {
     display: none;
   }
 }
-
 
 .el-popper-init {
   padding: 2px 4px;
@@ -550,7 +548,7 @@ onMounted(() => {
 
 .top {
   --at-apply: "!bg-op-50 backdrop-blur-20 rounded-t-4 w-full flex items-center gap-2 p-4 pb-8 -mt-16 sm:( px-8 pt-8)";
-  background: linear-gradient(to bottom, #ffffff85, #FFFFFF);
+  background: linear-gradient(to bottom, #ffffff85, #ffffff);
 }
 .dark {
   .top {

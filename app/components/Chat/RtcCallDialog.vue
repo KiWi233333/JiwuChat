@@ -568,7 +568,11 @@ defineExpose({
 
 <style lang="scss" scoped>
 // 放大缩小transition
-$call-wind-transition: width 0.2s ease, height 0.2s ease, top 0.2s ease, left 0.2s ease;
+$call-wind-transition:
+  width 0.2s ease,
+  height 0.2s ease,
+  top 0.2s ease,
+  left 0.2s ease;
 
 .bg-linear {
   background: linear-gradient(to bottom, rgba(20, 20, 20, 1), rgba(20, 20, 20, 0.7), rgba(20, 20, 20, 0));
@@ -606,7 +610,6 @@ $call-wind-transition: width 0.2s ease, height 0.2s ease, top 0.2s ease, left 0.
       display: block !important;
     }
 
-
     .btns {
       opacity: 0.5;
       transition: opacity 0.2s;
@@ -618,11 +621,11 @@ $call-wind-transition: width 0.2s ease, height 0.2s ease, top 0.2s ease, left 0.
     }
     .btns {
       --mini-btn-size: 2.4rem;
-      --mini-btn-icon-size: .5rem;
-      gap: .5rem;
-      grid-gap: .5rem;
+      --mini-btn-icon-size: 0.5rem;
+      gap: 0.5rem;
+      grid-gap: 0.5rem;
       width: 100%;
-      padding: 0 0.875rem 0.875rem 0.875rem ;
+      padding: 0 0.875rem 0.875rem 0.875rem;
       .mini-hidden {
         display: none;
       }
@@ -654,7 +657,9 @@ $call-wind-transition: width 0.2s ease, height 0.2s ease, top 0.2s ease, left 0.
   .rtc-dialog.is-mobile-mini {
     width: 10rem;
     height: 14rem;
-    transition: width 0.2s, height 0.2s ease;
+    transition:
+      width 0.2s,
+      height 0.2s ease;
     .menu,
     .min-wind-stream,
     .rtc-desc {

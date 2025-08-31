@@ -322,7 +322,8 @@ const menuList = ref([
 .top {
   background-color: var(--el-color-primary);
   border-radius: 6px 6px 0 0;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
     rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
 }
 
@@ -344,7 +345,9 @@ const menuList = ref([
     align-items: center;
     background-color: var(--el-bg-color);
     opacity: 0.95;
-    box-shadow: rgba(60, 64, 67, 0.2) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    box-shadow:
+      rgba(60, 64, 67, 0.2) 0px 1px 2px 0px,
+      rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   }
 }
 

@@ -1081,5 +1081,5 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-@use "./MsgFormV2.scss"
+@use "./MsgFormV2.scss";
 </style>

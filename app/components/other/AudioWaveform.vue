@@ -189,7 +189,8 @@ const waveformStyle = computed(() => ({
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
   }
   50% {

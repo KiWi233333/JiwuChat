@@ -42,7 +42,7 @@ pnpm --version
 # Windows 用户可以下载 rustup-init.exe
 
 # 1) 设置国内源的环境变量（临时）：
-$ENV:RUSTUP_DIST_SERVER='https://mirrors.ustc.edu.cn/rust-static' 
+$ENV:RUSTUP_DIST_SERVER='https://mirrors.ustc.edu.cn/rust-static'
 $ENV:RUSTUP_UPDATE_ROOT='https://mirrors.ustc.edu.cn/rust-static/rustup'
 
 # 2） 然后再重新执行 rust 安装程序：
@@ -254,7 +254,7 @@ PORT=3001 pnpm run dev:nuxt
 - **Android SDK**: API Level 24+
 - **Java**: JDK 17+
 
-<!-- 
+<!--
 ### iOS 开发 (仅限 macOS)
 
 - **Xcode**: 14.0+
@@ -275,7 +275,7 @@ PORT=3001 pnpm run dev:nuxt
 ### 应用分发
 
 - **Windows**: 生成 `.msi` 或 `.exe` 安装包
-- **macOS**: 生成 `.dmg` 或 `.app` 应用包  
+- **macOS**: 生成 `.dmg` 或 `.app` 应用包
 - **Linux**: 生成 `.deb`、`.rpm` 或 `AppImage`
 - **Android**: 生成 `.apk` 安装包
 - **iOS**: 生成 `.ipa` 安装包

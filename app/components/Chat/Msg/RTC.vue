@@ -28,14 +28,13 @@ const chat = useChatStore();
 </template>
 
 <style lang="scss" scoped>
-@use './msg.scss';
+@use "./msg.scss";
 
 .icon {
   margin: 0 0.2em 0.1em 0;
 }
 .self {
   .msg-popper {
-
     .icon {
       order: 1;
       margin: 0 0 0.1em 0.4em;

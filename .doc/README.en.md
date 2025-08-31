@@ -164,29 +164,29 @@ JiwuChat is a lightweight `(~10MB)` multi-platform chat application built with T
 <details>
   <summary>Function Table [Expand/Collapse]</summary>
 
-| Module | Sub-module | Function Description | Status |
-|---|---|---|---|
-| User Module | Account Management | User registration, login, historical login account selection | ✅ |
-| | Account Security | Email/phone binding reminder, device management, account security verification | ✅ |
-| Message Module | Basic Chat | Text messages, image messages, video messages, file uploads, message recall, message read status | ✅ |
-| | Data Sync | Multi-device message synchronization, read status synchronization | ✅ |
-| | Advanced Chat | Quoted replies, @mentions, announcements, re-editing recalled messages | ✅ |
-| Session Module | Session Management | Session list, pin session, hide session, unread count statistics, session sorting | ✅ |
-| Group Chat Module | Group Operations | Create group chat, leave group chat, view group chat details | ✅ |
-| | Group Member Management | Group member management, set administrator, revoke administrator, get @ list | ✅ |
-| Contact Module | Friend Operations | Friend requests, friend search, friend list, reject friend requests, delete friends | ✅ |
-| | Profile and Notifications | View friend details, unread request count statistics | ✅ |
-| AI Module | Dialogue Function | Private chat with AI, group chat with AI, multi-AI simultaneous chat | ✅ |
-| | Model Management | Support for models from multiple vendors like Gemini, Kimi AI, DeepSeek, Silicon-based Flow, model list, token calculation | ✅ |
-| | Plaza Function | AI Robot Plaza display | ✅ |
-| Communication Module | Audio/Video Calls | WebRTC-based voice calls, video calls, screen sharing | ✅ |
-| | Call History | Call status updates, hang-up records | ✅ |
-| Notification System | Message Notifications | Desktop notifications, system tray reminders, ringtone settings, do not disturb | ✅ |
-| Extension Function | Integrated | Mall integration, blog integration, update log panel | ✅ |
-| Other Modules | Other Functions | Social chat functions, AI shopping functions, file download management, translation tools (AI Translate/Tencent Translate) | ✅ |
-| | File and Playback | Image viewer, video player, file download, batch image upload | ✅ |
-| | Theme Configuration | Light/dark theme switching, follow system theme, font settings, adaptive layout | ✅ |
-| | Platform Compatibility | Windows, MacOS, Linux, Android, Web adaptation | ✅ |
+| Module               | Sub-module                | Function Description                                                                                                       | Status |
+| -------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------ |
+| User Module          | Account Management        | User registration, login, historical login account selection                                                               | ✅     |
+|                      | Account Security          | Email/phone binding reminder, device management, account security verification                                             | ✅     |
+| Message Module       | Basic Chat                | Text messages, image messages, video messages, file uploads, message recall, message read status                           | ✅     |
+|                      | Data Sync                 | Multi-device message synchronization, read status synchronization                                                          | ✅     |
+|                      | Advanced Chat             | Quoted replies, @mentions, announcements, re-editing recalled messages                                                     | ✅     |
+| Session Module       | Session Management        | Session list, pin session, hide session, unread count statistics, session sorting                                          | ✅     |
+| Group Chat Module    | Group Operations          | Create group chat, leave group chat, view group chat details                                                               | ✅     |
+|                      | Group Member Management   | Group member management, set administrator, revoke administrator, get @ list                                               | ✅     |
+| Contact Module       | Friend Operations         | Friend requests, friend search, friend list, reject friend requests, delete friends                                        | ✅     |
+|                      | Profile and Notifications | View friend details, unread request count statistics                                                                       | ✅     |
+| AI Module            | Dialogue Function         | Private chat with AI, group chat with AI, multi-AI simultaneous chat                                                       | ✅     |
+|                      | Model Management          | Support for models from multiple vendors like Gemini, Kimi AI, DeepSeek, Silicon-based Flow, model list, token calculation | ✅     |
+|                      | Plaza Function            | AI Robot Plaza display                                                                                                     | ✅     |
+| Communication Module | Audio/Video Calls         | WebRTC-based voice calls, video calls, screen sharing                                                                      | ✅     |
+|                      | Call History              | Call status updates, hang-up records                                                                                       | ✅     |
+| Notification System  | Message Notifications     | Desktop notifications, system tray reminders, ringtone settings, do not disturb                                            | ✅     |
+| Extension Function   | Integrated                | Mall integration, blog integration, update log panel                                                                       | ✅     |
+| Other Modules        | Other Functions           | Social chat functions, AI shopping functions, file download management, translation tools (AI Translate/Tencent Translate) | ✅     |
+|                      | File and Playback         | Image viewer, video player, file download, batch image upload                                                              | ✅     |
+|                      | Theme Configuration       | Light/dark theme switching, follow system theme, font settings, adaptive layout                                            | ✅     |
+|                      | Platform Compatibility    | Windows, MacOS, Linux, Android, Web adaptation                                                                             | ✅     |
 
 </details>
 
@@ -207,19 +207,19 @@ pnpm install
 
 ## 🔧 Tech Stack
 
-| Category | Technology/Component | Version |
-|---|---|---|
-| Framework | Nuxt | ^3.14.159+ |
-| | Tauri | ^2.1.0 |
-| UI Component Library | Element Plus | ^2.8.4 |
-| State Management | Pinia | 2.1.7 |
-| Utility Library | Vueuse | 10.11.0 |
-| Build & Dev Tools | Nuxi | lts |
-| | Vite | lts |
-| Code Quality | ESLint | 8.56.0 |
-| | Prettier | 3.3.2 |
-| Type Checking | TypeScript | 5.3.2 |
-| Style Processing | Sass | 1.77.6 |
+| Category             | Technology/Component | Version    |
+| -------------------- | -------------------- | ---------- |
+| Framework            | Nuxt                 | ^3.14.159+ |
+|                      | Tauri                | ^2.1.0     |
+| UI Component Library | Element Plus         | ^2.8.4     |
+| State Management     | Pinia                | 2.1.7      |
+| Utility Library      | Vueuse               | 10.11.0    |
+| Build & Dev Tools    | Nuxi                 | lts        |
+|                      | Vite                 | lts        |
+| Code Quality         | ESLint               | 8.56.0     |
+|                      | Prettier             | 3.3.2      |
+| Type Checking        | TypeScript           | 5.3.2      |
+| Style Processing     | Sass                 | 1.77.6     |
 
 ## 🦾 Trends
 

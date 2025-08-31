@@ -89,5 +89,5 @@ const ossFile = (data as any)._ossFile;
 </template>
 
 <style lang="scss" scoped>
-@use './msg.scss';
+@use "./msg.scss";
 </style>

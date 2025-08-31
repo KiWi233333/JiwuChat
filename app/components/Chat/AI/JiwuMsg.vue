@@ -48,7 +48,7 @@ const user = useUserStore();
 </template>
 
 <style lang="scss" scoped>
-@use '../Msg/msg.scss';
+@use "../Msg/msg.scss";
 
 .markdown {
   --at-apply: "text-0.8rem p-0 bg-color";
@@ -85,12 +85,12 @@ const user = useUserStore();
 
       .md-editor-code {
         line-height: 1.6;
-        --at-apply: 'm-0 mt-2 flex flex-col overflow-hidden card-default border-default hover:shadow transition-all';
+        --at-apply: "m-0 mt-2 flex flex-col overflow-hidden card-default border-default hover:shadow transition-all";
 
         .md-editor-code-block {
           line-height: 1.6;
 
-          &~span[rn-wrapper]>span {
+          & ~ span[rn-wrapper] > span {
             line-height: 1.6;
           }
         }
@@ -98,7 +98,6 @@ const user = useUserStore();
         code {
           border-radius: 0 0 8px 8px;
         }
-
       }
     }
   }

@@ -146,7 +146,7 @@ function initWindowAnimate() {
 
 <style lang="scss">
 body > .controls {
-  --at-apply: 'sm:(fixed top-0 left-0)';
+  --at-apply: "sm:(fixed top-0 left-0)";
 }
 </style>
 
@@ -193,13 +193,12 @@ body > .controls {
   }
 }
 
-
 /* 适配桌面版 */
 .is-desktop {
   .login-logo {
-    --at-apply: ' !static mb-4 p-0  flex-row-c-c';
+    --at-apply: " !static mb-4 p-0  flex-row-c-c";
     .logo {
-      --at-apply: 'w-8 h-8';
+      --at-apply: "w-8 h-8";
     }
   }
 }
@@ -207,29 +206,29 @@ body > .controls {
 .env-config-form,
 .login-form,
 .register-form {
-  --at-apply: 'py-4 w-full';
+  --at-apply: "py-4 w-full";
 }
 
 .show-register {
   .login-logo {
-    --at-apply: 'hidden';
+    --at-apply: "hidden";
     .logo {
-      --at-apply: 'w-6 h-6';
+      --at-apply: "w-6 h-6";
     }
     .app-name {
-      --at-apply: 'text-1em';
+      --at-apply: "text-1em";
     }
   }
 }
 
 .show-env-config {
   .login-logo {
-    --at-apply: 'hidden';
+    --at-apply: "hidden";
     .logo {
-      --at-apply: 'w-6 h-6';
+      --at-apply: "w-6 h-6";
     }
     .app-name {
-      --at-apply: 'text-1em';
+      --at-apply: "text-1em";
     }
   }
 }
@@ -245,29 +244,18 @@ body > .controls {
   overflow: hidden;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(
-    ellipse at 30% 20%,
-    rgba(132, 98, 255, 0.3) 0%,
-    rgba(135, 206, 235, 0.1) 25%,
-    transparent 50%
-  ),
-  radial-gradient(
-    ellipse at 70% 80%,
-    rgba(1132, 98, 255, 0.3) 0%,
-    rgba(167, 143, 255, 0.1) 25%,
-    transparent 50%
-  ),
-  radial-gradient(
-    ellipse at 50% 50%,
-    rgba(173, 216, 230, 0.04) 0%,
-    transparent 40%
-  );
-  background-size: 120% 120%, 140% 140%, 160% 160%;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(132, 98, 255, 0.3) 0%, rgba(135, 206, 235, 0.1) 25%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(1132, 98, 255, 0.3) 0%, rgba(167, 143, 255, 0.1) 25%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(173, 216, 230, 0.04) 0%, transparent 40%);
+  background-size:
+    120% 120%,
+    140% 140%,
+    160% 160%;
   animation: gradient-shift 15s ease-in-out infinite;
 }
 
 .is-mobile {
-
   .form-main {
     --at-apply: "min-h-52vh";
   }
@@ -281,10 +269,9 @@ body > .controls {
 
 .login-bg {
   background-color: #f9f7ff;
-  background-image: radial-gradient(closest-side, #e9e1ff, transparent),
-    radial-gradient(closest-side, #e8e0ff, transparent),
-    radial-gradient(closest-side, #f3e4ff, transparent),
-    radial-gradient(closest-side, #fff6e8, transparent),
+  background-image:
+    radial-gradient(closest-side, #e9e1ff, transparent), radial-gradient(closest-side, #e8e0ff, transparent),
+    radial-gradient(closest-side, #f3e4ff, transparent), radial-gradient(closest-side, #fff6e8, transparent),
     radial-gradient(closest-side, #f6f3ff, transparent);
   background-size:
     130vmax 130vmax,

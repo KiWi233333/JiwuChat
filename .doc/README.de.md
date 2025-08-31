@@ -164,29 +164,29 @@ JiwuChat ist eine leichte `(~10MB)` plattformübergreifende Chat-Anwendung, die 
 <details>
   <summary>Funktionstabelle [Erweitern/Zusammenklappen]</summary>
 
-| Modul | Untermodul | Funktionsbeschreibung | Status |
-|---|---|---|---|
-| Benutzermodul | Kontoverwaltung | Benutzerregistrierung, Anmeldung, Auswahl des historischen Anmeldekontos | ✅ |
-| | Kontosicherheit | E-Mail-/Telefonbindungs-Erinnerung, Geräteverwaltung, Kontosicherheitsüberprüfung | ✅ |
-| Nachrichtenmodul | Basis-Chat | Textnachrichten, Bildnachrichten, Videonachrichten, Datei-Uploads, Nachrichtenrückruf, Nachrichtenlesestatus | ✅ |
-| | Datensynchronisation | Synchronisierung von Nachrichten auf mehreren Geräten, Synchronisierung des Lesestatus | ✅ |
-| | Erweiterter Chat | Zitatantworten, @-Erwähnungen, Ankündigungen, erneutes Bearbeiten zurückgerufener Nachrichten | ✅ |
-| Sitzungsmodul | Sitzungsverwaltung | Sitzungsliste, Sitzung anheften, Sitzung ausblenden, Statistik der ungelesenen Nachrichten, Sitzungssortierung | ✅ |
-| Gruppenchat-Modul | Gruppenoperationen | Gruppenchat erstellen, Gruppenchat verlassen, Gruppenchat-Details anzeigen | ✅ |
-| | Gruppenmitgliederverwaltung | Verwaltung von Gruppenmitgliedern, Administrator festlegen, Administrator widerrufen, @-Liste abrufen | ✅ |
-| Kontaktmodul | Freundschaftsoperationen | Freundschaftsanfragen, Freundessuche, Freundesliste, Freundschaftsanfragen ablehnen, Freunde löschen | ✅ |
-| | Profil und Benachrichtigungen | Freundesdetails anzeigen, Statistik der ungelesenen Anfragen | ✅ |
-| KI-Modul | Dialogfunktion | Privater Chat mit KI, Gruppenchat mit KI, simultaner Chat mit mehreren KIs | ✅ |
-| | Modellverwaltung | Unterstützung für Modelle von mehreren Anbietern wie Gemini, Kimi AI, DeepSeek, Silicon-based Flow, Modellliste, Token-Berechnung | ✅ |
-| | Plaza-Funktion | Anzeige des KI-Roboter-Plaza | ✅ |
-| Kommunikationsmodul | Audio-/Videoanrufe | WebRTC-basierte Sprachanrufe, Videoanrufe, Bildschirmfreigabe | ✅ |
-| | Anrufverlauf | Anrufstatus-Updates, Auflege-Aufzeichnungen | ✅ |
-| Benachrichtigungssystem | Nachrichtenbenachrichtigungen | Desktop-Benachrichtigungen, System-Tray-Erinnerungen, Klingeltoneinstellungen, Nicht stören | ✅ |
-| Erweiterungsfunktion | Integriert | Mall-Integration, Blog-Integration, Update-Log-Panel | ✅ |
-| Andere Module | Andere Funktionen | Soziale Chat-Funktionen, KI-Shopping-Funktionen, Dateidownload-Verwaltung, Übersetzungstools (KI-Übersetzung/Tencent-Übersetzung) | ✅ |
-| | Datei und Wiedergabe | Bildbetrachter, Videoplayer, Dateidownload, Batch-Bildupload | ✅ |
-| | Themenkonfiguration | Umschalten zwischen hellem/dunklem Thema, Systemthema folgen, Schriftarteinstellungen, adaptives Layout | ✅ |
-| | Plattformkompatibilität | Windows, MacOS, Linux, Android, Web-Anpassung | ✅ |
+| Modul                   | Untermodul                    | Funktionsbeschreibung                                                                                                             | Status |
+| ----------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Benutzermodul           | Kontoverwaltung               | Benutzerregistrierung, Anmeldung, Auswahl des historischen Anmeldekontos                                                          | ✅     |
+|                         | Kontosicherheit               | E-Mail-/Telefonbindungs-Erinnerung, Geräteverwaltung, Kontosicherheitsüberprüfung                                                 | ✅     |
+| Nachrichtenmodul        | Basis-Chat                    | Textnachrichten, Bildnachrichten, Videonachrichten, Datei-Uploads, Nachrichtenrückruf, Nachrichtenlesestatus                      | ✅     |
+|                         | Datensynchronisation          | Synchronisierung von Nachrichten auf mehreren Geräten, Synchronisierung des Lesestatus                                            | ✅     |
+|                         | Erweiterter Chat              | Zitatantworten, @-Erwähnungen, Ankündigungen, erneutes Bearbeiten zurückgerufener Nachrichten                                     | ✅     |
+| Sitzungsmodul           | Sitzungsverwaltung            | Sitzungsliste, Sitzung anheften, Sitzung ausblenden, Statistik der ungelesenen Nachrichten, Sitzungssortierung                    | ✅     |
+| Gruppenchat-Modul       | Gruppenoperationen            | Gruppenchat erstellen, Gruppenchat verlassen, Gruppenchat-Details anzeigen                                                        | ✅     |
+|                         | Gruppenmitgliederverwaltung   | Verwaltung von Gruppenmitgliedern, Administrator festlegen, Administrator widerrufen, @-Liste abrufen                             | ✅     |
+| Kontaktmodul            | Freundschaftsoperationen      | Freundschaftsanfragen, Freundessuche, Freundesliste, Freundschaftsanfragen ablehnen, Freunde löschen                              | ✅     |
+|                         | Profil und Benachrichtigungen | Freundesdetails anzeigen, Statistik der ungelesenen Anfragen                                                                      | ✅     |
+| KI-Modul                | Dialogfunktion                | Privater Chat mit KI, Gruppenchat mit KI, simultaner Chat mit mehreren KIs                                                        | ✅     |
+|                         | Modellverwaltung              | Unterstützung für Modelle von mehreren Anbietern wie Gemini, Kimi AI, DeepSeek, Silicon-based Flow, Modellliste, Token-Berechnung | ✅     |
+|                         | Plaza-Funktion                | Anzeige des KI-Roboter-Plaza                                                                                                      | ✅     |
+| Kommunikationsmodul     | Audio-/Videoanrufe            | WebRTC-basierte Sprachanrufe, Videoanrufe, Bildschirmfreigabe                                                                     | ✅     |
+|                         | Anrufverlauf                  | Anrufstatus-Updates, Auflege-Aufzeichnungen                                                                                       | ✅     |
+| Benachrichtigungssystem | Nachrichtenbenachrichtigungen | Desktop-Benachrichtigungen, System-Tray-Erinnerungen, Klingeltoneinstellungen, Nicht stören                                       | ✅     |
+| Erweiterungsfunktion    | Integriert                    | Mall-Integration, Blog-Integration, Update-Log-Panel                                                                              | ✅     |
+| Andere Module           | Andere Funktionen             | Soziale Chat-Funktionen, KI-Shopping-Funktionen, Dateidownload-Verwaltung, Übersetzungstools (KI-Übersetzung/Tencent-Übersetzung) | ✅     |
+|                         | Datei und Wiedergabe          | Bildbetrachter, Videoplayer, Dateidownload, Batch-Bildupload                                                                      | ✅     |
+|                         | Themenkonfiguration           | Umschalten zwischen hellem/dunklem Thema, Systemthema folgen, Schriftarteinstellungen, adaptives Layout                           | ✅     |
+|                         | Plattformkompatibilität       | Windows, MacOS, Linux, Android, Web-Anpassung                                                                                     | ✅     |
 
 </details>
 
@@ -207,19 +207,19 @@ pnpm install
 
 ## 🔧 Tech-Stack
 
-| Kategorie | Technologie/Komponente | Version |
-|---|---|---|
-| Framework | Nuxt | ^3.14.159+ |
-| | Tauri | ^2.1.0 |
-| UI-Komponentenbibliothek | Element Plus | ^2.8.4 |
-| Zustandsverwaltung | Pinia | 2.1.7 |
-| Dienstprogrammbibliothek | Vueuse | 10.11.0 |
-| Build- & Entwicklungstools | Nuxi | lts |
-| | Vite | lts |
-| Code-Qualität | ESLint | 8.56.0 |
-| | Prettier | 3.3.2 |
-| Typüberprüfung | TypeScript | 5.3.2 |
-| Stilverarbeitung | Sass | 1.77.6 |
+| Kategorie                  | Technologie/Komponente | Version    |
+| -------------------------- | ---------------------- | ---------- |
+| Framework                  | Nuxt                   | ^3.14.159+ |
+|                            | Tauri                  | ^2.1.0     |
+| UI-Komponentenbibliothek   | Element Plus           | ^2.8.4     |
+| Zustandsverwaltung         | Pinia                  | 2.1.7      |
+| Dienstprogrammbibliothek   | Vueuse                 | 10.11.0    |
+| Build- & Entwicklungstools | Nuxi                   | lts        |
+|                            | Vite                   | lts        |
+| Code-Qualität              | ESLint                 | 8.56.0     |
+|                            | Prettier               | 3.3.2      |
+| Typüberprüfung             | TypeScript             | 5.3.2      |
+| Stilverarbeitung           | Sass                   | 1.77.6     |
 
 ## 🦾 Trends
 

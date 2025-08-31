@@ -218,7 +218,7 @@ async function getPhoneCode() {
 }
 
 .submit {
-  --at-apply: "mb-4 w-full shadow-sm text-1em transition-300 "
+  --at-apply: "mb-4 w-full shadow-sm text-1em transition-300 ";
   letter-spacing: 0.2em;
 
   :deep(.el-input__wrapper) {

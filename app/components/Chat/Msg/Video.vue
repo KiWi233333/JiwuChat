@@ -80,7 +80,7 @@ const size = computed(() => getImgSize(props.data.message.body?.thumbWidth || pr
 </template>
 
 <style lang="scss" scoped>
-@use './msg.scss';
+@use "./msg.scss";
 .play-btn {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   --at-apply: "text-white  border-(2px solid #ffffff) bg-(gray-5 op-30) backdrop-blur-3px";

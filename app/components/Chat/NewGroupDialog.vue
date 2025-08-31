@@ -383,16 +383,16 @@ defineExpose({
   // border-radius: 1rem;
 }
 .avatar-icon {
-  --at-apply:"h-2.4rem card-default  w-2.4rem flex-row-c-c rounded-6px  shadow-sm border-default"
+  --at-apply: "h-2.4rem card-default  w-2.4rem flex-row-c-c rounded-6px  shadow-sm border-default";
 }
 .item {
-  --at-apply:"flex flex-col relative items-center gap-4 px-2 pt-3.6 page-pointer rounded-6px hover:(bg-color) transition-300"
+  --at-apply: "flex flex-col relative items-center gap-4 px-2 pt-3.6 page-pointer rounded-6px hover:(bg-color) transition-300";
 }
 .check-item {
-  --at-apply:"flex items-center px-4 gap-2 page-pointer rounded-6px p-2 hover:(bg-color-3 dark:bg-dark-8) transition-300"
+  --at-apply: "flex items-center px-4 gap-2 page-pointer rounded-6px p-2 hover:(bg-color-3 dark:bg-dark-8) transition-300";
 }
-:deep(.el-checkbox.is-checked){
-  --at-apply:"bg-color dark:bg-dark-8 sm:(bg-color-3 dark:bg-dark-8) shadow-sm"
+:deep(.el-checkbox.is-checked) {
+  --at-apply: "bg-color dark:bg-dark-8 sm:(bg-color-3 dark:bg-dark-8) shadow-sm";
 }
 .avatar {
   :deep(.el-form-item__error) {

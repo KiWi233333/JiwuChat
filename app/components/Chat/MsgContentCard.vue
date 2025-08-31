@@ -19,14 +19,14 @@ defineProps<{
   width: 100%;
 }
 
-:deep(.el-radio){
+:deep(.el-radio) {
   width: 100%;
   height: fit-content;
   display: block;
   padding: 0;
   margin: 0;
   border-color: #adadad18;
-    transition: 200ms border;
+  transition: 200ms border;
   margin-bottom: 1rem;
   .el-radio__input {
     display: none;

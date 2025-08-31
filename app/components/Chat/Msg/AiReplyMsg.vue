@@ -96,7 +96,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 </template>
 
 <style lang="scss" scoped>
-@use './msg.scss';
+@use "./msg.scss";
 
 .markdown-preivew {
   --at-apply: "text-0.9rem p-0 bg-color";
@@ -137,14 +137,14 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 
       .md-editor-code {
         line-height: 1.6;
-        --at-apply: 'm-0 mt-2 flex flex-col overflow-hidden card-bg-color-2 rounded-3 border-default shadow-(md inset)';
+        --at-apply: "m-0 mt-2 flex flex-col overflow-hidden card-bg-color-2 rounded-3 border-default shadow-(md inset)";
 
         .md-editor-code-block {
           font-size: 0.8em;
           font-size: inherit;
           line-height: 1.6;
 
-          &~span[rn-wrapper]>span {
+          & ~ span[rn-wrapper] > span {
             font-size: 0.8em;
             line-height: 1.6;
             font-size: inherit;
@@ -155,7 +155,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
         }
       }
       .md-editor-code:first-child {
-        --at-apply: 'my-1';
+        --at-apply: "my-1";
         border-radius: 6px 1em 1em 1em;
       }
     }

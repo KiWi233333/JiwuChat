@@ -2,22 +2,21 @@
   //  node_modules/element-plus/theme-chalk/src/common/var.scss"
   $border-radius: ("base": 6px, "small": 12px, "round": 20px, "circle": 100%),
   // 阴影
-  $box-shadow:
-    (
+  $box-shadow: (
       "": (
         0px 12px 32px 4px rgba(0, 0, 0, 0.04),
-        0px 8px 20px rgba(0, 0, 0, 0.08)
+        0px 8px 20px rgba(0, 0, 0, 0.08),
       ),
       "light": (
-        0px 0px 12px rgba(0, 0, 0, 0.1)
+        0px 0px 12px rgba(0, 0, 0, 0.1),
       ),
       "lighter": (
-        0px 0px 6px rgba(0, 0, 0, 0.1)
+        0px 0px 6px rgba(0, 0, 0, 0.1),
       ),
       "dark": (
         0px 16px 48px 16px rgba(0, 0, 0, 0.05),
         0px 12px 32px rgba(0, 0, 0, 0.08),
-        0px 8px 16px -8px rgba(0, 0, 0, 0.12)
+        0px 8px 16px -8px rgba(0, 0, 0, 0.12),
       )
     ),
 
@@ -27,22 +26,22 @@
     "black": #1d1d1d,
     "main": #5d33f6,
     "primary": (
-      "base": #5d33f6
+      "base": #5d33f6,
     ),
     "success": (
-      "base": #67c23a
+      "base": #67c23a,
     ),
     "warning": (
-      "base": #ffbf11
+      "base": #ffbf11,
     ),
     "danger": (
-      "base": #ff4545
+      "base": #ff4545,
     ),
     "error": (
-      "base": #ff2323
+      "base": #ff2323,
     ),
     "info": (
-      "base": #10cf80
+      "base": #10cf80,
     )
   ),
   $bg-color: ("black": #111111, "primary": #303133),
@@ -58,8 +57,7 @@
   $popover: ("border-radius": 8px),
   $popper: ("border-radius": 8px),
   // 轮播图
-  $carousel:
-    (
+  $carousel: (
       "arrow-font-size": 20px,
       "arrow-size": 36px,
       "arrow-background": rgba(31, 45, 61, 0.4),
@@ -71,16 +69,14 @@
       "indicator-out-color": getCssVar("border-color-hover")
     ),
   // el-card
-  $card:
-    (
+  $card: (
       "border-color": getCssVar("border-color", "light"),
       "border-radius": 6px,
       "padding": 2px,
       "bg-color": getCssVar("fill-color", "blank")
     ),
   // message
-  $message:
-    (
+  $message: (
       "bg-color": getCssVar("color", "info", "light-9"),
       "border-color": getCssVar("border-color-lighter"),
       "padding": 0.5rem 0.8rem,
@@ -114,12 +110,12 @@
     // 'border-color': getCssVar('border-color'),
     // 'base-level-padding': 20px,
     // 'level-padding': 20px,
-    // 'icon-width': 24px,
+     // 'icon-width': 24px,
   ),
   $dropdown: (
     // 'menu-box-shadow': getCssVar('box-shadow-light'),
     // 'menuItem-hover-fill': getCssVar('color-text-primary'),
     // 'menuItem-hover-color': getCssVar('color-text-primary'),
-    // 'menu-index': 10,
+     // 'menu-index': 10,
   )
 );

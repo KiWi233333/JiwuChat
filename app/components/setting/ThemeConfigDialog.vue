@@ -400,7 +400,6 @@ function importThemeConfig(file: File) {
       border-radius: 4px;
     }
   }
-
 }
 
 .actions-footer {
@@ -411,7 +410,6 @@ function importThemeConfig(file: File) {
 .right-actions {
   --at-apply: "flex items-center gap-2";
 }
-
 
 :deep(.el-scrollbar__bar) {
   right: 1px;
@@ -425,7 +423,7 @@ function importThemeConfig(file: File) {
 :deep(.el-color-picker) {
   --at-apply: "p-0 shadow-sm card-rounded-df overflow-hidden";
 
-    .el-color-picker__trigger {
+  .el-color-picker__trigger {
     --at-apply: "p-0 border-none";
   }
   .el-color-picker__color {

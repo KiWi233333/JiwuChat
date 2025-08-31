@@ -41,6 +41,6 @@ onMounted(async () => {
 
 <style scoped lang="scss">
 .mains {
-  --at-apply: 'grid grid-cols-1 pl-2rem pr-4rem sm:(grid-cols-[2fr_1fr] px-4rem)';
+  --at-apply: "grid grid-cols-1 pl-2rem pr-4rem sm:(grid-cols-[2fr_1fr] px-4rem)";
 }
 </style>

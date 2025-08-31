@@ -212,10 +212,10 @@ const {
     }
   }
 }
-:deep(.el-timeline-item){
+:deep(.el-timeline-item) {
   .el-timeline-item__tail {
     left: 5px;
-    top:0.3em;
+    top: 0.3em;
   }
   .el-timeline-item__node--normal {
     left: 0;
@@ -228,7 +228,12 @@ const {
 }
 
 .linear-bt {
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 1) 100%);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 1) 100%
+  );
 }
 .dark .linear-bt {
   background: linear-gradient(to bottom, rgba(15, 15, 15, 0) 0%, rgba(15, 15, 15, 0.8) 50%, rgba(15, 15, 15, 1) 100%);

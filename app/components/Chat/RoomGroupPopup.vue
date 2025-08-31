@@ -357,9 +357,9 @@ async function changShieldStatus() {
 }
 
 .is-grid {
-    // grid-template-columns: repeat(auto-fit, minmax(3em, 1fr)); // 设置网格布局，并设置列数为自动适应，每个列的宽度为1fr（占据可用空间）
+  // grid-template-columns: repeat(auto-fit, minmax(3em, 1fr)); // 设置网格布局，并设置列数为自动适应，每个列的宽度为1fr（占据可用空间）
   .user-card {
-    --at-apply:'sm:mx-0 mx-a';
+    --at-apply: "sm:mx-0 mx-a";
     width: fit-content;
   }
 }
@@ -389,7 +389,7 @@ async function changShieldStatus() {
   }
   &:hover i {
     opacity: 1;
-    cursor: pointer
+    cursor: pointer;
   }
 }
 :deep(.el-textarea) {
@@ -400,11 +400,11 @@ async function changShieldStatus() {
     padding: 0;
     background-color: transparent;
     cursor: pointer;
-    resize:none;
+    resize: none;
   }
   &.is-disabled {
     box-shadow: none;
-    resize:none;
+    resize: none;
   }
 }
 .shadow-linear {
@@ -434,7 +434,6 @@ async function changShieldStatus() {
   }
 }
 .scroll-2 {
-
   :deep(.el-scrollbar__bar) {
     opacity: 0.5;
   }

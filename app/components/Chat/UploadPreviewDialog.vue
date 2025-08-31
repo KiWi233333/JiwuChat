@@ -263,12 +263,12 @@ async function onSend() {
 
 <style scoped lang="scss">
   :deep(.el-textarea.input) {
-    .el-textarea__inner {
-      --at-apply: "!shadow-none !outline-none !input-bg-color";
-      resize: none;
-    }
+  .el-textarea__inner {
+    --at-apply: "!shadow-none !outline-none !input-bg-color";
+    resize: none;
   }
-  .icon {
-    --at-apply: "h-2rem px-2 w-2rem  !btn-primary-bg flex-row-c-c input-bg-color";
-  }
+}
+.icon {
+  --at-apply: "h-2rem px-2 w-2rem  !btn-primary-bg flex-row-c-c input-bg-color";
+}
 </style>

@@ -42,7 +42,7 @@ const { data } = defineProps<{
 </template>
 
 <style scoped lang="scss">
-.item:hover  {
+.item:hover {
   .item-hover {
     opacity: 1;
   }

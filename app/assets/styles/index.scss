@@ -19,7 +19,8 @@
   z-index: -99;
   width: 60%;
   height: 60%;
-  background: radial-gradient(
+  background:
+    radial-gradient(
       104.24% 141.88% at 8.26% 9.64%,
       #b95be6 0%,
       rgb(185 91 230 / 18%) 69.92%,
@@ -248,7 +249,7 @@ body .el-message {
 
 .md-editor-preview {
   a {
-    &:hover{ 
+    &:hover {
       border: none !important;
     }
     &::after {
@@ -304,7 +305,7 @@ body .el-message {
     --mx-menu-open-backgroud: #71717188;
     &:hover {
       .mx-icon-placeholder {
-        i { 
+        i {
           --at-apply: "light:text-light";
         }
       }

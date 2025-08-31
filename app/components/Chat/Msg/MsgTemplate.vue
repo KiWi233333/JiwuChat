@@ -154,5 +154,5 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
 </template>
 
 <style lang="scss" scoped>
-@use './msg.scss';
+@use "./msg.scss";
 </style>

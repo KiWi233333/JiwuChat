@@ -281,7 +281,6 @@ function createItem() {
 }
 .item {
   --at-apply: "relative h-6em w-5.5em flex-row-c-c flex-col cursor-pointer card-rounded-df text-center transition-shadow bg-color hover:shadow-sm";
-
 }
 .add {
   --at-apply: "absolute right-1 top-1 hidden op-0 sm:block btn-primary-bg group-hover:(op-100)";

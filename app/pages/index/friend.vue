@@ -81,9 +81,28 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
 }
 
 .bg {
-  background-image: linear-gradient(160deg, #eaf3ff 0%, transparent, transparent, transparent, transparent, transparent, transparent);
+  background-image: linear-gradient(
+    160deg,
+    #eaf3ff 0%,
+    transparent,
+    transparent,
+    transparent,
+    transparent,
+    transparent,
+    transparent
+  );
 }
 .dark .bg {
-  background-image: linear-gradient(160deg, #262626 0%, transparent, transparent, transparent, transparent, transparent, transparent, transparent);
+  background-image: linear-gradient(
+    160deg,
+    #262626 0%,
+    transparent,
+    transparent,
+    transparent,
+    transparent,
+    transparent,
+    transparent,
+    transparent
+  );
 }
 </style>

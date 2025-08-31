@@ -63,6 +63,6 @@ function openPreview() {
 
 <style scoped lang="scss">
 .icon {
-  --at-apply: "block max-w-4/5 min-h-5 min-w-5 text-gray"
+  --at-apply: "block max-w-4/5 min-h-5 min-w-5 text-gray";
 }
 </style>

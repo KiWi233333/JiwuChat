@@ -150,7 +150,6 @@ const _show = computed({
   --at-apply: "text-sm block px-3 tracking-0.1em mt-4 mb-2 sm:(px-4 mt-4 mb-2) ";
 }
 .setting-group {
-
   .title {
     --at-apply: "text-sm block px-3 tracking-0.1em mt-4 mb-2 sm:(px-4 mt-4 mb-2)";
   }

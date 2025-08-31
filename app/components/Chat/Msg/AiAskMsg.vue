@@ -51,5 +51,5 @@ const getTitle = robotListLen === 1
 </template>
 
 <style lang="scss" scoped>
-@use './msg.scss';
+@use "./msg.scss";
 </style>

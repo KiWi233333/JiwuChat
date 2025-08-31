@@ -164,29 +164,29 @@ JiwuChat é um aplicativo de bate-papo multiplataforma leve `(~10MB)` construíd
 <details>
   <summary>Tabela de recursos [Expandir/Recolher]</summary>
 
-| Módulo | Submódulo | Descrição do recurso | Status |
-|---|---|---|---|
-| Módulo do usuário | Gerenciamento de contas | Registro de usuário, login, seleção de conta de login histórica | ✅ |
-| | Segurança da conta | Lembrete de vinculação de e-mail/telefone, gerenciamento de dispositivos, verificação de segurança da conta | ✅ |
-| Módulo de mensagens | Bate-papo básico | Mensagens de texto, mensagens de imagem, mensagens de vídeo, uploads de arquivos, cancelamento de mensagens, status de leitura de mensagens | ✅ |
-| | Sincronização de dados | Sincronização de mensagens em vários dispositivos, sincronização de status de leitura | ✅ |
-| | Bate-papo avançado | Respostas de citação, menções @, anúncios, reedição de mensagens canceladas | ✅ |
-| Módulo de sessão | Gerenciamento de sessão | Lista de sessões, fixar sessão, ocultar sessão, estatísticas de mensagens não lidas, classificação de sessões | ✅ |
-| Módulo de bate-papo em grupo | Operações de grupo | Criar bate-papo em grupo, sair do bate-papo em grupo, visualizar detalhes do bate-papo em grupo | ✅ |
-| | Gerenciamento de membros do grupo | Gerenciamento de membros do grupo, definir administrador, revogar administrador, obter lista de @ | ✅ |
-| Módulo de contatos | Operações de amizade | Solicitações de amizade, pesquisa de amigos, lista de amigos, recusar solicitações de amizade, excluir amigos | ✅ |
-| | Perfil e notificações | Visualizar detalhes do amigo, estatísticas de solicitações não lidas | ✅ |
-| Módulo de IA | Recurso de diálogo | Bate-papo privado com IA, bate-papo em grupo com IA, bate-papo simultâneo com várias IAs | ✅ |
-| | Gerenciamento de modelos | Suporte para modelos de vários fornecedores, como Gemini, Kimi AI, DeepSeek, Silicon-based Flow, lista de modelos, cálculo de tokens | ✅ |
-| | Recurso de praça | Exibição da praça de robôs de IA | ✅ |
-| Módulo de comunicação | Chamadas de áudio/vídeo | Chamadas de voz baseadas em WebRTC, chamadas de vídeo, compartilhamento de tela | ✅ |
-| | Histórico de chamadas | Atualizações de status de chamada, registros de desligamento | ✅ |
-| Sistema de notificação | Notificações de mensagens | Notificações de desktop, lembretes da bandeja do sistema, configurações de toque, não perturbe | ✅ |
-| Recurso de extensão | Integrado | Integração de shopping, integração de blog, painel de registro de atualizações | ✅ |
-| Outros módulos | Outros recursos | Recursos de bate-papo social, recursos de compras de IA, gerenciamento de download de arquivos, ferramentas de tradução (tradução de IA/tradução da Tencent) | ✅ |
-| | Arquivo e reprodução | Visualizador de imagens, reprodutor de vídeo, download de arquivos, upload de imagens em lote | ✅ |
-| | Configuração de tema | Alternância de tema claro/escuro, seguir o tema do sistema, configurações de fonte, layout adaptável | ✅ |
-| | Compatibilidade de plataforma | Windows, MacOS, Linux, Android, adaptação da Web | ✅ |
+| Módulo                       | Submódulo                         | Descrição do recurso                                                                                                                                         | Status |
+| ---------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| Módulo do usuário            | Gerenciamento de contas           | Registro de usuário, login, seleção de conta de login histórica                                                                                              | ✅     |
+|                              | Segurança da conta                | Lembrete de vinculação de e-mail/telefone, gerenciamento de dispositivos, verificação de segurança da conta                                                  | ✅     |
+| Módulo de mensagens          | Bate-papo básico                  | Mensagens de texto, mensagens de imagem, mensagens de vídeo, uploads de arquivos, cancelamento de mensagens, status de leitura de mensagens                  | ✅     |
+|                              | Sincronização de dados            | Sincronização de mensagens em vários dispositivos, sincronização de status de leitura                                                                        | ✅     |
+|                              | Bate-papo avançado                | Respostas de citação, menções @, anúncios, reedição de mensagens canceladas                                                                                  | ✅     |
+| Módulo de sessão             | Gerenciamento de sessão           | Lista de sessões, fixar sessão, ocultar sessão, estatísticas de mensagens não lidas, classificação de sessões                                                | ✅     |
+| Módulo de bate-papo em grupo | Operações de grupo                | Criar bate-papo em grupo, sair do bate-papo em grupo, visualizar detalhes do bate-papo em grupo                                                              | ✅     |
+|                              | Gerenciamento de membros do grupo | Gerenciamento de membros do grupo, definir administrador, revogar administrador, obter lista de @                                                            | ✅     |
+| Módulo de contatos           | Operações de amizade              | Solicitações de amizade, pesquisa de amigos, lista de amigos, recusar solicitações de amizade, excluir amigos                                                | ✅     |
+|                              | Perfil e notificações             | Visualizar detalhes do amigo, estatísticas de solicitações não lidas                                                                                         | ✅     |
+| Módulo de IA                 | Recurso de diálogo                | Bate-papo privado com IA, bate-papo em grupo com IA, bate-papo simultâneo com várias IAs                                                                     | ✅     |
+|                              | Gerenciamento de modelos          | Suporte para modelos de vários fornecedores, como Gemini, Kimi AI, DeepSeek, Silicon-based Flow, lista de modelos, cálculo de tokens                         | ✅     |
+|                              | Recurso de praça                  | Exibição da praça de robôs de IA                                                                                                                             | ✅     |
+| Módulo de comunicação        | Chamadas de áudio/vídeo           | Chamadas de voz baseadas em WebRTC, chamadas de vídeo, compartilhamento de tela                                                                              | ✅     |
+|                              | Histórico de chamadas             | Atualizações de status de chamada, registros de desligamento                                                                                                 | ✅     |
+| Sistema de notificação       | Notificações de mensagens         | Notificações de desktop, lembretes da bandeja do sistema, configurações de toque, não perturbe                                                               | ✅     |
+| Recurso de extensão          | Integrado                         | Integração de shopping, integração de blog, painel de registro de atualizações                                                                               | ✅     |
+| Outros módulos               | Outros recursos                   | Recursos de bate-papo social, recursos de compras de IA, gerenciamento de download de arquivos, ferramentas de tradução (tradução de IA/tradução da Tencent) | ✅     |
+|                              | Arquivo e reprodução              | Visualizador de imagens, reprodutor de vídeo, download de arquivos, upload de imagens em lote                                                                | ✅     |
+|                              | Configuração de tema              | Alternância de tema claro/escuro, seguir o tema do sistema, configurações de fonte, layout adaptável                                                         | ✅     |
+|                              | Compatibilidade de plataforma     | Windows, MacOS, Linux, Android, adaptação da Web                                                                                                             | ✅     |
 
 </details>
 
@@ -207,19 +207,19 @@ pnpm install
 
 ## 🔧 Pilha de tecnologia
 
-| Categoria | Tecnologia/Componente | Versão |
-|---|---|---|
-| Framework | Nuxt | ^3.14.159+ |
-| | Tauri | ^2.1.0 |
-| Biblioteca de componentes de interface do usuário | Element Plus | ^2.8.4 |
-| Gerenciamento de estado | Pinia | 2.1.7 |
-| Biblioteca de utilitários | Vueuse | 10.11.0 |
-| Ferramentas de compilação e desenvolvimento | Nuxi | lts |
-| | Vite | lts |
-| Qualidade do código | ESLint | 8.56.0 |
-| | Prettier | 3.3.2 |
-| Verificação de tipo | TypeScript | 5.3.2 |
-| Processamento de estilo | Sass | 1.77.6 |
+| Categoria                                         | Tecnologia/Componente | Versão     |
+| ------------------------------------------------- | --------------------- | ---------- |
+| Framework                                         | Nuxt                  | ^3.14.159+ |
+|                                                   | Tauri                 | ^2.1.0     |
+| Biblioteca de componentes de interface do usuário | Element Plus          | ^2.8.4     |
+| Gerenciamento de estado                           | Pinia                 | 2.1.7      |
+| Biblioteca de utilitários                         | Vueuse                | 10.11.0    |
+| Ferramentas de compilação e desenvolvimento       | Nuxi                  | lts        |
+|                                                   | Vite                  | lts        |
+| Qualidade do código                               | ESLint                | 8.56.0     |
+|                                                   | Prettier              | 3.3.2      |
+| Verificação de tipo                               | TypeScript            | 5.3.2      |
+| Processamento de estilo                           | Sass                  | 1.77.6     |
 
 ## 🦾 Tendências
 

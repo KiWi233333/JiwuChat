@@ -164,29 +164,29 @@ JiwuChat est une application de chat multiplateforme légère `(~10MB)` construi
 <details>
   <summary>Tableau des fonctionnalités [Développer/Réduire]</summary>
 
-| Module | Sous-module | Description de la fonctionnalité | État |
-|---|---|---|---|
-| Module utilisateur | Gestion de compte | Inscription de l'utilisateur, connexion, sélection du compte de connexion historique | ✅ |
-| | Sécurité du compte | Rappel de liaison e-mail/téléphone, gestion des appareils, vérification de la sécurité du compte | ✅ |
-| Module de messagerie | Chat de base | Messages texte, messages image, messages vidéo, téléchargements de fichiers, rappel de message, état de lecture des messages | ✅ |
-| | Synchronisation des données | Synchronisation des messages sur plusieurs appareils, synchronisation de l'état de lecture | ✅ |
-| | Chat avancé | Réponses par citation, mentions @, annonces, réédition des messages rappelés | ✅ |
-| Module de session | Gestion de session | Liste des sessions, épingler la session, masquer la session, statistiques des messages non lus, tri des sessions | ✅ |
-| Module de chat de groupe | Opérations de groupe | Créer un chat de groupe, quitter un chat de groupe, afficher les détails du chat de groupe | ✅ |
-| | Gestion des membres du groupe | Gestion des membres du groupe, définir un administrateur, révoquer un administrateur, obtenir la liste des @ | ✅ |
-| Module de contacts | Opérations d'amitié | Demandes d'amis, recherche d'amis, liste d'amis, refuser les demandes d'amis, supprimer des amis | ✅ |
-| | Profil et notifications | Afficher les détails des amis, statistiques des demandes non lues | ✅ |
-| Module IA | Fonction de dialogue | Chat privé avec l'IA, chat de groupe avec l'IA, chat simultané avec plusieurs IA | ✅ |
-| | Gestion des modèles | Prise en charge des modèles de plusieurs fournisseurs tels que Gemini, Kimi AI, DeepSeek, Silicon-based Flow, liste des modèles, calcul des jetons | ✅ |
-| | Fonction de place | Affichage de la place des robots IA | ✅ |
-| Module de communication | Appels audio/vidéo | Appels vocaux basés sur WebRTC, appels vidéo, partage d'écran | ✅ |
-| | Historique des appels | Mises à jour de l'état des appels, enregistrements des raccrochages | ✅ |
-| Système de notification | Notifications de messages | Notifications de bureau, rappels de la barre d'état système, paramètres de sonnerie, ne pas déranger | ✅ |
-| Fonction d'extension | Intégré | Intégration du centre commercial, intégration du blog, panneau du journal des mises à jour | ✅ |
-| Autres modules | Autres fonctionnalités | Fonctionnalités de chat social, fonctionnalités d'achat IA, gestion des téléchargements de fichiers, outils de traduction (traduction IA/traduction Tencent) | ✅ |
-| | Fichier et lecture | Visionneuse d'images, lecteur vidéo, téléchargement de fichiers, téléchargement d'images par lots | ✅ |
-| | Configuration du thème | Basculement entre les thèmes clair/sombre, suivre le thème du système, paramètres de police, mise en page adaptative | ✅ |
-| | Compatibilité des plateformes | Windows, MacOS, Linux, Android, adaptation Web | ✅ |
+| Module                   | Sous-module                   | Description de la fonctionnalité                                                                                                                             | État |
+| ------------------------ | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---- |
+| Module utilisateur       | Gestion de compte             | Inscription de l'utilisateur, connexion, sélection du compte de connexion historique                                                                         | ✅   |
+|                          | Sécurité du compte            | Rappel de liaison e-mail/téléphone, gestion des appareils, vérification de la sécurité du compte                                                             | ✅   |
+| Module de messagerie     | Chat de base                  | Messages texte, messages image, messages vidéo, téléchargements de fichiers, rappel de message, état de lecture des messages                                 | ✅   |
+|                          | Synchronisation des données   | Synchronisation des messages sur plusieurs appareils, synchronisation de l'état de lecture                                                                   | ✅   |
+|                          | Chat avancé                   | Réponses par citation, mentions @, annonces, réédition des messages rappelés                                                                                 | ✅   |
+| Module de session        | Gestion de session            | Liste des sessions, épingler la session, masquer la session, statistiques des messages non lus, tri des sessions                                             | ✅   |
+| Module de chat de groupe | Opérations de groupe          | Créer un chat de groupe, quitter un chat de groupe, afficher les détails du chat de groupe                                                                   | ✅   |
+|                          | Gestion des membres du groupe | Gestion des membres du groupe, définir un administrateur, révoquer un administrateur, obtenir la liste des @                                                 | ✅   |
+| Module de contacts       | Opérations d'amitié           | Demandes d'amis, recherche d'amis, liste d'amis, refuser les demandes d'amis, supprimer des amis                                                             | ✅   |
+|                          | Profil et notifications       | Afficher les détails des amis, statistiques des demandes non lues                                                                                            | ✅   |
+| Module IA                | Fonction de dialogue          | Chat privé avec l'IA, chat de groupe avec l'IA, chat simultané avec plusieurs IA                                                                             | ✅   |
+|                          | Gestion des modèles           | Prise en charge des modèles de plusieurs fournisseurs tels que Gemini, Kimi AI, DeepSeek, Silicon-based Flow, liste des modèles, calcul des jetons           | ✅   |
+|                          | Fonction de place             | Affichage de la place des robots IA                                                                                                                          | ✅   |
+| Module de communication  | Appels audio/vidéo            | Appels vocaux basés sur WebRTC, appels vidéo, partage d'écran                                                                                                | ✅   |
+|                          | Historique des appels         | Mises à jour de l'état des appels, enregistrements des raccrochages                                                                                          | ✅   |
+| Système de notification  | Notifications de messages     | Notifications de bureau, rappels de la barre d'état système, paramètres de sonnerie, ne pas déranger                                                         | ✅   |
+| Fonction d'extension     | Intégré                       | Intégration du centre commercial, intégration du blog, panneau du journal des mises à jour                                                                   | ✅   |
+| Autres modules           | Autres fonctionnalités        | Fonctionnalités de chat social, fonctionnalités d'achat IA, gestion des téléchargements de fichiers, outils de traduction (traduction IA/traduction Tencent) | ✅   |
+|                          | Fichier et lecture            | Visionneuse d'images, lecteur vidéo, téléchargement de fichiers, téléchargement d'images par lots                                                            | ✅   |
+|                          | Configuration du thème        | Basculement entre les thèmes clair/sombre, suivre le thème du système, paramètres de police, mise en page adaptative                                         | ✅   |
+|                          | Compatibilité des plateformes | Windows, MacOS, Linux, Android, adaptation Web                                                                                                               | ✅   |
 
 </details>
 
@@ -207,19 +207,19 @@ pnpm install
 
 ## 🔧 Pile technologique
 
-| Catégorie | Technologie/Composant | Version |
-|---|---|---|
-| Framework | Nuxt | ^3.14.159+ |
-| | Tauri | ^2.1.0 |
-| Bibliothèque de composants d'interface utilisateur | Element Plus | ^2.8.4 |
-| Gestion de l'état | Pinia | 2.1.7 |
-| Bibliothèque d'utilitaires | Vueuse | 10.11.0 |
-| Outils de construction et de développement | Nuxi | lts |
-| | Vite | lts |
-| Qualité du code | ESLint | 8.56.0 |
-| | Prettier | 3.3.2 |
-| Vérification des types | TypeScript | 5.3.2 |
-| Traitement des styles | Sass | 1.77.6 |
+| Catégorie                                          | Technologie/Composant | Version    |
+| -------------------------------------------------- | --------------------- | ---------- |
+| Framework                                          | Nuxt                  | ^3.14.159+ |
+|                                                    | Tauri                 | ^2.1.0     |
+| Bibliothèque de composants d'interface utilisateur | Element Plus          | ^2.8.4     |
+| Gestion de l'état                                  | Pinia                 | 2.1.7      |
+| Bibliothèque d'utilitaires                         | Vueuse                | 10.11.0    |
+| Outils de construction et de développement         | Nuxi                  | lts        |
+|                                                    | Vite                  | lts        |
+| Qualité du code                                    | ESLint                | 8.56.0     |
+|                                                    | Prettier              | 3.3.2      |
+| Vérification des types                             | TypeScript            | 5.3.2      |
+| Traitement des styles                              | Sass                  | 1.77.6     |
 
 ## 🦾 Tendances
 

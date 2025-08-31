@@ -150,10 +150,10 @@ const getRoleText = computed(() => room.value.role !== undefined ? chatRoomRoleT
 .line {
   --at-apply: "mb-6 flex text-sm items-center";
   .icon {
-    --at-apply: "shrink-0 mr-3 p-2.2"
+    --at-apply: "shrink-0 mr-3 p-2.2";
   }
   .content {
-    --at-apply: "cursor-pointer text-small max-w-20em truncate ml-a"
+    --at-apply: "cursor-pointer text-small max-w-20em truncate ml-a";
   }
   .arrow {
     --at-apply: "shrink-0 cursor-pointer";

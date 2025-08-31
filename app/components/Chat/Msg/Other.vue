@@ -24,5 +24,5 @@ const { data } = defineProps<{
 </template>
 
 <style lang="scss" scoped>
-@use './msg.scss';
+@use "./msg.scss";
 </style>

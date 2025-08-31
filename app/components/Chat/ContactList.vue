@@ -561,7 +561,6 @@ onMounted(() => {
     --el-scrollbar-bg-color: #9292928a;
   }
 
-
   .el-scrollbar__thumb {
     width: 6px;
   }

@@ -78,13 +78,13 @@ body.hardware-acceleration-enabled {
   .page-slide-left-leave-active {
     @extend .hardware-accelerated-transition;
   }
-  
+
   .page-slide-right-move,
   .page-slide-right-enter-active,
   .page-slide-right-leave-active {
     @extend .hardware-accelerated-transition;
   }
-  
+
   .page-fade-in-move,
   .page-fade-in-enter-active,
   .page-fade-in-leave-active {
@@ -230,7 +230,7 @@ html.stop-transition-all {
   &,
   * {
     transition: none !important;
-    -webkit-backdrop-filter: none!important;
+    -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
     animation: none !important;
   }
@@ -549,7 +549,7 @@ html.stop-transition-all {
 .fade-lr-move,
 .fade-lr-enter-active,
 .fade-lr-leave-active {
-  transition: 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  transition: 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 .fade-lr-enter-from,
@@ -1136,13 +1136,13 @@ $popper-placements: (
   "left-end": left bottom,
   "right": left center,
   "right-start": left 60%,
-  "right-end": left bottom
+  "right-end": left bottom,
 );
 
 @each $placement, $origin in $popper-placements {
   [data-popper-placement="#{$placement}"] {
     transform-origin: #{$origin} !important;
-    transition-timing-function: cubic-bezier(.4,0,.2,1) !important;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 }
 

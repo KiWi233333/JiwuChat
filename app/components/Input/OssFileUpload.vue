@@ -704,8 +704,7 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
-.input-list  {
-
+.input-list {
   :deep(.el-progress) {
     width: 100%;
     height: 100%;
@@ -721,14 +720,13 @@ defineExpose({
       color: #fff;
     }
   }
-
 }
 .pre-group:hover {
-  .pre-group-hover{
+  .pre-group-hover {
     opacity: 100;
   }
 }
 .pre-btn {
-  --at-aplay: "h-1/5 max-h-1.4rem max-w-1.4rem  min-h-0.8rem min-w-0.8rem w-1/5 cursor-pointer"
+  --at-aplay: "h-1/5 max-h-1.4rem max-w-1.4rem  min-h-0.8rem min-w-0.8rem w-1/5 cursor-pointer";
 }
 </style>

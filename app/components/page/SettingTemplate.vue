@@ -208,7 +208,6 @@ onUnmounted(() => {
   --el-segmented-item-active-bg-color: ;
   --at-apply: "bg-transparent w-full p-4 text-color";
 
-
   .el-segmented__item-selected {
     --at-apply: "bg-color-2 text-color";
   }
@@ -227,7 +226,6 @@ onUnmounted(() => {
 
   // 小尺寸上
   @media screen and (max-width: 640px) {
-
     .el-segmented__group {
       --at-apply: "rounded-2 py-2 bg-color overflow-hidden shadow-sm";
     }
@@ -251,7 +249,6 @@ onUnmounted(() => {
         }
       }
     }
-
   }
 }
 :deep(.el-scrollbar__thumb) {

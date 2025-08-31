@@ -78,5 +78,5 @@ const conponentName = computed(() => map[data.message?.type || MessageType.TEXT]
 </template>
 
 <style lang="scss" scoped>
-@use './msg.scss';
+@use "./msg.scss";
 </style>

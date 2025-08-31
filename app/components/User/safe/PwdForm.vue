@@ -298,10 +298,10 @@ onMounted(() => {
     }
   }
 
-	:deep(.el-input__wrapper) {
-		padding: 0 1em;
-	}
-   :deep(.check-type-list.el-radio-group) {
+  :deep(.el-input__wrapper) {
+    padding: 0 1em;
+  }
+  :deep(.check-type-list.el-radio-group) {
     display: flex;
     justify-content: right;
     margin-left: auto;
@@ -317,90 +317,81 @@ onMounted(() => {
       &:nth-last-child(1) {
         border: none;
         padding-right: 2.4em;
-    }
+      }
       margin-right: 0;
-        .el-radio__input {
-          display: none;
-        }
+      .el-radio__input {
+        display: none;
       }
     }
+  }
 
-	:deep(.el-form-item) {
-		padding: 0.2em 2em;
+  :deep(.el-form-item) {
+    padding: 0.2em 2em;
     width: 100%;
     box-sizing: border-box;
     // 报错信息
-		.el-form-item__error {
+    .el-form-item__error {
       position: static;
       padding-top: 0.2em;
-		}
-	}
+    }
+  }
 }
 
 :deep(.el-button) {
-	padding: 0 1em;
+  padding: 0 1em;
 }
 
 .dark .form {
-	background-color: #161616d8;
+  background-color: #161616d8;
 }
 
 .animate__animated {
-	animation-duration: 0.5s;
+  animation-duration: 0.5s;
 }
 
 // label总体
 :deep(.el-form-item) {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 // 切换登录
 .toggle-login {
-	position: relative;
-	border-radius: var(--el-border-radius-base);
-	backdrop-filter: blur(10px);
-	background-color: #b3b3b32a;
-	padding: 0.3em;
-	display: flex;
+  position: relative;
+  border-radius: var(--el-border-radius-base);
+  backdrop-filter: blur(10px);
+  background-color: #b3b3b32a;
+  padding: 0.3em;
+  display: flex;
 
-	:deep(.el-button) {
-		background-color: transparent;
-		transition: 0.3s;
-		padding: 0em 0.6em;
-		border: none;
-	}
+  :deep(.el-button) {
+    background-color: transparent;
+    transition: 0.3s;
+    padding: 0em 0.6em;
+    border: none;
+  }
 
-	.active {
-		transition: 0.3s;
-		background-color: #ffffff;
-		z-index: 1;
-		box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 4px;
-		color: var(--el-text-color);
-	}
+  .active {
+    transition: 0.3s;
+    background-color: #ffffff;
+    z-index: 1;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 4px;
+    color: var(--el-text-color);
+  }
 }
 
 .dark .active {
-	background-color: var(--el-color-primary);
+  background-color: var(--el-color-primary);
 }
 
 .submit {
-  --at-apply: "mb-4 w-full shadow-sm text-1em transition-300 "
-
-	:deep(.el-input__wrapper) {
-		background-color: var(--el-color-danger);
-		cursor: pointer;
-
-		* {
-			color: #fff;
-			font-weight: 600;
-			letter-spacing: 0.3em;
-		}
-	}
+  --at-apply: "mb-4 w-full shadow-sm text-1em transition-300 ": deep(.el-input__wrapper)
+    {background-color: var(--el-color-danger) ; cursor: pointer; * {color: #fff; font-weight: 600;
+    letter-spacing: 0.3em;}};
 }
 
 .dark .submit :deep(.el-input__wrapper) {
-	background-color: var(--el-color-danger);
-	cursor: pointer;
-	color: #fff;
+  background-color: var(--el-color-danger);
+  cursor: pointer;
+  color: #fff;
 }
 </style>
