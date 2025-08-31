@@ -65,7 +65,7 @@ body {
   input:-webkit-autofill,
   textarea:-webkit-autofill,
   select:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px var(--el-input-bg-color) inset !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--el-input-bg-color, --el-bg-color) inset !important;
     -webkit-text-fill-color: var(--el-text-color-primary) !important;
     transition: background-color 5000s ease-in-out 0s;
   }
