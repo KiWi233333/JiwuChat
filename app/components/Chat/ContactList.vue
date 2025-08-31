@@ -341,6 +341,13 @@ onMounted(() => {
     isAnimateDelay.value = false;
   }, 1500);
 });
+
+onActivated(() => {
+  // 判断是否为空 reload
+  if (!chat.getContactList.length) {
+    reload();
+  }
+});
 </script>
 
 <template>

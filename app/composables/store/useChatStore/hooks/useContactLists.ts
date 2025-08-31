@@ -1,5 +1,5 @@
-/** 缓存时间 5分钟 */
-const CONTACT_CACHE_TIME = 5 * 60 * 1000;
+/** 缓存时间 2分钟 */
+const CONTACT_CACHE_TIME = 2 * 60 * 1000;
 
 /**
  * 好友/群组 列表加载管理（分页、缓存）

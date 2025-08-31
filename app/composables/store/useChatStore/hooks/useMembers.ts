@@ -159,6 +159,7 @@ export function createMembersModule(ctx: MembersContext) {
   function exitGroupConfirm(roomId?: number, isTheGroupOwner: boolean = false, successCallBack?: () => void) {
     if (!roomId)
       return;
+
     ElMessageBox.confirm(isTheGroupOwner ? "是否解散该群聊？" : "是否退出该群聊？", {
       title: "提示",
       center: true,
