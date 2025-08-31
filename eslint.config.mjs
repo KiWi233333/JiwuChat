@@ -39,8 +39,8 @@ export default withNuxt(
     // 格式化
     formatters: {
       html: true,
-      css: false,
-      markdown: false,
+      css: true,
+      markdown: true,
     },
     rules: {
       // vue
