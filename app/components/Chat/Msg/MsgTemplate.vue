@@ -73,7 +73,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
       <!-- 昵称和插槽区域 -->
       <div class="flex-res min-h-5 items-center">
         <small class="nickname truncate text-mini" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
-        <small v-if="roleClass" v-once class="role h-fit w-fit rounded px-1 py-0.5 text-0.7rem leading-0.8rem" :class="roleClass">{{ roleName }}</small>
+        <small v-if="roleClass" v-once class="role h-fit w-fit rounded px-1 py-0.5 text-0.7rem leading-[1]" :class="roleClass">{{ roleName }}</small>
         <slot name="name-after" />
         <!-- 发送状态 + 上传 -->
         <ChatMsgSendStatus v-if="sendStatus" :oss-file="data?._ossFile" :status="sendStatus" :msg-id="data.message.id" />
@@ -91,15 +91,15 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
         ctx-name="translation"
         class="group translation"
       >
-        <div ctx-name="translation" class="mb-2px select-none border-default-b pb-2px tracking-0.1em dark:op-80">
-          <i ctx-name="translation" class="i-solar:check-circle-bold mr-1 bg-theme-info p-2.4" />
+        <div ctx-name="translation" class="mb-2px flex select-none items-center gap-2 border-default-b pb-2px tracking-0.1em dark:op-80">
+          <i ctx-name="translation" class="i-solar:check-circle-bold bg-theme-info p-2.4" />
           {{ body?._textTranslation?.tool?.label || '' }}
           <NuxtLink
             :to="TranslationPagePath"
             ctx-name="translation" class="ml-1 flex-row-c-c text-theme-info op-80 hover:op-100" title="前往更改"
           >
             {{ translationLangMap.get(body?._textTranslation?.sourceLang) || "自动" }}
-            <i ctx-name="translation" class="i-solar:alt-arrow-right-linear mr-1 inline-block h-4 w-4" />
+            <i ctx-name="translation" class="i-solar:alt-arrow-right-linear inline-block h-4 w-4" />
             {{ translationLangMap.get(body?._textTranslation?.targetLang) || "自动" }}
           </NuxtLink>
           <i ctx-name="translation" class="i-solar:close-circle-outline float-right btn-danger p-2.4 sm:(op-0 group-hover:op-100)" @click.stop="clearTranslation" />

@@ -13,7 +13,7 @@ const emit = defineEmits<{
 
 <template>
   <div class="max-w-full flex truncate !items-center">
-    <p class="msg-poper flex-1 truncate">
+    <p class="msg-poper min-w-0 flex-1 truncate">
       {{ (modelValue || '').slice(0, 50) }}
     </p>
     <span class="mx-2 flex-shrink-0 btn-info text-mini" @click="emit('toggle', false)">展开
