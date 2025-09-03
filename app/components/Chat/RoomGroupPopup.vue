@@ -185,7 +185,9 @@ async function changShieldStatus() {
           @blur="submitUpdateRoom('notice', theContactClone?.roomGroup?.detail?.notice)"
         />
         <el-scrollbar v-else max-height="8em" class="scroll-bar card-rounded-df border-none bg-transparent text-small transition-200" @click.stop="isLord && (editFormField = 'notice')">
-          {{ theContactClone?.roomGroup?.detail?.notice || "暂无公告" }}
+          <div class="notice">
+            {{ theContactClone?.roomGroup?.detail?.notice || "暂无公告" }}
+          </div>
         </el-scrollbar>
       </div>
     </div>
@@ -362,6 +364,11 @@ async function changShieldStatus() {
     --at-apply: "sm:mx-0 mx-a";
     width: fit-content;
   }
+}
+
+.notice {
+  // 允许换行符号
+  white-space: pre-wrap;
 }
 
 .live {
