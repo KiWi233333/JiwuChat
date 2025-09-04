@@ -316,7 +316,7 @@ onDeactivated(() => {
           @submit.prevent="onSubmit"
         >
           <div class="group relative h-2rem w-2rem shrink-0">
-            <CardElImage
+            <CardAvatar
               :src="user.userInfo.avatar ? BaseUrlImg + user.userInfo.avatar : ''"
               class="h-full w-full cursor-pointer rounded-1/2 shadow"
             />

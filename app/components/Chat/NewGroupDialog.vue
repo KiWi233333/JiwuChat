@@ -221,7 +221,7 @@ defineExpose({
                 </span>
                 <el-input
                   v-model.lazy="dto.keyWord"
-                  class="w-10em"
+                  class="!w-10em"
                   size="small" placeholder="搜索" clearable
                   type="text"
                   @keydown.enter.prevent="search()"
