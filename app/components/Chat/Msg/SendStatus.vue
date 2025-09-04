@@ -10,7 +10,7 @@ const {
   ossFile?: OssFile
 }>();
 const chat = useChatStore();
-const titleMap: Record<MessageSendStatus, { title: string, className?: string, closeName?: string, iconComponent?: string }> = {
+const titleMap: Record<MessageSendStatus, { title: string, className?: string, closeName?: string, iconComponent?: string | any }> = {
   [MessageSendStatus.ERROR]: {
     title: "发送失败，点击重试",
     className: "i-solar:refresh-linear  bg-theme-danger hover:rotate-180 btn-danger",
