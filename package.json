@@ -79,7 +79,7 @@
     "@tauri-apps/cli": "2.8.4",
     "@types/sanitize-html": "^2.16.0",
     "@unocss/eslint-plugin": "66.5.0",
-    "@unocss/nuxt": "66.5.0",
+    "@unocss/nuxt": "66.4.2",
     "@vueuse/nuxt": "13.9.0",
     "code-inspector-plugin": "^1.2.6",
     "eslint": "9.34.0",
