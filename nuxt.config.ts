@@ -225,7 +225,7 @@ export default defineNuxtConfig({
     },
     build: {
       chunkSizeWarningLimit: 1000, // chunk 大小警告的限制(kb)
-      cssCodeSplit: true, // 是否将 CSS 代码拆分为单独的文件
+      // cssCodeSplit: , // 是否将 CSS 代码拆分为单独的文件
       minify: "terser", // 使用 esbuild 进行代码压缩
       cssMinify: false, // 压缩 CSS 代码
       commonjsOptions: {
