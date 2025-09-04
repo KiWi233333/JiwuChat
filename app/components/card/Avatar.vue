@@ -30,7 +30,6 @@ function openPreview() {
 
 <template>
   <el-image
-    v-if="src !== `${BaseUrlImg}` && src !== ''"
     :src="target"
     fit="cover"
     :draggable="false"
@@ -43,26 +42,17 @@ function openPreview() {
   >
     <!-- 占位 -->
     <template #placeholder>
-      <div :class="loadClass !== undefined ? loadClass : 'sky-loading h-full w-full'" />
+      <slot name="placeholder">
+        <div :class="loadClass !== undefined ? loadClass : 'sky-loading h-full w-full'" />
+      </slot>
     </template>
     <!-- 错误 -->
     <template #error>
-      <div :ctx-name="ctxName" class="h-full w-full flex-row-c-c" :class="errorRootClass">
-        <i :ctx-name="ctxName" class="icon i-solar-user-line-duotone op-60" :class="errorClass" />
-      </div>
+      <slot name="error">
+        <div :ctx-name="ctxName" class="h-full w-full flex-row-c-c" :class="errorRootClass">
+          <i :ctx-name="ctxName" class="i-solar-user-line-duotone block h-3/5 max-h-4/5 max-w-4/5 min-h-4 min-w-4 w-3/5 text-gray op-60" :class="errorClass" />
+        </div>
+      </slot>
     </template>
   </el-image>
-  <template v-else>
-    <slot name="empty">
-      <div :ctx-name="ctxName" class="flex-row-c-c text-mini" :class="$attrs.class">
-        <i :ctx-name="ctxName" class="icon i-solar-user-line-duotone op-60" :class="errorClass" />
-      </div>
-    </slot>
-  </template>
 </template>
-
-<style scoped lang="scss">
-.icon {
-  --at-apply: "block w-3/5 h-3/5 min-h-4 min-w-4 max-h-4/5 max-w-4/5 text-gray";
-}
-</style>

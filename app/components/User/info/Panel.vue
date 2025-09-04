@@ -278,11 +278,15 @@ onMounted(() => {
             :src="BaseUrlImg + avatarUrl"
             class="avatar-mark h-6em w-6em select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
           >
-            <template #empty>
-              <ElIconPlus
+            <template #error>
+              <div
                 v-if="isEdit"
-                class="avatar-mark h-1/2 w-1/2 select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
-              />
+                class="h-full w-full flex-row-c-c text-mini"
+              >
+                <ElIconPlus
+                  class="avatar-mark mx-a my-a h-1/2 w-1/2 select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
+                />
+              </div>
             </template>
           </CardAvatar>
         </div>

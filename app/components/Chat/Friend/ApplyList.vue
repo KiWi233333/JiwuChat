@@ -148,7 +148,7 @@ onBeforeUnmount(() => {
         v-for="p in list" :key="p.applyId"
         class="item"
       >
-        <CardElImage
+        <CardAvatar
           class="avatar-icon flex-shrink-0 cursor-pointer"
           :src="BaseUrlImg + p.user?.avatar" fit="cover" @click="chat.setTheFriendOpt(FriendOptType.User, {
             id: p.userId,
