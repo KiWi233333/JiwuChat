@@ -489,7 +489,7 @@ defineExpose({
                 音量：
                 <el-slider
                   v-model.lazy="audioVolume" style="width: 12em;" :min="0" :max="1" :step="0.1"
-                  :format-tooltip="(val) => `${val * 100}%`"
+                  :format-tooltip="(val: number) => `${val * 100}%`"
                 />
               </div>
             </template>

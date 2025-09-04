@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ScrollbarDirection } from "element-plus";
+import { ListVirtualScrollList } from "#components";
 import { ChatRoomRoleEnum } from "~/composables/api/chat/room";
 
 type EditFormItems = "name" | "notice" | "";

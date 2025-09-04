@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ChatContactVO } from "@/composables/api/chat/contact";
+import { ListVirtualScrollList } from "#components";
 import ContextMenu from "@imengyu/vue3-context-menu";
 import { RoomType } from "@/composables/api/chat/contact";
 import { STOP_TRANSITION_KEY } from "~/init/setting";

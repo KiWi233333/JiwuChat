@@ -30,8 +30,8 @@ const map: MsgComType = {
 interface MsgComType {
   [property: number]: any
 }
-const msgRef = ref<InstanceType<typeof ChatMsgFile | typeof ChatMsgImg | typeof ChatMsgText | typeof ChatMsgVideo | typeof ChatMsgRecall | typeof ChatMsgDelete | typeof ChatMsgSystem | typeof ChatMsgSound | typeof ChatMsgRTC | typeof ChatMsgAiAskMsg | typeof ChatMsgOther | null>>();
-const chat = useChatStore();
+
+const msgRef = ref<InstanceType<typeof ChatMsgFile | typeof ChatMsgImg | typeof ChatMsgText | typeof ChatMsgVideo | typeof ChatMsgRecall | typeof ChatMsgDelete | typeof ChatMsgSystem | typeof ChatMsgSound | typeof ChatMsgRTC | typeof ChatMsgAiAskMsg | typeof ChatMsgOther> | null>();
 
 // 右键菜单
 const showTranslation = ref(false);
@@ -73,7 +73,7 @@ const conponentName = computed(() => map[data.message?.type || MessageType.TEXT]
     :data="data"
     v-bind="$attrs"
     @click-avatar="onClickAvatar"
-    @contextmenu="onMsgContextMenu($event, data, msgRef.onDownloadFileAndOpen)"
+    @contextmenu="onMsgContextMenu($event, data, (msgRef as InstanceType<typeof ChatMsgFile>)?.onDownloadFileAndOpen)"
   />
 </template>
 

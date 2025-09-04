@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { ElForm } from "#components";
+import { ListVirtualScrollList } from "#components";
 
 const emit = defineEmits<{
   (e: "submit", newMsg: ChatMessageVO): void

@@ -1,4 +1,3 @@
-declare module "#components"
 declare module "streamsaver"
 
 declare global {

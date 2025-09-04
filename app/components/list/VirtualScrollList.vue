@@ -1,4 +1,5 @@
 <script setup lang="ts" generic="T = any">
+import type { ElScrollbar } from "#components";
 import type { ScrollbarDirection } from "element-plus";
 import { createReusableTemplate } from "@vueuse/core";
 
@@ -84,7 +85,7 @@ const emit = defineEmits<Emits<T>>();
 const setting = useSettingStore();
 const baseFontSize = computed(() => setting.settingPage.fontSize.value);
 
-const scrollbarRef = useTemplateRef("scrollbarRef");
+const scrollbarRef = useTemplateRef<InstanceType<typeof ElScrollbar>>("scrollbarRef");
 const pullContainerRef = ref<HTMLElement>();
 
 // 下拉刷新相关状态
@@ -515,7 +516,7 @@ const [DefineVirtualListContent, ReuseVirtualListContent] = createReusableTempla
     v-bind="$attrs"
     :class="className || $attrs.class"
     @scroll="onScroll"
-    @end-reached="(direction) => emit('endReached', direction)"
+    @end-reached="(direction: ScrollbarDirection) => emit('endReached', direction)"
   >
     <!-- 下拉刷新容器 -->
     <div
