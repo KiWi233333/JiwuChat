@@ -225,14 +225,65 @@ export default defineNuxtConfig({
     },
     build: {
       chunkSizeWarningLimit: 1000, // chunk 大小警告的限制(kb)
-      cssCodeSplit: true, // 是否将 CSS 代码拆分为单独的文件
       minify: "terser", // 使用 esbuild 进行代码压缩
+      // cssCodeSplit: true, // 是否将 CSS 代码拆分为单独的文件
+      // cssMinify: false, // 压缩 CSS 代码
       commonjsOptions: {
       },
       target:
       process.env.TAURI_ENV_PLATFORM === "windows"
         ? "chrome105"
         : "safari13",
+
+      rollupOptions: {
+        output: {
+        // 手动指定chunk分割策略
+          manualChunks: (id) => {
+            if (id.includes("node_modules")) {
+              // UI 组件库
+              if (id.includes("element-plus") || id.includes("@element-plus"))
+                return "element-plus";
+
+              // 编辑器相关
+              if (id.includes("md-editor-v3"))
+                return "md-editor-v3";
+
+              // 3D 图形库
+              if (id.includes("ogl"))
+                return "ogl";
+
+              // lodash
+              if (id.includes("lodash"))
+                return "lodash";
+
+              // 文件上传/存储
+              if (id.includes("qiniu-js"))
+                return "qiniu-js";
+
+              // Vue 生态系统
+              if (id.includes("@vueuse") || id.includes("pinia"))
+                return "vue-ecosystem";
+
+              // Tauri 插件 (体积较大的桌面端功能)
+              if (id.includes("@tauri-apps"))
+                return "tauri-plugins";
+
+              // 图标库
+              if (id.includes("@iconify"))
+                return "icons";
+
+              // 工具库 (体积较小但常用)
+              if (id.includes("dayjs") || id.includes("streamsaver")
+                || id.includes("markdown-it") || id.includes("sanitize-html")) {
+                return "utils";
+              }
+
+              // 其他第三方库
+              return "vendor";
+            }
+          },
+        },
+      },
     },
   },
   typescript: {
