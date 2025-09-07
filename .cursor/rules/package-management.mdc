@@ -1,0 +1,182 @@
+---
+globs: package.json,pnpm-lock.yaml,*.ts,*.js
+description: 包管理和依赖规范
+---
+
+# 包管理和依赖规范
+
+基于 [package.json](mdc:package.json) 的包管理指南。
+
+## 包管理器
+
+### 使用pnpm
+
+- **版本要求**: pnpm >=10.0.0
+- **Node版本**: Node >=20.0.0
+- **锁定文件**: pnpm-lock.yaml
+
+### 安装和更新
+
+```bash
+pnpm install          # 安装依赖
+pnpm update           # 更新依赖
+pnpm add <package>    # 添加依赖
+pnpm remove <package> # 移除依赖
+```
+
+## 依赖分类
+
+### 生产依赖 (dependencies)
+
+```json
+{
+  "@iconify/vue": "5.0.0", // 图标组件
+  "@imengyu/vue3-context-menu": "1.5.2", // 右键菜单
+  "@nuxtjs/color-mode": "3.5.2", // 深色模式
+  "@tauri-apps/plugin-*": "2.x.x", // Tauri插件
+  "@vueuse/core": "13.8.0", // Vue工具库
+  "element-plus": "2.11.1", // UI组件库
+  "markdown-it-link-attributes": "^4.0.1", // Markdown链接
+  "md-editor-v3": "5.8.4", // Markdown编辑器
+  "ogl": "^1.0.11", // 3D图形库
+  "pinia": "3.0.3", // 状态管理
+  "pinia-plugin-persistedstate": "4.5.0", // 状态持久化
+  "qiniu-js": "3.4.3", // 七牛云存储
+  "streamsaver": "2.0.6" // 流式下载
+}
+```
+
+### 开发依赖 (devDependencies)
+
+```json
+{
+  "@antfu/eslint-config": "5.2.1", // ESLint配置
+  "@element-plus/icons-vue": "2.3.2", // Element图标
+  "@element-plus/nuxt": "1.1.4", // Element Plus集成
+  "@formkit/auto-animate": "0.8.4", // 动画库
+  "@iconify-json/*": "1.2.x", // 图标集合
+  "@nuxt/devtools": "2.6.3", // Nuxt开发工具
+  "@nuxt/eslint": "1.9.0", // Nuxt ESLint
+  "@pinia/nuxt": "0.11.2", // Pinia集成
+  "@tauri-apps/api": "2.8.0", // Tauri API
+  "@tauri-apps/cli": "2.8.3", // Tauri CLI
+  "@unocss/eslint-plugin": "66.4.2", // UnoCSS ESLint
+  "@unocss/nuxt": "66.4.2", // UnoCSS集成
+  "@vueuse/nuxt": "13.8.0", // VueUse集成
+  "code-inspector-plugin": "^1.2.6", // 代码检查
+  "eslint": "9.34.0", // 代码检查
+  "husky": "9.1.7", // Git钩子
+  "lint-staged": "16.1.5", // 暂存文件检查
+  "nuxt": "4.0.3", // Nuxt框架
+  "sass": "1.91.0", // Sass预处理器
+  "typescript": "5.9.2", // TypeScript
+  "vue-tsc": "3.0.6" // Vue TypeScript检查
+}
+```
+
+## 脚本命令
+
+### 开发命令
+
+```bash
+pnpm dev:nuxt        # Web端开发
+pnpm dev:tauri       # 桌面端开发
+pnpm dev:android     # Android开发
+pnpm dev:ios         # iOS开发
+```
+
+### 构建命令
+
+```bash
+pnpm build           # 完整构建
+pnpm build:nuxt      # Web端构建
+pnpm build:tauri     # 桌面端构建
+pnpm build:android   # Android构建
+pnpm build:ios       # iOS构建
+```
+
+### 工具命令
+
+```bash
+pnpm tools           # 工程工具
+pnpm lint            # 代码检查
+pnpm lint:fix        # 自动修复
+```
+
+### 发布命令
+
+```bash
+pnpm release         # 发布minor版本
+pnpm release:major   # 发布major版本
+pnpm release:minor   # 发布minor版本
+pnpm release:patch   # 发布patch版本
+```
+
+## 版本管理
+
+### 版本策略
+
+- **主版本**: 不兼容的API修改
+- **次版本**: 向下兼容的功能性新增
+- **修订版本**: 向下兼容的问题修正
+
+### 当前版本
+
+- **项目版本**: 1.7.2
+- **发布流程**: 自动版本号更新 + Git标签推送
+
+## 代码质量
+
+### Git钩子配置
+
+```json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "pnpm run lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,vue,js,sass,css}": ["eslint --fix"]
+  }
+}
+```
+
+### 代码检查
+
+- **ESLint**: 使用@antfu/eslint-config配置
+- **TypeScript**: 启用类型检查
+- **自动修复**: 提交前自动修复代码格式
+
+## 依赖管理最佳实践
+
+### 1. 版本锁定
+
+- 生产依赖使用精确版本号
+- 开发依赖可以使用范围版本
+- 定期更新依赖以获取安全补丁
+
+### 2. 依赖分类
+
+- 明确区分生产依赖和开发依赖
+- 避免将开发工具放入生产依赖
+- 合理使用peerDependencies
+
+### 3. 安全考虑
+
+- 定期检查依赖漏洞
+- 使用pnpm audit检查安全问题
+- 及时更新有安全问题的依赖
+
+### 4. 性能优化
+
+- 使用pnpm的符号链接特性
+- 合理配置.npmrc文件
+- 避免重复安装相同依赖
+
+## 注意事项
+
+1. **版本兼容性**: 确保依赖版本之间的兼容性
+2. **构建优化**: 合理配置构建工具和插件
+3. **缓存管理**: 利用pnpm的缓存机制提高安装速度
+4. **环境一致性**: 使用锁定文件确保环境一致性

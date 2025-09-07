@@ -1,0 +1,223 @@
+---
+globs: *.vue,*.ts,*.js
+description: Vue.js开发规范和组件编写指南
+---
+
+# Vue.js 开发规范
+
+基于项目配置的Vue.js开发指南。
+
+## 开发规范
+
+### 1. 使用Vue Options API
+
+**重要**: 项目采用Vue Options API方式编码，而非Composition API。
+
+```vue
+<template>
+  <div class="component-container">
+    <!-- 模板内容 -->
+  </div>
+</template>
+
+<script lang="ts">
+export default {
+  name: 'ComponentName',
+  data() {
+    return {
+      // 响应式数据
+    }
+  },
+  computed: {
+    // 计算属性
+  },
+  methods: {
+    // 方法
+  },
+  mounted() {
+    // 生命周期钩子
+  }
+}
+</script>
+
+<style scoped>
+/* 组件样式 */
+</style>
+```
+
+### 2. TypeScript支持
+
+- 使用 `<script lang="ts">` 启用TypeScript
+- 为data、computed、methods提供类型注解
+- 利用Nuxt的自动类型导入功能
+
+### 3. 组件命名规范
+
+- 组件名使用PascalCase
+- 文件名使用PascalCase.vue
+- 目录结构清晰，按功能分组
+
+### 4. 样式规范
+
+- 使用UnoCSS原子化类名
+- 优先使用预定义的快捷类
+- 支持深色模式自动切换
+- 使用scoped样式避免污染
+
+## 项目特定规范
+
+### 1. 状态管理 (Pinia)
+
+```typescript
+// 使用Pinia进行状态管理
+import { useUserStore } from '@/composables/store/useUserStore'
+
+export default {
+  data() {
+    return {
+      userStore: useUserStore()
+    }
+  }
+}
+```
+
+### 2. 路由导航
+
+```typescript
+// 使用Nuxt路由
+export default {
+  methods: {
+    navigateToPage() {
+      this.$router.push('/target-page')
+    }
+  }
+}
+```
+
+### 3. 组件通信
+
+- 父子组件: props + emit
+- 跨组件: Pinia状态管理
+- 全局事件: 使用Vue的事件总线
+
+### 4. 生命周期使用
+
+```typescript
+export default {
+  mounted() {
+    // 组件挂载后执行
+  },
+  beforeUnmount() {
+    // 组件卸载前清理
+  }
+}
+```
+
+## UI组件使用
+
+### Element Plus集成
+
+```vue
+<template>
+  <el-button type="primary" @click="handleClick"> 按钮 </el-button>
+</template>
+```
+
+### 图标使用
+
+```vue
+<template>
+  <Icon name="carbon:user" />
+</template>
+```
+
+## 性能优化
+
+### 1. 组件懒加载
+
+```typescript
+export default {
+  components: {
+    LazyComponent: () => import('@/components/LazyComponent.vue')
+  }
+}
+```
+
+### 2. 计算属性缓存
+
+```typescript
+export default {
+  computed: {
+    expensiveValue() {
+      // 会被缓存，只有依赖变化时才重新计算
+      return this.processData()
+    }
+  }
+}
+```
+
+### 3. 事件处理优化
+
+```typescript
+export default {
+  methods: {
+    handleClick: debounce(function () {
+      // 防抖处理
+    }, 300)
+  }
+}
+```
+
+## 错误处理
+
+### 1. 组件错误边界
+
+```typescript
+export default {
+  errorCaptured(err, instance, info) {
+    console.error('组件错误:', err, info)
+    return false
+  }
+}
+```
+
+### 2. 异步操作错误处理
+
+```typescript
+export default {
+  methods: {
+    async fetchData() {
+      try {
+        const data = await this.$api.getData()
+        this.data = data
+      } catch (error) {
+        this.$message.error('数据获取失败')
+      }
+    }
+  }
+}
+```
+
+## 测试规范
+
+### 1. 组件测试
+
+- 测试组件的基本渲染
+- 测试用户交互
+- 测试props和emit
+- 测试计算属性和方法
+
+### 2. 集成测试
+
+- 测试组件间的交互
+- 测试路由导航
+- 测试状态管理
+
+## 注意事项
+
+1. **始终使用Options API**，不要混用Composition API
+2. **保持组件单一职责**，每个组件只做一件事
+3. **合理使用计算属性**，避免在模板中写复杂逻辑
+4. **注意内存泄漏**，及时清理定时器和事件监听器
+5. **使用TypeScript**，提供更好的类型安全和开发体验
+6. **遵循Vue风格指南**，保持代码一致性

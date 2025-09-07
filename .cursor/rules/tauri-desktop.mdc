@@ -1,0 +1,221 @@
+---
+globs: src-tauri/**/*,*.vue,*.ts,*.js
+description: Tauri桌面端开发规范
+---
+
+# Tauri 桌面端开发规范
+
+基于项目配置的Tauri跨平台桌面应用开发指南。
+
+## 项目配置
+
+### 核心依赖
+
+- `@tauri-apps/api` - Tauri核心API
+- `@tauri-apps/cli` - 开发工具
+- 多个Tauri插件支持桌面端功能
+
+### 插件配置
+
+```json
+{
+  "@tauri-apps/plugin-autostart": "2.5.0", // 开机自启
+  "@tauri-apps/plugin-dialog": "2.3.3", // 对话框
+  "@tauri-apps/plugin-fs": "2.4.2", // 文件系统
+  "@tauri-apps/plugin-notification": "2.3.1", // 通知
+  "@tauri-apps/plugin-opener": "2.5.0", // 外部应用
+  "@tauri-apps/plugin-os": "2.3.1", // 系统信息
+  "@tauri-apps/plugin-process": "2.3.0", // 进程管理
+  "@tauri-apps/plugin-shell": "2.3.1", // Shell命令
+  "@tauri-apps/plugin-updater": "2.9.0", // 自动更新
+  "@tauri-apps/plugin-upload": "2.3.1", // 文件上传
+  "@tauri-apps/plugin-websocket": "2.4.0" // WebSocket
+}
+```
+
+## 开发环境
+
+### 环境变量
+
+- `TAURI_PLATFORM` - 平台标识 (windows/macos/linux)
+- `TAURI_DEV_HOST` - 开发服务器主机
+- `TAURI_ENV_PLATFORM` - 构建目标平台
+
+### 开发命令
+
+```bash
+pnpm dev:tauri      # 桌面端开发
+pnpm dev:desktop    # 桌面端开发 (别名)
+pnpm build:tauri    # 桌面端构建
+```
+
+## 平台支持
+
+### 构建目标
+
+- **Windows**: Chrome 105+
+- **macOS/Linux**: Safari 13+
+- **Android**: 支持APK构建
+- **iOS**: 支持IPA构建
+
+### 移动端开发
+
+```bash
+pnpm dev:android    # Android开发
+pnpm dev:ios        # iOS开发
+pnpm build:android  # 构建Android APK
+pnpm build:ios      # 构建iOS IPA
+```
+
+## 开发规范
+
+### 1. 平台检测
+
+```typescript
+// 检测当前平台
+const platform = process.env.TAURI_PLATFORM
+const isMobile = !!/android|ios/.exec(platform || '')
+
+// 在组件中使用
+export default {
+  data() {
+    return {
+      isDesktop: !process.env.TAURI_PLATFORM?.includes('android') && !process.env.TAURI_PLATFORM?.includes('ios')
+    }
+  }
+}
+```
+
+### 2. Tauri API使用
+
+```typescript
+import { invoke } from '@tauri-apps/api/core'
+import { open } from '@tauri-apps/plugin-opener'
+
+export default {
+  methods: {
+    async openExternal(url: string) {
+      await open(url)
+    },
+
+    async invokeCommand() {
+      const result = await invoke('my_command')
+      return result
+    }
+  }
+}
+```
+
+### 3. 文件系统操作
+
+```typescript
+import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs'
+
+export default {
+  methods: {
+    async readFile(path: string) {
+      return await readTextFile(path)
+    },
+
+    async writeFile(path: string, content: string) {
+      await writeTextFile(path, content)
+    }
+  }
+}
+```
+
+### 4. 通知功能
+
+```typescript
+import { sendNotification } from '@tauri-apps/plugin-notification'
+
+export default {
+  methods: {
+    showNotification(title: string, body: string) {
+      sendNotification({ title, body })
+    }
+  }
+}
+```
+
+## 构建配置
+
+### 1. 代码分割
+
+```typescript
+// nuxt.config.ts中的配置
+manualChunks: (id) => {
+  if (id.includes('node_modules')) {
+    // Tauri桌面端插件统一打包
+    if (id.includes('@tauri-apps')) {
+      return 'tauri-plugins'
+    }
+    return 'vendor'
+  }
+}
+```
+
+### 2. 环境配置
+
+```typescript
+// Vite配置
+vite: {
+  envPrefix: ["VITE_", "TAURI_"],
+  server: {
+    strictPort: true,
+    hmr: process.env.TAURI_DEV_HOST ? {
+      protocol: "ws",
+      host: process.env.TAURI_DEV_HOST,
+      port: 3000,
+    } : undefined,
+  }
+}
+```
+
+## 最佳实践
+
+### 1. 跨平台兼容
+
+- 使用条件编译处理平台差异
+- 提供平台特定的UI适配
+- 处理不同平台的权限要求
+
+### 2. 性能优化
+
+- 合理使用Tauri插件，避免不必要的依赖
+- 优化Rust后端代码性能
+- 使用代码分割减少包体积
+
+### 3. 安全性
+
+- 遵循Tauri安全最佳实践
+- 合理配置权限和API访问
+- 验证用户输入和文件操作
+
+### 4. 用户体验
+
+- 提供原生应用体验
+- 支持系统级通知
+- 处理应用生命周期事件
+
+## 调试和测试
+
+### 1. 开发调试
+
+- 使用Tauri DevTools进行调试
+- 利用浏览器开发者工具
+- 查看Rust后端日志
+
+### 2. 构建测试
+
+- 在不同平台测试构建结果
+- 验证插件功能正常
+- 测试自动更新机制
+
+## 注意事项
+
+1. **平台差异**: 不同平台的API和行为可能有差异
+2. **权限管理**: 合理配置应用权限，避免过度请求
+3. **性能考虑**: 桌面端应用需要更好的性能表现
+4. **更新机制**: 实现可靠的自动更新功能
+5. **错误处理**: 提供完善的错误处理和用户反馈

@@ -1,0 +1,92 @@
+---
+globs: *.vue,*.ts,*.js,*.scss,*.css
+description: UnoCSS样式和设计系统规则
+---
+
+# UnoCSS 样式开发规则
+
+基于 [uno.config.ts](mdc:uno.config.ts) 的样式开发指南。
+
+## 设计系统
+
+### 颜色系统
+
+使用Element Plus主题色变量：
+
+- `text-color-primary` - 主色调文本
+- `text-color-info` - 信息色文本
+- `text-color-success` - 成功色文本
+- `text-color-danger` - 危险色文本
+- `text-color-warning` - 警告色文本
+
+### 背景色快捷类
+
+- `bg-color` - 主背景色 (白色/深色模式)
+- `bg-color-2` - 次要背景色
+- `bg-color-3` - 第三级背景色
+- `bg-color-br` - 毛玻璃背景
+- `bg-menu-color` - 菜单背景色
+- `dialog-bg-color` - 对话框背景色
+
+### 文本颜色快捷类
+
+- `text-color` - 主文本色
+- `text-default` - 默认文本
+- `text-mini` - 小号文本
+- `text-small` - 小文本
+- `text-small-color` - 小号彩色文本
+
+### 边框系统
+
+- `border-default` - 默认边框
+- `border-default-2` - 次要边框
+- `border-default-3` - 第三级边框
+- `border-default-dashed` - 虚线边框
+- `border-default-hover` - 悬停边框
+
+### 卡片组件
+
+- `card-default` - 默认卡片样式
+- `card-bg-color` - 卡片背景色
+- `card-default-br` - 毛玻璃卡片
+- `card-rounded-df` - 圆角卡片
+
+### 按钮系统
+
+- `btn-primary` - 主按钮
+- `btn-info` - 信息按钮
+- `btn-success` - 成功按钮
+- `btn-danger` - 危险按钮
+- `btn-warning` - 警告按钮
+- `btn-*-text` - 文本按钮变体
+- `btn-*-bg` - 背景按钮变体
+
+### 布局快捷类
+
+- `flex-row-c-c` - 水平居中布局
+- `flex-row-bt-c` - 水平两端对齐居中
+- `layout-default` - 默认布局容器
+- `absolute-center` - 绝对定位居中
+- `absolute-center-center` - 绝对定位完全居中
+
+## 开发规范
+
+1. **优先使用预定义快捷类**，避免重复定义样式
+2. **深色模式兼容**：所有颜色类都支持深色模式自动切换
+3. **响应式设计**：使用 `sm:`, `md:`, `lg:` 等前缀
+4. **动画过渡**：使用 `transition-200` 等预定义过渡
+5. **图标系统**：使用 `@iconify/vue` 和预设图标集合
+
+## 自定义规则
+
+项目定义了Element Plus颜色变量的快捷访问：
+
+- `el-color-*` - 访问Element Plus主题色
+- `el-bg-*` - 访问Element Plus背景色
+
+## 注意事项
+
+- 所有样式都支持深色模式自动切换
+- 使用CSS变量确保主题一致性
+- 毛玻璃效果使用 `backdrop-blur` 和 `backdrop-saturate`
+- 圆角统一使用 `rounded-1.5` (6px)
