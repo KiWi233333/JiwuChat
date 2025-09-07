@@ -6,8 +6,8 @@ import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { isPermissionGranted, requestPermission } from "@tauri-apps/plugin-notification";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { type as osType, platform } from "@tauri-apps/plugin-os";
-// import { restoreStateCurrent, StateFlags } from "@tauri-apps/plugin-window-state";
-import { MSG_WEBVIEW_WIDTH, useFlashTray } from "~/composables/tauri/window";
+import { useFlashTray } from "~/composables/tauri/tray";
+import { MSG_WEBVIEW_WIDTH } from "~/composables/tauri/window";
 
 
 /**

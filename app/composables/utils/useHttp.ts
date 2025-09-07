@@ -12,10 +12,12 @@ export function httpRequest<T = unknown>(
 ) {
   let msg = "";
   const user = useUserStore();
-  const defaultOpts = {
+  const defaultOpts = reactive({
     method,
     baseURL: BaseUrlRef.value,
-    headers: {} as { Authoriztion?: string },
+    headers: {
+      Authoriztion: user.token,
+    } as { Authoriztion?: string },
     // 请求拦截器
     onRequest: (config: any) => {
       // 需要登录操作
@@ -67,7 +69,7 @@ export function httpRequest<T = unknown>(
         ElMessage.error(msg);
       }
     },
-  } as FetchOptions;
+  }) as FetchOptions;
   if (defaultOpts) {
     if (method === "post" || method === "put")
       defaultOpts.body = bodyOrParams;
