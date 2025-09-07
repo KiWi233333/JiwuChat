@@ -145,8 +145,7 @@ async function initFontAndFamily() {
   const setting = useSettingStore();
 
   const fontFamily = setting.settingPage.fontFamily.value;
-  if (fontFamily)
-    document.documentElement?.style.setProperty("--font-family", fontFamily);
+  document.documentElement?.style.setProperty("--font-family", fontFamily);
   // 1. 设置字体大小
   watch(() => setting.settingPage.fontSize.value, (val) => {
     document.documentElement?.style.setProperty("--font-size", `${val}px`);

@@ -25,7 +25,7 @@ export enum NotificationEnums {
   CLOSE = "close",
 }
 export const DEFAULT_FONT_FAMILY_LIST = [
-  { name: "系统字体", value: "system", url: "" },
+  { name: "系统字体", value: "", url: "" },
   { name: "阿里妈妈方圆体", value: "AlimamaFangYuanTiVF", url: "/font/AlimamaFangYuanTiVF.woff2" },
   { name: "阿里巴巴健康体（盲文）", value: "AlibabaHealthFont2.0Pro", url: `${BaseUrlFont}/AlibabaHealthFont2.0Pro.ttc` },
   { name: "钉钉进步体", value: "DingTalk-JinBuTi", url: `${BaseUrlFont}/DingTalk-JinBuTi.woff2`, baseFontWeight: 300 },

@@ -245,6 +245,11 @@ body .el-message {
   }
 }
 
+// 日期选择器
+.el-picker-panel {
+  --at-apply: "card-rounded-df overflow-hidden";
+}
+
 /**  ------------------------------markdown---------------------------------------  **/
 
 .md-editor-preview {
