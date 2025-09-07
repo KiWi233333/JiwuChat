@@ -131,11 +131,7 @@ export default defineNuxtConfig({
   },
 
   // css
-  css: [
-    "@/assets/styles/init.scss",
-    "@/assets/styles/index.scss",
-    "@/assets/styles/animate.scss",
-  ],
+  css: ["@/assets/styles/init.scss", "@/assets/styles/index.scss", "@/assets/styles/animate.scss"],
   nitro: {
     devProxy: {
       host: "127.0.0.1",
@@ -200,15 +196,7 @@ export default defineNuxtConfig({
         : undefined,
       watch: {
         // 告诉 Vite 忽略监听 `src-tauri` 目录
-        ignored: [
-          "**/src-tauri/**",
-          "**/node_modules/**",
-          "**/dist/**",
-          "**/.git/**",
-          "**/.nuxt/**",
-          "**/public/**",
-          "**/.output/**",
-        ],
+        ignored: ["**/src-tauri/**", "**/node_modules/**", "**/dist/**", "**/.git/**", "**/.nuxt/**", "**/public/**", "**/.output/**"],
       },
     },
     css: {
@@ -225,53 +213,31 @@ export default defineNuxtConfig({
     },
     build: {
       chunkSizeWarningLimit: 1000, // chunk 大小警告的限制(kb)
-      minify: "terser", // 使用 esbuild 进行代码压缩
+      // minify: "terser", // 使用 esbuild 进行代码压缩
       // cssCodeSplit: true, // 是否将 CSS 代码拆分为单独的文件
       // cssMinify: false, // 压缩 CSS 代码
-      commonjsOptions: {
-      },
-      target:
-      process.env.TAURI_ENV_PLATFORM === "windows"
-        ? "chrome105"
-        : "safari13",
+      commonjsOptions: {},
+      target: process.env.TAURI_ENV_PLATFORM === "windows" ? "chrome105" : "safari13",
 
       rollupOptions: {
         output: {
-        // 手动指定chunk分割策略
+          // 手动指定chunk分割策略
+          // 在 nuxt.config.ts 的 vite.rollupOptions.output 中配置
           manualChunks: (id) => {
             if (id.includes("node_modules")) {
-              // UI 组件库
-              if (id.includes("element-plus") || id.includes("@element-plus"))
-                return "element-plus";
-
-              // 编辑器相关
-              if (id.includes("md-editor-v3"))
-                return "md-editor-v3";
-
-              // 3D 图形库
-              if (id.includes("ogl"))
-                return "ogl";
-
-              // 文件上传/存储
-              if (id.includes("qiniu-js"))
-                return "qiniu-js";
-
-              // Vue 生态系统
-              if (id.includes("@vueuse") || id.includes("pinia"))
-                return "vue-ecosystem";
-
-              // Tauri 插件 (体积较大的桌面端功能)
-              if (id.includes("@tauri-apps"))
+              // Tauri 桌面端插件 (相关性较强，统一打包)
+              if (id.includes("@tauri-apps")) {
                 return "tauri-plugins";
+              }
 
-              // 图标库
-              if (id.includes("@iconify"))
-                return "icons";
+              // 图形和3D库
+              if (id.includes("ogl")) {
+                return "graphics";
+              }
 
-              // 工具库 (体积较小但常用)
-              if (id.includes("dayjs") || id.includes("streamsaver")
-                || id.includes("markdown-it") || id.includes("sanitize-html")) {
-                return "utils";
+              // lodash
+              if (id.includes("lodash")) {
+                return "lodash";
               }
 
               // 其他第三方库
