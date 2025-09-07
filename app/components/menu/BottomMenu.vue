@@ -99,14 +99,20 @@ const menuList = computed<MenuItem[]>(() => [
       //   onClick: () => chat.showExtension = true,
       // },
       {
-        title: "账号",
+        title: "账 号",
         path: "/user/safe",
         icon: "i-solar:devices-outline",
         activeIcon: "i-solar:devices-bold",
         isDot: true,
       },
       {
-        title: "设置",
+        title: "API Key",
+        path: "/api/key",
+        icon: "i-solar:code-square-outline",
+        activeIcon: "i-solar:code-square-bold",
+      },
+      {
+        title: "设 置",
         path: "/setting",
         icon: "i-solar:settings-linear hover:animate-spin",
         activeIcon: "i-solar:settings-bold hover:animate-spin",
@@ -205,9 +211,24 @@ const activeMenu = computed({
 .item {
   --at-apply: "flex-row-c-c flex-col cursor-pointer gap-2 rounded-2 py-4 transition-200";
 }
-.active {
-  color: var(--el-color-primary);
-  filter: drop-shadow(0 0 8px var(--el-color-primary));
-  transition-property: filter, color;
+
+.item {
+  .title {
+    --at-apply: "h-1.5em overflow-hidden transition-height";
+  }
+
+  &.active {
+    color: var(--el-color-primary);
+    filter: drop-shadow(0 0 2px var(--el-color-primary));
+    transition-property: filter, color;
+
+    .icon {
+      --at-apply: "p-4";
+    }
+
+    :deep(.title) {
+      // --at-apply: "h-0em";
+    }
+  }
 }
 </style>

@@ -77,6 +77,13 @@ const menuList = computed<MenuItem[]>(() => ([
     onClick: () => chat.showExtension = true,
   },
   {
+    title: "API 开发",
+    path: "/api/key", // 密钥管理
+    icon: "i-solar:code-square-outline",
+    activeIcon: "i-solar:code-square-bold",
+    class: "absolute bottom-28 diabled-bg",
+  },
+  {
     title: "账号",
     path: "/user/safe",
     icon: "i-solar:devices-outline",
