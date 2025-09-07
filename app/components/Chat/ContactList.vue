@@ -420,7 +420,7 @@ onActivated(() => {
       <!-- 添加骨架屏 -->
       <template #pre>
         <div v-if="isReload" key="skeleton" class="main-bg-color absolute left-0 top-0 z-2 h-100vh w-full flex-1 overflow-y-hidden">
-          <div v-for="i in 10" :key="i" class="contact-sky">
+          <div v-for="i in 12" :key="i" class="contact-sky">
             <div class="flex-shrink-0 flex-shrink-0 rounded-full bg-color object-cover !h-10 !w-10" />
             <!-- 信息 -->
             <div class="info-skeleton">
