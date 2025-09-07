@@ -252,10 +252,6 @@ export default defineNuxtConfig({
               if (id.includes("ogl"))
                 return "ogl";
 
-              // lodash
-              if (id.includes("lodash"))
-                return "lodash";
-
               // 文件上传/存储
               if (id.includes("qiniu-js"))
                 return "qiniu-js";
