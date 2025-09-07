@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { HTMLAttributes } from "vue";
 import { CustomeDialogPopupId } from "@/composables/hooks/useShortcuts";
 
 interface DialogPosition {
@@ -15,6 +16,7 @@ interface DialogStyle {
 }
 
 interface DialogProps {
+  overlayerAttrs?: HTMLAttributes;
   modelValue?: boolean;
   title?: string;
   width?: string | number;
@@ -35,6 +37,7 @@ interface DialogProps {
 }
 
 const {
+  overlayerAttrs = {},
   modelValue = false,
   title,
   width = "",
@@ -280,6 +283,7 @@ defineExpose({
           '--duration': `${duration}ms`,
           'zIndex': `${zIndex}`,
         }"
+        v-bind="overlayerAttrs"
         class="fixed inset-0 flex items-center justify-center"
         @click.self="handleClose"
       >

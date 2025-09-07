@@ -86,7 +86,7 @@ const getAppTitle = computed(() => {
     </slot>
     <!-- 菜单栏右侧 -->
     <slot name="right">
-      <div class="right relative z-1 flex items-center gap-1 sm:gap-2 sm:pr-2">
+      <div class="right relative z-1 flex items-center gap-1 sm:gap-2 sm:pr-4">
         <!-- 桌面更新菜单 -->
         <SettingUpdator v-if="!setting.isMobileSize && $route.path !== '/setting'" />
         <!-- 下载（部分端） -->

@@ -59,14 +59,14 @@ const ignoreUpdate = computed({
         round
         plain
         size="small"
-        style="padding: 0 0.8em 0 0.5em; height: 1.5rem;"
+        style="padding: 0 0.8em 0 0.5em; height: 1.6rem;"
         :class="{
           '!hover:bg-color-3': !setting.appUploader.isUpload,
         }"
         :text="!setting.appUploader.isUpload"
         :type="!setting.appUploader.isUpload ? '' : 'info'"
       >
-        <span flex-row-c-c>
+        <span flex-row-c-c text-1em>
           <i
             mr-1 inline-block
             :class="{

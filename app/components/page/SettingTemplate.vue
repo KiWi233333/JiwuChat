@@ -33,14 +33,14 @@ interface MenuItem {
 const setting = useSettingStore();
 
 const menuOptions = computed<MenuItem[]>(() => [
-  { label: "通知", tip: "系统通知、自定义铃声", value: "notification", icon: "i-solar:bell-outline", activeIcon: "i-solar:bell-bold light:op-70", component: SettingNotification },
-  { label: "主题与字体", tip: "自定义主题和字体", value: "appearance", icon: "i-solar:pallete-2-line-duotone", activeIcon: "i-solar:pallete-2-bold", component: SettingAppearance },
-  { label: "音频设置", tip: "麦克风设备选择与管理", value: "audio-device", icon: "i-solar:microphone-3-line-duotone", activeIcon: "i-solar:microphone-3-bold", component: SettingAudioDevice },
-  { label: "快捷键", tip: "快捷键自定义", value: "shortcut", hidden: setting.isMobileSize, icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", component: SettingShortcuts },
-  { label: "工具", tip: "翻译等工具", value: "tools", icon: "i-solar:inbox-archive-line-duotone", activeIcon: "i-solar:inbox-archive-bold", component: SettingTools },
-  { label: "新特性", tip: "自定义动画、窗口阴影", value: "function", icon: "i-solar:telescope-outline", activeIcon: "i-solar:telescope-bold", component: SettingFunction },
-  { label: "数据与存储", tip: "数据与存储情况、文件情况、缓存清理", value: "storage", icon: "i-solar:database-outline", activeIcon: "i-solar:database-bold", component: SettingStorage },
-  { label: "系统与更新", tip: "开机自启、系统应用更新", value: "system", icon: "i-solar:server-square-update-linear", activeIcon: "i-solar:server-square-update-bold", component: SettingSystem },
+  { label: "通知", tip: "系统通知、自定义铃声", value: "notification", icon: "i-solar:bell-outline", activeIcon: "i-solar:bell-bold light:op-70", domId: "notification", component: SettingNotification },
+  { label: "主题与字体", tip: "自定义主题和字体", value: "appearance", icon: "i-solar:pallete-2-line-duotone", activeIcon: "i-solar:pallete-2-bold", domId: "appearance", component: SettingAppearance },
+  { label: "音频设置", tip: "麦克风设备选择与管理", value: "audio-device", icon: "i-solar:microphone-3-line-duotone", activeIcon: "i-solar:microphone-3-bold", domId: "audio-device", component: SettingAudioDevice },
+  { label: "快捷键", tip: "快捷键自定义", value: "shortcut", hidden: setting.isMobileSize, icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", domId: "shortcut", component: SettingShortcuts },
+  { label: "工具", tip: "翻译等工具", value: "tools", icon: "i-solar:inbox-archive-line-duotone", activeIcon: "i-solar:inbox-archive-bold", domId: "tools", component: SettingTools },
+  { label: "新特性", tip: "自定义动画、窗口阴影", value: "function", icon: "i-solar:telescope-outline", activeIcon: "i-solar:telescope-bold", domId: "function", component: SettingFunction },
+  { label: "数据与存储", tip: "数据与存储情况、文件情况、缓存清理", value: "storage", icon: "i-solar:database-outline", activeIcon: "i-solar:database-bold", domId: "storage", component: SettingStorage },
+  { label: "系统与更新", tip: "开机自启、系统应用更新", value: "system", icon: "i-solar:server-square-update-linear", activeIcon: "i-solar:server-square-update-bold", domId: "system", component: SettingSystem },
 ].filter(item => !item.hidden));
 const MENU_OPTIONS_LABEL_MAX_LENGTH = 5;
 const activeMenu = ref("");

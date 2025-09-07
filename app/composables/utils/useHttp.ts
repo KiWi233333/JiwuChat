@@ -16,7 +16,7 @@ export function httpRequest<T = unknown>(
     method,
     baseURL: BaseUrlRef.value,
     headers: {
-      Authoriztion: user.token,
+      // Authoriztion: user.token,
     } as { Authoriztion?: string },
     // 请求拦截器
     onRequest: (config: any) => {
