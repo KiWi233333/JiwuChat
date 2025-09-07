@@ -216,10 +216,12 @@ defineExpose({
           <el-form-item class="left flex-1 p-4 sm:p-6">
             <template #label>
               <div class="w-full flex-row-bt-c sm:pr-1.8">
-                好友列表
+                <span class="flex-shrink-0">
+                  好友列表
+                </span>
                 <el-input
                   v-model.lazy="dto.keyWord"
-                  class="w-10em"
+                  class="!w-10em"
                   size="small" placeholder="搜索" clearable
                   type="text"
                   @keydown.enter.prevent="search()"
@@ -227,7 +229,7 @@ defineExpose({
               </div>
             </template>
             <el-checkbox-group v-model="form.uidList" class="w-full card-rounded-df bg-color-2 sm:!bg-transparent">
-              <div class="scroll-bar max-h-40vh min-h-40vh flex flex-col overflow-y-auto p-2 pr-0 sm:(max-h-22rem min-h-22rem p-0)">
+              <div class="h-0 max-h-40vh min-h-40vh flex flex-col overflow-y-auto p-2 pr-0 sm:(max-h-22rem min-h-22rem p-0)">
                 <ListAutoIncre
                   :immediate="false"
                   :auto-stop="false"
@@ -243,6 +245,10 @@ defineExpose({
                     </div>
                   </el-checkbox>
                 </ListAutoIncre>
+
+                <div v-if="notMore" class="h-full w-full flex-row-c-c pb-12 text-xs op-60">
+                  没有更多了
+                </div>
               </div>
             </el-checkbox-group>
             <!-- 第一步 -->

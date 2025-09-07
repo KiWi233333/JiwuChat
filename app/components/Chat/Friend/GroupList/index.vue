@@ -80,7 +80,7 @@ else if (props.type === "group") { // 群组相关监听
           )"
         >
           <CardAvatar
-            class="avatar-icon overflow-hidden rounded-6px"
+            class="h-2.4rem w-2.4rem flex-row-c-c overflow-hidden card-rounded-df rounded-6px rounded-6px bg-color-2 shadow-sm"
             :src="BaseUrlImg + p.avatar"
             load-class="none-sky"
             fit="cover"
@@ -94,9 +94,6 @@ else if (props.type === "group") { // 群组相关监听
 </template>
 
 <style lang="scss" scoped>
-.avatar-icon {
-  --at-apply: "h-2.4rem card-rounded-df bg-color-2 w-2.4rem flex-row-c-c rounded-6px shadow-sm";
-}
 .item {
   --at-apply: "flex items-center gap-4 p-2 cursor-pointer rounded-6px mb-2 hover:(bg-menu-color)";
   &.focus {

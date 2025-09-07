@@ -421,7 +421,7 @@ onActivated(() => {
       <template #pre>
         <div v-if="isReload" key="skeleton" class="main-bg-color absolute left-0 top-0 z-2 h-100vh w-full flex-1 overflow-y-hidden">
           <div v-for="i in 10" :key="i" class="contact-sky">
-            <div class="h-10 w-10 flex-shrink-0 flex-shrink-0 rounded-full bg-color object-cover" />
+            <div class="flex-shrink-0 flex-shrink-0 rounded-full bg-color object-cover !h-10 !w-10" />
             <!-- 信息 -->
             <div class="info-skeleton">
               <div class="nickname-skeleton h-3 w-8em rounded bg-color" />
@@ -446,7 +446,7 @@ onActivated(() => {
             :max="99"
             :offset="[-5, 5]"
             :value="room.unreadCount"
-            class="badge h-10 w-10 flex-shrink-0"
+            class="badge flex-shrink-0 !h-10 !w-10"
           >
             <CardElImage
               :error-class="contactTypeIconClassMap[(room as ChatContactVO).type]"
