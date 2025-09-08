@@ -6,11 +6,30 @@
   "windows": ["*"],
   "permissions": [
     "core:default",
+    "core:webview:allow-internal-toggle-devtools",
+
     "os:default",
     "os:allow-os-type",
     "os:allow-arch",
     "os:allow-version",
     "os:allow-hostname",
+
+    "notification:allow-is-permission-granted",
+    "notification:allow-request-permission",
+    "notification:allow-notify",
+    "notification:allow-register-action-types",
+    "notification:allow-register-listener",
+    "notification:allow-cancel",
+    "notification:allow-get-pending",
+    "notification:allow-remove-active",
+    "notification:allow-get-active",
+    "notification:allow-check-permissions",
+    "notification:allow-show",
+    "notification:allow-batch",
+    "notification:allow-list-channels",
+    "notification:allow-delete-channel",
+    "notification:allow-create-channel",
+    "notification:allow-permission-state",
     {
       "identifier": "shell:allow-execute",
       "allow": [
@@ -28,6 +47,14 @@
               "validator": "\\S+"
             }
           ]
+        }
+      ]
+    },
+    {
+      "identifier": "fs:write-files",
+      "allow": [
+        {
+          "path": "**"
         }
       ]
     },
@@ -68,23 +95,6 @@
       "allow": [
         {
           "path": "**"
-        }
-      ]
-    },
-    {
-      "identifier": "fs:write-files",
-      "allow": [
-        {
-          "path": "**"
-        }
-      ]
-    },    
-    {
-      "identifier": "opener:allow-open-url",
-      "allow": [
-        {
-          "url": "http*://*",
-          "app": "inAppBrowser"
         }
       ]
     }

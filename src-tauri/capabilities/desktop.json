@@ -7,10 +7,7 @@
   "webviews": [],
   "platforms": ["macOS", "windows", "linux"],
   "remote": {
-    "urls": [
-      "https://*.kiwi2333.top",
-      "https://*.kiwi233.top"
-    ]
+    "urls": ["https://*.kiwi2333.top", "https://*.kiwi233.top"]
   },
   "permissions": [
     "updater:default",
@@ -24,8 +21,36 @@
     "autostart:allow-disable",
     "autostart:allow-is-enabled",
 
-    
-    "opener:deny-reveal-item-in-dir",
+    "opener:allow-default-urls",
+    "opener:allow-open-path",
+    "opener:allow-open-url",
+    "opener:allow-reveal-item-in-dir",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "**"
+        },
+        {
+          "url": "http*://*"
+        },
+        {
+          "url": "cursor*://*"
+        },
+        {
+          "url": "cherrystudio*://*"
+        },
+        {
+          "url": "file*://*"
+        },
+        {
+          "url": "tauri:*"
+        },
+        {
+          "url": "anysphere*://*"
+        }
+      ]
+    },
 
     "core:default",
     "core:window:allow-close",
