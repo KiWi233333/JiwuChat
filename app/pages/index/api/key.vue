@@ -177,15 +177,12 @@ function handleSearchKeyName(e: KeyboardEvent | Event) {
 const mcpAppDialogVisible = ref(false);
 const mcpDetail = computed(() => `\`\`\`json
 {
-    "JiwuChatMCP": {
-      "name": "JiwuChat MCP",
-      "type": "streamableHttp",
-      "description": "",
-      "isActive": true,
-      "longRunning": false,
-      "baseUrl": "${import.meta.env.VITE_MCP_API_BASE_URL || "https://mcp.jiwuchat.com/api/mcp"}",
+  "mcpServers": {
+    "jiwu-chat-mcp": {
+      "type": "streamable_http",
+      "url": "${import.meta.env.VITE_MCP_API_BASE_URL || "https://mcp.jiwuchat.com/api/mcp"}",
       "headers": {
-        "Authorization": "<你的API Key>"
+        "Authorization": "<你的 API Key>",
       }
     }
   }
@@ -339,7 +336,7 @@ onActivated(() => {
         创建 API key
       </el-button>
     </div>
-    <div class="flex items-center pb-4">
+    <div class="flex select-none items-center pb-4">
       <!-- 搜索表单 -->
       <el-input
         ref="searchRef"
@@ -364,7 +361,6 @@ onActivated(() => {
     <div class="min-w-0 w-full flex flex-1 flex-col">
       <div class="overflow-hidden border-default card-rounded-df bg-color-3">
         <el-table
-          v-loading="loading"
           :data="tableData"
           :border="false"
           max-height="100%"
@@ -392,7 +388,11 @@ onActivated(() => {
               {{ scope.row.expireTime || '永不过期' }}
             </template>
           </el-table-column>
-          <el-table-column prop="lastUsedTime" label="最近使用" width="180" />
+          <el-table-column prop="lastUsedTime" label="最近使用" width="180">
+            <template #default="scope">
+              {{ scope.row.lastUsedTime || '-' }}
+            </template>
+          </el-table-column>
           <el-table-column prop="createTime" label="创建时间" width="180" />
           <el-table-column align="center" label="操作" width="120" fixed="right">
             <template #default="scope">
@@ -536,7 +536,7 @@ onActivated(() => {
           style="font-size: 0.8rem;background-color: transparent;"
           :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
           :code-foldable="false"
-          code-theme="a11y"
+          code-theme="github"
           class="mcp-app-markdown bg-color"
           :model-value="mcpDetail"
         />
@@ -596,7 +596,7 @@ onActivated(() => {
 <style scoped lang="scss">
 :deep(.search.el-input) {
   .el-input__wrapper {
-    --at-apply: "border-default-hover py-0 text-xs";
+    --at-apply: "border-default-2-hover py-0 text-xs";
     box-shadow: none;
   }
 }

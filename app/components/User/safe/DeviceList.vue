@@ -81,9 +81,10 @@ function exitLogin(ua?: string) {
     </div>
     <el-scrollbar
       v-loading="isLoading"
+      :element-loading-spinner="defaultLoadingIcon"
+      element-loading-background="transparent"
       class="flex-1"
       max-height="100%"
-      :element-loading-spinner="defaultLoadingIcon"
     >
       <!-- 列表 -->
       <div
