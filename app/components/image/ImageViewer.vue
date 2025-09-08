@@ -155,7 +155,7 @@ function open(options: ViewerOptions) {
 // 关闭预览
 function close() {
   state.visible = false;
-  nextTick(state.closeCallback);
+  nextTick(() => state.closeCallback?.());
 }
 
 // 保存图片
