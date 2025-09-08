@@ -100,5 +100,10 @@
     "*.{ts,vue,js,sass,css}": [
       "eslint --fix"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:rolldown-vite@latest"
+    }
   }
 }

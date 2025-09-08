@@ -352,7 +352,7 @@ onActivated(() => {
           管理你的开放 API 密钥
         </p>
       </div>
-      <div class="ml-a flex items-center">
+      <div class="ml-a flex items-center" data-fades>
         <!-- cherry-studio -->
         <el-tooltip content="安装 Cherry Studio MCP 应用" :offset="20" placement="top">
           <a :href="cherryStudioMCPDeepLink" rel="noreferrer" @click.stop="handleOpen(cherryStudioMCPDeepLink, $event)">

@@ -219,30 +219,80 @@ export default defineNuxtConfig({
       commonjsOptions: {},
       target: process.env.TAURI_ENV_PLATFORM === "windows" ? "chrome105" : "safari13",
 
-      rollupOptions: {
+      rolldownOptions: {
         output: {
-          // 手动指定chunk分割策略
-          // 在 nuxt.config.ts 的 vite.rollupOptions.output 中配置
-          manualChunks: (id) => {
-            if (id.includes("node_modules")) {
-              // Tauri 桌面端插件 (相关性较强，统一打包)
-              if (id.includes("@tauri-apps")) {
-                return "tauri-plugins";
-              }
-
-              // 图形和3D库
-              if (id.includes("ogl")) {
-                return "graphics";
-              }
-
-              // lodash
-              if (id.includes("lodash")) {
-                return "lodash";
-              }
-
-              // 其他第三方库
-              return "vendor";
-            }
+          // 使用新版 advancedChunks API 进行手动分包
+          advancedChunks: {
+            // 全局配置
+            minSize: 20 * 1024, // 20KB 最小包大小
+            maxSize: 500 * 1024, // 500KB 最大包大小
+            minModuleSize: 20 * 1024, // 20KB 最小模块大小
+            maxModuleSize: 500 * 1024, // 500KB 最大模块大小
+            minShareCount: 1, // 至少被1个入口引用
+            includeDependenciesRecursively: true, // 递归包含依赖
+            // groups: [
+            //   {
+            //     name: "element-plus",
+            //     test: /node_modules[\\/]element-plus[\\/]/,
+            //     priority: 15,
+            //     minSize: 50 * 1024, // Element Plus 较大，设置更大的最小尺寸
+            //   },
+            //   {
+            //     name: "vue-ecosystem",
+            //     test: /node_modules[\\/](@vue|vue|@vueuse|pinia|nuxt)[\\/]/,
+            //     priority: 12,
+            //     minSize: 30 * 1024,
+            //   },
+            //   {
+            //     name: "tauri-plugins",
+            //     test: /node_modules[\\/]@tauri-apps[\\/]/,
+            //     priority: 10,
+            //     minSize: 10 * 1024,
+            //   },
+            //   {
+            //     name: "markdown-editor",
+            //     test: /node_modules[\\/](md-editor-v3|markdown-it)[\\/]/,
+            //     priority: 9,
+            //     minSize: 30 * 1024,
+            //   },
+            //   {
+            //     name: "graphics",
+            //     test: /node_modules[\\/]ogl[\\/]/,
+            //     priority: 8,
+            //     minSize: 20 * 1024,
+            //   },
+            //   {
+            //     name: "utilities",
+            //     test: /node_modules[\\/](lodash|@iconify|@formkit)[\\/]/,
+            //     priority: 7,
+            //     minSize: 15 * 1024,
+            //   },
+            //   {
+            //     name: "icons",
+            //     test: /node_modules[\\/]@iconify-json[\\/]/,
+            //     priority: 6,
+            //     minSize: 10 * 1024,
+            //     maxSize: 100 * 1024, // 图标包不要太大
+            //   },
+            //   {
+            //     name: "upload-storage",
+            //     test: /node_modules[\\/](qiniu-js|streamsaver)[\\/]/,
+            //     priority: 5,
+            //     minSize: 15 * 1024,
+            //   },
+            //   {
+            //     name: "dev-tools",
+            //     test: /node_modules[\\/](@nuxt[\\/]devtools|@nuxt[\\/]eslint|eslint|@antfu)[\\/]/,
+            //     priority: 4,
+            //   },
+            //   {
+            //     name: "vendor",
+            //     test: /node_modules[\\/]/,
+            //     priority: 1,
+            //     minSize: 30 * 1024, // 其他第三方库的最小尺寸
+            //     maxSize: 200 * 1024, // 防止vendor包过大
+            //   },
+            // ],
           },
         },
       },

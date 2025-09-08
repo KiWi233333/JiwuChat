@@ -193,8 +193,8 @@
     --shadow-color2: var(--el-color-danger-light-3);
     box-shadow: 0 0 0.8rem var(--shadow-color);
     animation-play-state: paused;
-    background-color: var(-shadow-color);
-    border-color: var(-shadow-color);
+    background-color: var(--shadow-color);
+    border-color: var(--shadow-color);
   }
 }
 
