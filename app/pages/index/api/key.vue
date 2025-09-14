@@ -22,7 +22,7 @@ import { useWatchComposition } from "@/composables/hooks/useWatchComposition";
 
 const user = useUserStore();
 const setting = useSettingStore();
-const size = computed(() => setting.isMobileSize ? "small" : "default");
+const size = computed(() => setting.isMobileSize ? "small" : "small");
 // 响应式数据
 const loading = ref(false);
 const tableData = ref<ApiKeyVO[]>([]);
@@ -352,10 +352,10 @@ onActivated(() => {
           管理你的开放 API 密钥
         </p>
       </div>
-      <div class="ml-a flex items-center" data-fades>
+      <div class="ml-a flex items-center gap-2 sm:gap-3">
         <!-- cherry-studio -->
         <el-tooltip content="安装 Cherry Studio MCP 应用" :offset="20" placement="top">
-          <a :href="cherryStudioMCPDeepLink" rel="noreferrer" @click.stop="handleOpen(cherryStudioMCPDeepLink, $event)">
+          <a data-fade class="flex-row-c-c" :href="cherryStudioMCPDeepLink" rel="noreferrer" @click.stop="handleOpen(cherryStudioMCPDeepLink, $event)">
             <ElAvatar
               size="small" class="shadow"
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAAr6SURBVHic7Vt9cFTVFf+d+97bJOxmSYgYTIgECVZACAhFKqKIIEVaCkpp/3BUNIjiKDA6HR3tOJ2RsVVmhLajArYgOjqNI0wZilXqB9oUzfBh+AgfinwE0gQIH8vLx+57757+8ZINy+6+9/YjjDP099++e87vnnP3vnvPPfc8Qg+jo6NjkJTqCAlrLLMYAnAZmItJUAEz8gCACO0s+RyImgFqIJL7BJRaIcxdubm5h3rSPso2ITNrFzrMm8niX4JwJ4ChGfTDAOrB+IQVej8/V/2aiIzsWZvFAdCZi2WreT9BPgiiodnijQFzPUOsEX51bYCoORuUGQ+AruvFENoiZjEP4KJsGOUOaiGSqyCNZYFAIKOBSHsAmDlP140qCHoO4OJMjEgf1AzJSwIB7U0iak+LIR2lCxfCN0LQGwDGp6PfA6iB5Efz83P2pKooUlUItUbmQdAW/HCcB4DxELQl1BqZl6qi5wFoamry623GqwSsBNAn1Y4uA/oQsFJvM15tamrye1Xy9AqcZS5QW40VIMxJ3z53nA6HsGRfNb44tRcleX3weMV0/LTfTakTMapNvza/kOicm6jrAJxlLlDbzbfAPCN1S7yjzQpjbu1yHLhwIub5u+OewtDgtakTEm0w89QH3AbB8RVoamryq63GikydP3DhBDacqEXN6X0J2y2WeG7323HOA0DN6f3pdco8Q201Vri9DqpTYyBY9CIzZzTt3z9egyX11dHftxQNwdKRc9FLyYk++/N3/8BnJ3cn1C/rdVX6nRPmBIJFjQAWJxNJOgNCrZF5zLwo/d6BsDTwyv51Mc/+07IP87e9htPhEABgQ2MtVh/+V0L9MYUVmFI8MhMTwMyLnHaHhGtA5z6/BRmu9qfDIUze8tuEbeX+Yjw0cDJ+t/c9WCwTtq/58UIU+Dwv6E44A8m3J4oT4gaAmfP0NmMzsrTPz61djp3nvk9JJ1/Nw9qbF2OgP6sBZk2glzbl0ogx7hXQdaMKWQxyXqmci/IUHFFIYGnl3Gw7DwDjO32LQcwM0HW9mCmnLtuxfZsVxoLtb+AbDzPhhWG/xqzSn2Sz+4tAzcThyosPULEzQGiLeuJg00vJwYoxCzC5uNJR7v7yO3rQeQDgYtvHbkRngM5czG3m3p480los8fL+dfhbw5dxbRP6DsOykVVQKOXjSYqgFuqlDuvKJ0R7k63m/T19nldI4Nkhs/F4xfSY54MC1+APIx64DM4DABfZvtogwE5j6a2Rb9LJ5HA4DLm/HvLoEfDZs9Hn1Ls3xMDrIG4YCsrJidNbf2IrXqyvRoHmx7vjnkZxbkE8t65DHjwAeewI+Px5wDQAVXPldjea6wN+30giMggAQu3GrSQ5fl46QDaegPnRJlg7twOGQ5pO06AMr4Q67WcQ/ctimj47uRtFOfkY0bs8lvt4A8wPN8LaXefOXTnK5i4pTcV8sKAJwTzt3wQAF/TIchCe9KQpLRjrP4D56WZAxgcwSSEE1NsmQp05O/m/Zhgw1lXD/OLz1Lkn3glt5r2ApnnTYfwxP+BbaA9Aa2QPgGGuOqHziKx8HfLQt96NuwRUUoqchU+Bgr3juMN/ehV8vCFtbjFoMHyPPBbHnQR78/2+G6mjo2OQYYlv4XI05nAY4aUvZWRgF6ikFLnPvQAIxebWdZu7uSlz7v5lyHn6WS9rA2uKHCykVEfAQ17AWL0qK84DADeegLm1Jvo7snpVVpwHAD7eAGP1Ki+iJKU6QkhYY90krW21sOp2Zm7dRZCH7ajQ3FoDWZ9yLtMRVt1OWNtq3W2ANVbY11VOUhaMDeuzZVsct/nhxh6hNjasB6TlKMMshgiAy5yErIMHwKdOZtU4AFBuGApr164e4QYAPnUS1sEDblJlKpiLQcmXALlju6cOldFjoU6ZCjGg3I4RNm2EtT3xNBTXlkO5aTQib7+VGndJaWz84QK5YzuUGxxiO+ZiQYLiQ7CLYB12v5xVx90CX9V8iAHlAABRUgpf1Xxo9z0I5PWKdWbUaPieWAwIBdIL98RJ3dyaBjGgHL5HFkAdO85V1812ElSgdl1RJ4OXKare+6vEz8dPgDp2nB0mt7dBlJSCirpzfK7cmgZ1xqzE3DNnw6z9ylHdjZ8ZeY5JUQBAOOzYTEVFoEAguYCmQVQMTtzmEu1RMAi6ZAZF2woLQcEgOBRKTuBiOwAIIjhfKrqElnz2LNilI/nfRlj79oJbW10NiuHW9aRnAQ6HnZ0HXG0nQrvaWZmRNPNIfa8GN8bn66OQEuZHm6AlmKrWjm0w3nsHrF+I9qhUjoJ234Mgv9/mdpqm4TDMTzdDnXp3XJO5yX37pL5XO7az5HMCLoUG4tpy147MDzfCWP8BuL3NJg6HYfx9HSKrXu92HgCYYX2zA5HlSwFpRRdNJxgb1sO6ZCeydtfB/HiTq66r7UTNKkANACe9gFOGj4D1VU2y5ijMjzfB/HgTqM9V4HNnHN9v2XAM5pdbbG63iE1KRNb+BTn9+tlHXmnBeGeNqz0AoFSOcpGgBkEkE99XdZEMrwQFg546BAA+c9rTUdaq2wll1Bhv3OFw1GnZ0OD+7sNeQJVhNzrLkNwnBBTnv0DToE77ubuRqSIctrknTfEkLg9/D6tup+uC2wV1+i9cF0G7Ek2Yu2BXYyUnu+12iEFJtrI0ISqut7mnTAX1d4zGozA3/zMaEDlyDxoM9dYJbnQshLlLdNbh1TszKvA9PD+lV8ERPh/U2++Icuc8ssATtzz0HSAtqJMmJ5WhYBC+h+dHcw0OqM/NzT1kp2EZn7hJU2Ehchb/JiaSSwtEyHnsCVCf7gQ09b0avgULPaWz5MED0GbMgjphYjz1NaW2jYWF7nZ0+pxyUpR1HZG3/gq5p86LeByUcePhe+ChhG3Gu2/D/PJzR33tnjlQp0wFYCdm5d494HAHxIBye9Fz/+cBdCdFVQDIz1W/1lsj9V7S4hQIIOfxJ+29eOMGyGNHPHXYBVFRkZx74HWAywBwuKObq6Q05WywTcL1+bna10BngQQRGSHdWEPgl71yKMMroQyvhDzeALl3N+TRI5DHjoJbTjsrOm1h584mb8siGGJNV8lt9CpG+NW1ALWkSib6l0Gderd9RJ023VXe3FqTcCvjcDgmT5gMGa9BoBbbVxvRAQgQNRNJT9nEZPAS2vKpk4isfA0cOt/9LHTefubh6C3KvG2ZyUAkV11cZ5z16/GOZ58Ge5nKmha9KZLHG5xvgDpBBYXIfWlpuqbB9Xo8EAg0Q/KSDHqAMsY1yWzDMCAPf29nhz04nxJ3Mkhecmlxddx1bCCgvQnA/WVMAnXKVCCdC0s35PWKbn9poqbTtxjEDQARtUPyowDOpNMLBXtDmzk7HVVHaDNmeb3ySoQzkPxoooryhBfy+fk5exh4Jt3e1ImTMp+uF0EZMxbqxElp6zPwTLJK8qQVCUG/bxURLUu3U9/cKiijRqerHoUyajR8c+NqmzyDiJYF/b6ku5tjSYYeankejGonmaQQCnxV86HeNS0tdQgB9a5p8FV5OtgkBqNaD7U87yRyWYql5dEjMNZVQ7re1NgQ1/8I2j1zPMUVSeGxWPqylsvLxhOQO7bBOvQduPF4NLNDwSCopD+UQRUQN41JL76/GNksl+9CU1OTv7N4OqP64Z4GES3TQy3P9+vXz1MOPuVvhkKtkXkE/B4/vK9GzjDwjNOClwhX/EdT//9sLlMTrtgPJy/FFfvp7KW4Yj+eToYf+ufz/wMc8LhM8Qt/QgAAAABJRU5ErkJggg=="
@@ -364,42 +364,37 @@ onActivated(() => {
         </el-tooltip>
         <!-- cursor -->
         <el-tooltip content="安装 Cursor MCP 应用" :offset="20" placement="top">
-          <a :href="cursorMCPDeepLink" rel="noreferrer" class="ml-3" @click.stop="handleOpen(cursorMCPDeepLink, $event)">
+          <a data-fade style="--lv: 2;" class="flex-row-c-c" :href="cursorMCPDeepLink" rel="noreferrer" @click.stop="handleOpen(cursorMCPDeepLink, $event)">
             <ElAvatar
               size="small" class="shadow"
               src="data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjFlbSIgc3R5bGU9ImZsZXg6bm9uZTtsaW5lLWhlaWdodDoxIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxZW0iIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPkN1cnNvcjwvdGl0bGU+PHBhdGggZD0iTTExLjkyNSAyNGwxMC40MjUtNi0xMC40MjUtNkwxLjUgMThsMTAuNDI1IDZ6IiBmaWxsPSJ1cmwoI2xvYmUtaWNvbnMtY3Vyc29ydW5kZWZpbmVkLWZpbGwtMCkiPjwvcGF0aD48cGF0aCBkPSJNMjIuMzUgMThWNkwxMS45MjUgMHYxMmwxMC40MjUgNnoiIGZpbGw9InVybCgjbG9iZS1pY29ucy1jdXJzb3J1bmRlZmluZWQtZmlsbC0xKSI+PC9wYXRoPjxwYXRoIGQ9Ik0xMS45MjUgMEwxLjUgNnYxMmwxMC40MjUtNlYweiIgZmlsbD0idXJsKCNsb2JlLWljb25zLWN1cnNvcnVuZGVmaW5lZC1maWxsLTIpIj48L3BhdGg+PHBhdGggZD0iTTIyLjM1IDZMMTEuOTI1IDI0VjEyTDIyLjM1IDZ6IiBmaWxsPSIjNTU1Ij48L3BhdGg+PHBhdGggZD0iTTIyLjM1IDZsLTEwLjQyNSA2TDEuNSA2aDIwLjg1eiIgZmlsbD0iIzAwMCI+PC9wYXRoPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImxvYmUtaWNvbnMtY3Vyc29ydW5kZWZpbmVkLWZpbGwtMCIgeDE9IjExLjkyNSIgeDI9IjExLjkyNSIgeTE9IjEyIiB5Mj0iMjQiPjxzdG9wIG9mZnNldD0iLjE2IiBzdG9wLWNvbG9yPSIjMDAwIiBzdG9wLW9wYWNpdHk9Ii4zOSI+PC9zdG9wPjxzdG9wIG9mZnNldD0iLjY1OCIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuOCI+PC9zdG9wPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0ibG9iZS1pY29ucy1jdXJzb3J1bmRlZmluZWQtZmlsbC0xIiB4MT0iMjIuMzUiIHgyPSIxMS45MjUiIHkxPSI2LjAzNyIgeTI9IjEyLjE1Ij48c3RvcCBvZmZzZXQ9Ii4xODIiIHN0b3AtY29sb3I9IiMwMDAiIHN0b3Atb3BhY2l0eT0iLjMxIj48L3N0b3A+PHN0b3Agb2Zmc2V0PSIuNzE1IiBzdG9wLWNvbG9yPSIjMDAwIiBzdG9wLW9wYWNpdHk9IjAiPjwvc3RvcD48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImxvYmUtaWNvbnMtY3Vyc29ydW5kZWZpbmVkLWZpbGwtMiIgeDE9IjExLjkyNSIgeDI9IjEuNSIgeTE9IjAiIHkyPSIxOCI+PHN0b3Agc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuNiI+PC9zdG9wPjxzdG9wIG9mZnNldD0iLjY2NyIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMjIiPjwvc3RvcD48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48L3N2Zz4="
             />
           </a>
         </el-tooltip>
+        <!-- 获取mcp应用 -->
+        <el-button bg style="height: 1.8rem;margin: 0;" size="small" @click="handleGetMcpApp">
+          MCP 应用
+        </el-button>
+        <!-- 添加 -->
+        <el-button type="primary" size="small" style="height: 1.8rem;margin: 0;" @click="handleAddKey">
+          创建 API key
+        </el-button>
       </div>
-      <!-- 获取mcp应用 -->
-      <el-button bg class="ml-2 sm:ml-4" :size="size" @click="handleGetMcpApp">
-        MCP 应用
-      </el-button>
-      <!-- 添加 -->
-      <el-button type="primary" :size="size" @click="handleAddKey">
-        创建 API key
-      </el-button>
     </div>
     <div class="flex select-none items-center pb-4">
       <!-- 搜索表单 -->
       <el-input
         ref="searchRef"
         v-model="searchForm.keyName"
-        :size="size"
         placeholder="搜索 Key 名称"
         clearable
         autocomplete="off"
         class="search mr-2 w-10em sm:w-14rem"
         @keydown="handleSearchKeyName"
       />
-      <el-segmented v-model="searchForm.status" :size="size" class="segmented !bg-color" :options="apiKeyStatusOptions" @change="handleSearch" />
-      <el-button style="padding: 0 0.8em 0 0.6em;" :icon="ElIconSearch" type="info" plain :size="size" class="ml-a" @click="handleSearch">
-        搜索
-      </el-button>
-      <el-button v-show="searchForm.keyName !== '' || searchForm.status !== undefined" :size="size" @click="handleReset">
-        重置
-      </el-button>
+      <el-segmented v-model="searchForm.status" class="segmented border-default-2-hover bg-color p-2" :options="apiKeyStatusOptions" @change="handleSearch" />
+      <el-button class="ml-3 bg-color !border-default-2-hover" style="padding: 0 0.6em;font-size: 1rem;" :icon="ElIconSearch" bg text @click="handleSearch" />
+      <el-button v-show="searchForm.keyName !== '' || searchForm.status !== undefined" class="bg-color !border-default-2-hover" style="padding: 0 0.6em;font-size: 1rem;" bg text :icon="ElIconRefresh" @click="handleReset" />
     </div>
 
     <!-- 数据表格 -->
@@ -641,7 +636,7 @@ onActivated(() => {
 <style scoped lang="scss">
 :deep(.search.el-input) {
   .el-input__wrapper {
-    --at-apply: "border-default-2-hover py-0 text-xs";
+    --at-apply: "border-default-2 py-0 text-xs";
     box-shadow: none;
   }
 }
@@ -681,6 +676,14 @@ onActivated(() => {
   background-color: transparent !important;
   .md-editor-code {
     margin: 0 !important;
+  }
+}
+
+:deep(.segmented.el-segmented) {
+  --at-apply: "p-2";
+
+  .el-segmented__item {
+    --at-apply: "flex items-center";
   }
 }
 </style>
