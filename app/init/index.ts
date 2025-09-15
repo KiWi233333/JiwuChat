@@ -81,6 +81,7 @@ export function appMounted() {
   const isIframe = ref(false);
   const showShadowBorderRadius = computed(() => setting.isWeb && !setting.isMobileSize && !isIframe.value);
   const isWindow10 = ref(false);
+  // @unocss-include
   const getRootClass = computed(() =>
     ({
       "sm:(w-100vw mx-a h-full)  md:(w-100vw mx-a h-full) lg:(w-1360px mx-a h-92vh max-w-86vw max-h-1020px ) shadow-lg": !isIframe.value && setting.isWeb, // iframe
