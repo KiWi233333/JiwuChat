@@ -308,10 +308,10 @@ onDeactivated(() => {
           </template>
         </ChatAIJiwuMsg>
       </div>
-      <div class="form">
+      <div class="form absolute bottom-0 left-0 w-full sm:p-4">
         <el-form
           ref="formRef"
-          class="form-wrapper"
+          class="flex items-end gap-2 border-default-t bg-color-br p-4 sm:(gap-4 border-default card-rounded-df shadow-sm)"
           :model="form"
           @submit.prevent="onSubmit"
         >
@@ -370,10 +370,6 @@ onDeactivated(() => {
 
 <style lang="scss" scoped>
 .form {
-  --at-apply: "absolute bottom-0 w-full left-0 sm:p-4 ";
-  .form-wrapper {
-    --at-apply: "flex border-default-t sm:(border-default shadow-sm card-rounded-df) items-end gap-2 p-4  sm:gap-4 bg-color-br ";
-  }
   :deep(.content.el-textarea) {
     .el-textarea__inner {
       box-shadow: none !important;
