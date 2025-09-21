@@ -66,7 +66,7 @@ export interface ApiKeyExtraVO extends ApiKeyVO {
 
 // 分页查询API密钥
 export function getApiKeyPage(params: ApiKeyPageParams, token: string): Promise<Result<IPageApiKeyVO>> {
-  return useHttp.get<Result<IPageApiKeyVO>>(`${BaseUrl}/sys/api-key/page`, params, {
+  return useHttp.get<Result<IPageApiKeyVO>>(`/sys/api-key/page`, params, {
     headers: {
       Authorization: token,
     },
@@ -75,7 +75,7 @@ export function getApiKeyPage(params: ApiKeyPageParams, token: string): Promise<
 
 // 获取API密钥详情
 export function getApiKeyDetail(id: string, token: string): Promise<Result<ApiKeyVO>> {
-  return useHttp.get<Result<ApiKeyVO>>(`${BaseUrl}/sys/api-key/${id}`, undefined, {
+  return useHttp.get<Result<ApiKeyVO>>(`/sys/api-key/${id}`, undefined, {
     headers: {
       Authorization: token,
     },
@@ -84,7 +84,7 @@ export function getApiKeyDetail(id: string, token: string): Promise<Result<ApiKe
 
 // 创建API密钥
 export function createApiKey(data: ApiKeyCreateDTO, token: string) {
-  return useHttp.post<Result<ApiKeyExtraVO>>(`${BaseUrl}/sys/api-key`, data, {
+  return useHttp.post<Result<ApiKeyExtraVO>>(`/sys/api-key`, data, {
     headers: {
       Authorization: token,
     },
@@ -93,7 +93,7 @@ export function createApiKey(data: ApiKeyCreateDTO, token: string) {
 
 // 更新API密钥
 export function updateApiKey(data: ApiKeyUpdateDTO, token: string): Promise<Result<boolean>> {
-  return useHttp.put<Result<boolean>>(`${BaseUrl}/sys/api-key`, data, {
+  return useHttp.put<Result<boolean>>(`/sys/api-key`, data, {
     headers: {
       Authorization: token,
     },
@@ -102,7 +102,7 @@ export function updateApiKey(data: ApiKeyUpdateDTO, token: string): Promise<Resu
 
 // 删除API密钥
 export function deleteApiKey(id: string, token: string): Promise<Result<boolean>> {
-  return useHttp.deleted<Result<boolean>>(`${BaseUrl}/sys/api-key/${id}`, {}, {
+  return useHttp.deleted<Result<boolean>>(`/sys/api-key/${id}`, {}, {
     headers: {
       Authorization: token,
     },
@@ -111,7 +111,7 @@ export function deleteApiKey(id: string, token: string): Promise<Result<boolean>
 
 // 切换API密钥状态
 export function toggleApiKeyStatus(id: string, status: ApiKeyStatus, token: string): Promise<Result<boolean>> {
-  return useHttp.put<Result<boolean>>(`${BaseUrl}/sys/api-key/${id}/status/${status}`, undefined, {
+  return useHttp.put<Result<boolean>>(`/sys/api-key/${id}/status/${status}`, undefined, {
     headers: {
       Authorization: token,
     },
