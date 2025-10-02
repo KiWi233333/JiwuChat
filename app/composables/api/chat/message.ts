@@ -21,25 +21,7 @@ export function getChatMessagePage(roomId: number, pageSize = 10, cursor: string
       },
     },
   );
-  // if (res.code === StatusCode.SUCCESS) {
-  //   res.data.list.
-  // }
-  // return res;
 }
-export function getDBMsgPage(roomId: number, pageSize = 10, cursor: string | number | null = null): Promise<Result<CursorPage<ChatMessageVO>>> {
-  const res = {
-    data: {
-      list: [],
-      cursor: null,
-      isLast: false,
-    },
-    code: StatusCode.SUCCESS,
-    message: "",
-  } as Result<CursorPage<ChatMessageVO>>;
-  // const db = useDB().getItem("message", "roomId");
-  return Promise.resolve(res);
-}
-
 
 /**
  * 发送消息
@@ -101,7 +83,6 @@ export function deleteChatMessage(roomId: number, id: number, token: string) {
 
 /**
  * 获取消息的已读未读列表（单条消息）
-
  * @param msgId 消息id
  * @param searchType 类型
  * @param pageSize 页码
