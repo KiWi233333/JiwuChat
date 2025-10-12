@@ -12,7 +12,7 @@ interface UserType {
 }
 const store = useUserStore();
 const isLoading = ref(true);
-const isFrend = ref<boolean | undefined>(false);
+const isFriend = ref<boolean | undefined>(false);
 const userId = computed(() => panelData.data.id);
 const targetUserInfo = ref<Partial<CommUserVO>>({});
 // 年龄
@@ -22,13 +22,13 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(targetUserInfo.va
 
 // 加载用户数据
 async function loadData(val: string) {
-  isFrend.value = false;
+  isFriend.value = false;
   isLoading.value = true;
   try {
     // 确认是否为好友
     await isChatFriend({ uidList: [val] }, store.getToken).then((res) => {
       const data = res.data.checkedList.find((p: FriendCheck) => p.uid === val);
-      isFrend.value = data && data.isFriend === isTrue.TRUE;
+      isFriend.value = data && data.isFriend === isTrue.TRUE;
     });
     if (!val)
       return targetUserInfo.value = {};
@@ -102,7 +102,7 @@ watch(userId, (val: string) => {
           ID：{{ userId }}
         </p>
         <!-- <p truncate text-mini :title="targetUserInfo.email">
-          邮箱：{{ (isFrend || isSelf) ? targetUserInfo.email : ' - ' }}
+          邮箱：{{ (isFriend || isSelf) ? targetUserInfo.email : ' - ' }}
         </p> -->
       </div>
     </div>
@@ -145,7 +145,7 @@ watch(userId, (val: string) => {
     <!-- 按钮 -->
     <div v-show="!isLoading" class="mx-a">
       <BtnElButton
-        v-if="isFrend"
+        v-if="isFriend"
         key="delete"
         icon-class="i-solar:trash-bin-trash-outline p-2 mr-2"
         style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-danger);"
@@ -156,7 +156,7 @@ watch(userId, (val: string) => {
         删除好友&ensp;
       </BtnElButton>
       <BtnElButton
-        v-if="isFrend"
+        v-if="isFriend"
         key="send"
         icon-class="i-solar:chat-line-bold p-2 mr-2"
         style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;"

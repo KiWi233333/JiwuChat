@@ -29,7 +29,7 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
     <div
       class="w-full transition-all sm:(relative mx-auto w-320px shrink-0 border-default-r p-0)"
     >
-      <!-- 好友列表 -->
+      <!-- 菜单面板 -->
       <ChatFriendTabs class="nav-padding-top-6 relative mx-a h-full flex-shrink-0 p-4 pb-0" />
     </div>
     <div
@@ -49,12 +49,12 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
         />
         <!-- 面板 -->
         <Transition
-          name="page-fade"
+          name="main-panel-fade"
           mode="out-in"
-          appear
+          :duration="120"
         >
           <ChatFriendMainType
-            key="chat-friend-main-type"
+            :key="`${chat.theFriendOpt?.type}_${chat.theFriendOpt?.data?.id || Date.now()}`"
             :data="chat.theFriendOpt"
             class="nav-padding-top-6 relative z-999 mx-a h-full w-full flex-1 flex-shrink-0 sm:!bg-transparent"
           />
@@ -104,5 +104,21 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
     transparent,
     transparent
   );
+}
+
+.main-panel-fade-enter-active,
+.main-panel-fade-leave-active {
+  transition: all 0.2s ease-out;
+  transform-origin: top center;
+}
+.main-panel-fade-enter-from,
+.main-panel-fade-leave-to {
+  opacity: 0;
+  filter: blur(4px);
+  // transform: scale(0.99) translateY(-0.2rem);
+}
+.main-panel-fade-enter-to,
+.main-panel-fade-leave-from {
+  opacity: 1;
 }
 </style>

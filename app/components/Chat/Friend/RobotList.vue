@@ -143,10 +143,10 @@ onDeactivated(() => {
   }
 }
 .item {
-  --at-apply: "card-default flex items-center gap-4 p-3 sm:p-4 cursor-pointer rounded-2 border-(1px solid transparent) hover:(shadow-sm border-default) transition-200";
+  --at-apply: "card-default flex items-center gap-4 px-2 py-3 cursor-pointer rounded-2 border-(1px solid transparent) hover:(shadow-sm border-default) transition-200";
 
   .avatar-icon {
-    --at-apply: "border-default shadow-sm cursor-pointer flex-shrink-0 h-3rem w-3rem sm:(w-3.5rem h-3.5rem) card-bg-color-2  rounded-1/2 flex-row-c-c  ";
+    --at-apply: "border-default shadow-sm cursor-pointer flex-shrink-0 h-2.5rem w-2.5rem card-bg-color-2  rounded-1/2 flex-row-c-c";
   }
 }
 :deep(.el-loading-mask) {

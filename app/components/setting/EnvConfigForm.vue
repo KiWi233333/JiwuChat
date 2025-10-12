@@ -160,6 +160,7 @@ onMounted(() => {
           <el-segmented
             v-model="envType"
             :options="envOptions"
+            size="default"
             class="min-w-fit w-80/100 sm:w-48/100"
           />
         </el-form-item>
