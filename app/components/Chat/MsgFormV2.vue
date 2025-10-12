@@ -102,13 +102,13 @@ const {
   aiScrollbarRef: "aiScrollbar",
 }, 160, "focusRef");
 const isNotExistOrNorFriend = computed(() => {
-  const res = chat.theContact.selfExist === isTrue.FALESE;
+  const res = chat.theContact.selfExist === isTrue.FALSE;
   if (res) {
     msgInputRef.value?.blur(); // 失去焦点
     clearInputContent();
   }
   return res;
-}); // 自己不存在 或 不是好友  || chat.contactMap?.[chat.theRoomId!]?.isFriend === isTrue.FALESE
+}); // 自己不存在 或 不是好友  || chat.contactMap?.[chat.theRoomId!]?.isFriend === isTrue.FALSE
 /**
  * 禁用上传文件
  */

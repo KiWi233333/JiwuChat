@@ -26,7 +26,7 @@ export enum Gender {
 // 状态
 export enum UserStatus {
   TRUE = "正常",
-  FALESE = "禁用",
+  FALSE = "禁用",
 }
 
 // 用户类型

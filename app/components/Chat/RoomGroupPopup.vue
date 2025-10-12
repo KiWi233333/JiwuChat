@@ -93,7 +93,7 @@ const isPinLoading = ref(false);
 async function changIsPin() {
   isPinLoading.value = true;
   try {
-    const val = isPin.value ? isTrue.FALESE : isTrue.TRUE;
+    const val = isPin.value ? isTrue.FALSE : isTrue.TRUE;
     await chat.setPinContact(chat.theRoomId!, val);
     return !!val;
   }
@@ -106,7 +106,7 @@ const shieldStatusLoading = ref(false);
 async function changShieldStatus() {
   shieldStatusLoading.value = true;
   try {
-    const val = chat.theContact?.shieldStatus === isTrue.TRUE ? isTrue.FALESE : isTrue.TRUE;
+    const val = chat.theContact?.shieldStatus === isTrue.TRUE ? isTrue.FALSE : isTrue.TRUE;
     await chat.setShieldContact(chat.theRoomId!, val);
     return !!val;
   }

@@ -191,14 +191,14 @@ function onContextMenu(e: MouseEvent, item: ChatContactVO) {
         customClass: "group",
         icon: isPin ? "i-solar:pin-bold-duotone  group-hover:(i-solar:pin-outline scale-110)" : "i-solar:pin-outline group-hover:i-solar:pin-bold-duotone",
         label: isPin ? "取消置顶" : "置顶",
-        onClick: () => chat.setPinContact(item.roomId, isPin ? isTrue.FALESE : isTrue.TRUE),
+        onClick: () => chat.setPinContact(item.roomId, isPin ? isTrue.FALSE : isTrue.TRUE),
       },
       // 免打扰功能
       {
         customClass: "group",
         icon: isShield ? "i-carbon:notification-filled group-hover:i-carbon:notification" : "i-carbon:notification-off group-hover:(i-carbon:notification-off-filled scale-110)",
         label: isShield ? "取消免打扰" : "免打扰",
-        onClick: () => chat.setShieldContact(item.roomId, !isShield ? isTrue.TRUE : isTrue.FALESE),
+        onClick: () => chat.setShieldContact(item.roomId, !isShield ? isTrue.TRUE : isTrue.FALSE),
       },
       {
         customClass: "group",

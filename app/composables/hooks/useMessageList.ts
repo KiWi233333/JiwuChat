@@ -335,14 +335,8 @@ export function useMessageList() {
 
     if (isAtBottom) {
       chat.shouldAutoScroll = true;
-      chat.isScrollBottom = false;
+      chat.isScrollBottom = true;
       debounceReadList(chat.theRoomId);
-      // 更新状态并触发已读上报
-      // const lastMsg = msgList.value[msgList.value.length - 1];
-      // const isLastMessageFromAI = lastMsg?.message?.type === MessageType.AI_CHAT_REPLY;
-      // // chat.shouldAutoScroll = isLastMessageFromAI;
-      // chat.isScrollBottom = true;
-      // debounceReadList(chat.theRoomId);
     }
     else {
       chat.isScrollBottom = false;

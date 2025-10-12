@@ -29,7 +29,7 @@ export function useRoomGroupPopup(opt: { editFormField: Ref<string>, }) {
     return list.sort((a, b) => b.activeStatus - a.activeStatus);
   });
 
-  const isNotExistOrNorFriend = computed(() => chat.theContact?.selfExist === isTrue.FALESE); // 自己不存在 或 不是好友  || chat.contactMap?.[chat.theRoomId!]?.isFriend === 0
+  const isNotExistOrNorFriend = computed(() => chat.theContact?.selfExist === isTrue.FALSE); // 自己不存在 或 不是好友  || chat.contactMap?.[chat.theRoomId!]?.isFriend === 0
   const theContactClone = ref<Partial<ChatContactDetailVO>>();
   const isLord = computed(() => chat.theContact.member?.role === ChatRoomRoleEnum.OWNER);
   const isLoading = computed(() => chat.roomMapCache[chat.theRoomId!]?.isLoading);
