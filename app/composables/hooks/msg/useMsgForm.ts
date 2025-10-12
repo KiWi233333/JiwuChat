@@ -18,7 +18,7 @@ export function useFileLinstener(disabledFile: ShallowRef<boolean> | Ref<boolean
     type: undefined,
     position: undefined,
   });
-  let unlisten: UnlistenFn | undefined;
+  let unListen: UnlistenFn | undefined;
 
   /**
    * 监听拖拽上传
@@ -27,12 +27,12 @@ export function useFileLinstener(disabledFile: ShallowRef<boolean> | Ref<boolean
    */
   async function listenDragDrop(onDragDropCall: (fileType: OssConstantItemType, file: File) => void) {
     const setting = useSettingStore();
-    unlisten?.();
-    if (!setting.isDesktop || unlisten) {
+    unListen?.();
+    if (!setting.isDesktop || unListen) {
       return;
     }
 
-    unlisten = await getCurrentWebview().onDragDropEvent(async (event) => {
+    unListen = await getCurrentWebview().onDragDropEvent(async (event) => {
       if (event.payload.type === "over") {
         if (!isDragDropOver.value) {
           isDragDropOver.value = !disabledFile?.value;
@@ -96,14 +96,14 @@ export function useFileLinstener(disabledFile: ShallowRef<boolean> | Ref<boolean
       }
     });
   }
-  const unlistenDragDrop = () => {
-    unlisten?.();
-    unlisten = undefined;
+  const unListenDragDrop = () => {
+    unListen?.();
+    unListen = undefined;
   };
 
   return {
     isDragDropOver,
-    unlistenDragDrop,
+    unListenDragDrop,
     listenDragDrop,
   };
 }

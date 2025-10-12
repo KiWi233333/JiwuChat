@@ -325,7 +325,7 @@ async function handleSubmit() {
 // 文件拖拽上传监听
 const {
   isDragDropOver,
-  unlistenDragDrop,
+  unListenDragDrop,
   listenDragDrop,
 } = useFileLinstener(disabledUploadFile);
 
@@ -338,7 +338,7 @@ onMounted(() => {
   }
 });
 onUnmounted(() => {
-  unlistenDragDrop();
+  unListenDragDrop();
 });
 
 
