@@ -105,5 +105,9 @@
     "overrides": {
       "vite": "npm:rolldown-vite@latest"
     }
+  },
+  "volta": {
+    "node": "22.20.0",
+    "pnpm": "10.13.1"
   }
 }
