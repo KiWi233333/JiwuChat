@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+// 在生产环境不运行
+if (process.env.NODE_ENV === "production") {
+  console.log("🚫 当前为生产环境，跳过环境检查。");
+  process.exit(0);
+}
+
 // 检查是否跳过环境检查
 if (process.env.SKIP_CHECK_ENV === "true" || process.env.SKIP_CHECK_ENV === 1 || process.env.SKIP_CHECK_ENV === "1") {
   console.log(`🔇 环境变量 SKIP_CHECK_ENV=${process.env.SKIP_CHECK_ENV}，跳过环境检查`);
