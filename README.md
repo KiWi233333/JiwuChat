@@ -40,9 +40,7 @@
       </a>
     </div>
 
-官网：[JiwuChat](https://blog.jiwuchat.top/)
-<br>
-语言 : **简体中文** | [English](./.doc/README.en.md) | [Deutsch](./.doc/README.de.md) | [Español](./.doc/README.es.md) | [Français](./.doc/README.fr.md) | [日本語](./.doc/README.ja.md) | [한국어](./.doc/README.ko.md) | [Português](./.doc/README.pt.md) | [Русский](./.doc/README.ru.md)
+官网：[JiwuChat](https://blog.jiwuchat.top/) <br> 语言 : **简体中文** | [English](./.doc/README.en.md) | [Deutsch](./.doc/README.de.md) | [Español](./.doc/README.es.md) | [Français](./.doc/README.fr.md) | [日本語](./.doc/README.ja.md) | [한국어](./.doc/README.ko.md) | [Português](./.doc/README.pt.md) | [Русский](./.doc/README.ru.md)
 
 </div>
 
@@ -66,96 +64,47 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 
 ## 项目截图
 
-- 聊天桌面应用 Login / Register
+- 🖥️ **桌面端**
 
 ![登录](./.doc/login.png)
 
-![注册](./.doc/register.png)
+![首页](.doc/desktop/home.png)
 
-<table align="center">
-  <tr>
-    <td align="center">
-      <img src="./.doc/chat1.png" alt="浅色主题" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🌙 深浅色主题</em>
-    </td>
-    <td align="center">
-      <img src="./.doc/group-ai-ds.png" alt="AI机器人" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 AI机器人 (DeepSeek、Gemini)</em>
-    </td>
-    <td align="center">
-      <img src="./.doc/rtc1.png" alt="语音视频聊天" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📞 语音视频聊天 WebRTC</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./.doc/chat.png" alt="主页" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🏠 主页界面</em>
-    </td>
-    <td align="center">
-      <img src="./.doc/group-ai-2.png" alt="AI群聊" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 AI群聊功能</em>
-    </td>
-    <td align="center">
-      <img src="./.doc/rtc3.png" alt="屏幕共享" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📺 屏幕内容共享</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./.doc/chat2.png" alt="暗黑主题" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🌙 暗黑主题</em>
-    </td>
-    <td align="center">
-      <img src="./.doc/chat3.png" alt="AI购物聊天" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🛒 AI购物聊天</em>
-    </td>
-    <td align="center">
-      <img src="./.doc/chat4.png" alt="账号与安全" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🔐 账号与安全</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./.doc/group-ai-1.png" alt="AI机器人广场" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 AI机器人广场</em>
-    </td>
-    <td align="center">
-      <img src="./.doc/chat3.2.png" alt="购物功能" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🛍️ 购物功能界面</em>
-    </td>
-    <td align="center">
-      <img src="./.doc/chat5.png" alt="设备管理" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📱 设备管理</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./.doc/chat6-light.png" alt="设置页面" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>⚙️ 设置页面</em>
-    </td>
-    <td align="center"></td>
-    <td align="center"></td>
-  </tr>
-</table>
+![AI对话暗色主题](.doc/desktop/home_ai_dark.png)
 
-- 移动端适配
+![AI群聊功能](.doc/desktop/ai.png)
+
+![好友列表](.doc/desktop/friend.png)
+
+![账号与安全](.doc/desktop/safe.png)
+
+![扩展-悦读时光](.doc/desktop/extention_book.png)
+
+![扩展菜单](.doc/desktop/extention_menu.png)
+
+![设置页面](.doc/desktop/setting.png)
+
+- 📱 **移动端适配**
 
 <div>
- <img src="./.doc/chat12.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat14.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat13.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat12.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat14.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat13.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
  <img src="./.doc/chat7.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
  <img src="./.doc/rtc2.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
  <img src="./.doc/rtc_remove_desktop.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat8.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat10.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat15.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat11.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat17.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat16.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
- <img src="./.doc/chat9.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat8.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat10.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat15.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat11.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat17.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat16.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
+ <img src=".doc/mobile/chat9.png" width = "160" style="display:inline-block;" alt="移动端适配" align=center />
 </div>
+
+- 🌐 **Web端**
+
+![Web端](.doc/web/login.png)
 
 ## 🌌 系统功能
 
@@ -190,17 +139,17 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 
 </details>
 
-## ⏳ 起步
+## ⏳ 开发
 
 ### 📦 前置操作
 
 - 前置环境、配置 [Tauri 官方文档](https://tauri.app/zh-cn/start/prerequisites/)
 
-### ✨ 开发
+### ✨ 文档说明
 
 - 详细操作文档可查看 [Run.md](./Run.md)
 
-## 🔧 涉及技术栈 | Tech Stack
+### 🔧 涉及技术栈 | Tech Stack
 
 | 类别           | 技术/组件    | 版本号     |
 | -------------- | ------------ | ---------- |

@@ -1,37 +1,37 @@
 <div align=center>
  <div align=center margin="10em" style="margin:4em 0 0 0;font-size: 30px;letter-spacing:0.3em;">
-<img src="../.doc/jiwuchat-tauri.png" width="140px" height="140px" alt="Nome da imagem" align=center />
+<img src="./jiwuchat-tauri.png" width="140px" height="140px" alt="JiwuChat Logo" align=center />
  </div>
  <h2 align=center style="margin: 2em 0;">JiwuChat Tauri APP</h2>
 
 <div>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri" target="_blank">
-        <img class="disabled-img-view" src="https://img.shields.io/badge/Github-Endereço%20do%20projeto-blueviolet.svg?style=plasticr" alt="Endereço do projeto" >
+      <a href="https://github.com/Kiwi233333/JiwuChat" target="_blank">
+        <img class="disabled-img-view" src="https://img.shields.io/badge/Github-Repositório%20do%20Projeto-blueviolet.svg?style=plasticr" alt="Repositório do Projeto" >
       </a>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/stargazers" target="_blank">
-        <img class="disabled-img-view" alt="Licença"
-          src="https://img.shields.io/github/stars/Kiwi233333/jiwu-mall-chat-tauri.svg?style=social">
+      <a href="https://github.com/Kiwi233333/JiwuChat/stargazers" target="_blank">
+        <img class="disabled-img-view" alt="License"
+          src="https://img.shields.io/github/stars/Kiwi233333/JiwuChat.svg?style=social">
       </a>
     </div>
     <div>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/commits" target="_blank">
+      <a href="https://github.com/Kiwi233333/JiwuChat/commits" target="_blank">
         <img class="disabled-img-view" alt="Commit"
-          src="https://img.shields.io/github/commit-activity/m/Kiwi233333/jiwu-mall-chat-tauri">
+          src="https://img.shields.io/github/commit-activity/m/Kiwi233333/JiwuChat">
       </a>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/issues" target="_blank">
-        <img class="disabled-img-view" alt="Problemas" src="https://img.shields.io/github/issues/Kiwi233333/jiwu-mall-chat-tauri">
+      <a href="https://github.com/Kiwi233333/JiwuChat/issues" target="_blank">
+        <img class="disabled-img-view" alt="Issues" src="https://img.shields.io/github/issues/Kiwi233333/JiwuChat">
       </a>
     </div>
     <div>
-      <a href="`https://github.com/Kiwi233333/jiwu-mall-chat-tauri/blob/main/LICENSE`" target="_blank">
-          <img class="disabled-img-view" alt="Licença"
-          src="https://img.shields.io/github/license/Kiwi233333/jiwu-mall-chat-tauri">
+      <a href="`https://github.com/Kiwi233333/JiwuChat/blob/main/LICENSE`" target="_blank">
+          <img class="disabled-img-view" alt="License"
+          src="https://img.shields.io/github/license/Kiwi233333/JiwuChat">
       </a>
       <a href="https://app.netlify.com/sites/jiwuchat/deploys" target="_blank">
-          <img src="https://api.netlify.com/api/v1/badges/b68ad9ac-53e5-4c5a-ac56-a8882ffe7697/deploy-status" alt="+Grupo QQ"/>
+          <img src="https://api.netlify.com/api/v1/badges/b68ad9ac-53e5-4c5a-ac56-a8882ffe7697/deploy-status" alt="Status de Implantação"/>
       </a>
       <a href="https://qm.qq.com/q/iSaETNVdKw" target="_blank">
-        <img src="https://img.shields.io/badge/QQ--Grupo:939204073-blue?logo=tencentqq&logoColor=white" alt="Grupo QQ"/>
+        <img src="https://img.shields.io/badge/Grupo%20QQ:939204073 -blue?logo=tencentqq&logoColor=white" alt="Grupo QQ"/>
       </a>
     </div>
     <div>
@@ -40,190 +40,161 @@
       </a>
     </div>
 
-Site oficial: [JiwuChat](https://blog.jiwuchat.top/)
-<br>
-Idioma: [简体中文](../README.md) | [English](./README.en.md) | [Deutsch](./README.de.md) | [Español](./README.es.md) | [Français](./README.fr.md) | [日本語](./README.ja.md) | [한국어](./README.ko.md) | **Português** | [Русский](./README.ru.md)
+Site Oficial: [JiwuChat](https://blog.jiwuchat.top/) <br> Idioma : [简体中文](../README.md) | [English](./README.en.md) | [Deutsch](./README.de.md) | [Español](./README.es.md) | [Français](./README.fr.md) | [日本語](./README.ja.md) | [한국어](./README.ko.md) | **Português** | [Русский](./README.ru.md)
 
 </div>
 
 ## Introdução
 
-JiwuChat é um aplicativo de bate-papo multiplataforma leve `(~10MB)` construído com Tauri2 e Nuxt3. Ele oferece uma variedade de recursos de mensagens em tempo real, bots de bate-papo em grupo de IA (com `iFlytek Spark`, `KimiAI`, etc. já integrados), `chamadas de áudio/vídeo WebRTC`, compartilhamento de tela e recursos de compras de IA. Ele suporta comunicação perfeita entre dispositivos, cobrindo vários tipos de mensagens, como texto, imagens, arquivos e voz. Ele também suporta bate-papos em grupo e configurações personalizáveis. Ele oferece modos claro/escuro para capacitar uma rede social eficiente. ✨
+JiwuChat é um aplicativo de chat multiplataforma leve `(~10MB)` construído com Tauri2 e Nuxt3. Ele oferece vários recursos de mensagens em tempo real, bots de chat em grupo com IA (`iFlytek Spark`, `KimiAI`, etc. integrados), `chamadas de áudio/vídeo WebRTC`, compartilhamento de tela e funcionalidade de compras com IA. Ele suporta comunicação perfeita entre dispositivos com vários tipos de mensagens, incluindo texto, imagens, arquivos e voz. Também suporta chats em grupo e configurações personalizáveis. Disponível nos modos claro/escuro para melhorar as redes sociais eficientes. ✨
 
-## Um código, adaptação multiplataforma
+## Uma Base de Código, Suporte Multiplataforma
 
-![adaptação multiplataforma](../.doc/previews.png)
+![Suporte Multiplataforma](./previews.png)
 
-## Conta padrão
+## Conta Padrão
 
-- Conta: ikun233
+- Nome de usuário: ikun233
 - Senha: 123456
-- Experiência: [Versão Web](https://jiwuchat.top/)
+- Experimente: [Versão Web](https://jiwuchat.top/)
 
-> ⚠ Nota: ~~Esta conta não tem permissão para enviar arquivos, modificar informações pessoais, alterar senhas, etc. É apenas para fins de teste.~~
+> ⚠ Nota: ~~Esta conta tem permissões limitadas para upload de arquivos, modificações de perfil e alterações de senha. É apenas para fins de teste.~~
 
-> 👀 Obrigado pelo seu apoio. O projeto ainda está em desenvolvimento e o backend ainda não é de código aberto. Agradecemos suas valiosas sugestões. Se você tiver alguma dúvida, entre em contato conosco por e-mail ou QQ.
+> 👀 Obrigado pelo seu apoio! O projeto ainda está em desenvolvimento e o backend ainda não é de código aberto. Agradecemos seus valiosos comentários. Para quaisquer perguntas, entre em contato conosco por e-mail ou QQ.
 
-## Capturas de tela do projeto
+## Capturas de Tela do Projeto
 
-- Aplicativo de desktop de bate-papo Login / Registro
+- 🖥️ **Desktop**
 
-![Login](../.doc/login.png)
+![Login](./login.png)
 
-![Registro](../.doc/register.png)
+![Início](./desktop/home.png)
 
-<table align="center">
-  <tr>
-    <td align="center">
-      <img src="../.doc/chat1.png" alt="Tema claro" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🌙 Tema claro/escuro</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/group-ai-ds.png" alt="Robô de IA" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 Robô de IA (DeepSeek, Gemini)</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/rtc1.png" alt="Bate-papo por voz e vídeo" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📞 Bate-papo por voz e vídeo WebRTC</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../.doc/chat.png" alt="Página inicial" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🏠 Interface da página inicial</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/group-ai-2.png" alt="Bate-papo em grupo de IA" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 Recurso de bate-papo em grupo de IA</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/rtc3.png" alt="Compartilhamento de tela" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📺 Compartilhamento de tela</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../.doc/chat2.png" alt="Tema escuro" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🌙 Tema escuro</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/chat3.png" alt="Bate-papo de compras de IA" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🛒 Bate-papo de compras de IA</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/chat4.png" alt="Conta e segurança" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🔐 Conta e segurança</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../.doc/group-ai-1.png" alt="Praça de robôs de IA" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 Praça de robôs de IA</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/chat3.2.png" alt="Recurso de compras" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🛍️ Interface do recurso de compras</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/chat5.png" alt="Gerenciamento de dispositivos" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📱 Gerenciamento de dispositivos</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../.doc/chat6-light.png" alt="Página de configurações" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>⚙️ Página de configurações</em>
-    </td>
-    <td align="center"></td>
-    <td align="center"></td>
-  </tr>
-</table>
+![Chat IA Tema Escuro](./desktop/home_ai_dark.png)
 
-- Adaptação móvel
+![Recurso de Chat em Grupo com IA](./desktop/ai.png)
+
+![Lista de Amigos](./desktop/friend.png)
+
+![Conta e Segurança](./desktop/safe.png)
+
+![Extensão - Tempo de Leitura](./desktop/extention_book.png)
+
+![Menu de Extensões](./desktop/extention_menu.png)
+
+![Página de Configurações](./desktop/setting.png)
+
+- 📱 **Adaptação Mobile**
 
 <div>
- <img src="../.doc/chat12.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat14.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat13.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat7.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/rtc2.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/rtc_remove_desktop.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat8.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat10.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat15.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat11.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat17.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat16.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
- <img src="../.doc/chat9.png" width = "190" style="display:inline-block;" alt="Adaptação móvel" align=center />
+ <img src="./mobile/chat12.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat14.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat13.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./chat7.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./rtc2.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./rtc_remove_desktop.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat8.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat10.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat15.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat11.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat17.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat16.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
+ <img src="./mobile/chat9.png" width = "160" style="display:inline-block;" alt="Adaptação Mobile" align=center />
 </div>
 
-## 🌌 Recursos do sistema
+- 🌐 **Web**
 
-![Módulos](../.doc/JiwuChat%20功能导图.png)
+![Web](./web/login.png)
+
+## 🌌 Funcionalidades do Sistema
+
+![Módulos](./JiwuChat%20功能导图.png)
 
 <details>
-  <summary>Tabela de recursos [Expandir/Recolher]</summary>
+  <summary>Tabela de Funcionalidades [Expandir/Recolher]</summary>
 
-| Módulo                       | Submódulo                         | Descrição do recurso                                                                                                                                         | Status |
-| ---------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
-| Módulo do usuário            | Gerenciamento de contas           | Registro de usuário, login, seleção de conta de login histórica                                                                                              | ✅     |
-|                              | Segurança da conta                | Lembrete de vinculação de e-mail/telefone, gerenciamento de dispositivos, verificação de segurança da conta                                                  | ✅     |
-| Módulo de mensagens          | Bate-papo básico                  | Mensagens de texto, mensagens de imagem, mensagens de vídeo, uploads de arquivos, cancelamento de mensagens, status de leitura de mensagens                  | ✅     |
-|                              | Sincronização de dados            | Sincronização de mensagens em vários dispositivos, sincronização de status de leitura                                                                        | ✅     |
-|                              | Bate-papo avançado                | Respostas de citação, menções @, anúncios, reedição de mensagens canceladas                                                                                  | ✅     |
-| Módulo de sessão             | Gerenciamento de sessão           | Lista de sessões, fixar sessão, ocultar sessão, estatísticas de mensagens não lidas, classificação de sessões                                                | ✅     |
-| Módulo de bate-papo em grupo | Operações de grupo                | Criar bate-papo em grupo, sair do bate-papo em grupo, visualizar detalhes do bate-papo em grupo                                                              | ✅     |
-|                              | Gerenciamento de membros do grupo | Gerenciamento de membros do grupo, definir administrador, revogar administrador, obter lista de @                                                            | ✅     |
-| Módulo de contatos           | Operações de amizade              | Solicitações de amizade, pesquisa de amigos, lista de amigos, recusar solicitações de amizade, excluir amigos                                                | ✅     |
-|                              | Perfil e notificações             | Visualizar detalhes do amigo, estatísticas de solicitações não lidas                                                                                         | ✅     |
-| Módulo de IA                 | Recurso de diálogo                | Bate-papo privado com IA, bate-papo em grupo com IA, bate-papo simultâneo com várias IAs                                                                     | ✅     |
-|                              | Gerenciamento de modelos          | Suporte para modelos de vários fornecedores, como Gemini, Kimi AI, DeepSeek, Silicon-based Flow, lista de modelos, cálculo de tokens                         | ✅     |
-|                              | Recurso de praça                  | Exibição da praça de robôs de IA                                                                                                                             | ✅     |
-| Módulo de comunicação        | Chamadas de áudio/vídeo           | Chamadas de voz baseadas em WebRTC, chamadas de vídeo, compartilhamento de tela                                                                              | ✅     |
-|                              | Histórico de chamadas             | Atualizações de status de chamada, registros de desligamento                                                                                                 | ✅     |
-| Sistema de notificação       | Notificações de mensagens         | Notificações de desktop, lembretes da bandeja do sistema, configurações de toque, não perturbe                                                               | ✅     |
-| Recurso de extensão          | Integrado                         | Integração de shopping, integração de blog, painel de registro de atualizações                                                                               | ✅     |
-| Outros módulos               | Outros recursos                   | Recursos de bate-papo social, recursos de compras de IA, gerenciamento de download de arquivos, ferramentas de tradução (tradução de IA/tradução da Tencent) | ✅     |
-|                              | Arquivo e reprodução              | Visualizador de imagens, reprodutor de vídeo, download de arquivos, upload de imagens em lote                                                                | ✅     |
-|                              | Configuração de tema              | Alternância de tema claro/escuro, seguir o tema do sistema, configurações de fonte, layout adaptável                                                         | ✅     |
-|                              | Compatibilidade de plataforma     | Windows, MacOS, Linux, Android, adaptação da Web                                                                                                             | ✅     |
+| Módulo       | Submódulo     | Descrição da Funcionalidade                                                                | Status |
+| ---------- | ---------- | ----------------------------------------------------------------------- | -------- |
+| Módulo de Usuário   | Gerenciamento de Conta   | Registro de usuário, login, seleção de conta de login histórico                                        | ✅       |
+|            | Segurança da Conta   | Lembrete de vinculação de e-mail/telefone, gerenciamento de dispositivos, verificação de segurança da conta                             | ✅       |
+| Módulo de Mensagens   | Chat Básico   | Mensagens de texto, mensagens de imagem, mensagens de vídeo, upload de arquivos, cancelamento de mensagens, status de leitura de mensagens          | ✅       |
+|            | Sincronização de Dados   | Sincronização de mensagens entre dispositivos, sincronização de status de leitura                                            | ✅       |
+|            | Chat Avançado   | Respostas com citações, menções @, anúncios, reeditar mensagens canceladas                         | ✅       |
+| Módulo de Sessão   | Gerenciamento de Sessão   | Lista de sessões, fixar sessões, ocultar sessões, estatísticas de não lidos, ordenação de sessões                  | ✅       |
+| Módulo de Chat em Grupo   | Operações de Grupo   | Criar chat em grupo, sair do chat em grupo, ver detalhes do chat em grupo                                        | ✅       |
+|            | Gerenciamento de Membros do Grupo | Gerenciar membros do grupo, definir administradores, revogar administradores, obter lista @                           | ✅       |
+| Módulo de Contatos | Operações de Amigos   | Solicitações de amizade, busca de amigos, lista de amigos, recusar solicitações de amizade, excluir amigos                    | ✅       |
+|            | Perfil e Notificações | Ver detalhes de amigos, estatísticas de solicitações não lidas                                            | ✅       |
+| Módulo de IA     | Funcionalidades de Chat   | Chat privado com IA, chat em grupo com IA, chat simultâneo com múltiplas IAs                                            | ✅       |
+|            | Gerenciamento de Modelos   | Suporte para Gemini, Kimi AI, DeepSeek, Silicon Flow e outros fornecedores, lista de modelos, cálculo de tokens | ✅       |
+|            | Função Praça   | Exibição da praça de robôs IA                                                        | ✅       |
+| Módulo de Comunicação   | Chamadas de Áudio/Vídeo | Chamadas de voz baseadas em WebRTC, chamadas de vídeo, compartilhamento de tela                                | ✅       |
+|            | Histórico de Chamadas   | Atualizações de status de chamada, registros de desligamento                                                  | ✅       |
+| Sistema de Notificação   | Notificações de Mensagens   | Notificações de desktop, alertas da bandeja do sistema, configurações de toque, não perturbe                            | ✅       |
+| Funcionalidades de Extensão   | Integração Abrangente   | Integração de loja, integração de blog, painel de log de atualização                                        | ✅       |
+| Outros Módulos   | Outras Funcionalidades   | Funcionalidades de chat social, funcionalidades de compras com IA, gerenciamento de download de arquivos, ferramentas de tradução (tradução IA/tradução Tencent) | ✅       |
+|            | Arquivos e Reprodução | Visualizador de imagens, player de vídeo, download de arquivos, upload de imagens em lote                          | ✅       |
+|            | Configuração de Tema   | Alternância de tema claro/escuro, seguir tema do sistema, configurações de fonte, layout adaptativo                      | ✅       |
+|            | Compatibilidade de Plataforma   | Adaptação para Windows, MacOS, Linux, Android, Web                               | ✅       |
 
 </details>
 
-## ⏳ Primeiros passos
+## ⏳ Desenvolvimento
 
-### 📦 Instalar dependências
+### 📦 Pré-requisitos
 
-```sh
-# node version > = 20
-npm install -g pnpm
+- Pré-requisitos e configuração [Documentação Oficial do Tauri](https://tauri.app/pt/start/prerequisites/)
 
-pnpm install
-```
+### ✨ Documentação
 
-### ✨ Desenvolvimento
+- Para documentação operacional detalhada, consulte [Run.md](../Run.md)
 
-- Para obter instruções de operação detalhadas, consulte [Run.md](../Run.md)
+### 🔧 Stack Tecnológico
 
-## 🔧 Pilha de tecnologia
+| Categoria           | Tecnologia/Componente    | Versão     |
+| -------------- | ------------ | ---------- |
+| Framework           | Nuxt         | ^3.14.159+ |
+|                | Tauri        | ^2.1.0     |
+| Biblioteca de Componentes UI      | Element Plus | ^2.8.4     |
+| Gerenciamento de Estado       | Pinia        | 2.1.7      |
+| Biblioteca Utilitária         | Vueuse       | 10.11.0    |
+| Ferramentas de Build e Desenvolvimento | Nuxi         | lts        |
+|                | Vite         | lts        |
+| Qualidade de Código       | ESLint       | 8.56.0     |
+|                | Prettier     | 3.3.2      |
+| Verificação de Tipo       | TypeScript   | 5.3.2      |
+| Processamento de Estilo       | Sass         | 1.77.6     |
 
-| Categoria                                         | Tecnologia/Componente | Versão     |
-| ------------------------------------------------- | --------------------- | ---------- |
-| Framework                                         | Nuxt                  | ^3.14.159+ |
-|                                                   | Tauri                 | ^2.1.0     |
-| Biblioteca de componentes de interface do usuário | Element Plus          | ^2.8.4     |
-| Gerenciamento de estado                           | Pinia                 | 2.1.7      |
-| Biblioteca de utilitários                         | Vueuse                | 10.11.0    |
-| Ferramentas de compilação e desenvolvimento       | Nuxi                  | lts        |
-|                                                   | Vite                  | lts        |
-| Qualidade do código                               | ESLint                | 8.56.0     |
-|                                                   | Prettier              | 3.3.2      |
-| Verificação de tipo                               | TypeScript            | 5.3.2      |
-| Processamento de estilo                           | Sass                  | 1.77.6     |
+## ❓ Perguntas Frequentes
+
+- **Erros de Instalação no MacOS:**
+
+<!-- Recolher -->
+<details>
+Ao baixar e instalar este projeto no macOS, você pode encontrar mensagens como "Pacote de instalação está corrompido" ou problemas relacionados a certificados devido aos mecanismos de segurança do sistema. Siga estas etapas:
+
+1. Abra「Configurações do Sistema」-「Privacidade e Segurança」e marque a opção para permitir que aplicativos baixados de "Qualquer lugar" sejam executados (conforme mostrado em: img_10.png).
+2. Se os erros persistirem, execute os seguintes comandos no Terminal:
+
+   **Antes da instalação:**
+
+   ```shell
+   sudo xattr -rd com.apple.quarantine /caminho/para/seu/instalador/nome-do-instalador
+   ```
+
+   **Se já estiver instalado:**
+
+   ```shell
+   sudo xattr -r -d com.apple.quarantine /Applications/NomeDoApp.app
+   ```
+
+</details>
+
+- Para perguntas comuns, sinta-se à vontade para deixar uma mensagem na seção [Issues](https://github.com/KiWi233333/JiwuChat/Issues), ou entre em contato conosco através dos métodos abaixo. Complementaremos e responderemos prontamente.
 
 ## 🦾 Tendências
 
-![Gráfico de histórico de estrelas do JiwuChat](https://api.star-history.com/svg?repos=KiWi233333/jiwu-mall-chat-tauri&type=Date)
+![JiwuChat Star History Chart](https://api.star-history.com/svg?repos=KiWi233333/JiwuChat&type=Date)
 
 ## 💬 Contato
 

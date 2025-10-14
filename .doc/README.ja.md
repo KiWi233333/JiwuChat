@@ -1,37 +1,37 @@
 <div align=center>
  <div align=center margin="10em" style="margin:4em 0 0 0;font-size: 30px;letter-spacing:0.3em;">
-<img src="../.doc/jiwuchat-tauri.png" width="140px" height="140px" alt="画像名" align=center />
+<img src="./jiwuchat-tauri.png" width="140px" height="140px" alt="JiwuChat ロゴ" align=center />
  </div>
  <h2 align=center style="margin: 2em 0;">JiwuChat Tauri APP</h2>
 
 <div>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri" target="_blank">
-        <img class="disabled-img-view" src="https://img.shields.io/badge/Github-プロジェクトアドレス-blueviolet.svg?style=plasticr" alt="プロジェクトアドレス" >
+      <a href="https://github.com/Kiwi233333/JiwuChat" target="_blank">
+        <img class="disabled-img-view" src="https://img.shields.io/badge/Github-プロジェクトリポジトリ-blueviolet.svg?style=plasticr" alt="プロジェクトリポジトリ" >
       </a>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/stargazers" target="_blank">
-        <img class="disabled-img-view" alt="ライセンス"
-          src="https://img.shields.io/github/stars/Kiwi233333/jiwu-mall-chat-tauri.svg?style=social">
-      </a>
-    </div>
-    <div>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/commits" target="_blank">
-        <img class="disabled-img-view" alt="コミット"
-          src="https://img.shields.io/github/commit-activity/m/Kiwi233333/jiwu-mall-chat-tauri">
-      </a>
-      <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/issues" target="_blank">
-        <img class="disabled-img-view" alt="問題" src="https://img.shields.io/github/issues/Kiwi233333/jiwu-mall-chat-tauri">
+      <a href="https://github.com/Kiwi233333/JiwuChat/stargazers" target="_blank">
+        <img class="disabled-img-view" alt="License"
+          src="https://img.shields.io/github/stars/Kiwi233333/JiwuChat.svg?style=social">
       </a>
     </div>
     <div>
-      <a href="`https://github.com/Kiwi233333/jiwu-mall-chat-tauri/blob/main/LICENSE`" target="_blank">
-          <img class="disabled-img-view" alt="ライセンス"
-          src="https://img.shields.io/github/license/Kiwi233333/jiwu-mall-chat-tauri">
+      <a href="https://github.com/Kiwi233333/JiwuChat/commits" target="_blank">
+        <img class="disabled-img-view" alt="Commit"
+          src="https://img.shields.io/github/commit-activity/m/Kiwi233333/JiwuChat">
+      </a>
+      <a href="https://github.com/Kiwi233333/JiwuChat/issues" target="_blank">
+        <img class="disabled-img-view" alt="Issues" src="https://img.shields.io/github/issues/Kiwi233333/JiwuChat">
+      </a>
+    </div>
+    <div>
+      <a href="`https://github.com/Kiwi233333/JiwuChat/blob/main/LICENSE`" target="_blank">
+          <img class="disabled-img-view" alt="License"
+          src="https://img.shields.io/github/license/Kiwi233333/JiwuChat">
       </a>
       <a href="https://app.netlify.com/sites/jiwuchat/deploys" target="_blank">
-          <img src="https://api.netlify.com/api/v1/badges/b68ad9ac-53e5-4c5a-ac56-a8882ffe7697/deploy-status" alt="+QQグループ"/>
+          <img src="https://api.netlify.com/api/v1/badges/b68ad9ac-53e5-4c5a-ac56-a8882ffe7697/deploy-status" alt="デプロイステータス"/>
       </a>
       <a href="https://qm.qq.com/q/iSaETNVdKw" target="_blank">
-        <img src="https://img.shields.io/badge/QQ--グループ:939204073-blue?logo=tencentqq&logoColor=white" alt="QQグループ"/>
+        <img src="https://img.shields.io/badge/QQグループ:939204073 -blue?logo=tencentqq&logoColor=white" alt="QQグループ"/>
       </a>
     </div>
     <div>
@@ -40,193 +40,164 @@
       </a>
     </div>
 
-公式サイト：[JiwuChat](https://blog.jiwuchat.top/)
-<br>
-言語：[简体中文](../README.md) | [English](./README.en.md) | [Deutsch](./README.de.md) | [Español](./README.es.md) | [Français](./README.fr.md) | **日本語** | [한국어](./README.ko.md) | [Português](./README.pt.md) | [Русский](./README.ru.md)
+公式サイト: [JiwuChat](https://blog.jiwuchat.top/) <br> 言語 : [简体中文](../README.md) | [English](./README.en.md) | [Deutsch](./README.de.md) | [Español](./README.es.md) | [Français](./README.fr.md) | **日本語** | [한국어](./README.ko.md) | [Português](./README.pt.md) | [Русский](./README.ru.md)
 
 </div>
 
-## はじめに
+## 紹介
 
-JiwuChatは、Tauri2とNuxt3で構築された軽量`(~10MB)`のクロスプラットフォームチャットアプリケーションです。リアルタイムメッセージング機能、AIグループチャットボット（`iFlytek Spark`、`KimiAI`などがすでに統合されています）、`WebRTCオーディオ/ビデオ通話`、画面共有、AIショッピング機能など、さまざまな機能を提供します。テキスト、画像、ファイル、音声など、さまざまなメッセージタイプをカバーし、デバイス間のシームレスな通信をサポートします。また、グループチャットやカスタマイズ可能な設定もサポートしています。効率的なソーシャルネットワークを強化するために、ライト/ダークモードを提供します。✨
+JiwuChatは、Tauri2とNuxt3で構築された軽量`(~10MB)`のマルチプラットフォームチャットアプリケーションです。様々なリアルタイムメッセージング機能、AIグループチャットボット（`iFlytek Spark`、`KimiAI`などを統合）、`WebRTC音声/ビデオ通話`、画面共有、AIショッピング機能を備えています。テキスト、画像、ファイル、音声などの様々なメッセージタイプでシームレスなクロスデバイス通信をサポートします。また、グループチャットとカスタマイズ可能な設定もサポートしています。効率的なソーシャルネットワーキングを支援するライト/ダークモードが利用可能です。 ✨
 
-## 1つのコード、クロスプラットフォーム適応
+## ワンコードベース、マルチプラットフォームサポート
 
-![クロスプラットフォーム適応](../.doc/previews.png)
+![マルチプラットフォームサポート](./previews.png)
 
 ## デフォルトアカウント
 
-- アカウント：ikun233
-- パスワード：123456
-- 体験：[Web版](https://jiwuchat.top/)
+- ユーザー名: ikun233
+- パスワード: 123456
+- お試し: [Web版](https://jiwuchat.top/)
 
-> ⚠ 注意：~~このアカウントには、ファイルのアップロード、個人情報の変更、パスワードの変更などの権限はありません。テスト目的でのみ使用されます。~~
+> ⚠ 注意: ~~このアカウントは、ファイルのアップロード、プロフィールの変更、パスワードの変更に対して制限された権限を持っています。テスト目的のみです。~~
 
-> 👀 ご支援ありがとうございます。プロジェクトはまだ開発中であり、バックエンドはまだオープンソースではありません。貴重なご提案をお待ちしております。ご不明な点がございましたら、メールまたはQQでお問い合わせください。
+> 👀 ご支援ありがとうございます！プロジェクトはまだ開発中で、バックエンドはまだオープンソース化されていません。貴重なフィードバックをお待ちしております。ご質問がある場合は、メールまたはQQでお問い合わせください。
 
-## プロジェクトのスクリーンショット
+## プロジェクトスクリーンショット
 
-- チャットデスクトップアプリのログイン/登録
+- 🖥️ **デスクトップ**
 
-![ログイン](../.doc/login.png)
+![ログイン](./login.png)
 
-![登録](../.doc/register.png)
+![ホーム](./desktop/home.png)
 
-<table align="center">
-  <tr>
-    <td align="center">
-      <img src="../.doc/chat1.png" alt="ライトテーマ" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🌙 ライト/ダークテーマ</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/group-ai-ds.png" alt="AIロボット" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 AIロボット（DeepSeek、Gemini）</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/rtc1.png" alt="音声・ビデオチャット" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📞 音声・ビデオチャット WebRTC</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../.doc/chat.png" alt="ホームページ" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🏠 ホームページインターフェース</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/group-ai-2.png" alt="AIグループチャット" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 AIグループチャット機能</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/rtc3.png" alt="画面共有" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📺 画面共有</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../.doc/chat2.png" alt="ダークテーマ" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🌙 ダークテーマ</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/chat3.png" alt="AIショッピングチャット" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🛒 AIショッピングチャット</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/chat4.png" alt="アカウントとセキュリティ" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🔐 アカウントとセキュリティ</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../.doc/group-ai-1.png" alt="AIロボットプラザ" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🤖 AIロボットプラザ</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/chat3.2.png" alt="ショッピング機能" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>🛍️ ショッピング機能インターフェース</em>
-    </td>
-    <td align="center">
-      <img src="../.doc/chat5.png" alt="デバイス管理" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>📱 デバイス管理</em>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="../.doc/chat6-light.png" alt="設定ページ" width="280" style="border-radius: 0.5rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); margin: 6px;">
-      <br><em>⚙️ 設定ページ</em>
-    </td>
-    <td align="center"></td>
-    <td align="center"></td>
-  </tr>
-</table>
+![AIチャット ダークテーマ](./desktop/home_ai_dark.png)
 
-- モバイル適応
+![AIグループチャット機能](./desktop/ai.png)
+
+![友達リスト](./desktop/friend.png)
+
+![アカウントとセキュリティ](./desktop/safe.png)
+
+![拡張機能 - 読書時間](./desktop/extention_book.png)
+
+![拡張メニュー](./desktop/extention_menu.png)
+
+![設定ページ](./desktop/setting.png)
+
+- 📱 **モバイル対応**
 
 <div>
- <img src="../.doc/chat12.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat14.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat13.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat7.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/rtc2.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/rtc_remove_desktop.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat8.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat10.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat15.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat11.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat17.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat16.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
- <img src="../.doc/chat9.png" width = "190" style="display:inline-block;" alt="モバイル適応" align=center />
+ <img src="./mobile/chat12.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat14.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat13.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./chat7.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./rtc2.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./rtc_remove_desktop.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat8.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat10.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat15.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat11.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat17.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat16.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
+ <img src="./mobile/chat9.png" width = "160" style="display:inline-block;" alt="モバイル対応" align=center />
 </div>
+
+- 🌐 **Web**
+
+![Web](./web/login.png)
 
 ## 🌌 システム機能
 
-![モジュール](../.doc/JiwuChat%20功能导图.png)
+![モジュール](./JiwuChat%20功能导图.png)
 
 <details>
-  <summary>機能表 [展開/折りたたみ]</summary>
+  <summary>機能テーブル [展開/折りたたみ]</summary>
 
-| モジュール                 | サブモジュール         | 機能説明                                                                                                                 | ステータス |
-| -------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------- |
-| ユーザーモジュール         | アカウント管理         | ユーザー登録、ログイン、履歴ログインアカウントの選択                                                                     | ✅         |
-|                            | アカウントセキュリティ | メール/電話バインディングリマインダー、デバイス管理、アカウントセキュリティ検証                                          | ✅         |
-| メッセージモジュール       | 基本チャット           | テキストメッセージ、画像メッセージ、ビデオメッセージ、ファイルアップロード、メッセージ取り消し、メッセージ既読ステータス | ✅         |
-|                            | データ同期             | マルチデバイスメッセージ同期、既読ステータス同期                                                                         | ✅         |
-|                            | 高度なチャット         | 引用返信、@メンション、お知らせ、取り消しメッセージの再編集                                                              | ✅         |
-| セッションモジュール       | セッション管理         | セッションリスト、セッションのピン留め、セッションの非表示、未読メッセージ統計、セッションの並べ替え                     | ✅         |
-| グループチャットモジュール | グループ操作           | グループチャットの作成、グループチャットからの脱退、グループチャットの詳細表示                                           | ✅         |
-|                            | グループメンバー管理   | グループメンバー管理、管理者の設定、管理者の取り消し、@リストの取得                                                      | ✅         |
-| 連絡先モジュール           | フレンド操作           | フレンド申請、フレンド検索、フレンドリスト、フレンド申請の拒否、フレンドの削除                                           | ✅         |
-|                            | プロフィールと通知     | フレンド詳細の表示、未読申請統計                                                                                         | ✅         |
-| AIモジュール               | 対話機能               | AIとのプライベートチャット、AIとのグループチャット、複数のAIとの同時チャット                                             | ✅         |
-|                            | モデル管理             | Gemini、Kimi AI、DeepSeek、Silicon-based Flowなどの複数のベンダーのモデルをサポート、モデルリスト、トークン計算          | ✅         |
-|                            | プラザ機能             | AIロボットプラザの表示                                                                                                   | ✅         |
-| 通信モジュール             | 音声/ビデオ通話        | WebRTCベースの音声通話、ビデオ通話、画面共有                                                                             | ✅         |
-|                            | 通話履歴               | 通話ステータスの更新、切断記録                                                                                           | ✅         |
-| 通知システム               | メッセージ通知         | デスクトップ通知、システムトレイリマインダー、着信音設定、サイレントモード                                               | ✅         |
-| 拡張機能                   | 統合                   | モール統合、ブログ統合、更新ログパネル                                                                                   | ✅         |
-| その他のモジュール         | その他の機能           | ソーシャルチャット機能、AIショッピング機能、ファイルダウンロード管理、翻訳ツール（AI翻訳/Tencent翻訳）                   | ✅         |
-|                            | ファイルと再生         | 画像ビューア、ビデオプレーヤー、ファイルダウンロード、一括画像アップロード                                               | ✅         |
-|                            | テーマ設定             | ライト/ダークテーマの切り替え、システムテーマの追跡、フォント設定、アダプティブレイアウト                                | ✅         |
-|                            | プラットフォーム互換性 | Windows、MacOS、Linux、Android、Web適応                                                                                  | ✅         |
+| モジュール       | サブモジュール     | 機能説明                                                                | ステータス |
+| ---------- | ---------- | ----------------------------------------------------------------------- | -------- |
+| ユーザーモジュール   | アカウント管理   | ユーザー登録、ログイン、履歴ログインアカウント選択                                        | ✅       |
+|            | アカウントセキュリティ   | メール/電話番号バインディングリマインダー、デバイス管理、アカウントセキュリティ検証                             | ✅       |
+| メッセージモジュール   | 基本チャット   | テキストメッセージ、画像メッセージ、ビデオメッセージ、ファイルアップロード、メッセージ取り消し、メッセージ既読ステータス          | ✅       |
+|            | データ同期   | マルチデバイスメッセージ同期、既読ステータス同期                                            | ✅       |
+|            | 高度なチャット   | 引用返信、@メンション、お知らせ、取り消されたメッセージの再編集                         | ✅       |
+| セッションモジュール   | セッション管理   | セッションリスト、セッションのピン留め、セッションの非表示、未読数統計、セッションのソート                  | ✅       |
+| グループチャットモジュール   | グループ操作   | グループチャットの作成、グループチャットの退出、グループチャット詳細の表示                                        | ✅       |
+|            | グループメンバー管理 | グループメンバーの管理、管理者の設定、管理者の取り消し、@リストの取得                           | ✅       |
+| 連絡先モジュール | 友達操作   | 友達リクエスト、友達検索、友達リスト、友達リクエストの拒否、友達の削除                    | ✅       |
+|            | プロフィールと通知 | 友達の詳細表示、未読リクエスト数統計                                            | ✅       |
+| AIモジュール     | チャット機能   | プライベートAIチャット、グループAIチャット、マルチAI同時チャット                                            | ✅       |
+|            | モデル管理   | Gemini、Kimi AI、DeepSeek、Silicon Flowなどのベンダーのサポート、モデルリスト、トークン計算 | ✅       |
+|            | 広場機能   | AIロボット広場の表示                                                        | ✅       |
+| 通信モジュール   | 音声/ビデオ通話 | WebRTCベースの音声通話、ビデオ通話、画面共有                                | ✅       |
+|            | 通話履歴   | 通話ステータスの更新、切断記録                                                  | ✅       |
+| 通知システム   | メッセージ通知   | デスクトップ通知、システムトレイアラート、着信音設定、おやすみモード                            | ✅       |
+| 拡張機能   | 包括的な統合   | ショップ統合、ブログ統合、更新ログパネル                                        | ✅       |
+| その他のモジュール   | その他の機能   | ソーシャルチャット機能、AIショッピング機能、ファイルダウンロード管理、翻訳ツール（AI翻訳/Tencent翻訳） | ✅       |
+|            | ファイルと再生 | 画像ビューアー、ビデオプレーヤー、ファイルダウンロード、一括画像アップロード                          | ✅       |
+|            | テーマ設定   | ライト/ダークテーマの切り替え、システムテーマに従う、フォント設定、適応レイアウト                      | ✅       |
+|            | プラットフォーム互換性   | Windows、MacOS、Linux、Android、Web対応                               | ✅       |
 
 </details>
 
-## ⏳ はじめに
+## ⏳ 開発
 
-### 📦 依存関係のインストール
+### 📦 前提条件
 
-```sh
-# node version > = 20
-npm install -g pnpm
+- 前提条件と設定 [Tauri公式ドキュメント](https://tauri.app/ja/start/prerequisites/)
 
-pnpm install
-```
+### ✨ ドキュメント
 
-### ✨ 開発
+- 詳細な操作ドキュメントについては、[Run.md](../Run.md)を参照してください
 
-- 詳細な操作手順については、[Run.md](../Run.md)を参照してください。
+### 🔧 技術スタック
 
-## 🔧 技術スタック
+| カテゴリー           | 技術/コンポーネント    | バージョン     |
+| -------------- | ------------ | ---------- |
+| フレームワーク           | Nuxt         | ^3.14.159+ |
+|                | Tauri        | ^2.1.0     |
+| UIコンポーネントライブラリ      | Element Plus | ^2.8.4     |
+| 状態管理       | Pinia        | 2.1.7      |
+| ユーティリティライブラリ         | Vueuse       | 10.11.0    |
+| ビルド&開発ツール | Nuxi         | lts        |
+|                | Vite         | lts        |
+| コード品質       | ESLint       | 8.56.0     |
+|                | Prettier     | 3.3.2      |
+| 型チェック       | TypeScript   | 5.3.2      |
+| スタイル処理       | Sass         | 1.77.6     |
 
-| カテゴリ                   | 技術/コンポーネント | バージョン |
-| -------------------------- | ------------------- | ---------- |
-| フレームワーク             | Nuxt                | ^3.14.159+ |
-|                            | Tauri               | ^2.1.0     |
-| UIコンポーネントライブラリ | Element Plus        | ^2.8.4     |
-| 状態管理                   | Pinia               | 2.1.7      |
-| ユーティリティライブラリ   | Vueuse              | 10.11.0    |
-| ビルド＆開発ツール         | Nuxi                | lts        |
-|                            | Vite                | lts        |
-| コード品質                 | ESLint              | 8.56.0     |
-|                            | Prettier            | 3.3.2      |
-| 型チェック                 | TypeScript          | 5.3.2      |
-| スタイル処理               | Sass                | 1.77.6     |
+## ❓ よくある質問
+
+- **MacOSインストールエラー:**
+
+<!-- 折りたたみ -->
+<details>
+macOSでこのプロジェクトをダウンロードしてインストールする際、システムのセキュリティメカニズムにより「インストールパッケージが破損しています」などのメッセージや証明書関連の問題が発生する可能性があります。次の手順に従ってください：
+
+1. 「システム設定」-「プライバシーとセキュリティ」を開き、「すべての場所」からダウンロードされたアプリの実行を許可するオプションにチェックを入れます（img_10.pngを参照）。
+2. エラーが続く場合は、ターミナルで次のコマンドを実行してください：
+
+   **インストール前：**
+
+   ```shell
+   sudo xattr -rd com.apple.quarantine /インストーラーへのパス/インストーラー名
+   ```
+
+   **既にインストールされている場合：**
+
+   ```shell
+   sudo xattr -r -d com.apple.quarantine /Applications/アプリ名.app
+   ```
+
+</details>
+
+- よくある質問については、[Issues](https://github.com/KiWi233333/JiwuChat/Issues)セクションにメッセージを残していただくか、以下の方法でお問い合わせください。迅速に補足と回答を行います。
 
 ## 🦾 トレンド
 
-![JiwuChat Star History Chart](https://api.star-history.com/svg?repos=KiWi233333/jiwu-mall-chat-tauri&type=Date)
+![JiwuChat Star History Chart](https://api.star-history.com/svg?repos=KiWi233333/JiwuChat&type=Date)
 
 ## 💬 お問い合わせ
 
-- メール：[kiwi2333@qq.com](mailto:kiwi2333@qq.com)
-- QQ：[1329634286](https://wpa.qq.com/msgrd?v=3&uin=1329634286&site=qqq&menu=yes)
-- QQグループ：[939204073](https://qm.qq.com/q/iSaETNVdKw)
+- メール: [kiwi2333@qq.com](mailto:kiwi2333@qq.com)
+- QQ: [1329634286](https://wpa.qq.com/msgrd?v=3&uin=1329634286&site=qqq&menu=yes)
+- QQグループ: [939204073](https://qm.qq.com/q/iSaETNVdKw)
