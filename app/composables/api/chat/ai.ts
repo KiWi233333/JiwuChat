@@ -6,11 +6,11 @@
  */
 export function getAiRobotList(
   token: string,
-  showDetail: isTrue = isTrue.FALESE,
+  showDetail: isTrue = isTrue.FALSE,
 ) {
   return useHttp.get<Result<RobotUserVO[]>>(
     `/chat/ai/robot/list`,
-    { showDetail: showDetail || isTrue.FALESE },
+    { showDetail: showDetail || isTrue.FALSE },
     { headers: { Authorization: token } },
   );
 }

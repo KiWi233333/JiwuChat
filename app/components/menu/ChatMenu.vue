@@ -60,8 +60,8 @@ const menuList = computed<MenuItem[]>(() => ([
   {
     title: "AI客服",
     path: "/ai",
-    icon: "i-solar:ghost-outline",
-    activeIcon: "i-solar:ghost-bold",
+    icon: "i-ri:robot-2-line",
+    activeIcon: "i-ri:robot-2-bold",
   },
   ...(setting.selectExtendMenuList || []).map(p => ({
     title: p.title,

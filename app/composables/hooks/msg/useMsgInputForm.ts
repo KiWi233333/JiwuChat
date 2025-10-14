@@ -326,6 +326,8 @@ export function useMsgInputForm(
   const atFilterKeyword = ref("");
   const aiFilterKeyword = ref("");
   const optionsPosition = ref({ left: 0, top: 0, width: 250 });
+  // 置顶用户
+  const replyUserIdStickTop = computed(() => chat.replyMsg?.fromUser?.userId);
 
   // 管理器实例
   const domCache = new DomCacheManager();
@@ -350,22 +352,51 @@ export function useMsgInputForm(
   //   userAtOptions.value?.filter(p => !atSelectOptions.value.has(p.userId)) || [],
   // );
 
+  // 当前可选项
   const filteredUserAtOptions = computed(() => {
-    if (!atFilterKeyword.value)
-      return userAtOptions.value;
     const keyword = atFilterKeyword.value.toLowerCase();
-    return userAtOptions.value.filter(user =>
-      user?.nickName?.toLowerCase().includes(keyword),
-    );
+    const stickId = replyUserIdStickTop.value;
+    const result: typeof userAtOptions.value = [];
+    const others: typeof userAtOptions.value = [];
+
+    for (const user of userAtOptions.value) {
+      // 关键词过滤
+      if (keyword && !user.nickName.toLowerCase().includes(keyword)) {
+        continue;
+      }
+      // 置顶用户
+      if (stickId && user.userId === stickId) {
+        result.push(user);
+      }
+      else {
+        others.push(user);
+      }
+    }
+
+    return result.length > 0 ? [...result, ...others] : others;
   });
 
   const filteredAiOptions = computed(() => {
-    if (!aiFilterKeyword.value)
-      return aiShowOptions.value;
     const keyword = aiFilterKeyword.value.toLowerCase();
-    return aiShowOptions.value.filter(ai =>
-      ai?.nickName?.toLowerCase().includes(keyword),
-    );
+    const stickId = replyUserIdStickTop.value;
+    const result: typeof aiOptions.value = [];
+    const others: typeof aiOptions.value = [];
+
+    for (const ai of aiOptions.value) {
+      // 关键词过滤
+      if (keyword && !ai.nickName.toLowerCase().includes(keyword)) {
+        continue;
+      }
+      // 置顶机器人
+      if (stickId && ai.userId === stickId) {
+        result.push(ai);
+      }
+      else {
+        others.push(ai);
+      }
+    }
+
+    return result.length > 0 ? [...result, ...others] : others;
   });
 
   // 监听器
@@ -1098,72 +1129,72 @@ export function useMsgInputForm(
     });
 
     const getFormData
-    = () => {
-      if (!oss?.file) {
-        return baseMessage;
-      }
-
-      const analysis = fileActions.analyzeFile(oss.file, customUploadType);
-      const type = analysis.type;
-
-      switch (type) {
-        case OssFileType.IMAGE:
-          return {
-            ...baseMessage,
-            msgType: MessageType.IMG,
-            body: {
-              ...baseMessage.body,
-              url: oss.key!,
-              width: oss.width || 0,
-              height: oss.height || 0,
-              size: oss.file?.size,
-            },
-          };
-
-        case OssFileType.VIDEO:
-          const thumb = oss?.children?.[0];
-          return {
-            ...baseMessage,
-            msgType: MessageType.VIDEO,
-            body: {
-              ...baseMessage.body,
-              url: oss.key,
-              size: oss.file?.size || 0,
-              duration: oss.duration || 0,
-              thumbUrl: thumb?.key,
-              thumbSize: thumb?.thumbSize,
-              thumbWidth: thumb?.thumbWidth,
-              thumbHeight: thumb?.thumbHeight,
-            },
-          };
-
-        case OssFileType.FILE:
-          return {
-            ...baseMessage,
-            msgType: MessageType.FILE,
-            body: {
-              ...baseMessage.body,
-              fileName: oss.file?.name || "",
-              url: oss.key!,
-              size: oss.file?.size || 0,
-            },
-          };
-
-        case OssFileType.SOUND:
-          return {
-            ...baseMessage,
-            msgType: MessageType.SOUND,
-            body: {
-              ...baseMessage.body,
-              url: oss.key,
-              second: oss.duration || 0,
-            },
-          };
-
-        default:
+      = () => {
+        if (!oss?.file) {
           return baseMessage;
-      }
-    };
+        }
+
+        const analysis = fileActions.analyzeFile(oss.file, customUploadType);
+        const type = analysis.type;
+
+        switch (type) {
+          case OssFileType.IMAGE:
+            return {
+              ...baseMessage,
+              msgType: MessageType.IMG,
+              body: {
+                ...baseMessage.body,
+                url: oss.key!,
+                width: oss.width || 0,
+                height: oss.height || 0,
+                size: oss.file?.size,
+              },
+            };
+
+          case OssFileType.VIDEO:
+            const thumb = oss?.children?.[0];
+            return {
+              ...baseMessage,
+              msgType: MessageType.VIDEO,
+              body: {
+                ...baseMessage.body,
+                url: oss.key,
+                size: oss.file?.size || 0,
+                duration: oss.duration || 0,
+                thumbUrl: thumb?.key,
+                thumbSize: thumb?.thumbSize,
+                thumbWidth: thumb?.thumbWidth,
+                thumbHeight: thumb?.thumbHeight,
+              },
+            };
+
+          case OssFileType.FILE:
+            return {
+              ...baseMessage,
+              msgType: MessageType.FILE,
+              body: {
+                ...baseMessage.body,
+                fileName: oss.file?.name || "",
+                url: oss.key!,
+                size: oss.file?.size || 0,
+              },
+            };
+
+          case OssFileType.SOUND:
+            return {
+              ...baseMessage,
+              msgType: MessageType.SOUND,
+              body: {
+                ...baseMessage.body,
+                url: oss.key,
+                second: oss.duration || 0,
+              },
+            };
+
+          default:
+            return baseMessage;
+        }
+      };
 
     return { getFormData, previewFormDataTemp, time, ackId };
   }

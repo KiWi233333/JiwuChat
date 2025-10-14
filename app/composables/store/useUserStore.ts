@@ -39,7 +39,7 @@ export const useUserStore = defineStore(
       slogan: "",
       updateTime: "",
       lastLoginTime: "",
-      status: UserStatus.FALESE,
+      status: UserStatus.FALSE,
       isEmailVerified: 0,
       isPhoneVerified: 0,
     });
@@ -169,7 +169,7 @@ export const useUserStore = defineStore(
         updateTime: "",
         slogan: "",
         lastLoginTime: "",
-        status: UserStatus.FALESE,
+        status: UserStatus.FALSE,
         isEmailVerified: 0,
         isPhoneVerified: 0,
       };

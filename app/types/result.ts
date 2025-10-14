@@ -50,5 +50,5 @@ export enum Sort {
 }
 export enum isTrue {
   TRUE = 1,
-  FALESE = 0,
+  FALSE = 0,
 }

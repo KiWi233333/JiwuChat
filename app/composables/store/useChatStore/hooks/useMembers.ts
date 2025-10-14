@@ -135,7 +135,7 @@ export function createMembersModule(ctx: MembersContext) {
         if (user.userId === p.uid) {
           if (!ctx.contactMap.value[roomId])
             return;
-          ctx.contactMap.value[roomId]!.selfExist = isTrue.FALESE;
+          ctx.contactMap.value[roomId]!.selfExist = isTrue.FALSE;
           return;
         }
         if (!roomMapCache.value[roomId]?.userList)
