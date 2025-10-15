@@ -66,7 +66,7 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 
 - 🖥️ **桌面端**
 
-![登录](./.doc/login.png)
+![登录](.doc/desktop/login.png)
 
 ![首页](.doc/desktop/home.png)
 
@@ -78,9 +78,11 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 
 ![账号与安全](.doc/desktop/safe.png)
 
-![扩展-悦读时光](.doc/desktop/extention_book.png)
+![API 开发](.doc/desktop/api_key.png)
 
 ![扩展菜单](.doc/desktop/extention_menu.png)
+
+![扩展-悦读时光](.doc/desktop/extention_book.png)
 
 ![设置页面](.doc/desktop/setting.png)
 
@@ -164,6 +166,14 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 |                | Prettier     | 3.3.2      |
 | 类型检查       | TypeScript   | 5.3.2      |
 | 样式处理       | Sass         | 1.77.6     |
+
+## 📢 推广 | Promotion
+
+**302.AI** 是一个按用量付费的企业级AI资源平台，提供市场上最新、最全面的AI模型和API，以及多种开箱即用的在线AI应用。
+
+[![302.AI](.doc/promotion/302.AI.jpg)](https://share.302.ai/T4GVx3)
+
+<hr/>
 
 ## ❓ 常见问题 | FAQ
 

@@ -66,7 +66,7 @@ JiwuChat is a lightweight `(~10MB)` multi-platform chat application built with T
 
 - 🖥️ **Desktop**
 
-![Login](./login.png)
+![Login](desktop/login.png)
 
 ![Home](./desktop/home.png)
 
@@ -113,29 +113,29 @@ JiwuChat is a lightweight `(~10MB)` multi-platform chat application built with T
 <details>
   <summary>Feature Table [Expand/Collapse]</summary>
 
-| Module       | Sub-Module     | Feature Description                                                                | Status |
-| ---------- | ---------- | ----------------------------------------------------------------------- | -------- |
-| User Module   | Account Management   | User registration, login, historical login account selection                                        | ✅       |
-|            | Account Security   | Email/phone binding reminder, device management, account security verification                             | ✅       |
-| Message Module   | Basic Chat   | Text messages, image messages, video messages, file uploads, message recall, message read status          | ✅       |
-|            | Data Sync   | Multi-device message synchronization, read status synchronization                                            | ✅       |
-|            | Advanced Chat   | Quote replies, @mentions, announcements, re-edit recalled messages                         | ✅       |
-| Session Module   | Session Management   | Session list, pin sessions, hide sessions, unread count statistics, session sorting                  | ✅       |
-| Group Chat Module   | Group Operations   | Create group chat, leave group chat, view group chat details                                        | ✅       |
-|            | Group Member Management | Manage group members, set administrators, revoke administrators, get @list                           | ✅       |
-| Contacts Module | Friend Operations   | Friend requests, friend search, friend list, reject friend requests, delete friends                    | ✅       |
-|            | Profile & Notifications | View friend details, unread request count statistics                                            | ✅       |
-| AI Module     | Chat Features   | Private AI chat, group AI chat, multi-AI simultaneous chat                                            | ✅       |
-|            | Model Management   | Support for Gemini, Kimi AI, DeepSeek, Silicon Flow and other vendors, model list, token calculation | ✅       |
-|            | Plaza Feature   | AI robot plaza display                                                        | ✅       |
-| Communication Module   | Audio/Video Calls | WebRTC-based voice calls, video calls, screen sharing                                | ✅       |
-|            | Call History   | Call status updates, hang-up records                                                  | ✅       |
-| Notification System   | Message Notifications   | Desktop notifications, system tray alerts, ringtone settings, do not disturb                            | ✅       |
-| Extension Features   | Comprehensive Integration   | Mall integration, blog integration, update log panel                                        | ✅       |
-| Other Modules   | Other Features   | Social chat features, AI shopping features, file download management, translation tools (AI translation/Tencent translation) | ✅       |
-|            | Files & Playback | Image viewer, video player, file download, batch image upload                          | ✅       |
-|            | Theme Configuration   | Light/dark theme switching, follow system theme, font settings, adaptive layout                      | ✅       |
-|            | Platform Compatibility   | Windows, MacOS, Linux, Android, Web adaptation                               | ✅       |
+| Module               | Sub-Module                | Feature Description                                                                                                          | Status |
+| -------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------ |
+| User Module          | Account Management        | User registration, login, historical login account selection                                                                 | ✅     |
+|                      | Account Security          | Email/phone binding reminder, device management, account security verification                                               | ✅     |
+| Message Module       | Basic Chat                | Text messages, image messages, video messages, file uploads, message recall, message read status                             | ✅     |
+|                      | Data Sync                 | Multi-device message synchronization, read status synchronization                                                            | ✅     |
+|                      | Advanced Chat             | Quote replies, @mentions, announcements, re-edit recalled messages                                                           | ✅     |
+| Session Module       | Session Management        | Session list, pin sessions, hide sessions, unread count statistics, session sorting                                          | ✅     |
+| Group Chat Module    | Group Operations          | Create group chat, leave group chat, view group chat details                                                                 | ✅     |
+|                      | Group Member Management   | Manage group members, set administrators, revoke administrators, get @list                                                   | ✅     |
+| Contacts Module      | Friend Operations         | Friend requests, friend search, friend list, reject friend requests, delete friends                                          | ✅     |
+|                      | Profile & Notifications   | View friend details, unread request count statistics                                                                         | ✅     |
+| AI Module            | Chat Features             | Private AI chat, group AI chat, multi-AI simultaneous chat                                                                   | ✅     |
+|                      | Model Management          | Support for Gemini, Kimi AI, DeepSeek, Silicon Flow and other vendors, model list, token calculation                         | ✅     |
+|                      | Plaza Feature             | AI robot plaza display                                                                                                       | ✅     |
+| Communication Module | Audio/Video Calls         | WebRTC-based voice calls, video calls, screen sharing                                                                        | ✅     |
+|                      | Call History              | Call status updates, hang-up records                                                                                         | ✅     |
+| Notification System  | Message Notifications     | Desktop notifications, system tray alerts, ringtone settings, do not disturb                                                 | ✅     |
+| Extension Features   | Comprehensive Integration | Mall integration, blog integration, update log panel                                                                         | ✅     |
+| Other Modules        | Other Features            | Social chat features, AI shopping features, file download management, translation tools (AI translation/Tencent translation) | ✅     |
+|                      | Files & Playback          | Image viewer, video player, file download, batch image upload                                                                | ✅     |
+|                      | Theme Configuration       | Light/dark theme switching, follow system theme, font settings, adaptive layout                                              | ✅     |
+|                      | Platform Compatibility    | Windows, MacOS, Linux, Android, Web adaptation                                                                               | ✅     |
 
 </details>
 
@@ -151,19 +151,19 @@ JiwuChat is a lightweight `(~10MB)` multi-platform chat application built with T
 
 ### 🔧 Tech Stack
 
-| Category           | Technology/Component    | Version     |
-| -------------- | ------------ | ---------- |
-| Framework           | Nuxt         | ^3.14.159+ |
-|                | Tauri        | ^2.1.0     |
-| UI Component Library      | Element Plus | ^2.8.4     |
-| State Management       | Pinia        | 2.1.7      |
-| Utility Library         | Vueuse       | 10.11.0    |
-| Build & Dev Tools | Nuxi         | lts        |
-|                | Vite         | lts        |
-| Code Quality       | ESLint       | 8.56.0     |
-|                | Prettier     | 3.3.2      |
-| Type Checking       | TypeScript   | 5.3.2      |
-| Style Processing       | Sass         | 1.77.6     |
+| Category             | Technology/Component | Version    |
+| -------------------- | -------------------- | ---------- |
+| Framework            | Nuxt                 | ^3.14.159+ |
+|                      | Tauri                | ^2.1.0     |
+| UI Component Library | Element Plus         | ^2.8.4     |
+| State Management     | Pinia                | 2.1.7      |
+| Utility Library      | Vueuse               | 10.11.0    |
+| Build & Dev Tools    | Nuxi                 | lts        |
+|                      | Vite                 | lts        |
+| Code Quality         | ESLint               | 8.56.0     |
+|                      | Prettier             | 3.3.2      |
+| Type Checking        | TypeScript           | 5.3.2      |
+| Style Processing     | Sass                 | 1.77.6     |
 
 ## ❓ FAQ
 

@@ -66,7 +66,7 @@ JiwuChat es una aplicación de chat multiplataforma ligera `(~10MB)` construida 
 
 - 🖥️ **Escritorio**
 
-![Inicio de Sesión](./login.png)
+![Inicio de Sesión](desktop/login.png)
 
 ![Inicio](./desktop/home.png)
 
@@ -113,29 +113,29 @@ JiwuChat es una aplicación de chat multiplataforma ligera `(~10MB)` construida 
 <details>
   <summary>Tabla de Funciones [Expandir/Contraer]</summary>
 
-| Módulo       | Submódulo     | Descripción de Función                                                                | Estado |
-| ---------- | ---------- | ----------------------------------------------------------------------- | -------- |
-| Módulo de Usuario   | Gestión de Cuentas   | Registro de usuario, inicio de sesión, selección de cuenta de inicio de sesión histórica                                        | ✅       |
-|            | Seguridad de Cuenta   | Recordatorio de vinculación de correo/teléfono, gestión de dispositivos, verificación de seguridad de cuenta                             | ✅       |
-| Módulo de Mensajes   | Chat Básico   | Mensajes de texto, mensajes de imagen, mensajes de video, cargas de archivos, retiro de mensajes, estado de lectura de mensajes          | ✅       |
-|            | Sincronización de Datos   | Sincronización de mensajes entre dispositivos, sincronización del estado de lectura                                            | ✅       |
-|            | Chat Avanzado   | Respuestas con citas, menciones @, anuncios, reeditar mensajes retirados                         | ✅       |
-| Módulo de Sesiones   | Gestión de Sesiones   | Lista de sesiones, anclar sesiones, ocultar sesiones, estadísticas de no leídos, ordenar sesiones                  | ✅       |
-| Módulo de Chat Grupal   | Operaciones de Grupo   | Crear chat grupal, abandonar chat grupal, ver detalles del chat grupal                                        | ✅       |
-|            | Gestión de Miembros del Grupo | Gestionar miembros del grupo, establecer administradores, revocar administradores, obtener lista @                           | ✅       |
-| Módulo de Contactos | Operaciones de Amigos   | Solicitudes de amistad, búsqueda de amigos, lista de amigos, rechazar solicitudes de amistad, eliminar amigos                    | ✅       |
-|            | Perfil y Notificaciones | Ver detalles de amigos, estadísticas de solicitudes no leídas                                            | ✅       |
-| Módulo de IA     | Funciones de Chat   | Chat privado con IA, chat grupal con IA, chat simultáneo con múltiples IA                                            | ✅       |
-|            | Gestión de Modelos   | Soporte para Gemini, Kimi AI, DeepSeek, Silicon Flow y otros proveedores, lista de modelos, cálculo de tokens | ✅       |
-|            | Función Plaza   | Exhibición de plaza de robots IA                                                        | ✅       |
-| Módulo de Comunicación   | Llamadas de Audio/Video | Llamadas de voz basadas en WebRTC, videollamadas, compartir pantalla                                | ✅       |
-|            | Historial de Llamadas   | Actualizaciones del estado de llamadas, registros de colgado                                                  | ✅       |
-| Sistema de Notificaciones   | Notificaciones de Mensajes   | Notificaciones de escritorio, alertas de bandeja del sistema, configuración de tonos, no molestar                            | ✅       |
-| Funciones de Extensión   | Integración Integral   | Integración de tienda, integración de blog, panel de registro de actualizaciones                                        | ✅       |
-| Otros Módulos   | Otras Funciones   | Funciones de chat social, funciones de compras con IA, gestión de descargas de archivos, herramientas de traducción (traducción IA/traducción Tencent) | ✅       |
-|            | Archivos y Reproducción | Visor de imágenes, reproductor de video, descarga de archivos, carga de imágenes por lotes                          | ✅       |
-|            | Configuración de Tema   | Cambio de tema claro/oscuro, seguir tema del sistema, configuración de fuente, diseño adaptativo                      | ✅       |
-|            | Compatibilidad de Plataforma   | Adaptación para Windows, MacOS, Linux, Android, Web                               | ✅       |
+| Módulo                    | Submódulo                     | Descripción de Función                                                                                                                                 | Estado |
+| ------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| Módulo de Usuario         | Gestión de Cuentas            | Registro de usuario, inicio de sesión, selección de cuenta de inicio de sesión histórica                                                               | ✅     |
+|                           | Seguridad de Cuenta           | Recordatorio de vinculación de correo/teléfono, gestión de dispositivos, verificación de seguridad de cuenta                                           | ✅     |
+| Módulo de Mensajes        | Chat Básico                   | Mensajes de texto, mensajes de imagen, mensajes de video, cargas de archivos, retiro de mensajes, estado de lectura de mensajes                        | ✅     |
+|                           | Sincronización de Datos       | Sincronización de mensajes entre dispositivos, sincronización del estado de lectura                                                                    | ✅     |
+|                           | Chat Avanzado                 | Respuestas con citas, menciones @, anuncios, reeditar mensajes retirados                                                                               | ✅     |
+| Módulo de Sesiones        | Gestión de Sesiones           | Lista de sesiones, anclar sesiones, ocultar sesiones, estadísticas de no leídos, ordenar sesiones                                                      | ✅     |
+| Módulo de Chat Grupal     | Operaciones de Grupo          | Crear chat grupal, abandonar chat grupal, ver detalles del chat grupal                                                                                 | ✅     |
+|                           | Gestión de Miembros del Grupo | Gestionar miembros del grupo, establecer administradores, revocar administradores, obtener lista @                                                     | ✅     |
+| Módulo de Contactos       | Operaciones de Amigos         | Solicitudes de amistad, búsqueda de amigos, lista de amigos, rechazar solicitudes de amistad, eliminar amigos                                          | ✅     |
+|                           | Perfil y Notificaciones       | Ver detalles de amigos, estadísticas de solicitudes no leídas                                                                                          | ✅     |
+| Módulo de IA              | Funciones de Chat             | Chat privado con IA, chat grupal con IA, chat simultáneo con múltiples IA                                                                              | ✅     |
+|                           | Gestión de Modelos            | Soporte para Gemini, Kimi AI, DeepSeek, Silicon Flow y otros proveedores, lista de modelos, cálculo de tokens                                          | ✅     |
+|                           | Función Plaza                 | Exhibición de plaza de robots IA                                                                                                                       | ✅     |
+| Módulo de Comunicación    | Llamadas de Audio/Video       | Llamadas de voz basadas en WebRTC, videollamadas, compartir pantalla                                                                                   | ✅     |
+|                           | Historial de Llamadas         | Actualizaciones del estado de llamadas, registros de colgado                                                                                           | ✅     |
+| Sistema de Notificaciones | Notificaciones de Mensajes    | Notificaciones de escritorio, alertas de bandeja del sistema, configuración de tonos, no molestar                                                      | ✅     |
+| Funciones de Extensión    | Integración Integral          | Integración de tienda, integración de blog, panel de registro de actualizaciones                                                                       | ✅     |
+| Otros Módulos             | Otras Funciones               | Funciones de chat social, funciones de compras con IA, gestión de descargas de archivos, herramientas de traducción (traducción IA/traducción Tencent) | ✅     |
+|                           | Archivos y Reproducción       | Visor de imágenes, reproductor de video, descarga de archivos, carga de imágenes por lotes                                                             | ✅     |
+|                           | Configuración de Tema         | Cambio de tema claro/oscuro, seguir tema del sistema, configuración de fuente, diseño adaptativo                                                       | ✅     |
+|                           | Compatibilidad de Plataforma  | Adaptación para Windows, MacOS, Linux, Android, Web                                                                                                    | ✅     |
 
 </details>
 
@@ -151,19 +151,19 @@ JiwuChat es una aplicación de chat multiplataforma ligera `(~10MB)` construida 
 
 ### 🔧 Stack Tecnológico
 
-| Categoría           | Tecnología/Componente    | Versión     |
-| -------------- | ------------ | ---------- |
-| Framework           | Nuxt         | ^3.14.159+ |
-|                | Tauri        | ^2.1.0     |
-| Biblioteca de Componentes UI      | Element Plus | ^2.8.4     |
-| Gestión de Estado       | Pinia        | 2.1.7      |
-| Biblioteca de Utilidades         | Vueuse       | 10.11.0    |
-| Herramientas de Compilación y Desarrollo | Nuxi         | lts        |
-|                | Vite         | lts        |
-| Calidad de Código       | ESLint       | 8.56.0     |
-|                | Prettier     | 3.3.2      |
-| Verificación de Tipos       | TypeScript   | 5.3.2      |
-| Procesamiento de Estilos       | Sass         | 1.77.6     |
+| Categoría                                | Tecnología/Componente | Versión    |
+| ---------------------------------------- | --------------------- | ---------- |
+| Framework                                | Nuxt                  | ^3.14.159+ |
+|                                          | Tauri                 | ^2.1.0     |
+| Biblioteca de Componentes UI             | Element Plus          | ^2.8.4     |
+| Gestión de Estado                        | Pinia                 | 2.1.7      |
+| Biblioteca de Utilidades                 | Vueuse                | 10.11.0    |
+| Herramientas de Compilación y Desarrollo | Nuxi                  | lts        |
+|                                          | Vite                  | lts        |
+| Calidad de Código                        | ESLint                | 8.56.0     |
+|                                          | Prettier              | 3.3.2      |
+| Verificación de Tipos                    | TypeScript            | 5.3.2      |
+| Procesamiento de Estilos                 | Sass                  | 1.77.6     |
 
 ## ❓ Preguntas Frecuentes
 

@@ -66,7 +66,7 @@ JiwuChat ist eine leichtgewichtige `(~10MB)` Multiplattform-Chat-Anwendung, die 
 
 - 🖥️ **Desktop**
 
-![Anmeldung](./login.png)
+![Anmeldung](desktop/login.png)
 
 ![Startseite](./desktop/home.png)
 
@@ -113,29 +113,29 @@ JiwuChat ist eine leichtgewichtige `(~10MB)` Multiplattform-Chat-Anwendung, die 
 <details>
   <summary>Funktionstabelle [Erweitern/Einklappen]</summary>
 
-| Modul       | Untermodul     | Funktionsbeschreibung                                                                | Status |
-| ---------- | ---------- | ----------------------------------------------------------------------- | -------- |
-| Benutzermodul   | Kontoverwaltung   | Benutzerregistrierung, Anmeldung, Auswahl des historischen Anmeldekontos                                        | ✅       |
-|            | Kontosicherheit   | E-Mail-/Telefonbindungserinnerung, Geräteverwaltung, Kontosicherheitsüberprüfung                             | ✅       |
-| Nachrichtenmodul   | Basis-Chat   | Textnachrichten, Bildnachrichten, Videonachrichten, Datei-Uploads, Nachrichtenrückruf, Nachrichtenlesestatus          | ✅       |
-|            | Datensynchronisation   | Geräteübergreifende Nachrichtensynchronisation, Synchronisation des Lesestatus                                            | ✅       |
-|            | Erweiterter Chat   | Zitat-Antworten, @Erwähnungen, Ankündigungen, Zurückgerufene Nachrichten erneut bearbeiten                         | ✅       |
-| Sitzungsmodul   | Sitzungsverwaltung   | Sitzungsliste, Sitzungen anheften, Sitzungen ausblenden, Ungelesen-Statistiken, Sitzungssortierung                  | ✅       |
-| Gruppenchat-Modul   | Gruppenoperationen   | Gruppenchat erstellen, Gruppenchat verlassen, Gruppenchat-Details anzeigen                                        | ✅       |
-|            | Gruppenmitgliederverwaltung | Gruppenmitglieder verwalten, Administratoren festlegen, Administratoren widerrufen, @Liste abrufen                           | ✅       |
-| Kontaktmodul | Freundoperationen   | Freundschaftsanfragen, Freundsuche, Freundesliste, Freundschaftsanfragen ablehnen, Freunde löschen                    | ✅       |
-|            | Profil & Benachrichtigungen | Freunddetails anzeigen, Statistik ungelesener Anfragen                                            | ✅       |
-| AI-Modul     | Chat-Funktionen   | Privater AI-Chat, Gruppen-AI-Chat, Multi-AI-Simultanchat                                            | ✅       |
-|            | Modellverwaltung   | Unterstützung für Gemini, Kimi AI, DeepSeek, Silicon Flow und andere Anbieter, Modellliste, Token-Berechnung | ✅       |
-|            | Plaza-Funktion   | AI-Roboter-Plaza-Anzeige                                                        | ✅       |
-| Kommunikationsmodul   | Audio-/Videoanrufe | WebRTC-basierte Sprachanrufe, Videoanrufe, Bildschirmfreigabe                                | ✅       |
-|            | Anrufverlauf   | Aktualisierungen des Anrufstatus, Auflegeaufzeichnungen                                                  | ✅       |
-| Benachrichtigungssystem   | Nachrichtenbenachrichtigungen   | Desktop-Benachrichtigungen, Systemleistenwarnungen, Klingeltoneinstellungen, Nicht stören                            | ✅       |
-| Erweiterungsfunktionen   | Umfassende Integration   | Mall-Integration, Blog-Integration, Update-Log-Panel                                        | ✅       |
-| Andere Module   | Andere Funktionen   | Soziale Chat-Funktionen, AI-Shopping-Funktionen, Datei-Download-Verwaltung, Übersetzungstools (AI-Übersetzung/Tencent-Übersetzung) | ✅       |
-|            | Dateien & Wiedergabe | Bildbetrachter, Videoplayer, Datei-Download, Batch-Bild-Upload                          | ✅       |
-|            | Theme-Konfiguration   | Hell-/Dunkel-Theme-Umschaltung, Systemthema folgen, Schrifteinstellungen, Adaptives Layout                      | ✅       |
-|            | Plattformkompatibilität   | Windows, MacOS, Linux, Android, Web-Anpassung                               | ✅       |
+| Modul                   | Untermodul                    | Funktionsbeschreibung                                                                                                              | Status |
+| ----------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Benutzermodul           | Kontoverwaltung               | Benutzerregistrierung, Anmeldung, Auswahl des historischen Anmeldekontos                                                           | ✅     |
+|                         | Kontosicherheit               | E-Mail-/Telefonbindungserinnerung, Geräteverwaltung, Kontosicherheitsüberprüfung                                                   | ✅     |
+| Nachrichtenmodul        | Basis-Chat                    | Textnachrichten, Bildnachrichten, Videonachrichten, Datei-Uploads, Nachrichtenrückruf, Nachrichtenlesestatus                       | ✅     |
+|                         | Datensynchronisation          | Geräteübergreifende Nachrichtensynchronisation, Synchronisation des Lesestatus                                                     | ✅     |
+|                         | Erweiterter Chat              | Zitat-Antworten, @Erwähnungen, Ankündigungen, Zurückgerufene Nachrichten erneut bearbeiten                                         | ✅     |
+| Sitzungsmodul           | Sitzungsverwaltung            | Sitzungsliste, Sitzungen anheften, Sitzungen ausblenden, Ungelesen-Statistiken, Sitzungssortierung                                 | ✅     |
+| Gruppenchat-Modul       | Gruppenoperationen            | Gruppenchat erstellen, Gruppenchat verlassen, Gruppenchat-Details anzeigen                                                         | ✅     |
+|                         | Gruppenmitgliederverwaltung   | Gruppenmitglieder verwalten, Administratoren festlegen, Administratoren widerrufen, @Liste abrufen                                 | ✅     |
+| Kontaktmodul            | Freundoperationen             | Freundschaftsanfragen, Freundsuche, Freundesliste, Freundschaftsanfragen ablehnen, Freunde löschen                                 | ✅     |
+|                         | Profil & Benachrichtigungen   | Freunddetails anzeigen, Statistik ungelesener Anfragen                                                                             | ✅     |
+| AI-Modul                | Chat-Funktionen               | Privater AI-Chat, Gruppen-AI-Chat, Multi-AI-Simultanchat                                                                           | ✅     |
+|                         | Modellverwaltung              | Unterstützung für Gemini, Kimi AI, DeepSeek, Silicon Flow und andere Anbieter, Modellliste, Token-Berechnung                       | ✅     |
+|                         | Plaza-Funktion                | AI-Roboter-Plaza-Anzeige                                                                                                           | ✅     |
+| Kommunikationsmodul     | Audio-/Videoanrufe            | WebRTC-basierte Sprachanrufe, Videoanrufe, Bildschirmfreigabe                                                                      | ✅     |
+|                         | Anrufverlauf                  | Aktualisierungen des Anrufstatus, Auflegeaufzeichnungen                                                                            | ✅     |
+| Benachrichtigungssystem | Nachrichtenbenachrichtigungen | Desktop-Benachrichtigungen, Systemleistenwarnungen, Klingeltoneinstellungen, Nicht stören                                          | ✅     |
+| Erweiterungsfunktionen  | Umfassende Integration        | Mall-Integration, Blog-Integration, Update-Log-Panel                                                                               | ✅     |
+| Andere Module           | Andere Funktionen             | Soziale Chat-Funktionen, AI-Shopping-Funktionen, Datei-Download-Verwaltung, Übersetzungstools (AI-Übersetzung/Tencent-Übersetzung) | ✅     |
+|                         | Dateien & Wiedergabe          | Bildbetrachter, Videoplayer, Datei-Download, Batch-Bild-Upload                                                                     | ✅     |
+|                         | Theme-Konfiguration           | Hell-/Dunkel-Theme-Umschaltung, Systemthema folgen, Schrifteinstellungen, Adaptives Layout                                         | ✅     |
+|                         | Plattformkompatibilität       | Windows, MacOS, Linux, Android, Web-Anpassung                                                                                      | ✅     |
 
 </details>
 
@@ -151,19 +151,19 @@ JiwuChat ist eine leichtgewichtige `(~10MB)` Multiplattform-Chat-Anwendung, die 
 
 ### 🔧 Technologie-Stack
 
-| Kategorie           | Technologie/Komponente    | Version     |
-| -------------- | ------------ | ---------- |
-| Framework           | Nuxt         | ^3.14.159+ |
-|                | Tauri        | ^2.1.0     |
-| UI-Komponentenbibliothek      | Element Plus | ^2.8.4     |
-| State Management       | Pinia        | 2.1.7      |
-| Hilfsbibliothek         | Vueuse       | 10.11.0    |
-| Build & Dev Tools | Nuxi         | lts        |
-|                | Vite         | lts        |
-| Codequalität       | ESLint       | 8.56.0     |
-|                | Prettier     | 3.3.2      |
-| Typprüfung       | TypeScript   | 5.3.2      |
-| Stilverarbeitung       | Sass         | 1.77.6     |
+| Kategorie                | Technologie/Komponente | Version    |
+| ------------------------ | ---------------------- | ---------- |
+| Framework                | Nuxt                   | ^3.14.159+ |
+|                          | Tauri                  | ^2.1.0     |
+| UI-Komponentenbibliothek | Element Plus           | ^2.8.4     |
+| State Management         | Pinia                  | 2.1.7      |
+| Hilfsbibliothek          | Vueuse                 | 10.11.0    |
+| Build & Dev Tools        | Nuxi                   | lts        |
+|                          | Vite                   | lts        |
+| Codequalität             | ESLint                 | 8.56.0     |
+|                          | Prettier               | 3.3.2      |
+| Typprüfung               | TypeScript             | 5.3.2      |
+| Stilverarbeitung         | Sass                   | 1.77.6     |
 
 ## ❓ Häufig gestellte Fragen
 
