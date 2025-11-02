@@ -27,3 +27,5 @@ report.html
 !.vscode/setting.json
 !.vscode/settings.json
 .vscode/*
+.claude/*
+.codex/*
