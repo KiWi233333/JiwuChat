@@ -1,0 +1,487 @@
+/**  ------------------------------element-plus---------------------------------------  **/
+
+// element-plus
+// 消息确认框
+.el-message-box {
+  --at-apply: "border-default-sm";
+  .el-message-box__header {
+    padding: 0 !important;
+    font-size: 2em;
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+  .el-message-box__headerbtn {
+    display: none;
+    top: 10px;
+    right: 10px;
+  }
+  .el-message-box__btns {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0;
+
+    .el-button {
+      min-width: 46%;
+      height: auto;
+    }
+    .el-button:first-child {
+      margin-right: auto;
+    }
+  }
+
+  .el-message-box__content {
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .el-message-box__title {
+    font-size: 1rem;
+  }
+}
+
+.el-overlay.is-message-box {
+  .el-message-box {
+    box-shadow:
+      rgba(0, 0, 0, 0.05) 0px 7px 29px 0px,
+      rgba(0, 0, 0, 0.05) 0px 3px 18px 0px;
+    // --at-apply: "";
+  }
+}
+
+// 消息框
+body .el-message {
+  width: max-content;
+  max-width: 94%;
+  padding: 0.4rem 0.6rem;
+  transform: translate(-50%, -18%) !important;
+  --at-apply: "text-14px rounded-2rem shadow-md";
+  .el-message__content {
+    --at-apply: "truncate text-12px mt-1px";
+  }
+}
+
+// 单选钮
+.el-radio-group {
+  font-size: medium;
+  .el-radio__inner {
+    border-radius: 4px;
+    transform: scale(1.1);
+  }
+}
+.el-dialog {
+  --at-apply: "border-default-sm";
+  .el-dialog__headerbtn {
+    height: 54px;
+  }
+  .el-dialog__title {
+    font-size: 1rem;
+  }
+  .el-dialog__header.show-close {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+// 按钮
+.el-button {
+  transition: $transition-delay;
+}
+
+// popper
+.el-popper-init {
+  padding: 2px 4px;
+}
+
+.el-form-item {
+  .el-form-item__error {
+    margin-top: 0.5em;
+  }
+}
+.el-overlay {
+  border-radius: 0.3rem;
+}
+
+.el-dropdown-menu {
+  .el-dropdown-menu__item {
+    --at-apply: "h-fit mx-1 transition-100 rounded-1";
+    &:not(.is-disabled) {
+      &:hover,
+      &:focus {
+        --at-apply: "bg-[var(--el-color-primary)] text-white shadow";
+      }
+    }
+  }
+  .el-dropdown-menu__item--divided {
+    --at-apply: "border-default-t";
+  }
+}
+.el-dropdown__popper {
+  --at-apply: "!border-default-hover";
+}
+
+// 弹出层
+.el-popper.el-mention__popper,
+.el-popper.el-select__popper.global-custom-select {
+  --at-apply: "bg-white dark:bg-dark-8 rounded-10px border-default";
+  .el-select-dropdown,
+  .el-mention-dropdown {
+    padding: 0.5em;
+    .el-select-dropdown__footer {
+      --at-apply: "p-0 pt-2 mt-2";
+    }
+  }
+  .el-scrollbar {
+    .el-scrollbar__wrap {
+      padding: 0;
+    }
+    .el-scrollbar__view.el-mention-dropdown__list {
+      padding: 0;
+    }
+    .el-scrollbar__bar {
+      opacity: 0.2;
+    }
+    .el-select-dropdown__list {
+      padding: 0;
+    }
+  }
+  .el-select-dropdown__item,
+  .el-mention-dropdown__item {
+    --el-fill-color-light: #958c9b1f;
+    --el-mention-option-hover-background: #958c9b1f;
+    padding: 0.5em;
+    border-radius: 6px;
+  }
+}
+
+// 自动填充组件
+.el-popper.el-autocomplete__popper {
+  // .el-popper__arrow {
+  //   // display: none;
+  // }
+  --at-apply: "p-0 rounded-10px border-default";
+  .el-autocomplete-suggestion {
+    padding: 0.5em;
+  }
+  .el-scrollbar {
+    .el-autocomplete-suggestion__wrap {
+      padding: 0;
+    }
+    .el-scrollbar__view.el-autocomplete-suggestion__list {
+      padding: 0;
+    }
+  }
+  .el-autocomplete-suggestion__list li {
+    --el-mention-option-hover-background: #958c9b44;
+    padding: 0.5em;
+    border-radius: 6px;
+  }
+}
+
+// 日期选择器
+.el-picker-panel {
+  --at-apply: "card-rounded-df overflow-hidden";
+}
+
+.el-loading-mask {
+  background-color: rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border-radius: 6px;
+
+  *.is-fullscreen {
+    border-radius: 6px;
+  }
+
+  .el-loading-spinner {
+    .circular {
+      animation-duration: 2s;
+    }
+    .el-loading-text {
+      color: var(--el-color-base) !important;
+    }
+  }
+}
+
+.dark {
+  .el-loading-mask {
+    background-color: rgba(0, 0, 0, 0.2);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+}
+
+.el-image-viewer__wrapper {
+  border-radius: 6px;
+  overflow: hidden;
+  .el-image-viewer__close {
+    --at-apply: "!card-default-br";
+  }
+  .el-image-viewer__actions {
+    height: 2.4em !important;
+    --at-apply: "py-2 bg-color-br rounded-2rem op-80 hover:op-100 h-fit transition-all";
+  }
+  .el-image-viewer__mask {
+    background-color: rgba(0, 0, 0, 0.2);
+    opacity: 1;
+  }
+}
+
+// el-image
+.el-image-viewer__wrapper:focus {
+  animation: none;
+  // animation: fade-in-anim 0.3s ease-in-out;
+  .el-image-viewer__canvas {
+    animation: none;
+    // animation: fade-blur 0.2s ease-in-out;
+  }
+}
+
+@keyframes fade-blur {
+  0% {
+    opacity: 0;
+    filter: blur(1rem);
+    transform: scale(0.9);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    filter: blur(0);
+  }
+}
+@keyframes fade-in-anim {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/////////////////////////////////////
+// --BEGIN 统一弹出层动画（Dialog、Popover、Tooltip、Select）
+/////////////////////////////////////
+
+// 统一动画参数
+$popup-animation-duration: 0.22s;
+$popup-animation-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$popup-scale-from: 0.96;
+
+$popover-animation-duration: 0.16s;
+$popover-animation-timing: ease;
+
+// 1. Dialog 动画（element-plus 2.10.2 -> 2.11.2 更新了动画类名 el-modal-dialog）
+.el-modal-dialog.dialog-fade-enter-active,
+.el-modal-dialog.dialog-fade-leave-active,
+.el-overlay.dialog-fade-enter-active,
+.el-overlay.dialog-fade-leave-active {
+  transition: opacity $popup-animation-duration $popup-animation-timing !important;
+  user-select: none; // 优化点击过快选中了文本
+
+  .el-overlay-dialog {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .el-dialog {
+    transition:
+      transform $popup-animation-duration $popup-animation-timing,
+      opacity $popup-animation-duration $popup-animation-timing !important;
+  }
+}
+
+.el-modal-dialog.dialog-fade-enter-from,
+.el-modal-dialog.dialog-fade-leave-to,
+.el-overlay.dialog-fade-enter-from,
+.el-overlay.dialog-fade-leave-to {
+  opacity: 0;
+
+  .el-overlay-dialog {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .el-dialog {
+    opacity: 0;
+    transform: scale3d($popup-scale-from, $popup-scale-from, 1);
+  }
+}
+
+.el-modal-dialog.dialog-fade-enter-to,
+.el-modal-dialog.dialog-fade-leave-from,
+.el-overlay.dialog-fade-enter-to,
+.el-overlay.dialog-fade-leave-from {
+  opacity: 1;
+
+  .el-dialog {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+// 2. MessageBox 动画 (与 Dialog 保持一致)
+.el-overlay.is-message-box {
+  &.fade-in-linear-enter-active,
+  &.fade-in-linear-leave-active {
+    transition: opacity $popup-animation-duration $popup-animation-timing !important;
+    user-select: none; // 优化点击过快选中了文本
+
+    .el-overlay-message-box {
+      animation: none !important;
+      transform: none !important;
+    }
+
+    .el-message-box {
+      transition:
+        transform $popup-animation-duration $popup-animation-timing,
+        opacity $popup-animation-duration $popup-animation-timing !important;
+    }
+  }
+
+  &.fade-in-linear-enter-from,
+  &.fade-in-linear-leave-to {
+    opacity: 0;
+
+    .el-overlay-message-box {
+      animation: none !important;
+      transform: none !important;
+    }
+
+    .el-message-box {
+      opacity: 0;
+      transform: scale3d($popup-scale-from, $popup-scale-from, 1);
+    }
+  }
+
+  &.fade-in-linear-enter-to,
+  &.fade-in-linear-leave-from {
+    opacity: 1;
+
+    .el-message-box {
+      opacity: 1;
+      transform: scale3d(1, 1, 1);
+    }
+  }
+}
+
+// 3. Tooltip 的相关组件动画
+// 定义各方向的 transform-origin 和动画参数
+$popper-placements: (
+  "bottom": (
+    center top,
+    translateY(-4px),
+  ),
+  "bottom-end": (
+    center top,
+    translateY(-4px),
+  ),
+  "bottom-start": (
+    center top,
+    translateY(-4px),
+  ),
+  "top": (
+    center bottom,
+    translateY(4px),
+  ),
+  "top-end": (
+    center bottom,
+    translateY(4px),
+  ),
+  "top-start": (
+    center bottom,
+    translateY(4px),
+  ),
+  "left": (
+    right center,
+    translateX(4px),
+  ),
+  "left-start": (
+    right center,
+    translateX(4px),
+  ),
+  "left-end": (
+    right center,
+    translateX(4px),
+  ),
+  "right": (
+    left center,
+    translateX(-4px),
+  ),
+  "right-start": (
+    left center,
+    translateX(-4px),
+  ),
+  "right-end": (
+    left center,
+    translateX(-4px),
+  ),
+);
+
+// 动画类名列表
+$zoom-classes: (el-zoom-in-top, el-zoom-in-bottom, el-zoom-in-left, el-zoom-in-right, el-fade-in-linear);
+$tooltip-classes: (el-fade-in-linear);
+
+// 为每个方向生成动画样式
+@each $placement, $config in $popper-placements {
+  $origin: nth($config, 1);
+  $translate: nth($config, 2);
+
+  [data-popper-placement="#{$placement}"] {
+    transform-origin: #{$origin};
+
+    // mention 不使用动画
+    &.el-popper:not(.item-animate-wave, .el-mention__popper) {
+      @each $class in $zoom-classes {
+        &.#{$class}-enter-active,
+        &.#{$class}-leave-active {
+          transition:
+            opacity $popover-animation-duration $popover-animation-timing,
+            transform $popover-animation-duration $popover-animation-timing;
+        }
+
+        &.#{$class}-enter-to,
+        &.#{$class}-leave-from {
+          opacity: 1;
+          transform: translateX(0) translateY(0) scale3d(1, 1, 1);
+        }
+
+        &.#{$class}-enter-from,
+        &.#{$class}-leave-to {
+          opacity: 0;
+          transform: #{$translate} scale3d($popup-scale-from, $popup-scale-from, 1);
+        }
+      }
+    }
+  }
+}
+
+// 兼容旧的类名动画
+@each $class in $zoom-classes {
+  .el-popper:not(.item-animate-wave, .el-mention__popper) {
+    &.#{$class}-enter-active,
+    &.#{$class}-leave-active {
+      transition:
+        opacity $popover-animation-duration $popover-animation-timing,
+        transform $popover-animation-duration $popover-animation-timing;
+    }
+
+    &.#{$class}-enter-to,
+    &.#{$class}-leave-from {
+      opacity: 1;
+      transform: translateX(0) translateY(0) scale3d(1, 1, 1);
+    }
+  }
+}
+
+// 4. Drawer 动画
+$drawer-animation-duration: 0.5s;
+$drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
+.el-drawer {
+  transition-duration: $drawer-animation-duration;
+  transition-timing-function: $drawer-animation-timing;
+}
+
+/////////////////////
+// --END 统一弹出层动画
+/////////////////////////////////////

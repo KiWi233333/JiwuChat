@@ -1,4 +1,21 @@
+/**  ------------------------------ element-ui ---------------------------------------  **/
+@import "./element-ui";
+
+/**  ------------------------------ main ---------------------------------------  **/
 // 自定义类
+.nav-padding-top-2 {
+  --at-apply: "sm:pt-2";
+}
+.nav-padding-top-6 {
+  --at-apply: "sm:pt-6";
+}
+.nav-padding-top-10 {
+  --at-apply: "sm:pt-10";
+}
+
+.nav-padding-top-12 {
+  --at-apply: "sm:pt-12";
+}
 .position-c-c {
   position: absolute;
   top: 50%;
@@ -12,7 +29,6 @@
   --animate-cubic-bount: cubic-bezier(1, -0.155, 0.165, 1.3);
 }
 
-/**  ------------------------------element-plus---------------------------------------  **/
 // 背景颜色
 .bg-mark {
   position: absolute;
@@ -64,192 +80,6 @@
   // background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
 }
 
-// element-plus
-// 消息确认框
-.el-message-box {
-  --at-apply: "border-default-sm";
-  .el-message-box__header {
-    padding: 0 !important;
-  }
-  .el-message-box__headerbtn {
-    display: none;
-    top: 10px;
-    right: 10px;
-  }
-  .el-message-box__btns {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin: 0;
-
-    .el-button {
-      min-width: 46%;
-      height: auto;
-    }
-    .el-button:first-child {
-      margin-right: auto;
-    }
-  }
-
-  .el-message-box__header {
-    font-size: 2em;
-    text-align: center;
-    letter-spacing: 0.1em;
-  }
-
-  .el-message-box__content {
-    font-size: 0.9rem;
-    margin-top: 1rem;
-  }
-
-  .el-message-box__title {
-    font-size: 1rem;
-  }
-}
-
-.el-overlay.is-message-box {
-  .el-message-box {
-    box-shadow:
-      rgba(0, 0, 0, 0.05) 0px 7px 29px 0px,
-      rgba(0, 0, 0, 0.05) 0px 3px 18px 0px;
-    // --at-apply: "";
-  }
-}
-
-// 消息框
-body .el-message {
-  width: max-content;
-  max-width: 94%;
-  padding: 0.4rem 0.6rem;
-  transform: translate(-50%, -18%) !important;
-  --at-apply: "text-14px rounded-2rem shadow-md";
-  .el-message__content {
-    --at-apply: "truncate text-12px mt-1px";
-  }
-}
-
-// 单选钮
-.el-radio-group {
-  font-size: medium;
-  .el-radio__inner {
-    border-radius: 4px;
-    transform: scale(1.1);
-  }
-}
-.el-dialog {
-  .el-dialog__headerbtn {
-    height: 54px;
-  }
-  --at-apply: "border-default-sm";
-  .el-dialog__title {
-    font-size: 1rem;
-  }
-  .el-dialog__header.show-close {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-// 按钮
-.el-button {
-  transition: $transition-delay;
-}
-
-// popper
-.el-popper-init {
-  padding: 2px 4px;
-}
-
-.el-form-item {
-  .el-form-item__error {
-    margin-top: 0.5em;
-  }
-}
-.el-overlay {
-  border-radius: 0.3rem;
-}
-
-.el-dropdown-menu {
-  .el-dropdown-menu__item {
-    --at-apply: "h-fit mx-1 transition-100 rounded-1";
-    &:not(.is-disabled) {
-      &:hover,
-      &:focus {
-        --at-apply: "bg-[var(--el-color-primary)] text-white shadow";
-      }
-    }
-  }
-  .el-dropdown-menu__item--divided {
-    --at-apply: "border-default-t";
-  }
-}
-.el-dropdown__popper {
-  --at-apply: "!border-default-hover";
-}
-
-// 弹出层
-.el-popper.el-mention__popper,
-.el-popper.el-select__popper.global-custom-select {
-  --at-apply: "bg-white dark:bg-dark-8 rounded-10px border-default";
-  .el-select-dropdown,
-  .el-mention-dropdown {
-    padding: 0.5em;
-    .el-select-dropdown__footer {
-      --at-apply: "p-0 pt-2 mt-2";
-    }
-  }
-  .el-scrollbar {
-    .el-scrollbar__wrap {
-      padding: 0;
-    }
-    .el-scrollbar__view.el-mention-dropdown__list {
-      padding: 0;
-    }
-    .el-scrollbar__bar {
-      opacity: 0.2;
-    }
-    .el-select-dropdown__list {
-      padding: 0;
-    }
-  }
-  .el-select-dropdown__item,
-  .el-mention-dropdown__item {
-    --el-fill-color-light: #958c9b1f;
-    --el-mention-option-hover-background: #958c9b1f;
-    padding: 0.5em;
-    border-radius: 6px;
-  }
-}
-
-// 自动填充组件
-.el-popper.el-autocomplete__popper {
-  // .el-popper__arrow {
-  //   // display: none;
-  // }
-  --at-apply: "p-0 rounded-10px border-default";
-  .el-autocomplete-suggestion {
-    padding: 0.5em;
-  }
-  .el-scrollbar {
-    .el-autocomplete-suggestion__wrap {
-      padding: 0;
-    }
-    .el-scrollbar__view.el-autocomplete-suggestion__list {
-      padding: 0;
-    }
-  }
-  .el-autocomplete-suggestion__list li {
-    --el-mention-option-hover-background: #958c9b44;
-    padding: 0.5em;
-    border-radius: 6px;
-  }
-}
-
-// 日期选择器
-.el-picker-panel {
-  --at-apply: "card-rounded-df overflow-hidden";
-}
-
 /**  ------------------------------markdown---------------------------------------  **/
 
 .md-editor-preview {
@@ -262,18 +92,6 @@ body .el-message {
     }
   }
 }
-// .md-editor {
-//   .md-editor-preview-wrapper {
-//     img {
-//       --at-apply: "card-default border-default";
-//     }
-//   }
-// }
-// .transition-200,
-// .transition-300,
-// .transition {
-//   will-change: transform, opacity, height, width, background-color, shadow;
-// }
 
 /**  ------------------------------right-menu---------------------------------------  **/
 
@@ -345,83 +163,6 @@ body .el-message {
   // --mx-menu-shortcut-text-disabled: #a5a5a5;
   // --mx-menu-focus-color: transparent;
   // --mx-menu-border-color: #bbbbbb;
-}
-.el-loading-mask {
-  *.is-fullscreen {
-    border-radius: 6px;
-  }
-
-  .el-loading-spinner {
-    .circular {
-      animation-duration: 2s;
-    }
-    .el-loading-text {
-      color: var(--el-color-base) !important;
-    }
-  }
-}
-.el-loading-mask {
-  background-color: rgba(0, 0, 0, 0.1);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
-.dark {
-  .el-loading-mask {
-    background-color: rgba(0, 0, 0, 0.2);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-  }
-}
-.el-loading-mask {
-  border-radius: 6px;
-}
-
-.el-image-viewer__wrapper {
-  border-radius: 6px;
-  overflow: hidden;
-  .el-image-viewer__close {
-    --at-apply: "!card-default-br";
-  }
-  .el-image-viewer__actions {
-    height: 2.4em !important;
-    --at-apply: "py-2 bg-color-br rounded-2rem op-80 hover:op-100 h-fit transition-all";
-  }
-  .el-image-viewer__mask {
-    background-color: rgba(0, 0, 0, 0.2);
-    opacity: 1;
-  }
-}
-
-// el-image
-.el-image-viewer__wrapper:focus {
-  animation: none;
-  // animation: fade-in-anim 0.3s ease-in-out;
-  .el-image-viewer__canvas {
-    animation: none;
-    // animation: fade-blur 0.2s ease-in-out;
-  }
-}
-
-@keyframes fade-blur {
-  0% {
-    opacity: 0;
-    filter: blur(1rem);
-    transform: scale(0.9);
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    filter: blur(0);
-  }
-}
-@keyframes fade-in-anim {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
 }
 
 // 阴影
