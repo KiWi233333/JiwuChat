@@ -101,7 +101,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 </template>
 
 <style lang="scss" scoped>
-@use "./msg.scss";
+@use "../msg.scss";
 
 .markdown-preivew {
   --at-apply: "text-0.9rem p-0 bg-color";

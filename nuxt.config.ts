@@ -114,11 +114,15 @@ export default defineNuxtConfig({
     crossOriginPrefetch: true, // 使用 Speculation Rules API 启用跨源预取。
     // watcher: "parcel", // 使用 Parcel 作为文件监视器。
     // // treeshakeClientOnly: true, // 仅客户端打包时启用 treeshaking。
-    noVueServer: true, // 禁用 Vue Server Renderer。
+    // noVueServer: true, // 禁用 Vue Server Renderer。
   },
   routeRules: {
     "/": { prerender: true },
     "/login": { prerender: true },
+    "/setting": { prerender: true },
+    "/user/safe": { prerender: true },
+    "/friend": { prerender: true },
+    "/ai": { prerender: true },
   },
 
   // 自动导入
