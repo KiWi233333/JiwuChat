@@ -26,6 +26,8 @@ report.html
 !.vscode/extensions.json
 !.vscode/setting.json
 !.vscode/settings.json
-.vscode/*
-.claude/*
-.codex/*
+.vscode
+.claude
+.codex
+.codex
+CLAUDE.md

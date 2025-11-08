@@ -341,7 +341,7 @@ onActivated(() => {
 </script>
 
 <template>
-  <div class="min-w-0 w-full flex flex-1 flex-col card-bg-color-2 px-4 sm:px-6">
+  <div class="min-w-0 w-full flex flex-1 flex-col bg-color px-4 sm:px-6">
     <!-- 页面头部 -->
     <div class="mb-4 mt-12 flex select-none items-end">
       <div>
@@ -399,7 +399,7 @@ onActivated(() => {
 
     <!-- 数据表格 -->
     <div class="min-w-0 w-full flex flex-1 flex-col">
-      <div class="overflow-hidden border-default card-rounded-df bg-color-3">
+      <div class="overflow-hidden border-default-2 card-rounded-df bg-color-3">
         <el-table
           :data="tableData"
           :border="false"
@@ -648,6 +648,12 @@ onActivated(() => {
   }
   .el-table__header-wrapper {
     border: none;
+  }
+
+  .el-table__inner-wrapper {
+    &::before {
+      display: none;
+    }
   }
 
   .el-table__body {
