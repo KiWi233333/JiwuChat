@@ -130,12 +130,14 @@ onBeforeUnmount(() => {
     <!-- 骨架屏 -->
     <template v-if="isReload">
       <div v-for="p in 10" :key="p" class="item">
-        <div class="h-2.4rem w-2.4rem flex-shrink-0 rounded bg-gray-1 object-cover dark:bg-dark-4" />
-        <div>
+        <div class="h-2.4rem w-2.4rem flex-shrink-0 rounded-full bg-gray-1 object-cover dark:bg-dark-4" />
+        <div class="flex flex-col truncate">
           <div class="h-3 w-8em rounded bg-gray-1 dark:bg-dark-4" />
           <div class="mt-2 h-3 w-4em rounded bg-gray-1 dark:bg-dark-4" />
         </div>
-        <div class="ml-a h-4 w-3em rounded bg-gray-1 dark:bg-dark-4" />
+        <div class="ml-a flex-row-c-c flex-shrink-0">
+          <div class="h-4 w-3em rounded bg-gray-1 dark:bg-dark-4" />
+        </div>
       </div>
     </template>
     <ListAutoIncre

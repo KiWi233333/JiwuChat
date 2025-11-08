@@ -418,7 +418,7 @@ onActivated(() => {
             <template #default="scope">
               <div class="flex-row-c-c gap-2">
                 <span class="dot h-2 w-2 rounded-full" :class="getStatusType(scope.row.status)" />
-                <span>{{ scope.row.statusDesc }}</span>
+                <span text-xs>{{ scope.row.statusDesc }}</span>
               </div>
             </template>
           </el-table-column>
