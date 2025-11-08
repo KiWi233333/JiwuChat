@@ -34,6 +34,8 @@ interface DialogProps {
   modelClass?: string
   minScale?: number
   escClose?: boolean
+  /** 是否从触发点开始动画 */
+  animateFromTrigger?: boolean
   /** 进入动画曲线 */
   enterEasing?: string
   /** 离开动画曲线 */
@@ -56,6 +58,7 @@ const {
   destroyOnClose = false,
   minScale = 0.5,
   escClose = true,
+  animateFromTrigger = true,
   enterEasing = "cubic-bezier(0.34, 1.52, 0.64, 0.86)", // 弹性进入
   leaveEasing = "cubic-bezier(0.4, 0, 0.2, 1)", // 平滑退出
 } = defineProps<DialogProps>();
@@ -123,6 +126,10 @@ watch(() => modelValue, (newVal) => {
 // ==================== 工具函数 ====================
 // 计算点击位置相对于对话框的相对坐标
 function calculateTransformOrigin() {
+  // 如果不从触发点开始动画,直接返回中心点
+  if (!animateFromTrigger)
+    return "center";
+
   if (!dialogRef.value)
     return "center";
 
