@@ -261,9 +261,7 @@ body .el-message {
   }
 }
 
-/////////////////////////////////////
-// --BEGIN 统一弹出层动画（Dialog、Popover、Tooltip、Select）
-/////////////////////////////////////
+// ==================== 统一弹出层动画（Dialog、Popover、Tooltip、Select）====================
 
 // 统一动画参数
 $popup-animation-duration: 0.22s;
@@ -484,6 +482,107 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   transition-timing-function: $drawer-animation-timing;
 }
 
-/////////////////////
-// --END 统一弹出层动画
-/////////////////////////////////////
+// 5. 独立的 Zoom 动画 (用于非 popper 场景)
+// el-zoom-in-center: 中心缩放
+.el-zoom-in-center-enter-active,
+.el-zoom-in-center-leave-active {
+  transition:
+    opacity $popover-animation-duration $popover-animation-timing,
+    transform $popover-animation-duration $popover-animation-timing;
+}
+
+.el-zoom-in-center-enter-from,
+.el-zoom-in-center-leave-to {
+  opacity: 0;
+  transform: scale3d($popup-scale-from, $popup-scale-from, 1);
+}
+
+.el-zoom-in-center-enter-to,
+.el-zoom-in-center-leave-from {
+  opacity: 1;
+  transform: scale3d(1, 1, 1);
+}
+
+// el-zoom-in-top: 从顶部缩放进入
+.el-zoom-in-top-enter-active,
+.el-zoom-in-top-leave-active {
+  transition:
+    opacity $popover-animation-duration $popover-animation-timing,
+    transform $popover-animation-duration $popover-animation-timing;
+  transform-origin: center top;
+}
+
+.el-zoom-in-top-enter-from,
+.el-zoom-in-top-leave-to {
+  opacity: 0;
+  transform: translateY(-1%) scale3d($popup-scale-from, $popup-scale-from, 1);
+}
+
+.el-zoom-in-top-enter-to,
+.el-zoom-in-top-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale3d(1, 1, 1);
+}
+
+// el-zoom-in-bottom: 从底部缩放进入
+.el-zoom-in-bottom-enter-active,
+.el-zoom-in-bottom-leave-active {
+  transition:
+    opacity $popover-animation-duration $popover-animation-timing,
+    transform $popover-animation-duration $popover-animation-timing;
+  transform-origin: center bottom;
+}
+
+.el-zoom-in-bottom-enter-from,
+.el-zoom-in-bottom-leave-to {
+  opacity: 0;
+  transform: translateY(1%) scale3d($popup-scale-from, $popup-scale-from, 1);
+}
+
+.el-zoom-in-bottom-enter-to,
+.el-zoom-in-bottom-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale3d(1, 1, 1);
+}
+
+// el-zoom-in-left: 从左侧缩放进入
+.el-zoom-in-left-enter-active,
+.el-zoom-in-left-leave-active {
+  transition:
+    opacity $popover-animation-duration $popover-animation-timing,
+    transform $popover-animation-duration $popover-animation-timing;
+  transform-origin: left center;
+}
+
+.el-zoom-in-left-enter-from,
+.el-zoom-in-left-leave-to {
+  opacity: 0;
+  transform: translateX(-1%) scale3d($popup-scale-from, $popup-scale-from, 1);
+}
+
+.el-zoom-in-left-enter-to,
+.el-zoom-in-left-leave-from {
+  opacity: 1;
+  transform: translateX(0) scale3d(1, 1, 1);
+}
+
+// el-zoom-in-right: 从右侧缩放进入
+.el-zoom-in-right-enter-active,
+.el-zoom-in-right-leave-active {
+  transition:
+    opacity $popover-animation-duration $popover-animation-timing,
+    transform $popover-animation-duration $popover-animation-timing;
+  transform-origin: right center;
+}
+
+.el-zoom-in-right-enter-from,
+.el-zoom-in-right-leave-to {
+  opacity: 0;
+  transform: translateX(1%) scale3d($popup-scale-from, $popup-scale-from, 1);
+}
+
+.el-zoom-in-right-enter-to,
+.el-zoom-in-right-leave-from {
+  opacity: 1;
+  transform: translateX(0) scale3d(1, 1, 1);
+}
