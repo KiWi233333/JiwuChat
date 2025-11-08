@@ -539,7 +539,7 @@ onActivated(() => {
   }
 }
 .header {
-  --at-apply: "sm:(h-20 px-4) bg-color sm:(bg-white dark:bg-[#111111]) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
+  --at-apply: "sm:(h-18 px-4) bg-color sm:(bg-white dark:bg-[#111111]) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
   :deep(.el-input) {
     .el-input__wrapper {
       --at-apply: "!shadow-none !outline-none !input-bg-color";

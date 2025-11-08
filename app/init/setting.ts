@@ -22,7 +22,7 @@ export const IS_PROD = import.meta.env.PROD;
 function onVisibilityChange() {
   const chat = useChatStore();
   const route = useRoute();
-  console.log("visibilitychange", !document.hidden);
+  // console.log("visibilitychange", !document.hidden);
   if (route.path === "/")
     chat.isVisible = !document.hidden;
   else
