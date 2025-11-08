@@ -292,8 +292,8 @@ defineExpose({
             </ListTransitionGroup>
             <!-- 空白 -->
             <div v-show="getCheckList.length <= 0" class="h-200px w-full flex-row-c-c card-rounded-df text-small-50 sm:h-300px">
-              <i i-solar:user-plus-broken mr-2 p-2.5 />
-              <p>未选择成员</p>
+              <i i-solar:user-plus-broken mr-2 p-3 />
+              <span text-xs>未选择成员</span>
             </div>
             <!-- 第一步 -->
             <div key="1" class="w-full flex justify-center p-3 sm:justify-between">

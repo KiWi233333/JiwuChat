@@ -100,7 +100,7 @@ async function getPhoneCode() {
     hide-required-asterisk
     :rules="rules"
     :model="form"
-    class="form"
+    class="block w-95vw overflow-hidden border-default-2 card-default rounded-2 p-1.2em backdrop-blur-5px sm:w-360px"
     @submit.prevent="() => {}"
   >
     <div mb-4 mt-2 text-center text-lg font-bold tracking-0.2em>
@@ -139,102 +139,38 @@ async function getPhoneCode() {
       />
     </el-form-item>
 
-    <el-form-item>
-      <el-button
-        type="primary"
-        style="padding: 1.2em 0;"
-        class="submit"
-        @keyup.enter="onUpdatePhone(formRef)"
-        @click="onUpdatePhone(formRef)"
-      >
-        立即{{ user.userInfo.isPhoneVerified ? "更换" : "绑定" }}
-      </el-button>
-    </el-form-item>
+    <el-button
+      type="primary"
+      style="padding: 1.2em 0;"
+      class="submit w-full"
+      @keyup.enter="onUpdatePhone(formRef)"
+      @click="onUpdatePhone(formRef)"
+    >
+      立即{{ user.userInfo.isPhoneVerified ? "更换" : "绑定" }}
+    </el-button>
   </el-form>
 </template>
 
 <style scoped lang="scss">
-.form {
-  --at-apply: "sm:w-360px w-95vw block overflow-hidden border-default-2 backdrop-blur-5px rounded-2 card-default p-1.2em";
+:deep(.el-input__wrapper) {
+  padding: 0.3em 1em;
+}
 
-  :deep(.el-input__wrapper) {
-    padding: 0.3em 1em;
-  }
+:deep(.el-form-item) {
+  --at-apply: "mb-5";
 
-  // 报错信息
-  :deep(.el-form-item) {
-    padding: 0.2em;
-
-    .el-form-item__error {
-      padding-top: 0.2em;
-    }
+  .el-form-item__error {
+    padding-top: 0;
   }
 }
 
 :deep(.el-button) {
   padding: 0 1em;
 }
+</style>
 
-.dark .form {
+<style scoped lang="scss">
+.dark :deep(.el-form) {
   background-color: #161616d8;
-}
-
-.animate__animated {
-  animation-duration: 0.5s;
-}
-
-// label总体
-:deep(.el-form-item) {
-  margin-bottom: 14px;
-}
-
-// 切换登录
-.toggle-login {
-  position: relative;
-  border-radius: var(--el-border-radius-base);
-  backdrop-filter: blur(10px);
-  background-color: #b3b3b32a;
-  padding: 0.3em;
-  display: flex;
-
-  :deep(.el-button) {
-    background-color: transparent;
-    transition: 0.3s;
-    padding: 0em 0.6em;
-    border: none;
-  }
-
-  .active {
-    transition: 0.3s;
-    background-color: #ffffff;
-    z-index: 1;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 4px;
-    color: var(--el-text-color);
-  }
-}
-
-.dark .active {
-  background-color: var(--el-color-primary);
-}
-
-.submit {
-  --at-apply: "mb-4 w-full shadow-sm text-1em transition-300 ";
-  letter-spacing: 0.2em;
-
-  :deep(.el-input__wrapper) {
-    background-color: var(--el-color-danger);
-    cursor: pointer;
-
-    * {
-      color: #fff;
-      letter-spacing: 0.3em;
-    }
-  }
-}
-
-.dark .submit :deep(.el-input__wrapper) {
-  background-color: var(--el-color-danger);
-  cursor: pointer;
-  color: #fff;
 }
 </style>

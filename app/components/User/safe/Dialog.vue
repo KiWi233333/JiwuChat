@@ -6,30 +6,76 @@ const props = defineProps<{
     showUpdatePhone: boolean
   }
 }>();
-function close() {
-  props.modelValue.showUpdateEmail = false;
-  props.modelValue.showUpdatePhone = false;
-  props.modelValue.showUpdatePwd = false;
+
+const emit = defineEmits<{
+  (e: "update:modelValue", value: {
+    showUpdatePwd: boolean
+    showUpdateEmail: boolean
+    showUpdatePhone: boolean
+  }): void
+}>();
+
+function closePwd() {
+  emit("update:modelValue", {
+    ...props.modelValue,
+    showUpdatePwd: false,
+  });
+}
+
+function closeEmail() {
+  emit("update:modelValue", {
+    ...props.modelValue,
+    showUpdateEmail: false,
+  });
+}
+
+function closePhone() {
+  emit("update:modelValue", {
+    ...props.modelValue,
+    showUpdatePhone: false,
+  });
 }
 </script>
 
 <template>
-  <transition name="popup">
-    <div
-      v-if=" modelValue.showUpdatePwd || modelValue.showUpdateEmail || modelValue.showUpdatePhone"
-      v-bind="$attrs"
-      key="popup"
-      class="fixed left-0 top-0 z-1000 h-100dvh w-full flex-row-c-c overflow-hidden"
-    >
-      <div
-        class="absolute h-full w-full card-rounded-df backdrop-blur-2px"
-        @click="close"
-      />
-      <UserSafePwdForm v-if="modelValue.showUpdatePwd" key="UserSafePwdForm" class="shadow-lg" @close="close()" />
-      <UserSafePhoneForm v-if="modelValue.showUpdatePhone" key="UserSafePhoneForm" class="shadow-lg" @close="close()" />
-      <UserSafeEmailForm v-if="modelValue.showUpdateEmail" key="UserSafeEmailForm" class="shadow-lg" @close="close()" />
-    </div>
-  </transition>
+  <!-- 密码修改弹窗 -->
+  <DialogPopup
+    :model-value="modelValue.showUpdatePwd"
+    :show-close="true"
+    :close-on-click-modal="true"
+    :destroy-on-close="true"
+    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
+    @update:model-value="(val) => !val && closePwd()"
+    @cancel="closePwd"
+  >
+    <UserSafePwdForm @close="closePwd" />
+  </DialogPopup>
+
+  <!-- 邮箱修改弹窗 -->
+  <DialogPopup
+    :model-value="modelValue.showUpdateEmail"
+    :show-close="true"
+    :close-on-click-modal="true"
+    :destroy-on-close="true"
+    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
+    @update:model-value="(val) => !val && closeEmail()"
+    @cancel="closeEmail"
+  >
+    <UserSafeEmailForm @close="closeEmail" />
+  </DialogPopup>
+
+  <!-- 手机号修改弹窗 -->
+  <DialogPopup
+    :model-value="modelValue.showUpdatePhone"
+    :show-close="true"
+    :close-on-click-modal="true"
+    :destroy-on-close="true"
+    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
+    @update:model-value="(val) => !val && closePhone()"
+    @cancel="closePhone"
+  >
+    <UserSafePhoneForm @close="closePhone" />
+  </DialogPopup>
 </template>
 
 <style scoped lang="scss"></style>

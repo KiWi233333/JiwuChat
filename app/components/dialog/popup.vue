@@ -3,37 +3,41 @@ import type { HTMLAttributes } from "vue";
 import { CustomeDialogPopupId } from "@/composables/hooks/useShortcuts";
 
 interface DialogPosition {
-  x: number;
-  y: number;
+  x: number
+  y: number
 }
 
 interface DialogStyle {
-  transformOrigin?: string;
-  transform?: string;
-  opacity?: string;
-  width?: string;
-  transition?: string;
+  transformOrigin?: string
+  transform?: string
+  opacity?: string
+  width?: string
+  transition?: string
 }
 
 interface DialogProps {
-  overlayerAttrs?: HTMLAttributes;
-  modelValue?: boolean;
-  title?: string;
-  width?: string | number;
-  showClose?: boolean;
-  confirmButtonText?: string;
-  cancelButtonText?: string;
-  closeOnClickModal?: boolean;
-  teleportTo?: string | HTMLElement;
-  contentClass?: string;
-  duration?: number;
-  destroyOnClose?: boolean;
-  center?: boolean;
-  zIndex?: number;
-  disableClass?: string;
-  modelClass?: string;
-  minScale?: number;
+  overlayerAttrs?: HTMLAttributes
+  modelValue?: boolean
+  title?: string
+  width?: string | number
+  showClose?: boolean
+  confirmButtonText?: string
+  cancelButtonText?: string
+  closeOnClickModal?: boolean
+  teleportTo?: string | HTMLElement
+  contentClass?: string
+  duration?: number
+  destroyOnClose?: boolean
+  center?: boolean
+  zIndex?: number
+  disableClass?: string
+  modelClass?: string
+  minScale?: number
   escClose?: boolean
+  /** 进入动画曲线 */
+  enterEasing?: string
+  /** 离开动画曲线 */
+  leaveEasing?: string
 }
 
 const {
@@ -52,47 +56,39 @@ const {
   destroyOnClose = false,
   minScale = 0.5,
   escClose = true,
+  enterEasing = "cubic-bezier(0.34, 1.52, 0.64, 0.86)", // 弹性进入
+  leaveEasing = "cubic-bezier(0.4, 0, 0.2, 1)", // 平滑退出
 } = defineProps<DialogProps>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean): void;
-  (e: "confirm"): void;
-  (e: "cancel"): void;
-  (e: "open"): void;
-  (e: "opened"): void;
-  (e: "close"): void;
-  (e: "closed"): void;
+  (e: "update:modelValue", value: boolean): void
+  (e: "confirm"): void
+  (e: "cancel"): void
+  (e: "open"): void
+  (e: "opened"): void
+  (e: "close"): void
+  (e: "closed"): void
 }>();
 
+// ==================== 状态管理 ====================
 const dialogModelRef = useTemplateRef<HTMLElement>("dialogModelRef");
+const dialogRef = useTemplateRef<HTMLElement>("dialogRef");
+
 // 控制内容渲染的状态
 const shouldRenderContent = ref(modelValue);
 // 是否应当销毁内容标记
 const shouldDestroy = ref(false);
-
-// 监听 modelValue 变化
-watch(() => modelValue, (newVal) => {
-  if (newVal) {
-    // 打开时，立即渲染内容
-    shouldRenderContent.value = true;
-    shouldDestroy.value = false;
-  }
-  else if (destroyOnClose) {
-    // 关闭时，将销毁标记置为true，实际销毁会在动画结束后执行
-    shouldDestroy.value = true;
-  }
-});
-
-const dialogRef = useTemplateRef<HTMLElement>("dialogRef");
+// 动画加载状态
+const loadingAnima = ref(false);
+// 最后点击位置
 const lastClickPosition = ref<DialogPosition>({ x: 0, y: 0 });
+// 对话框样式
 const dialogStyle = ref<DialogStyle>({
   transform: "scale(1)",
   opacity: "1",
 });
-const enterTransition = "transform var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1), opacity var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1)";
-const leaveTransition = "transform var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1), opacity var(--duration, 0.3s) cubic-bezier(0.61, 0.225, 0.195, 1)";
-const loadingAnima = ref(false);
 
+// ==================== 计算属性 ====================
 // 计算对话框的最终宽度
 const dialogWidth = computed(() => {
   if (!width)
@@ -100,57 +96,31 @@ const dialogWidth = computed(() => {
   return typeof width === "number" ? `${width}px` : width;
 });
 
-// 监听鼠标点击事件，记录点击位置
-function trackMousePosition(e: MouseEvent) {
-  if ((!loadingAnima.value && !modelValue) || (!lastClickPosition.value.x && !lastClickPosition.value.y)) {
-    lastClickPosition.value = { x: e.clientX, y: e.clientY };
-  }
-}
+// 进入动画过渡
+const enterTransition = computed(() =>
+  `transform var(--duration, 0.3s) ${enterEasing}, opacity var(--duration, 0.3s) ${enterEasing}`,
+);
 
-// 处理ESC键关闭
-function handleEscClose(e: KeyboardEvent) {
-  // 检查是否启用ESC关闭功能且对话框已打开
-  if (escClose && modelValue && e.key === "Escape") {
-    // 立即阻止事件冒泡和默认行为，防止其他监听器捕获
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    e.stopPropagation();
-    emit("update:modelValue", false);
-    emit("cancel");
-  }
-}
+// 离开动画过渡
+const leaveTransition = computed(() =>
+  `transform var(--duration, 0.3s) ${leaveEasing}, opacity var(--duration, 0.3s) ${leaveEasing}`,
+);
 
-// 生命周期钩子
-onMounted(() => {
-  window.addEventListener("mousedown", trackMousePosition);
-  // 添加键盘事件监听器
-  if (escClose) {
-    window?.addEventListener("keydown", handleEscClose);
+// ==================== 监听器 ====================
+// 监听 modelValue 变化
+watch(() => modelValue, (newVal) => {
+  if (newVal) {
+    // 打开时,立即渲染内容
+    shouldRenderContent.value = true;
+    shouldDestroy.value = false;
+  }
+  else if (destroyOnClose) {
+    // 关闭时,将销毁标记置为true,实际销毁会在动画结束后执行
+    shouldDestroy.value = true;
   }
 });
 
-onBeforeUnmount(() => {
-  window.removeEventListener("mousedown", trackMousePosition);
-  // 移除键盘事件监听器
-  if (escClose) {
-    window?.removeEventListener("keydown", handleEscClose);
-  }
-});
-
-// 处理关闭对话框
-function handleClose() {
-  if (closeOnClickModal) {
-    emit("update:modelValue", false);
-    emit("cancel");
-  }
-}
-
-// 处理确认按钮点击
-function handleConfirm() {
-  emit("confirm");
-  emit("update:modelValue", false);
-}
-
+// ==================== 工具函数 ====================
 // 计算点击位置相对于对话框的相对坐标
 function calculateTransformOrigin() {
   if (!dialogRef.value)
@@ -170,11 +140,57 @@ function calculateTransformOrigin() {
   return `${originX}px ${originY}px`;
 }
 
-// 过渡动画钩子函数
+// 销毁方法
+function destroy() {
+  // 只有在需要销毁时才执行
+  if (shouldDestroy.value) {
+    // 设置状态以阻止内容渲染
+    shouldRenderContent.value = false;
+    // 重置点击位置
+    lastClickPosition.value = { x: 0, y: 0 };
+  }
+}
+
+// ==================== 事件处理 ====================
+// 监听鼠标点击事件,记录点击位置
+function trackMousePosition(e: MouseEvent) {
+  if ((!loadingAnima.value && !modelValue) || (!lastClickPosition.value.x && !lastClickPosition.value.y)) {
+    lastClickPosition.value = { x: e.clientX, y: e.clientY };
+  }
+}
+
+// 处理ESC键关闭
+function handleEscClose(e: KeyboardEvent) {
+  // 检查是否启用ESC关闭功能且对话框已打开
+  if (escClose && modelValue && e.key === "Escape") {
+    // 立即阻止事件冒泡和默认行为,防止其他监听器捕获
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    e.stopPropagation();
+    emit("update:modelValue", false);
+    emit("cancel");
+  }
+}
+
+// 处理关闭对话框
+function handleClose() {
+  if (closeOnClickModal) {
+    emit("update:modelValue", false);
+    emit("cancel");
+  }
+}
+
+// 处理确认按钮点击
+function handleConfirm() {
+  emit("confirm");
+  emit("update:modelValue", false);
+}
+
+// ==================== 过渡动画钩子 ====================
 function onBeforeEnter(): void {
   emit("open");
   loadingAnima.value = true;
-  // 重置样式，准备开始入场动画
+  // 重置样式,准备开始入场动画
   dialogStyle.value = {
     transform: `scale(${minScale})`,
     opacity: "0",
@@ -192,7 +208,7 @@ function onEnter(): void {
       transformOrigin: originPoint,
       transform: "scale(1)",
       opacity: "1",
-      transition: enterTransition,
+      transition: enterTransition.value,
     };
   });
 }
@@ -211,7 +227,7 @@ function onBeforeLeave(): void {
   // 使用与打开相同的变换原点
   const originPoint = calculateTransformOrigin();
 
-  // 首先确保有正确的原点，但保持对话框可见
+  // 首先确保有正确的原点,但保持对话框可见
   dialogStyle.value = {
     transformOrigin: originPoint,
     transform: "scale(1)",
@@ -225,7 +241,7 @@ function onBeforeLeave(): void {
       transformOrigin: originPoint,
       transform: `scale(${minScale})`,
       opacity: "0",
-      transition: leaveTransition,
+      transition: leaveTransition.value,
     };
   });
 }
@@ -239,23 +255,30 @@ function onAfterLeave(): void {
   };
   loadingAnima.value = false;
 
-  // 在动画完全结束后，如果标记为应当销毁，则执行销毁操作
+  // 在动画完全结束后,如果标记为应当销毁,则执行销毁操作
   if (shouldDestroy.value) {
     destroy();
   }
 }
 
-// 销毁方法
-function destroy() {
-  // 只有在需要销毁时才执行
-  if (shouldDestroy.value) {
-    // 设置状态以阻止内容渲染
-    shouldRenderContent.value = false;
-    // 重置点击位置
-    lastClickPosition.value = { x: 0, y: 0 };
+// ==================== 生命周期钩子 ====================
+onMounted(() => {
+  window.addEventListener("mousedown", trackMousePosition);
+  // 添加键盘事件监听器
+  if (escClose) {
+    window?.addEventListener("keydown", handleEscClose);
   }
-}
+});
 
+onBeforeUnmount(() => {
+  window.removeEventListener("mousedown", trackMousePosition);
+  // 移除键盘事件监听器
+  if (escClose) {
+    window?.removeEventListener("keydown", handleEscClose);
+  }
+});
+
+// ==================== 暴露方法 ====================
 defineExpose({
   handleClose,
   handleConfirm,

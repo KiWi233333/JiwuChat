@@ -186,212 +186,169 @@ onMounted(() => {
     hide-required-asterisk
     :rules="rules"
     :model="userForm"
-    class="form"
+    class="block w-95vw overflow-hidden border-default-2 card-default rounded-2 py-2em backdrop-blur-5px sm:w-360px"
   >
     <div my-2 text-center text-lg font-bold tracking-0.2em>
       密码修改
     </div>
-    <transition-group :name="setting.settingPage.isCloseAllTransition ? '' : 'group-list'" mode="ease-in-out" class="relative">
-      <!-- 二步验证 -->
-      <el-form-item v-if="isSecondCheck" key="code-1" type="password" :label="`${chooseType === CheckTypeEnum.PHONE ? '手机号' : '邮箱'}`" prop="password" class="animated">
-        <el-input
-          v-model:model-value="checkTypeValue"
-          disabled
-          :prefix-icon="ElIconUser"
-          size="large"
-          :placeholder="`请输入${chooseType === CheckTypeEnum.PHONE ? '手机号' : '邮箱'}`"
-          required
-          :type="chooseType === CheckTypeEnum.PHONE ? 'phone' : 'email'"
-          @keyup.enter="onUpdatePwd(userFormRefs)"
+    <div class="relative">
+      <transition-group :name="setting.settingPage.isCloseAllTransition ? '' : 'group-list'" mode="ease-in-out">
+        <!-- 二步验证 -->
+        <el-form-item v-if="isSecondCheck" key="code-1" type="password" :label="`${chooseType === CheckTypeEnum.PHONE ? '手机号' : '邮箱'}`" prop="password" class="animated">
+          <el-input
+            v-model:model-value="checkTypeValue"
+            disabled
+            :prefix-icon="ElIconUser"
+            size="large"
+            :placeholder="`请输入${chooseType === CheckTypeEnum.PHONE ? '手机号' : '邮箱'}`"
+            required
+            :type="chooseType === CheckTypeEnum.PHONE ? 'phone' : 'email'"
+            @keyup.enter="onUpdatePwd(userFormRefs)"
+          >
+            <template #append>
+              <el-button type="primary" class="code-btn" :disabled="codeStorage > 0" @click="getCheckCodeReq(chooseType)">
+                {{ codeStorage > 0 ? `${codeStorage}s后重新发送` : "获取验证码" }}
+              </el-button>
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item
+          v-if="isSecondCheck"
+          key="code-2"
+          type="text" label="验证码" prop="code" class="animated"
         >
-          <template #append>
-            <el-button type="primary" class="code-btn" :disabled="codeStorage > 0" @click="getCheckCodeReq(chooseType)">
-              {{ codeStorage > 0 ? `${codeStorage}s后重新发送` : "获取验证码" }}
-            </el-button>
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item
-        v-if="isSecondCheck"
-        key="code-2"
-        type="text" label="验证码" prop="code" class="animated"
-      >
-        <el-input
-          v-model.trim="userForm.code"
-          :prefix-icon="ElIconUnlock"
-          :maxlength="6"
-          :minlength="6"
-          size="large"
-          placeholder="请输入验证码"
-          required
-          type="text"
-          @keyup.enter="onUpdatePwd(userFormRefs)"
-        />
-      </el-form-item>
-      <!-- 新旧密码 -->
-      <el-form-item
-        v-else
-        key="code-3"
-        type="password"
-        label="旧密码"
-        prop="password"
-        class="animated"
-      >
-        <el-input
-          v-model.trim="userForm.password"
-          :prefix-icon="ElIconUnlock"
-          size="large"
-          placeholder="请输入旧密码"
-          required
-          show-password
+          <el-input
+            v-model.trim="userForm.code"
+            :prefix-icon="ElIconUnlock"
+            :maxlength="6"
+            :minlength="6"
+            size="large"
+            placeholder="请输入验证码"
+            required
+            type="text"
+            @keyup.enter="onUpdatePwd(userFormRefs)"
+          />
+        </el-form-item>
+        <!-- 新旧密码 -->
+        <el-form-item
+          v-else
+          key="code-3"
           type="password"
-          @keyup.enter="onUpdatePwd(userFormRefs)"
-        />
-      </el-form-item>
-      <el-form-item
-        type="password" label="新密码" prop="newPassword" class="animated"
-      >
-        <el-input
-          v-model.trim="userForm.newPassword"
-          :prefix-icon="ElIconUnlock"
-          size="large"
-          placeholder="请输入新密码"
-          required
-          show-password
-          type="password"
-          @keyup.enter="onUpdatePwd(userFormRefs)"
-        />
-      </el-form-item>
-      <el-radio-group v-model="chooseType" size="small" class="check-type-list w-full pt-2">
-        <el-radio v-if="user.userInfo.isPhoneVerified" :value="CheckTypeEnum.PHONE">
-          手机号
-        </el-radio>
-        <el-radio v-if="user.userInfo.isEmailVerified" :value="CheckTypeEnum.EMAIL">
-          邮箱
-        </el-radio>
-        <el-radio v-if="user.userInfo.isPasswordVerified" :value="CheckTypeEnum.OLD_PASSWORD">
-          原密码
-        </el-radio>
-      </el-radio-group>
-      <el-form-item mt-1em>
-        <el-button
-          type="danger"
-          class="submit"
-          style="padding: 1.2em 0"
-          @keyup.enter="onUpdatePwd(userFormRefs)"
-          @click="onUpdatePwd(userFormRefs)"
+          label="旧密码"
+          prop="password"
+          class="animated"
         >
-          修 改
-        </el-button>
-      </el-form-item>
-    </transition-group>
+          <el-input
+            v-model.trim="userForm.password"
+            :prefix-icon="ElIconUnlock"
+            size="large"
+            placeholder="请输入旧密码"
+            required
+            show-password
+            type="password"
+            @keyup.enter="onUpdatePwd(userFormRefs)"
+          />
+        </el-form-item>
+        <el-form-item
+          type="password" label="新密码" prop="newPassword" class="animated"
+        >
+          <el-input
+            v-model.trim="userForm.newPassword"
+            :prefix-icon="ElIconUnlock"
+            size="large"
+            placeholder="请输入新密码"
+            required
+            show-password
+            type="password"
+            @keyup.enter="onUpdatePwd(userFormRefs)"
+          />
+        </el-form-item>
+        <el-radio-group v-model="chooseType" size="small" class="check-type-list w-full pt-2">
+          <el-radio v-if="user.userInfo.isPhoneVerified" :value="CheckTypeEnum.PHONE">
+            手机号
+          </el-radio>
+          <el-radio v-if="user.userInfo.isEmailVerified" :value="CheckTypeEnum.EMAIL">
+            邮箱
+          </el-radio>
+          <el-radio v-if="user.userInfo.isPasswordVerified" :value="CheckTypeEnum.OLD_PASSWORD">
+            原密码
+          </el-radio>
+        </el-radio-group>
+        <el-form-item mt-1em>
+          <el-button
+            type="danger"
+            class="submit w-full"
+            style="padding: 1.2em 0"
+            @keyup.enter="onUpdatePwd(userFormRefs)"
+            @click="onUpdatePwd(userFormRefs)"
+          >
+            修 改
+          </el-button>
+        </el-form-item>
+      </transition-group>
+    </div>
   </el-form>
 </template>
 
 <style scoped lang="scss">
-.form {
-  --at-apply: "sm:w-360px w-95vw block overflow-hidden border-default-2 backdrop-blur-5px card-default rounded-2 py-2em";
-
-  :deep(.el-input-group__append) {
-    .el-button {
-      --at-apply: "h-full text-[--el-color-danger]";
-    }
+:deep(.el-input-group__append) {
+  .el-button {
+    height: 100%;
+    color: var(--el-color-danger);
   }
+}
 
-  :deep(.el-input__wrapper) {
-    padding: 0 1em;
-  }
-  :deep(.check-type-list.el-radio-group) {
-    display: flex;
-    justify-content: right;
-    margin-left: auto;
-    .el-radio {
-      height: fit-content;
-      --at-apply: "border-default-r";
-      padding-right: 1em;
-      &.is-checked {
-        .el-radio__label {
-          color: var(--el-color-danger);
-        }
-      }
-      &:nth-last-child(1) {
-        border: none;
-        padding-right: 2.4em;
-      }
-      margin-right: 0;
-      .el-radio__input {
-        display: none;
+:deep(.el-input__wrapper) {
+  padding: 0 1em;
+}
+
+:deep(.check-type-list.el-radio-group) {
+  display: flex;
+  justify-content: right;
+  margin-left: auto;
+
+  .el-radio {
+    height: fit-content;
+    border-right: 1px solid var(--el-border-color);
+    padding-right: 1em;
+    margin-right: 0;
+
+    &.is-checked {
+      .el-radio__label {
+        color: var(--el-color-danger);
       }
     }
-  }
 
-  :deep(.el-form-item) {
-    padding: 0.2em 2em;
-    width: 100%;
-    box-sizing: border-box;
-    // 报错信息
-    .el-form-item__error {
-      position: static;
-      padding-top: 0.2em;
+    &:nth-last-child(1) {
+      border: none;
+      padding-right: 2.4em;
     }
+
+    .el-radio__input {
+      display: none;
+    }
+  }
+}
+
+:deep(.el-form-item) {
+  padding: 0.2em 2em;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0;
+
+  .el-form-item__error {
+    position: static;
+    padding-top: 0.2em;
   }
 }
 
 :deep(.el-button) {
   padding: 0 1em;
 }
+</style>
 
-.dark .form {
+<style scoped lang="scss">
+.dark :deep(.el-form) {
   background-color: #161616d8;
-}
-
-.animate__animated {
-  animation-duration: 0.5s;
-}
-
-// label总体
-:deep(.el-form-item) {
-  margin-bottom: 0;
-}
-
-// 切换登录
-.toggle-login {
-  position: relative;
-  border-radius: var(--el-border-radius-base);
-  backdrop-filter: blur(10px);
-  background-color: #b3b3b32a;
-  padding: 0.3em;
-  display: flex;
-
-  :deep(.el-button) {
-    background-color: transparent;
-    transition: 0.3s;
-    padding: 0em 0.6em;
-    border: none;
-  }
-
-  .active {
-    transition: 0.3s;
-    background-color: #ffffff;
-    z-index: 1;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 4px;
-    color: var(--el-text-color);
-  }
-}
-
-.dark .active {
-  background-color: var(--el-color-primary);
-}
-
-.submit {
-  --at-apply: "mb-4 w-full shadow-sm text-1em transition-300 ": deep(.el-input__wrapper)
-    {background-color: var(--el-color-danger) ; cursor: pointer; * {color: #fff; font-weight: 600;
-    letter-spacing: 0.3em;}};
-}
-
-.dark .submit :deep(.el-input__wrapper) {
-  background-color: var(--el-color-danger);
-  cursor: pointer;
-  color: #fff;
 }
 </style>

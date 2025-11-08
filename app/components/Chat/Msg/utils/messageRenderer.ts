@@ -17,31 +17,31 @@ export function useRenderMsg(msg: ChatMessageVO) {
   });
 
   type Token
-  = | {
-    type: "text";
-    content: string;
-    startIndex: number;
-    endIndex: number;
-  }
-  | {
-    type: "mention";
-    content: string;
-    data: MentionInfo;
-    startIndex: number;
-    endIndex: number;
-  }
-  | {
-    type: "url";
-    content: string;
-    data: {
-      title?: string;
-      description?: string;
-      url: string;
-      altTitle?: string;
+    = | {
+      type: "text";
+      content: string;
+      startIndex: number;
+      endIndex: number;
+    }
+    | {
+      type: "mention";
+      content: string;
+      data: MentionInfo;
+      startIndex: number;
+      endIndex: number;
+    }
+    | {
+      type: "url";
+      content: string;
+      data: {
+        title?: string;
+        description?: string;
+        url: string;
+        altTitle?: string;
+      };
+      startIndex: number;
+      endIndex: number;
     };
-    startIndex: number;
-    endIndex: number;
-  };
   /**
    * 解析消息内容
    *
