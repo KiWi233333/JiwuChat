@@ -158,6 +158,17 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: "",
   },
+  hooks: {
+    "vite:serverCreated": (server) => {
+      process.on("unhandledRejection", (reason: any, promise) => {
+        if (reason?.code === "EPIPE") {
+          // 忽略 EPIPE 错误 (在依赖优化重载时可能发生)
+          return;
+        }
+        console.error("Unhandled Rejection:", reason);
+      });
+    },
+  },
   // 3、elementPlus
   elementPlus: {
     icon: "ElIcon",
