@@ -266,14 +266,13 @@ function handleProgressUpdate(
   buffer.pendingReasoning += data.reasoningContent || "";
   const chat = useChatStore();
   if (chat.theRoomId === data.roomId) { // 当前房间
-    // 如果没有正在进行的更新，启动渐入效果
-    if (chat.shouldAutoScroll) { // AI消息更新时自动滚动到底部
-      chat.scrollBottom(false);
-    }
     function handleAiFlowIntervalFn() {
-      // 每次更新s字符
+      // 每次更新count字符
       const contentChars = buffer.pendingContent.length > 0 ? buffer.pendingContent.substring(0, count) : "";
       const reasoningChars = buffer.pendingReasoning.length > 0 ? buffer.pendingReasoning.substring(0, count) : "";
+
+      // 检查是否有实际内容更新
+      const hasContentUpdate = contentChars.length > 0 || reasoningChars.length > 0;
 
       // 添加到显示内容
       buffer.content += contentChars;
@@ -283,14 +282,13 @@ function handleProgressUpdate(
       buffer.pendingContent = buffer.pendingContent.substring(contentChars.length);
       buffer.pendingReasoning = buffer.pendingReasoning.substring(reasoningChars.length);
 
-      // AI消息更新时自动滚动到底部
-      const chat = useChatStore();
-      if (chat.shouldAutoScroll) {
-        chat.scrollBottom(false);
-      }
-
       // 应用更新
       applyBufferUpdate(oldMsg, buffer);
+
+      // 仅在有实际内容更新且需要自动滚动时才触发滚动
+      if (hasContentUpdate && chat.shouldAutoScroll) {
+        chat.scrollBottom(false);
+      }
 
       // 如果没有待处理内容且收到了结束信号，清除定时器
       if (buffer.pendingContent.length === 0 && buffer.pendingReasoning.length === 0) {
@@ -304,7 +302,7 @@ function handleProgressUpdate(
     // 同步一次
     handleAiFlowIntervalFn();
     if (!buffer.updateInterval) {
-      buffer.updateInterval = setInterval(handleAiFlowIntervalFn, delay); // 调整速度，50ms更新s字符
+      buffer.updateInterval = setInterval(handleAiFlowIntervalFn, delay); // 调整速度，50ms更新count字符
     }
   }
   else {
@@ -378,12 +376,13 @@ function handleFinalState(
       bufferMap.delete(oldMsg);
     }
 
+    // 先更新内容
     if (oldMsg?.message) {
       oldMsg.message.body && (oldMsg.message.body.reasoningContent = data.reasoningContent || "");
       oldMsg.message.content = data.content;
     }
 
-    // AI消息完成时，如果应该自动滚动，则滚动到底部
+    // AI消息完成时，如果应该自动滚动，则在内容更新后滚动到底部
     const chat = useChatStore();
     if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
       nextTick(() => {

@@ -50,7 +50,7 @@ defineExpose({
 <template>
   <el-scrollbar
     ref="scrollbarRef"
-    class="relative max-w-full flex-1"
+    class="relative max-w-full min-h-0 flex-1"
     height="100%"
     wrap-class="px-0 shadow-inner-bg"
     view-class="pb-8 pt-4"

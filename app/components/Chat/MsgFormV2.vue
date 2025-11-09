@@ -892,7 +892,7 @@ defineExpose({
       <div
         v-if="!isSoundRecordMsg"
         ref="focusRef"
-        class="input-wrapper relative h-fit w-full"
+        class="input-wrapper relative min-h-0 w-full"
       >
         <!-- 拖拽悬停效果 -->
         <div
@@ -904,8 +904,8 @@ defineExpose({
           拖拽文件到此处上传
         </div>
         <el-scrollbar
-          :max-height="setting.isMobileSize ? (showMobileTools ? '2.4rem' : '30vh') : '10rem'"
-          class="h-full w-full flex-1"
+          :max-height="setting.isMobileSize ? (showMobileTools ? '2.4rem' : '30vh') : 'none'"
+          class="h-full min-h-0 min-w-0 w-full flex-1"
           wrap-class="h-full transition-max-height rounded bg-color-3 sm:(!bg-transparent rounded-0)"
           view-class="h-full"
         >

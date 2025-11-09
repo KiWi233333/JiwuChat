@@ -34,17 +34,6 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
     class="group"
     v-bind="$attrs"
   >
-    <template #name-after>
-      <!-- 折叠 -->
-      <span
-        v-if="!isFold && data.message?.content && data.message?.content.length > 40"
-        class="flex-shrink-0 btn-info text-mini sm:(op-0 group-hover:op-100)"
-        @click="isFold = !isFold"
-      >
-        收起
-        <i i-solar:alt-arrow-up-line-duotone p-2 />
-      </span>
-    </template>
     <template #body>
       <div class="ai-reply-msg-popper relative min-h-2.5em min-w-2.6em">
         <!-- 思考内容 -->
@@ -222,9 +211,8 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 .reson-toggle-btn {
   --at-apply: " absolute z-2 op-0 h-6 pl-3 pr-2 text-mini hover:shadow leading-6 shadow rounded cursor-pointer bg-color border-none";
   bottom: 0.4rem;
-  right: 50%;
+  right: 0.4rem;
   transition: opacity 0.3s ease-in-out;
-  transform: translateX(50%);
 
   &.is-folded-btn {
     --at-apply: "bg-color op-100";
