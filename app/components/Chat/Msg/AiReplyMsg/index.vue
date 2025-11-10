@@ -112,9 +112,37 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
         max-width: 12rem !important;
         max-height: 12rem !important;
       }
+      blockquote {
+        font-size: 0.9em;
+        padding-top: 0.4em;
+        padding-bottom: 0.4em;
+        margin-top: 0.6em;
+        margin-bottom: 0.6em;
+      }
+
       h1 {
-        font-size: 1.5em;
+        font-size: 1.2em;
         margin: 0.8em 0 0.6em 0;
+      }
+      h2 {
+        font-size: 1.15em;
+        margin: 0.7em 0 0.5em 0;
+      }
+      h3 {
+        font-size: 1.1em;
+        margin: 0.6em 0 0.4em 0;
+      }
+      h4 {
+        font-size: 1.05em;
+        margin: 0.5em 0 0.4em 0;
+      }
+      h5 {
+        font-size: 1em;
+        margin: 0.4em 0 0.3em 0;
+      }
+      h6 {
+        font-size: 1em;
+        margin: 0.3em 0 0.2em 0;
       }
 
       p {

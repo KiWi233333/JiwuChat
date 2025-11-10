@@ -18,8 +18,8 @@ export function createUIModule() {
     },
   });
 
-  const shouldAutoScroll = ref(false);
-  const isScrollBottom = ref(false);
+  const shouldAutoScroll = ref(true); // 初始状态为true，表示默认自动滚动
+  const isScrollBottom = ref(true); // 初始状态为true，表示默认在底部
 
   const scrollBottom = (animate = true) => {
     mitter.emit(MittEventType.MSG_LIST_SCROLL, { type: "scrollBottom", payload: { animate } });

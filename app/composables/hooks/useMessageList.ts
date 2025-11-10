@@ -3,7 +3,6 @@ import type { ElScrollbar } from "element-plus";
 const PAGINATION_SIZE = 20;
 const HIGHLIGHT_DURATION = 2000;
 const SCROLL_OFFSET = -10;
-const SCROLL_DEBOUNCE_TIME = 300;
 const REPLY_SEARCH_INTERVAL = 120;
 
 /**
@@ -19,7 +18,7 @@ export function useMessageList() {
   const isLoading = computed(() => !!chat?.theContact?.isLoading);
   const isReload = computed(() => !!chat?.theContact?.isReload);
   const isSyncing = computed(() => !!chat?.theContact?.isSyncing);
-  const offset = computed(() => 40);
+  const offset = computed(() => 60); // 优化滚动底部判断距离为60px
 
   // 将msgMap和msgIds转换为有序的消息数组，供组件使用
   const msgList = computed(() => chat.getMessageList(chat.theRoomId));
@@ -329,8 +328,8 @@ export function useMessageList() {
     if (!wrapRef)
       return;
 
-    // 容忍偏移量，防止浮点误差导致无法触发
-    const tolerance = offset.value || 2;
+    // 使用60px作为底部判断容忍偏移量
+    const tolerance = offset.value;
     const isAtBottom = (e.scrollTop + wrapRef.clientHeight) >= (wrapRef.scrollHeight - tolerance);
 
     if (isAtBottom) {
@@ -339,6 +338,7 @@ export function useMessageList() {
       debounceReadList(chat.theRoomId);
     }
     else {
+      // 只有手动向上滚动超过60px才视为不在底部
       chat.isScrollBottom = false;
       chat.shouldAutoScroll = false;
     }
