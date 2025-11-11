@@ -97,6 +97,11 @@ async function getLoginCode(type: LoginType) {
         });
         useInterval(emailTimer, emailCodeStorage, 60, -1);
       }
+      else {
+        // 处理非成功状态
+        ElMessage.closeAll("error");
+        ElMessage.error(data.message || "发送验证码失败，请稍后重试！");
+      }
     }
     // 获取手机号验证码
     else if (type === LoginType.PHONE) {
@@ -120,15 +125,21 @@ async function getLoginCode(type: LoginType) {
       }
       else {
         ElMessage.closeAll("error");
-        ElMessage.error(data.message);
+        ElMessage.error(data.message || "发送验证码失败，请稍后重试！");
       }
     }
   }
-  catch (error) {
+  catch (error: any) {
+    // 统一错误处理
+    console.error("获取验证码失败:", error);
+    ElMessage.closeAll("error");
+    const errorMsg = error?.message || error?.data?.message || "网络异常，请检查网络连接后重试！";
+    ElMessage.error(errorMsg);
+  }
+  finally {
+    // 确保关闭加载状态
     isLoading.value = false;
   }
-  // 关闭加载
-  isLoading.value = false;
 }
 /**
  * 定时器

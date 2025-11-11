@@ -53,7 +53,6 @@ export default defineNuxtConfig({
     "@formkit/auto-animate/nuxt",
     "@unocss/nuxt", // 基础
     "@pinia/nuxt", // 状态管理
-    "pinia-plugin-persistedstate/nuxt",
     "@nuxt/eslint",
   ],
   srcDir: "app/",

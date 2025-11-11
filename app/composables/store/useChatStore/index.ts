@@ -218,13 +218,7 @@ export const useChatStore = defineStore(
       resetStore,
     };
   },
-  {
-    // https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
-    persist: false,
-    // persist: {
-    //   storage: persistedState.localStorage,
-    // },
-  },
+  {},
 );
 if (import.meta.hot)
   import.meta.hot.accept(acceptHMRUpdate(useChatStore, import.meta.hot));

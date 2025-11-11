@@ -8,25 +8,9 @@ import { getUserInfo } from "../api/user/info";
 export const useUserStore = defineStore(
   USER_STORE_KEY,
   () => {
-    // token
-    const token = ref<string>("");
-    // 是否登录
-    const isLogin = ref<boolean>(false);
-    // 是否打开登录
-    const showLoginPageType = ref<"login" | "register" | "env-config" | "">("");
-    const showUpdatePwd = ref<boolean>(false);
-    // 钱包信息 TODO: 暂不使用
-    const userWallet = ref<UserWallet>({
-      userId: "",
-      balance: 0,
-      recharge: 0,
-      spend: 0,
-      points: 0,
-      updateTime: "",
-      createTime: "",
-    });
-    // 用户个人信息
-    const userInfo = ref<UserInfoVO>({
+    const token = useLocalStorage<string>(`${USER_STORE_KEY}:token`, "");
+    const isLogin = useLocalStorage<boolean>(`${USER_STORE_KEY}:isLogin`, false);
+    const userInfo = useLocalStorage<UserInfoVO>(`${USER_STORE_KEY}:userInfo`, {
       id: "",
       username: "",
       email: "",
@@ -43,7 +27,23 @@ export const useUserStore = defineStore(
       isEmailVerified: 0,
       isPhoneVerified: 0,
     });
+
+    // 非持久化状态
+    const showLoginPageType = ref<"login" | "register" | "env-config" | "">("");
+    const showUpdatePwd = ref<boolean>(false);
     const isOnLogining = ref<boolean>(false);
+
+    // 钱包信息 TODO: 暂不使用，不需要持久化
+    const userWallet = ref<UserWallet>({
+      userId: "",
+      balance: 0,
+      recharge: 0,
+      spend: 0,
+      points: 0,
+      updateTime: "",
+      createTime: "",
+    });
+
     const userId = computed(() => userInfo.value.id);
     const markPhone = computed(() => userInfo.value?.phone?.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2") || "");
 
@@ -195,12 +195,6 @@ export const useUserStore = defineStore(
       getToken,
       getTokenFn,
     };
-  },
-  {
-    // https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
-    persist: {
-      storage: piniaPluginPersistedstate.localStorage(),
-    },
   },
 );
 if (import.meta.hot)

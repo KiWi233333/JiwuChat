@@ -209,7 +209,6 @@ export const useWsStore = defineStore(
     };
   },
   {
-    persist: false,
   },
 );
 

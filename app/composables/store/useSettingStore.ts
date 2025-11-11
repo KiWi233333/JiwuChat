@@ -39,10 +39,16 @@ export const DEFAULT_FONT_FAMILY_LIST = [
 export const useSettingStore = defineStore(
   SETTING_STORE_KEY,
   () => {
-    const sysPermission = ref({
+    // 持久化的系统权限设置
+    const sysPermission = useLocalStorage(`${SETTING_STORE_KEY}:sysPermission`, {
       isNotification: false,
       isNotificationSound: true,
     });
+
+    // 持久化的更新忽略版本列表
+    const ignoreVersionList = useLocalStorage<string[]>(`${SETTING_STORE_KEY}:ignoreVersion`, []);
+
+    // 非持久化的更新状态
     const appUploader = ref({
       isCheckUpdatateLoad: false,
       isUpdating: false,
@@ -52,20 +58,28 @@ export const useSettingStore = defineStore(
       contentLength: 0,
       downloaded: 0,
       downloadedText: "",
-      ignoreVersion: [] as string[],
+      ignoreVersion: ignoreVersionList.value,
     });
+
+    // 监听 ignoreVersion 变化，同步到持久化存储
+    watch(() => appUploader.value.ignoreVersion, (newVal) => {
+      ignoreVersionList.value = newVal;
+    }, { deep: true });
+
     const appPlatform = ref<Platform | "web">("web");
     const osType = ref<OsType | "web">("web");
     const isWeb = computed(() => appPlatform.value === "web");
-    // 用户页折叠
-    const isUserFold = ref(true);
-    const isUserCollapse = ref(true);
-    // 主页页折叠
-    const isCollapse = ref(true);// 侧边栏折叠
-    // 设备状态
-    const isMobileSize = ref(false);// 是否移动尺寸
-    const isOpenContactSearch = ref(true); // 是否会话搜索
-    const isUseWebsocket = ref(true); // 是否使用 websocket
+
+    // 持久化的 UI 折叠状态
+    const isUserFold = useLocalStorage(`${SETTING_STORE_KEY}:isUserFold`, true);
+    const isUserCollapse = useLocalStorage(`${SETTING_STORE_KEY}:isUserCollapse`, true);
+    const isCollapse = useLocalStorage(`${SETTING_STORE_KEY}:isCollapse`, true);
+
+    // 非持久化的设备状态
+    const isMobileSize = ref(false);
+    const isOpenContactSearch = useLocalStorage(`${SETTING_STORE_KEY}:isOpenContactSearch`, true);
+    const isUseWebsocket = useLocalStorage(`${SETTING_STORE_KEY}:isUseWebsocket`, true);
+
     const isDesktop = computed(() => ["windows", "linux", "macos"].includes(osType.value));
     const isMobile = computed(() => ["android", "ios"].includes(osType.value));
     // --------------------- 系统环境常量 -----------------
@@ -139,9 +153,9 @@ export const useSettingStore = defineStore(
     // ---------------------快捷键-----------------
     const shortcutManager = useShortcuts();
     // ---------------------菜单-----------------
-    const selectExtendMenuList = ref<ExtendItem[]>([]);
+    const selectExtendMenuList = useLocalStorage<ExtendItem[]>(`${SETTING_STORE_KEY}:selectExtendMenuList`, []);
     // ---------------------设置-----------------
-    const settingPage = ref(defaultSettingPage());
+    const settingPage = useLocalStorage(`${SETTING_STORE_KEY}:settingPage`, defaultSettingPage());
     function defaultSettingPage() {
       return {
         // 字体
@@ -212,7 +226,7 @@ export const useSettingStore = defineStore(
     const contextMenuTheme = computed(() => colorMode.value === "dark" ? "mac dark" : "mac");
 
     // --------------------- 聊天设置 -----------------
-    const showChatMenu = ref(true);
+    const showChatMenu = useLocalStorage(`${SETTING_STORE_KEY}:showChatMenu`, true);
     async function checkMainWinVisible() {
       try {
         if (isWeb.value) {
@@ -231,9 +245,9 @@ export const useSettingStore = defineStore(
     // ---------------------- 下载管理 -----------------
     const BaseDirCode = BaseDirectory.AppData;
     const showDownloadPanel = ref(false);
-    const fileDownloadMap = ref<Record<string, FileItem>>({});
+    const fileDownloadMap = useLocalStorage<Record<string, FileItem>>(`${SETTING_STORE_KEY}:fileDownloadMap`, {});
     const fileDownloadList = computed(() => Object.values(fileDownloadMap.value).sort((a, b) => b.downloadTime - a.downloadTime));
-    const appDataDownloadDirUrl = ref("");
+    const appDataDownloadDirUrl = useLocalStorage(`${SETTING_STORE_KEY}:appDataDownloadDirUrl`, "");
 
     // 下载文件回调
     function fileDownProgressCallback(url: string, currentSize: number = 0, totalSize: number = 0, status: FileStatus = FileStatus.DOWNLOADING) {
@@ -665,12 +679,6 @@ export const useSettingStore = defineStore(
       shortcutManager,
       // getter
     };
-  },
-  {
-    // https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
-    persist: {
-      storage: piniaPluginPersistedstate.localStorage(),
-    },
   },
 );
 if (import.meta.hot)
