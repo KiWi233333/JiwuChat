@@ -399,7 +399,7 @@ onActivated(() => {
 
     <!-- 数据表格 -->
     <div class="min-w-0 w-full flex flex-1 flex-col">
-      <div class="overflow-hidden border-default-2 card-rounded-df bg-color-3">
+      <div class="overflow-hidden border-default card-rounded-df bg-color-3">
         <el-table
           :data="tableData"
           :border="false"
