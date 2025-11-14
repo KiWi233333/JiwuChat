@@ -57,8 +57,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(vue@3.5.18(typescript@5.9.2))
       element-plus:
-        specifier: 2.11.7
-        version: 2.11.7(vue@3.5.18(typescript@5.9.2))
+        specifier: 2.11.2
+        version: 2.11.2(vue@3.5.18(typescript@5.9.2))
       markdown-it-link-attributes:
         specifier: ^4.0.1
         version: 4.0.1
@@ -86,7 +86,7 @@ importers:
         version: 2.3.2(vue@3.5.18(typescript@5.9.2))
       '@element-plus/nuxt':
         specifier: 1.1.4
-        version: 1.1.4(@element-plus/icons-vue@2.3.2(vue@3.5.18(typescript@5.9.2)))(element-plus@2.11.7(vue@3.5.18(typescript@5.9.2)))(magicast@0.3.5)
+        version: 1.1.4(@element-plus/icons-vue@2.3.2(vue@3.5.18(typescript@5.9.2)))(element-plus@2.11.2(vue@3.5.18(typescript@5.9.2)))(magicast@0.3.5)
       '@formkit/auto-animate':
         specifier: 0.9.0
         version: 0.9.0
@@ -3570,8 +3570,8 @@ packages:
   electron-to-chromium@1.5.191:
     resolution: {integrity: sha512-xcwe9ELcuxYLUFqZZxL19Z6HVKcvNkIwhbHUz7L3us6u12yR+7uY89dSl570f/IqNthx8dAw3tojG7i4Ni4tDA==}
 
-  element-plus@2.11.7:
-    resolution: {integrity: sha512-Bh47wuzsqaNBNDkbtlOlZER1cGcOB8GsXp/+C9b95MOrk0wvoHUV4NKKK7xMkfYNFYdYysQ752oMhnExgAL6+g==}
+  element-plus@2.11.2:
+    resolution: {integrity: sha512-sTMDXtgeqy17TUsBSH/DL3h1/5sqIOVUUgXFoVbdD8lWWYssKrDX50CEYy4k29tYJhPHKZyFSwcLJsIajr+dDA==}
     peerDependencies:
       vue: ^3.2.0
 
@@ -7325,11 +7325,11 @@ snapshots:
     dependencies:
       vue: 3.5.18(typescript@5.9.2)
 
-  '@element-plus/nuxt@1.1.4(@element-plus/icons-vue@2.3.2(vue@3.5.18(typescript@5.9.2)))(element-plus@2.11.7(vue@3.5.18(typescript@5.9.2)))(magicast@0.3.5)':
+  '@element-plus/nuxt@1.1.4(@element-plus/icons-vue@2.3.2(vue@3.5.18(typescript@5.9.2)))(element-plus@2.11.2(vue@3.5.18(typescript@5.9.2)))(magicast@0.3.5)':
     dependencies:
       '@element-plus/icons-vue': 2.3.2(vue@3.5.18(typescript@5.9.2))
       '@nuxt/kit': 3.17.7(magicast@0.3.5)
-      element-plus: 2.11.7(vue@3.5.18(typescript@5.9.2))
+      element-plus: 2.11.2(vue@3.5.18(typescript@5.9.2))
       magic-string: 0.27.0
       unplugin: 1.16.1
     transitivePeerDependencies:
@@ -10728,7 +10728,7 @@ snapshots:
 
   electron-to-chromium@1.5.191: {}
 
-  element-plus@2.11.7(vue@3.5.18(typescript@5.9.2)):
+  element-plus@2.11.2(vue@3.5.18(typescript@5.9.2)):
     dependencies:
       '@ctrl/tinycolor': 3.6.1
       '@element-plus/icons-vue': 2.3.2(vue@3.5.18(typescript@5.9.2))
@@ -10739,6 +10739,7 @@ snapshots:
       '@vueuse/core': 9.13.0(vue@3.5.18(typescript@5.9.2))
       async-validator: 4.2.5
       dayjs: 1.11.19
+      escape-html: 1.0.3
       lodash: 4.17.21
       lodash-es: 4.17.21
       lodash-unified: 1.0.3(@types/lodash-es@4.17.12)(lodash-es@4.17.21)(lodash@4.17.21)

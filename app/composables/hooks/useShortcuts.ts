@@ -73,36 +73,36 @@ function isKeyMatch(eventKey: string, configKey: string): boolean {
 }
 
 const DISABLED_BROWSER_SHORTCUTS: Record<string, boolean> = {
-  "ctrl+p": true,
-  "ctrl+f": true,
-  "f3": true,
-  "ctrl+r": true,
-  "ctrl+shift+f": true,
-  "ctrl+shift+i": true,
-  "ctrl+=": true,
-  "ctrl+-": true,
-  "ctrl+0": true,
-  "ctrl+n": true,
-  "ctrl+t": true,
-  "ctrl+d": true,
-  "ctrl+h": true,
-  "ctrl+l": true,
-  "ctrl+s": true,
+  "ctrl+p": true, // 打印
+  "ctrl+f": true, // 查找
+  "f3": true, // 查找下一个
+  // "ctrl+r": true,
+  "ctrl+shift+f": true, // 查找下一个
+  "ctrl+shift+i": true, // 检查更新
+  "ctrl+=": true, // 放大
+  "ctrl+-": true, // 缩小
+  "ctrl+0": true, // 重置缩放
+  "ctrl+n": true, // 新建
+  "ctrl+t": true, // 新建标签页
+  "ctrl+d": true, // 复制
+  "ctrl+h": true, // 替换
+  "ctrl+l": true, // 跳转
+  "ctrl+s": true, // 保存
   // macOS 快捷键
-  "cmd+p": true,
-  "cmd+f": true,
-  "cmd+r": true,
-  "cmd+shift+f": true,
-  "cmd+shift+i": true,
-  "cmd+=": true,
-  "cmd+-": true,
-  "cmd+0": true,
-  "cmd+n": true,
-  "cmd+t": true,
-  "cmd+d": true,
-  "cmd+h": true,
-  "cmd+l": true,
-  "cmd+s": true,
+  "cmd+p": true, // 打印
+  "cmd+f": true, // 查找
+  // "cmd+r": true,
+  "cmd+shift+f": true, // 查找下一个
+  "cmd+shift+i": true, // 检查更新
+  "cmd+=": true, // 放大
+  "cmd+-": true, // 缩小
+  "cmd+0": true, // 重置缩放
+  "cmd+n": true, // 新建
+  "cmd+t": true, // 新建标签页
+  "cmd+d": true, // 复制
+  "cmd+h": true, // 替换
+  "cmd+l": true, // 跳转
+  "cmd+s": true, // 保存
 };
 
 /**
@@ -149,7 +149,6 @@ const DISABLED_BROWSER_SHORTCUTS: Record<string, boolean> = {
  */
 export function useShortcuts() {
   const user = useUserStore();
-  const colorMode = useColorMode();
 
   // 输入法组合状态
   const isComposing = ref(false);
