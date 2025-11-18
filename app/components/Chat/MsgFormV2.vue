@@ -711,7 +711,7 @@ defineExpose({
       <div
         v-show="!chat.isScrollBottom"
         data-fade
-        class="mb-2 ml-a mr-2 w-fit btn-info border-default-hover rounded-full card-bg-color px-3 text-right shadow-lg"
+        class="mb-2 ml-a mr-2 w-fit btn-default-text border-default-hover rounded-full card-bg-color px-3 text-right shadow-md hover:shadow-lg"
         @click="setReadAndScrollBottom"
       >
         <i class="i-solar:double-alt-arrow-down-line-duotone block h-5 w-5 transition-200" />

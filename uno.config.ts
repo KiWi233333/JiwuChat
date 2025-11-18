@@ -91,6 +91,7 @@ export default defineConfig({
     ["btn-primary-border", "transition-200 cursor-pointer rounded-4px hover:(text-theme-primary border-theme-primary)"],
     ["btn-danger-border", "transition-200 cursor-pointer rounded-4px hover:(text-theme-danger border-theme-danger)"],
     ["btn-warning-border", "transition-200 cursor-pointer rounded-4px hover:(text-theme-warning border-theme-warning)"],
+    ["btn-default-text", "transition-200 cursor-pointer rounded-4px hover:(text-black dark:text-white)"],
     ["btn-info-text", "transition-200 cursor-pointer rounded-4px hover:text-[var(--el-color-info)]"],
     ["btn-success-text", "transition-200 cursor-pointer rounded-4px hover:text-[var(--el-color-success)]"],
     ["btn-primary-text", "transition-200 cursor-pointer rounded-4px hover:text-[var(--el-color-primary)]"],
