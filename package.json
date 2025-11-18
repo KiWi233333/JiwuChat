@@ -34,7 +34,9 @@
     "release:patch": "npm version patch && git push --tag && git fetch && git push",
     "lint-staged": "lint-staged",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "commitlint": "commitlint",
+    "commitlint:check": "commitlint"
   },
   "dependencies": {
     "@iconify/vue": "5.0.0",
@@ -53,15 +55,17 @@
     "@tauri-apps/plugin-websocket": "2.4.1",
     "@vueuse/core": "14.0.0",
     "element-plus": "2.11.2",
-    "markdown-it-link-attributes": "^4.0.1",
+    "markdown-it-link-attributes": "4.0.1",
     "md-editor-v3": "5.8.4",
-    "ogl": "^1.0.11",
+    "ogl": "1.0.11",
     "pinia": "3.0.4",
     "qiniu-js": "3.4.3",
     "streamsaver": "2.0.6"
   },
   "devDependencies": {
     "@antfu/eslint-config": "5.4.1",
+    "@commitlint/cli": "20.1.0",
+    "@commitlint/config-conventional": "20.0.0",
     "@element-plus/icons-vue": "2.3.2",
     "@element-plus/nuxt": "1.1.4",
     "@formkit/auto-animate": "0.9.0",
@@ -75,11 +79,11 @@
     "@pinia/nuxt": "0.11.2",
     "@tauri-apps/api": "2.9.0",
     "@tauri-apps/cli": "2.9.4",
-    "@types/sanitize-html": "^2.16.0",
+    "@types/sanitize-html": "2.16.0",
     "@unocss/eslint-plugin": "66.5.3",
     "@unocss/nuxt": "66.5.3",
     "@vueuse/nuxt": "14.0.0",
-    "code-inspector-plugin": "^1.2.10",
+    "code-inspector-plugin": "1.2.10",
     "eslint": "9.35.0",
     "eslint-plugin-format": "1.0.2",
     "husky": "9.1.7",
@@ -97,7 +101,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pnpm run lint-staged"
+      "pre-commit": "pnpm run lint-staged",
+      "commit-msg": "pnpm run commitlint"
     }
   },
   "lint-staged": {
