@@ -10,7 +10,7 @@ import {
 import { appName } from "~/constants";
 import { LoginType } from "~/types/user/index.js";
 
-const user = useUserStore();
+const userStore = useUserStore();
 const loginType = useLocalStorage<LoginType>("loginType", LoginType.EMAIL);
 
 const {
@@ -18,17 +18,21 @@ const {
   addHistoryAccount,
   removeHistoryAccount,
 } = useHistoryAccount();
-const isLoading = ref<boolean>(false);
-const autoLogin = ref<boolean>(true);
-// 表单
+
+const isLoading = ref(false);
+const autoLogin = ref(true);
+const formRef = ref();
+
+// 表单数据
 const userForm = ref({
   username: "",
   password: "",
-  code: "", // 验证码
-  email: "", // 邮箱登录
-  phone: "", // 手机登录
+  code: "",
+  email: "",
+  phone: "",
 });
 
+// 验证规则
 const rules = reactive({
   username: [
     { required: true, message: "用户名不能为空！", trigger: "change" },
@@ -39,17 +43,12 @@ const rules = reactive({
     { min: 6, max: 20, message: "密码长度6-20位！", trigger: "blur" },
   ],
   code: [
-    {
-      required: true,
-      message: "验证码6位组成！",
-      trigger: "change",
-    },
+    { required: true, message: "验证码6位组成！", trigger: "change" },
   ],
   email: [
     { required: true, message: "邮箱不能为空！", trigger: "blur" },
     {
-      pattern:
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i,
+      pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i,
       message: "邮箱格式不正确！",
       trigger: "blur",
     },
@@ -57,219 +56,196 @@ const rules = reactive({
   phone: [
     { required: true, message: "手机号不能为空！", trigger: "blur" },
     {
-      pattern:
-        /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
+      pattern: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
       message: "手机号格式不正确！",
       trigger: "change",
     },
   ],
 });
-// 验证码有效期
-const phoneTimer = ref(-1);
-const emailTimer = ref(-1);
-const emailCodeStorage = ref<number>(0);
-const phoneCodeStorage = ref<number>(0);
-/**
- * 获取验证码
- * @param type
- */
+
+// 验证码配置类型
+interface CodeConfigItem {
+  timer: Ref<number>
+  storage: Ref<number>
+  getValue: () => string
+  validate: (value: string) => boolean
+  deviceType: DeviceType
+  successMsg: string
+  errorMsg: string
+  duration: number
+}
+
+// 验证码配置（统一管理邮箱和手机验证码）
+const codeConfig: Record<LoginType, CodeConfigItem> = {
+  [LoginType.EMAIL]: {
+    timer: ref(-1),
+    storage: ref(0),
+    getValue: () => userForm.value.email,
+    validate: checkEmail,
+    deviceType: DeviceType.EMAIL,
+    successMsg: "验证码已发送至您的邮箱，5分钟有效！",
+    errorMsg: "邮箱格式不正确！",
+    duration: 3000,
+  },
+  [LoginType.PHONE]: {
+    timer: ref(-1),
+    storage: ref(0),
+    getValue: () => userForm.value.phone,
+    validate: checkPhone,
+    deviceType: DeviceType.PHONE,
+    successMsg: "验证码已发送",
+    errorMsg: "手机号格式不正确！",
+    duration: 5000,
+  },
+  [LoginType.PWD]: {
+    timer: ref(-1),
+    storage: ref(0),
+    getValue: () => "",
+    validate: () => false,
+    deviceType: DeviceType.EMAIL,
+    successMsg: "",
+    errorMsg: "",
+    duration: 0,
+  },
+};
+
+// 获取验证码（简化后的统一逻辑）
 async function getLoginCode(type: LoginType) {
-  let data;
+  const config = codeConfig[type];
+  if (!config || type === LoginType.PWD)
+    return;
+
+  const value = config.getValue().trim();
+  if (!value || config.storage.value > 0)
+    return;
+
+  if (!config.validate(value)) {
+    ElMessage.error(config.errorMsg);
+    return;
+  }
+
   try {
-    // 获取邮箱验证码
-    if (type === LoginType.EMAIL) {
-    // 简单校验
-      if (!userForm.value.email.trim() || emailCodeStorage.value > 0)
-        return;
-      if (!checkEmail(userForm.value.email)) {
-        isLoading.value = false;
-        return ElMessage.error("邮箱格式不正确！");
-      }
-      // 开启
-      isLoading.value = true;
-      // 请求验证码
-      data = await getLoginCodeByType(userForm.value.email, DeviceType.EMAIL);
-      // 成功
-      if (data.code === StatusCode.SUCCESS) {
-        ElMessage.success({
-          message: "验证码已发送至您的邮箱，5分钟有效！",
-          duration: 3000,
-        });
-        useInterval(emailTimer, emailCodeStorage, 60, -1);
-      }
-      else {
-        // 处理非成功状态
-        ElMessage.closeAll("error");
-        ElMessage.error(data.message || "发送验证码失败，请稍后重试！");
-      }
+    isLoading.value = true;
+    const data = await getLoginCodeByType(value, config.deviceType);
+
+    if (data.code === StatusCode.SUCCESS) {
+      startTimer(config.timer, config.storage, 60);
+      ElMessage.success({
+        message: data.message || config.successMsg,
+        duration: config.duration,
+      });
     }
-    // 获取手机号验证码
-    else if (type === LoginType.PHONE) {
-      if (!userForm.value.phone.trim() || phoneCodeStorage.value > 0)
-        return;
-      if (!checkPhone(userForm.value.phone)) {
-        isLoading.value = false;
-        ElMessage.closeAll("error");
-        return ElMessage.error("手机号格式不正确！");
-      }
-      isLoading.value = true;
-      data = await getLoginCodeByType(userForm.value.phone, DeviceType.PHONE);
-      if (data.code === StatusCode.SUCCESS) {
-      // 开启定时器
-        useInterval(phoneTimer, phoneCodeStorage, 60, -1);
-        ElMessage.success({
-          message: data.message,
-          duration: 5000,
-        });
-      // userForm.value.code = data.data;
-      }
-      else {
-        ElMessage.closeAll("error");
-        ElMessage.error(data.message || "发送验证码失败，请稍后重试！");
-      }
+    else {
+      ElMessage.closeAll("error");
+      ElMessage.error(data.message || "发送验证码失败，请稍后重试！");
     }
   }
   catch (error: any) {
-    // 统一错误处理
     console.error("获取验证码失败:", error);
     ElMessage.closeAll("error");
-    const errorMsg = error?.message || error?.data?.message || "网络异常，请检查网络连接后重试！";
-    ElMessage.error(errorMsg);
+    ElMessage.error(error?.message || error?.data?.message || "网络异常，请检查网络连接后重试！");
   }
   finally {
-    // 确保关闭加载状态
     isLoading.value = false;
   }
 }
-/**
- * 定时器
- * @param timer 本地定时器
- * @param num 计数对象
- * @param target 开始秒数
- * @param step 自增自减
- * @param fn 回调
- */
-function useInterval(timer: any, num: Ref<number>, target?: number, step = -1, fn?: () => void) {
-  num.value = target || timer.value;
+
+// 启动倒计时（简化定时器逻辑）
+function startTimer(timer: Ref<number | NodeJS.Timeout>, storage: Ref<number>, seconds: number) {
+  storage.value = seconds;
   timer.value = setInterval(() => {
-    num.value += step;
-    // 清除定时器
-    if (num.value <= 0) {
-      num.value = -1;
+    storage.value--;
+    if (storage.value <= 0) {
       clearInterval(timer.value);
       timer.value = -1;
+      storage.value = 0;
     }
-    fn && fn();
   }, 1000);
 }
 
-// 关闭定时器
-onUnmounted(() => {
-  onCloseTimer();
-});
-onDeactivated(() => {
-  onCloseTimer();
-});
-// 关闭定时器
-function onCloseTimer() {
-  if (emailTimer.value !== -1) {
-    clearInterval(emailTimer.value);
-    emailTimer.value = -1;
-  }
-  if (phoneTimer.value !== -1) {
-    clearInterval(phoneTimer.value);
-    phoneTimer.value = -1;
-  }
-}
-
-
-const store = useUserStore();
-function toRegister() {
-  store.showLoginPageType = "register";
-}
-
-const formRef = ref();
-function done() {
-  isLoading.value = false;
-  user.isOnLogining = false;
-}
-/**
- * 登录
- * @param formEl 表单示例
- */
-async function onLogin(formEl: any | undefined) {
-  if (!formEl || isLoading.value)
-    return;
-  formEl.validate(async (valid: boolean) => {
-    if (!valid)
-      return;
-    isLoading.value = true;
-    user.isOnLogining = true;
-    let res = { code: StatusCode.DEFAULT_ERR, data: "", message: "登录失败！" };
-    try {
-      switch (loginType.value) {
-        case LoginType.PWD:
-          res = await toLoginByPwd(userForm.value.username, userForm.value.password);
-          break;
-        case LoginType.PHONE:
-          res = await toLoginByPhone(userForm.value.phone, userForm.value.code);
-          break;
-        case LoginType.EMAIL:
-          res = await toLoginByEmail(userForm.value.email, userForm.value.code);
-          break;
-      }
-    }
-    catch (error) {
-      res = { code: StatusCode.DEFAULT_ERR, data: "", message: "连接失败，请稍后重试！" };
-      done();
-    }
-    if (res.code === StatusCode.SUCCESS) {
-      // 登录成功
-      if (res.data) {
-        await store.onUserLogin(res.data, autoLogin.value, (info) => {
-          // 初始化
-          useWsStore().reload();
-          // 保存账号
-          if (!autoLogin.value) {
-            return;
-          }
-          addHistoryAccount({
-            type: loginType.value,
-            account: userForm.value.username,
-            password: userForm.value.password,
-            userInfo: {
-              id: info.id,
-              avatar: info.avatar,
-              nickname: info.nickname,
-            },
-          });
-          // 转发
-          navigateTo("/");
-        });
-        done();
-      }
-      // 登录失败
-      else {
-        // store
-        store.$patch({
-          token: "",
-          isLogin: false,
-        });
-        done();
-      }
-    }
-    else {
-      done();
+// 清理所有定时器
+function clearAllTimers() {
+  Object.values(codeConfig).forEach(({ timer }) => {
+    if (timer.value !== -1) {
+      clearInterval(timer.value);
+      timer.value = -1;
     }
   });
 }
 
+onUnmounted(clearAllTimers);
+onDeactivated(clearAllTimers);
+
+// 登录方法映射（替代 switch-case）
+const loginMethods = {
+  [LoginType.PWD]: () => toLoginByPwd(userForm.value.username, userForm.value.password),
+  [LoginType.PHONE]: () => toLoginByPhone(userForm.value.phone, userForm.value.code),
+  [LoginType.EMAIL]: () => toLoginByEmail(userForm.value.email, userForm.value.code),
+};
+
+// 登录（简化逻辑）
+async function onLogin(formEl: any | undefined) {
+  if (!formEl || isLoading.value)
+    return;
+
+  formEl.validate(async (valid: boolean) => {
+    if (!valid)
+      return;
+
+    isLoading.value = true;
+    userStore.isOnLogining = true;
+
+    try {
+      const loginMethod = loginMethods[loginType.value];
+      const res = await loginMethod();
+
+      if (res.code === StatusCode.SUCCESS && res.data) {
+        await handleLoginSuccess(res.data);
+      }
+      else {
+        userStore.$patch({ token: "", isLogin: false });
+      }
+    }
+    catch (error) {
+      ElMessage.error("登录失败，请稍后重试！");
+    }
+    finally {
+      isLoading.value = false;
+      userStore.isOnLogining = false;
+    }
+  });
+}
+
+// 处理登录成功（提取复用逻辑）
+async function handleLoginSuccess(data: string) {
+  await userStore.onUserLogin(data, autoLogin.value, (info) => {
+    useWsStore().reload();
+
+    if (autoLogin.value) {
+      addHistoryAccount({
+        type: loginType.value,
+        account: userForm.value.username,
+        password: userForm.value.password,
+        userInfo: {
+          id: info.id,
+          avatar: info.avatar,
+          nickname: info.nickname,
+        },
+      });
+    }
+
+    navigateTo("/");
+  });
+}
+
+// 登录选项
 const options = [
   { label: "邮箱登录", value: LoginType.EMAIL },
   { label: "手机登录", value: LoginType.PHONE },
   { label: "密码登录", value: LoginType.PWD },
 ];
 
+// 历史账号相关
 const theHistoryAccount = ref({
   type: LoginType.EMAIL,
   account: "",
@@ -280,10 +256,14 @@ const theHistoryAccount = ref({
   },
 });
 
-const findAccountAvatar = computed(() => historyAccounts.value.find(item => item.account === userForm.value.username));
+const findAccountAvatar = computed(() =>
+  historyAccounts.value.find(item => item.account === userForm.value.username),
+);
+
 async function handleSelectAccount(item: Record<string, any>) {
-  if (!item || !item.account)
+  if (!item?.account)
     return;
+
   const pwd = await decrypt(JSON.parse(item.password), item.account);
   userForm.value.username = item.account;
   userForm.value.password = pwd || "";
@@ -313,6 +293,10 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
   cb(results);
 }
 
+function toRegister() {
+  userStore.showLoginPageType = "register";
+}
+
 function forgetPassword() {
   ElMessage.warning("请手机或者邮箱验证登录后，找回密码！");
 }
@@ -339,7 +323,7 @@ defineExpose({
     }"
     autocomplete="off"
   >
-    <template v-if="!user.isLogin">
+    <template v-if="!userStore.isLogin">
       <div class="header flex-row-c-c">
         <CardAvatar
           style="--anima: blur-in;"
@@ -372,7 +356,8 @@ defineExpose({
           @keyup.enter="getLoginCode(loginType)"
         >
           <template #append>
-            <span class="code-btn" @click="getLoginCode(loginType)"> {{ emailCodeStorage > 0 ? `${emailCodeStorage}s后重新发送` : "获取验证码" }}
+            <span class="code-btn" @click="getLoginCode(loginType)">
+              {{ codeConfig[LoginType.EMAIL].storage.value > 0 ? `${codeConfig[LoginType.EMAIL].storage.value}s后重新发送` : "获取验证码" }}
             </span>
           </template>
         </el-input>
@@ -395,7 +380,7 @@ defineExpose({
         >
           <template #append>
             <span class="code-btn" @click="getLoginCode(loginType)">
-              {{ phoneCodeStorage > 0 ? `${phoneCodeStorage}s后重新发送` : "获取验证码" }}
+              {{ codeConfig[LoginType.PHONE].storage.value > 0 ? `${codeConfig[LoginType.PHONE].storage.value}s后重新发送` : "获取验证码" }}
             </span>
           </template>
         </el-input>
@@ -477,7 +462,7 @@ defineExpose({
           type="primary"
           class="submit w-full tracking-0.2em shadow"
           style="padding: 20px"
-          :loading="isLoading || user.isOnLogining"
+          :loading="isLoading || userStore.isOnLogining"
           :loading-icon="CardLoading"
           @keyup.enter="onLogin(formRef)"
           @click="onLogin(formRef)"
@@ -508,33 +493,33 @@ defineExpose({
     </template>
     <template v-else>
       <div class="mt-16 flex-row-c-c flex-col gap-8">
-        <CardAvatar :src="BaseUrlImg + user.userInfo.avatar" class="h-6rem w-6rem border-default rounded-full bg-color-2 sm:(h-8rem w-8rem)" />
+        <CardAvatar :src="BaseUrlImg + userStore.userInfo.avatar" class="h-6rem w-6rem border-default rounded-full bg-color-2 sm:(h-8rem w-8rem)" />
         <div text-center>
           <span>
-            {{ user.userInfo.username || "未登录" }}
+            {{ userStore.userInfo.username || "未登录" }}
           </span>
           <br>
-          <small op-80 el-color-info>（{{ user.userInfo.username ? "已登录" : "请登录" }}）</small>
+          <small op-80 el-color-info>（{{ userStore.userInfo.username ? "已登录" : "请登录" }}）</small>
         </div>
         <div>
           <BtnElButton
             style="width: 8em;"
             type="primary"
             transition-icon
-            :loading="user.isOnLogining"
+            :loading="userStore.isOnLogining"
             :loading-icon="CardLoading"
             icon-class="i-solar-alt-arrow-left-bold"
             mr-2 sm:mr-4
             @click="navigateTo('/')"
           >
-            {{ user.isOnLogining ? "登录中..." : "前往聊天" }}
+            {{ userStore.isOnLogining ? "登录中..." : "前往聊天" }}
           </BtnElButton>
           <BtnElButton
             style="width: 8em;"
             type="danger"
             transition-icon plain
             icon-class="i-solar:logout-3-broken"
-            @click="user.exitLogin"
+            @click="userStore.exitLogin"
           >
             退出登录
           </BtnElButton>
@@ -558,7 +543,7 @@ defineExpose({
     padding: 0;
 
     .el-input-group__append {
-      --at-apply: "w-8rem min-w-fit text-theme-primary card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em hover:(!text-theme-primary op-100)";
+      --at-apply: "w-8rem min-w-fit text-theme-primary card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-primary op-100)";
     }
     .code-btn {
       --at-apply: " h-full flex-row-c-c px-4 transition-200 ";
