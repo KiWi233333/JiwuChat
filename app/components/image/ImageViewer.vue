@@ -113,6 +113,7 @@ const showNext = computed(() => state.urlList.length > 1 && state.index < state.
 
 // 重置图片状态
 function resetImage() {
+  imageState.moving = false; // 确保重置有动画
   imageState.scale = 1;
   imageState.rotate = 0;
   imageState.translateX = 0;
@@ -123,7 +124,11 @@ function resetImage() {
 const imageStyle = computed(() => {
   return {
     transform: `translate(${imageState.translateX}px, ${imageState.translateY}px) scale(${imageState.scale}) rotate(${imageState.rotate}deg)`,
-    transition: imageState.moving || imageState.pinching ? "none" : "transform 0.3s",
+    // 性能优化：告诉浏览器 transform 属性即将变化，启用 GPU 加速层
+    willChange: imageState.moving ? "transform" : "auto",
+    // 当 moving 为 true (触摸板/拖拽) 时，禁用 transition，依靠 rAF 实时渲染
+    // 当 moving 为 false (鼠标滚轮/按钮) 时，启用 transition，依靠 CSS 补间
+    transition: imageState.moving || imageState.pinching ? "none" : "transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
   };
 });
 
@@ -165,21 +170,25 @@ function saveImage(url: string) {
 
 // 放大
 function zoomIn() {
+  imageState.moving = false; // 按钮操作需启用动画
   imageState.scale = Math.min(imageState.scale * 1.2, MAX_SCALE);
 }
 
 // 缩小
 function zoomOut() {
+  imageState.moving = false; // 按钮操作需启用动画
   imageState.scale = Math.max(imageState.scale / 1.2, MIN_SCALE);
 }
 
 // 顺时针旋转
 function rotateClockwise() {
+  imageState.moving = false;
   imageState.rotate += 90;
 }
 
 // 逆时针旋转
 function rotateAnticlockwise() {
+  imageState.moving = false;
   imageState.rotate -= 90;
 }
 
@@ -203,9 +212,6 @@ function next() {
 function handleKeydown(e: KeyboardEvent) {
   if (!state.visible)
     return;
-  // 没有其他快捷键
-  // if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.key.length > 1)
-  //   return;
   e.stopPropagation(); // 阻止事件冒泡
   e.preventDefault(); // 阻止默认行为
   keyDownFnMap[e.key]?.();
@@ -217,7 +223,7 @@ function handleMouseDown(e: MouseEvent) {
     return; // 只处理左键点击
 
   e.preventDefault();
-  e.stopPropagation(); // 阻止事件冒泡，避免触发容器的点击事件
+  e.stopPropagation(); // 阻止事件冒泡
 
   imageState.moving = true;
   imageState.startX = e.clientX;
@@ -234,11 +240,13 @@ function handleMouseMove(e: MouseEvent) {
   if (!imageState.moving)
     return;
 
-  const deltaX = e.clientX - imageState.startX;
-  const deltaY = e.clientY - imageState.startY;
-
-  imageState.translateX = imageState.lastX + deltaX;
-  imageState.translateY = imageState.lastY + deltaY;
+  // 使用 requestAnimationFrame 节流拖动，提升性能
+  requestAnimationFrame(() => {
+    const deltaX = e.clientX - imageState.startX;
+    const deltaY = e.clientY - imageState.startY;
+    imageState.translateX = imageState.lastX + deltaX;
+    imageState.translateY = imageState.lastY + deltaY;
+  });
 }
 
 // 鼠标拖动结束
@@ -248,18 +256,78 @@ function handleMouseUp() {
   document.removeEventListener("mouseup", handleMouseUp);
 }
 
-// 处理鼠标滚轮缩放
+// --- 滚轮/触摸板优化核心逻辑 ---
+let wheelStopTimer: ReturnType<typeof setTimeout>;
+let accumulatedDelta = 0; // 累积滚轮增量
+let ticking = false; // rAF 锁
+
 function handleWheel(e: WheelEvent) {
   e.preventDefault();
-  e.stopPropagation(); // 阻止事件冒泡
+  e.stopPropagation();
 
-  // 向上滚动放大，向下滚动缩小
-  if (e.deltaY < 0) {
-    zoomIn();
+  // 1. 累积 Delta (解决掉帧的核心：不要每帧都计算)
+  let currentDelta = e.deltaY;
+  if (e.deltaMode === 1)
+    currentDelta *= 40;
+  if (e.deltaMode === 2)
+    currentDelta *= 800;
+
+  accumulatedDelta += currentDelta;
+
+  // 2. 检测设备类型
+  // 触摸板的单次 delta 很小 (绝对值通常 < 40)，且触发频率极高
+  const isTouchPad = Math.abs(currentDelta) < 40 && e.deltaMode === 0;
+
+  // 3. 状态切换
+  if (isTouchPad) {
+    imageState.moving = true; // 触摸板：禁用 transition，完全跟手
   }
   else {
-    zoomOut();
+    imageState.moving = false; // 鼠标滚轮：启用 transition，平滑补间
+    // 对于鼠标滚轮，我们不需要 accumulation/rAF 机制，
+    // 因为滚轮事件频率低，直接应用 transition 效果更好
+    // 下面的 rAF 逻辑主要服务于触摸板
   }
+
+  // 4. 使用 requestAnimationFrame 进行渲染节流
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      performZoom(isTouchPad);
+      ticking = false;
+    });
+    ticking = true;
+  }
+
+  // 5. 触摸板防抖复位
+  if (isTouchPad) {
+    clearTimeout(wheelStopTimer);
+    wheelStopTimer = setTimeout(() => {
+      imageState.moving = false;
+      accumulatedDelta = 0; // 清空残余
+    }, 200);
+  }
+}
+
+function performZoom(isTouchPad: boolean) {
+  if (accumulatedDelta === 0)
+    return;
+
+  // 如果是鼠标滚轮，我们希望它一次性响应，而不是被 rAF 分割，
+  // 但为了代码统一，我们在 calculate 时处理灵敏度即可。
+
+  // 灵敏度微调：
+  // 触摸板非常灵敏，系数需要小；鼠标滚轮单次值大，系数也要适中
+  const sensitivity = isTouchPad ? 0.0025 : 0.002;
+
+  const zoomFactor = Math.exp(-accumulatedDelta * sensitivity);
+
+  // 计算新比例
+  const newScale = imageState.scale * zoomFactor;
+  imageState.scale = Math.min(Math.max(newScale, MIN_SCALE), MAX_SCALE);
+
+  // 如果是触摸板，每帧处理完后清空 delta，等待下一帧积累
+  // 如果是鼠标滚轮，由于我们希望利用 CSS transition，其实这里 rAF 执行一次也足够
+  accumulatedDelta = 0;
 }
 
 // 触摸开始
@@ -293,26 +361,32 @@ function handleTouchMove(e: TouchEvent) {
   e.preventDefault();
   e.stopPropagation(); // 阻止事件冒泡
 
-  if (imageState.moving && e.touches.length === 1) {
-    // 单指拖动
-    const deltaX = (e.touches[0]?.clientX || 0) - imageState.startX;
-    const deltaY = (e.touches[0]?.clientY || 0) - imageState.startY;
+  // 使用 requestAnimationFrame 优化触摸性能
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      if (imageState.moving && e.touches.length === 1) {
+        // 单指拖动
+        const deltaX = (e.touches[0]?.clientX || 0) - imageState.startX;
+        const deltaY = (e.touches[0]?.clientY || 0) - imageState.startY;
 
-    imageState.translateX = imageState.lastX + deltaX;
-    imageState.translateY = imageState.lastY + deltaY;
-  }
-  else if (imageState.pinching && e.touches.length === 2) {
-    // 双指捏合缩放
-    const touch1X = e.touches[0]?.clientX || 0;
-    const touch1Y = e.touches[0]?.clientY || 0;
-    const touch2X = e.touches[1]?.clientX || 0;
-    const touch2Y = e.touches[1]?.clientY || 0;
+        imageState.translateX = imageState.lastX + deltaX;
+        imageState.translateY = imageState.lastY + deltaY;
+      }
+      else if (imageState.pinching && e.touches.length === 2) {
+        // 双指捏合缩放
+        const touch1X = e.touches[0]?.clientX || 0;
+        const touch1Y = e.touches[0]?.clientY || 0;
+        const touch2X = e.touches[1]?.clientX || 0;
+        const touch2Y = e.touches[1]?.clientY || 0;
 
-    const currentDistance = getDistance(touch1X, touch1Y, touch2X, touch2Y);
-    const ratio = currentDistance / imageState.initialDistance;
+        const currentDistance = getDistance(touch1X, touch1Y, touch2X, touch2Y);
+        const ratio = currentDistance / imageState.initialDistance;
 
-    // 简单缩放，不考虑中心点
-    imageState.scale = Math.min(Math.max(imageState.initialScale * ratio, 0.1), 10);
+        imageState.scale = Math.min(Math.max(imageState.initialScale * ratio, 0.1), 10);
+      }
+      ticking = false;
+    });
+    ticking = true;
   }
 }
 
@@ -331,6 +405,7 @@ function getDistance(x1: number, y1: number, x2: number, y2: number): number {
 function handleDoubleClick(e: MouseEvent) {
   e.stopPropagation(); // 阻止事件冒泡
 
+  imageState.moving = false; // 双击需要动画
   if (imageState.scale !== 1) {
     resetImage();
   }
@@ -357,12 +432,10 @@ function destroy() {
 // 监听键盘事件
 onMounted(() => {
   document.addEventListener("keydown", handleKeydown);
-  console.log("mounted ImageViewer");
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener("keydown", handleKeydown);
-  console.log("unmounted ImageViewer");
 });
 
 // 暴露方法给外部使用
@@ -415,7 +488,7 @@ defineExpose({
       >
         <!-- 关闭按钮 -->
         <div
-          class="btn-bg flex-center pointer-events-auto absolute right-5 top-5 btn-primary cursor-pointer rounded-full p-2 text-6"
+          class="btn-bg flex-center pointer-events-auto absolute right-5 top-5 cursor-pointer rounded-full p-2 text-6"
           @click="close"
         >
           <i class="i-carbon:close p-3" />
@@ -441,7 +514,7 @@ defineExpose({
           />
           <!-- rotate -->
           <el-icon-refresh-right
-            class="btn"
+            class="btn scale-104"
             title="向前旋转"
             @click.stop="rotateClockwise"
           />
@@ -451,7 +524,7 @@ defineExpose({
             @click.stop="resetImage"
           />
           <el-icon-refresh-left
-            class="btn"
+            class="btn scale-104"
             title="重置"
             @click.stop="rotateAnticlockwise"
           />
@@ -540,7 +613,7 @@ defineExpose({
 
 <style lang="scss">
 .btn-bg {
-  --at-apply: "bg-dark bg-opacity-15 backdrop-blur-2 text-light border-default-2-hover";
+  --at-apply: "bg-dark bg-opacity-15 backdrop-blur-2 text-light hover:bg-op-20 transition-200";
 }
 .btn {
   --at-apply: "w-1.4em h-1.4em btn-primary dark:btn-info";
