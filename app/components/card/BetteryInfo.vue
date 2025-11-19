@@ -15,7 +15,7 @@ const betteryInfo = useBattery(window);
     <i
       :class="
         betteryInfo.charging.value
-          ? 'bg-[var(--el-color-info)] i-carbon:battery-charging'
+          ? 'bg-theme-info i-carbon:battery-charging'
           : 'opacity-80 i-carbon:battery-full'
       "
       mr-2 p-4

@@ -120,7 +120,7 @@ const getAppTitle = computed(() => {
                   <i
                     :title="data.isAlwaysOnTopVal ? '取消置顶' : '置顶'"
                     class="i-solar:pin-broken cursor-pointer text-0.8em transition-200"
-                    :class="data.isAlwaysOnTopVal ? ' mb-1 color-[var(--el-color-warning)] -rotate-45' : 'mb-0 btn-primary'"
+                    :class="data.isAlwaysOnTopVal ? ' mb-1 color-theme-warning -rotate-45' : 'mb-0 btn-primary'"
                   />
                 </ElButton>
                 <div class="mx-1 h-1.2em border-default-l" />

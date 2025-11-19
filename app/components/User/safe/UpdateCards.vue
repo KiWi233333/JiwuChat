@@ -39,7 +39,7 @@ const form = ref({
           opacity-0
           transition-300
           group-hover:opacity-100
-          class="i-solar:refresh-outline ml-a cursor-pointer bg-[var(--el-color-info)] px-3 transition-300 hover:rotate-180"
+          class="i-solar:refresh-outline ml-a cursor-pointer bg-theme-info px-3 transition-300 hover:rotate-180"
           @click="reloadUserInfo"
         />
       </div>
@@ -50,7 +50,7 @@ const form = ref({
           <small opacity-80>************</small>
         </small>
         <small
-          class="cursor-pointer transition-300 hover:text-[var(--el-color-primary)]"
+          class="cursor-pointer transition-300 hover:text-theme-primary"
           @click="form.showUpdatePwd = true"
         >
           修改密码
@@ -68,7 +68,7 @@ const form = ref({
           </small>
         </small>
         <small
-          class="cursor-pointer transition-300 hover:text-[var(--el-color-primary)]"
+          class="cursor-pointer transition-300 hover:text-theme-primary"
           @click="form.showUpdatePhone = true"
         >
           {{ user.userInfo.phone ? "修改手机号" : "绑定" }}
@@ -88,7 +88,7 @@ const form = ref({
           </small>
         </small>
         <small
-          class="cursor-pointer transition-300 hover:text-[var(--el-color-primary)]"
+          class="cursor-pointer transition-300 hover:text-theme-primary"
           @click="form.showUpdateEmail = true"
         >
           {{ user.userInfo.email ? "修改邮箱" : "绑定" }}

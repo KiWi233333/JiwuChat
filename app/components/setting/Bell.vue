@@ -23,7 +23,7 @@ const {
       <div
         v-show="setting.settingPage.rtcCallBellUrl"
         class="flex-row-c-c cursor-pointer"
-        :class="audioRaw ? 'text-[var(--el-color-danger)] hover:text-[var(--el-color-danger)]' : 'hover:text-[var(--el-color-info)] op-80'"
+        :class="audioRaw ? 'text-theme-danger hover:text-theme-danger' : 'hover:text-theme-info op-80'"
         @click="togglePlayRtcCallBell(setting.settingPage.rtcCallBellUrl)"
       >
         <i

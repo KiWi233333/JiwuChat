@@ -10,7 +10,7 @@ defineEmits(["reload"]);
   >
     <span class="hidden overflow-hidden truncate md:inline">刷新</span>
     <i
-      class="i-solar:refresh-outline w-1.4em w-1.4em cursor-pointer bg-[var(--el-color-info)] transition-300 hover:rotate-180"
+      class="i-solar:refresh-outline w-1.4em w-1.4em cursor-pointer bg-theme-info transition-300 hover:rotate-180"
       alt="页面刷新"
     />
   </ElButton>

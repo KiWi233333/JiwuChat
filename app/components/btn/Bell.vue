@@ -22,7 +22,7 @@ interface NoticeInfo {
         class="group mx-2 cursor-pointer"
       >
         <i
-          class="block transition-100 group-hover:(i-solar:bell-bold animate-swing bg-[var(--el-color-warning)])"
+          class="block transition-100 group-hover:(i-solar:bell-bold animate-swing bg-theme-warning)"
           i-solar:bell-outline block h-1.2em w-1.2em px-0.7em
         />
       </el-badge>

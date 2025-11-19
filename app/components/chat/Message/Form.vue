@@ -729,7 +729,7 @@ defineExpose({
           <div class="max-w-4/5 truncate">
             {{ `${chat.replyMsg?.fromUser?.nickName}: ${chat.replyMsg ? resolveMsgReplyText(chat.replyMsg as ChatMessageVO) : '未知'}` }}
           </div>
-          <div class="i-solar:close-circle-bold ml-a h-6 w-6 btn-default text-dark op-80 transition-200 transition-color sm:(h-5 w-5) dark:text-light hover:text-[var(--el-color-danger)]" @click="chat.setReplyMsg({})" />
+          <div class="i-solar:close-circle-bold ml-a h-6 w-6 btn-default text-dark op-80 transition-200 transition-color sm:(h-5 w-5) dark:text-light hover:text-theme-danger" @click="chat.setReplyMsg({})" />
         </div>
       </div>
     </div>

@@ -110,7 +110,7 @@ body .el-message {
     &:not(.is-disabled) {
       &:hover,
       &:focus {
-        --at-apply: "bg-[var(--el-color-primary)] text-white shadow";
+        --at-apply: "bg-theme-primary text-white shadow";
       }
     }
   }

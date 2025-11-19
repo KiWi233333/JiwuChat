@@ -309,8 +309,8 @@ onMounted(() => {
         <el-input
           ref="nicknameInputRef"
           v-model.lazy="userCopy.nickname"
-          class="mr-2"
-          style="font-size: 0.9em; font-weight: 500"
+          class="edit-nickname mr-2"
+          style="font-size: 1.4em; font-weight: 500;"
           placeholder="修改用户昵称"
           @focus="isEditNickname = true"
           @blur="onBlur()"
@@ -335,7 +335,7 @@ onMounted(() => {
         >
           <span
             v-copying.toast="user?.id"
-            class="i-solar:copy-broken mx-2 cursor-pointer bg-blueGray p-2 transition-300 hover:bg-[var(--el-color-success)]"
+            class="i-solar:copy-broken mx-2 cursor-pointer bg-blueGray p-2 transition-300 hover:bg-theme-success"
           />
         </el-tooltip>
       </div>
@@ -510,6 +510,15 @@ onMounted(() => {
   }
 }
 /* stylelint-disable-next-line selector-class-pattern */
+.edit-nickname {
+  :deep(.el-input__wrapper) {
+    --at-apply: "p-0 m-0 text-6 flex-1 min-w-0";
+
+    input {
+      --at-apply: "text-color font-500";
+    }
+  }
+}
 .small-input {
   --at-apply: "pb-2 mb-2 flex items-center justify-start";
 }

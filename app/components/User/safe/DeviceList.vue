@@ -75,7 +75,7 @@ function exitLogin(ua?: string) {
       登录设备
       <i
         opacity-100
-        transition-300 group-hover:opacity-100 md:opacity-0 class="i-solar:refresh-outline float-right cursor-pointer bg-[var(--el-color-info)] px-3 transition-300 hover:rotate-180"
+        transition-300 group-hover:opacity-100 md:opacity-0 class="i-solar:refresh-outline float-right cursor-pointer bg-theme-info px-3 transition-300 hover:rotate-180"
         @click="reload"
       />
     </div>
@@ -94,7 +94,7 @@ function exitLogin(ua?: string) {
         <UserSafeDeviceCard
           v-for="p in deviceList"
           :key="p.id"
-          class="relative h-fit cursor-pointer card-default hover:(border-[var(--el-color-info)] border-solid shadow)"
+          class="relative h-fit cursor-pointer card-default hover:(border-theme-info border-solid shadow)"
           :data="p"
         >
           <div />
@@ -113,7 +113,7 @@ function exitLogin(ua?: string) {
         <UserSafeDeviceCard
           v-for="p in deviceList"
           :key="p.id"
-          class="relative h-fit cursor-pointer card-default hover:(border-[var(--el-color-info)] border-solid shadow)"
+          class="relative h-fit cursor-pointer card-default hover:(border-theme-info border-solid shadow)"
           :data="p"
         >
           <div />
@@ -132,7 +132,7 @@ function exitLogin(ua?: string) {
         <UserSafeDeviceCard
           v-for="p in deviceList"
           :key="p.id"
-          class="relative h-fit cursor-pointer card-default hover:(border-[var(--el-color-info)] border-solid shadow)"
+          class="relative h-fit cursor-pointer card-default hover:(border-theme-info border-solid shadow)"
           :data="p"
         >
           <div />
@@ -151,7 +151,7 @@ function exitLogin(ua?: string) {
         <UserSafeDeviceCard
           v-for="p in deviceList"
           :key="p.id"
-          class="relative h-fit cursor-pointer card-default hover:(border-[var(--el-color-info)] border-solid shadow)"
+          class="relative h-fit cursor-pointer card-default hover:(border-theme-info border-solid shadow)"
           :data="p"
         >
           <div />
@@ -170,7 +170,7 @@ function exitLogin(ua?: string) {
         <UserSafeDeviceCard
           v-for="p in deviceList"
           :key="p.id"
-          class="relative h-fit cursor-pointer card-default hover:(border-[var(--el-color-info)] border-solid shadow)"
+          class="relative h-fit cursor-pointer card-default hover:(border-theme-info border-solid shadow)"
           :data="p"
         >
           <div />

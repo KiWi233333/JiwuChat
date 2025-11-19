@@ -56,12 +56,12 @@ const menuList = ref([
     name: "个人主页",
     path: "/user",
     className:
-      "bg-[var(--el-color-primary)] i-solar:home-2-bold-duotone  group-hover:animate-[tada_1s_ease]",
+      "bg-theme-primary i-solar:home-2-bold-duotone  group-hover:animate-[tada_1s_ease]",
   },
   // {
   //   name: "我的帖子",
   //   path: "/user/post",
-  //   className: "i-solar:cup-hot-bold-duotone bg-[var(--el-color-info)] group-hover:animate-[portanim_1s]",
+  //   className: "i-solar:cup-hot-bold-duotone bg-theme-info group-hover:animate-[portanim_1s]",
   // },
   // {
   //   name: "我的收藏",

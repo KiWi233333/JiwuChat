@@ -121,7 +121,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(data.birthday));
                     class="h-5em w-5em flex-shrink-0 overflow-hidden rounded-1/2 object-cover shadow transition-300 group-hover:filter-blur-4"
                   >
                   <i
-                    class="i-solar:camera-broken absolute p-5 text-theme-primary opacity-0 transition-300 group-hover:opacity-100"
+                    class="i-solar:camera-broken absolute p-5 text-theme-warning opacity-0 transition-300 group-hover:opacity-100"
                   />
                 </template>
                 <ElIconPlus

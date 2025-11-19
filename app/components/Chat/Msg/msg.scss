@@ -105,7 +105,7 @@
 }
 // .self .notice {
 //   .popper {
-//     --at-apply: "bg-[var(--el-color-primary)] dark:bg-[var(--el-color-primary)] text-white";
+//     --at-apply: "bg-theme-primary dark:bg-theme-primary text-white";
 //   }
 // }
 // 回复 - 闪动
@@ -158,7 +158,7 @@
   .self-child {
     margin-left: auto;
     border-radius: 1rem 4px 1rem 1rem;
-    --at-apply: "bg-[var(--el-color-primary)] dark:bg-[var(--el-color-primary)] text-white";
+    --at-apply: "bg-theme-primary dark:bg-theme-primary text-white";
   }
   .flex-col {
     justify-content: right;

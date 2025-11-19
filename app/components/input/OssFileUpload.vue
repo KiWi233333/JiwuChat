@@ -565,7 +565,7 @@ defineExpose({
       key="inputs"
       flex-row-c-c
       transition-300 hover:border="[var(--el-color-primary)]"
-      class="relative z-1 border-default-dashed backdrop-blur-12px hover:text-[var(--el-color-primary)]"
+      class="relative z-1 border-default-dashed backdrop-blur-12px hover:text-theme-primary"
       :class="inputClass"
     >
       <input
@@ -625,14 +625,14 @@ defineExpose({
             <slot name="pre-btns">
               <div
                 v-if="showDelete"
-                class="h-full max-h-2rem max-w-2rem w-1/5 cursor-pointer hover:bg-[var(--el-color-danger)]"
+                class="h-full max-h-2rem max-w-2rem w-1/5 cursor-pointer hover:bg-theme-danger"
                 i-solar:trash-bin-trash-bold-duotone
                 @click="removeItem(p)"
               />
               <!-- 取消上传 -->
               <div
                 v-if="p?.percent && p?.percent < 100"
-                class="h-1/5 max-h-2rem max-w-2rem w-1/5 cursor-pointer hover:bg-[var(--el-color-danger)]"
+                class="h-1/5 max-h-2rem max-w-2rem w-1/5 cursor-pointer hover:bg-theme-danger"
                 i-solar:close-circle-bold-duotone
                 @click.stop="p?.subscribe?.unsubscribe()"
               />
@@ -668,7 +668,7 @@ defineExpose({
           />
           <div
             v-if="!p?.percent && p?.percent < 100"
-            class="z-2 h-1/5 max-h-2rem max-w-2rem w-1/5 cursor-pointer hover:bg-[var(--el-color-danger)]"
+            class="z-2 h-1/5 max-h-2rem max-w-2rem w-1/5 cursor-pointer hover:bg-theme-danger"
             i-solar:close-circle-bold
             @click="p?.subscribe?.unsubscribe()"
           />
@@ -680,7 +680,7 @@ defineExpose({
             <slot name="pre-btns">
               <div
                 v-if="showDelete"
-                class="h-full max-h-2rem max-w-2rem w-1/5 cursor-pointer hover:bg-[var(--el-color-danger)]"
+                class="h-full max-h-2rem max-w-2rem w-1/5 cursor-pointer hover:bg-theme-danger"
                 i-solar:trash-bin-trash-bold-duotone
                 @click="removeItem(p)"
               />
@@ -696,7 +696,7 @@ defineExpose({
       v-show="error"
       key="error"
       :class="errorClass "
-      class="m-1 block w-full overflow-hidden truncate text-[var(--el-color-danger)] leading-1em opacity-80"
+      class="m-1 block w-full overflow-hidden truncate text-theme-danger leading-1em opacity-80"
     >
       {{ error }}
     </div>

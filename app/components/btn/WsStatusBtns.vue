@@ -24,7 +24,7 @@ const getStatusText = computed(() => {
   >
     <small truncate text-0.6rem tracking-0.1em el-color-danger>
       {{ getStatusText }}
-      <span v-if="online" class="text-[var(--el-color-danger)]">(无网络)</span>
+      <span v-if="online" class="text-theme-danger">(无网络)</span>
     </small>
     <div class="btns">
       <BtnElButton

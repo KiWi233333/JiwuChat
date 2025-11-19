@@ -7,7 +7,7 @@ const {
   delay = 1000,
   thresholdHeight = 160,
   appendLoadingClass = "mx-a mt-a text-1.8rem",
-  loadingClass = "mx-a my-0.4rem h-1rem w-1rem animate-[spin_2s_infinite_linear] rounded-6px bg-[var(--el-color-primary)]",
+  loadingClass = "mx-a my-0.4rem h-1rem w-1rem animate-[spin_2s_infinite_linear] rounded-6px bg-theme-primary",
   // 下拉刷新默认值
   enablePullToRefresh = false,
   pullDistance: pullDistanceMax = 90,
