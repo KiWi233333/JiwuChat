@@ -53,12 +53,12 @@ const {
   contentClass = "",
   disableClass = "disabled-anima",
   duration = 300,
-  zIndex = 2099,
+  zIndex = 1999,
   center = false,
   destroyOnClose = false,
-  minScale = 0.875,
+  minScale = 0.80,
   escClose = true,
-  animateFromTrigger = false,
+  animateFromTrigger = true,
   enterEasing = "cubic-bezier(0.61, 0.225, 0.195, 1)",
   leaveEasing = "cubic-bezier(0.4, 0, 0.2, 1)", // 平滑退出
 } = defineProps<DialogProps>();
