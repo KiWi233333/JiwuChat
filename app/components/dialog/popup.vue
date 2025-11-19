@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue";
-import { CustomeDialogPopupId } from "@/composables/hooks/useShortcuts";
+import { CustomDialogPopupId } from "@/composables/hooks/useShortcuts";
 
 interface DialogPosition {
   x: number
@@ -56,10 +56,10 @@ const {
   zIndex = 2099,
   center = false,
   destroyOnClose = false,
-  minScale = 0.5,
+  minScale = 0.875,
   escClose = true,
-  animateFromTrigger = true,
-  enterEasing = "cubic-bezier(0.34, 1.52, 0.64, 0.86)", // 弹性进入
+  animateFromTrigger = false,
+  enterEasing = "cubic-bezier(0.61, 0.225, 0.195, 1)",
   leaveEasing = "cubic-bezier(0.4, 0, 0.2, 1)", // 平滑退出
 } = defineProps<DialogProps>();
 
@@ -331,7 +331,7 @@ defineExpose({
         <!-- 对话框 -->
         <div
           v-if="shouldRenderContent"
-          :id="CustomeDialogPopupId"
+          :id="CustomDialogPopupId"
           ref="dialogRef"
           :data-model-value="escClose && modelValue"
           :style="[dialogStyle, { width: dialogWidth }]"

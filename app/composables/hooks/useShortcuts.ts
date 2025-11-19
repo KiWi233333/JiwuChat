@@ -3,7 +3,7 @@ import { minimizeWindow } from "../tauri/window";
 export type ShortcutEventHandler = (e: KeyboardEvent) => void | Promise<void>;
 export type ShortcutEventType = "toggle-theme" | "close-window" | "minimize-window" | "send-message" | "line-break" | "switch-chat" | "";
 export type ShortcutCategory = "app" | "local";
-export const CustomeDialogPopupId = "custom-popup-dialog-model";
+export const CustomDialogPopupId = "custom-popup-dialog-model";
 
 export interface ShortcutConfig {
   key: string;

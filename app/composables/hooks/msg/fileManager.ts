@@ -1,7 +1,7 @@
 // 通用文件管理器 FileManager，参考 ImageManager 实现
 import type { ComputedRef, Ref, ShallowReactive } from "vue";
 import { h, nextTick, render } from "vue";
-import FilePreviewCard from "~/components/Chat/FilePreviewCard.vue";
+import FilePreviewCard from "~/components/chat/Preview/File.vue";
 
 export class FileManager {
   private maxCount = 9;

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ContextMenuGlobal from "@imengyu/vue3-context-menu";
-import { getImgSize } from "./Msg";
+import { getImgSize } from "../Msg";
 
 interface Props {
   show: boolean

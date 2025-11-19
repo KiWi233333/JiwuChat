@@ -135,7 +135,7 @@ onUnmounted(() => {
       </div>
     </div>
     <!-- 邀请进群 -->
-    <LazyChatNewGroupDialog
+    <LazyChatDialogNewGroup
       v-model="showGroupDialog"
       hydrate-on-idle
       :form="chat.inviteMemberForm"
@@ -151,7 +151,7 @@ onUnmounted(() => {
       hydrate-on-idle
     />
     <!-- RTC通话弹窗 -->
-    <LazyChatRtcCallDialog
+    <LazyChatDialogRtcCall
       v-model="chat.showRtcCall"
       v-model:call-type="chat.rtcCallType"
       hydrate-on-idle

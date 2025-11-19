@@ -114,7 +114,6 @@ const menuList = reactive([
     trigger="click"
     v-bind="$attrs"
     :offset="16"
-    fakeloading
     :show-arrow="false"
   >
     <template #reference>

@@ -1061,7 +1061,7 @@ defineExpose({
     </div>
   </Transition>
   <!-- 新建通知 -->
-  <ChatGroupNoticeMsgDialog v-model:show="showGroupNoticeDialog" @submit="onSubmitGroupNoticeMsg" />
+  <ChatDialogGroupNoticeMsg v-model:show="showGroupNoticeDialog" @submit="onSubmitGroupNoticeMsg" />
   <!-- 上传预览弹窗 -->
   <!-- <ChatUploadPreviewDialog
     v-model:show="showUploadPreview"
@@ -1081,5 +1081,5 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-@use "./MsgFormV2.scss";
+@use "./Form.scss";
 </style>

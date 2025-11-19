@@ -1,7 +1,7 @@
 import type { ShallowReactive } from "vue";
 // 通用视频管理器 VideoManager
 import { h, nextTick, render } from "vue";
-import VideoPreviewCard from "~/components/Chat/VideoPreviewCard.vue";
+import VideoPreviewCard from "~/components/chat/Preview/Video.vue";
 // @unocss-include
 export class VideoManager {
   private maxCount = 9;

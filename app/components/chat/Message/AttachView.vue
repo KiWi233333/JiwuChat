@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ContextMenu from "@imengyu/vue3-context-menu";
 import { FILE_TYPE_ICON_DEFAULT, FILE_TYPE_ICON_MAP, formatFileSize } from "~/composables/api/res/file";
-import { getImgSize } from "./Msg";
+import { getImgSize } from "../Msg";
 
 const {
   imgList = [] as OssFile[],
