@@ -207,7 +207,6 @@ async function onLogin(formEl: any | undefined) {
       }
     }
     catch (error) {
-      ElMessage.error("登录失败，请稍后重试！");
     }
     finally {
       isLoading.value = false;
