@@ -78,32 +78,34 @@ function initWindowAnimate() {
           :opacity="$colorMode.value === 'dark' ? 0.6 : 0.1"
         />
       </div>
-      <div
-        :data-tauri-drag-region="setting.isDesktop"
-        class="controls absolute right-0 top-0 z-1000 w-100vw flex items-center gap-2"
-        :class="{
-          'cursor-move': setting.isDesktop,
-        }"
-      >
-        <!-- 标题 -->
-        <HeadrHeaderLogo v-if="!setting.isMobileSize" class="ml-4" />
-        <!-- 菜单按钮 -->
-        <div class="group ml-a flex flex items-center gap-2 p-2 sm:px-3">
-          <BtnTheme
-            :class="setting.isDesktop ? 'op-50 h-1.5rem w-2rem card-rounded-df group-hover:op-100' : ' h-2rem w-2rem rounded-1/2 card-default border-default' "
-            title="切换主题"
-          />
-          <BtnEnvConfig
-            :class="setting.isDesktop ? 'scale-90 op-50 group-hover:op-100' : ' !h-2rem !w-2rem  !card-bg-color rounded-1/2 !border-default' "
-            :size="setting.isDesktop ? 'small' : ''"
-            :icon-class="user.showLoginPageType === 'env-config' ? 'i-solar:settings-minimalistic-bold-duotone text-0.9em' : 'i-solar:settings-minimalistic-outline text-1em'"
-            title="环境切换"
-            @click="user.showLoginPageType = (user.showLoginPageType === 'env-config' ? 'login' : 'env-config')"
-          />
-          <BtnAppDownload />
-          <MenuController v-if="setting.isDesktop && setting.appPlatform !== 'macos'" key="header" :size="setting.isDesktop ? 'small' : ''" :show-max="false" />
+      <ClientOnly>
+        <div
+          :data-tauri-drag-region="setting.isDesktop"
+          class="controls absolute right-0 top-0 z-1000 w-100vw flex items-center gap-2"
+          :class="{
+            'cursor-move': setting.isDesktop,
+          }"
+        >
+          <!-- 标题 -->
+          <HeadrHeaderLogo v-if="!setting.isMobileSize" class="ml-4" />
+          <!-- 菜单按钮 -->
+          <div class="group ml-a flex flex items-center gap-2 p-2 sm:px-3">
+            <BtnTheme
+              :class="setting.isDesktop ? 'op-50 h-1.5rem w-2rem card-rounded-df group-hover:op-100' : ' h-2rem w-2rem rounded-1/2 card-default border-default' "
+              title="切换主题"
+            />
+            <BtnEnvConfig
+              :class="setting.isDesktop ? 'scale-90 op-50 group-hover:op-100' : ' !h-2rem !w-2rem  !card-bg-color rounded-1/2 !border-default' "
+              :size="setting.isDesktop ? 'small' : ''"
+              :icon-class="user.showLoginPageType === 'env-config' ? 'i-solar:settings-minimalistic-bold-duotone text-0.9em' : 'i-solar:settings-minimalistic-outline text-1em'"
+              title="环境切换"
+              @click="user.showLoginPageType = (user.showLoginPageType === 'env-config' ? 'login' : 'env-config')"
+            />
+            <BtnAppDownload />
+            <MenuController v-if="setting.isDesktop && setting.appPlatform !== 'macos'" key="header" :size="setting.isDesktop ? 'small' : ''" :show-max="false" />
+          </div>
         </div>
-      </div>
+      </ClientOnly>
     </Teleport>
     <!-- 表单 -->
     <div

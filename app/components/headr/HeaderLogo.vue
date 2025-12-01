@@ -23,7 +23,7 @@ import { appName } from "@/constants/index";
         }"
       />
     </div>
-    <span class="text-color-br text-4 font-500">{{ appName }}</span>
+    <span class="text-color-br shrink-0 text-4 font-500">{{ appName }}</span>
   </div>
 </template>
 
