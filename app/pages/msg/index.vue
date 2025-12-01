@@ -89,7 +89,7 @@ definePageMeta({
           <div
             v-if="applyUnReadCount > 0"
             title="查看好友申请"
-            class="group w-full flex cursor-pointer gap-2 rounded bg-white p-2 shadow-sm transition-all !items-center dark:bg-dark-7 hover:(bg-[var(--el-color-primary)] text-light shadow-lg)"
+            class="group w-full flex cursor-pointer gap-2 rounded bg-white p-2 shadow-sm transition-all !items-center dark:bg-dark-7 hover:(bg-theme-primary text-light shadow-lg)"
             @click="handleFriendApply"
           >
             <div class="h-8 w-8 flex-row-c-c rounded-1 bg-theme-warning">
@@ -112,7 +112,7 @@ definePageMeta({
             v-for="p in unReadContactList"
             :key="p.roomId"
             title="读消息"
-            class="group w-full flex cursor-pointer gap-2 rounded bg-white p-2 shadow-sm transition-all !items-center dark:bg-dark-7 hover:(bg-[var(--el-color-primary)] text-light shadow-lg)"
+            class="group w-full flex cursor-pointer gap-2 rounded bg-white p-2 shadow-sm transition-all !items-center dark:bg-dark-7 hover:(bg-theme-primary text-light shadow-lg)"
             @click="handleReadMessage(p)"
           >
             <CardElImage :src="BaseUrlImg + p.avatar" fit="cover" class="h-8 w-8 card-default rounded-1 object-cover" />

@@ -38,12 +38,12 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
     >
       <template v-if="isEmptyPanel">
         <div
-          class="i-solar:alt-arrow-left-line-duotone absolute right-18 top-6 z-1000 hidden btn-danger p-2.6 sm:right-14 sm:top-11 sm:block"
+          class="i-solar:alt-arrow-left-line-duotone absolute right-18 top-6 z-1000 hidden btn-danger p-2.6 sm:right-16 sm:top-11 sm:block"
           title="关闭"
           @click="undo()"
         />
         <div
-          class="i-carbon:close absolute right-6 top-6 z-1000 block scale-110 btn-danger p-2.6 sm:right-3 sm:top-11"
+          class="i-carbon:close absolute right-6 top-6 z-1000 block scale-110 btn-danger p-2.6 sm:right-6 sm:top-11"
           title="关闭"
           @click="clearHistory"
         />

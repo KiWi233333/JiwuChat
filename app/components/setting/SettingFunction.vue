@@ -34,7 +34,7 @@ onMounted(async () => {
       <!-- 动画配置 -->
       <div class="setting-item">
         动画配置
-        <span class="tip mx-2 border-default rounded-8 bg-color-2 px-2 py-0 text-3 text-mini">精细化页面、主题等动画</span>
+        <span class="tip mx-2 border-default rounded-8 bg-color-2 px-2 py-0.5 text-mini">精细化页面、主题等动画</span>
         <BtnElButton
           class="ml-a h-5 !border-default-hover"
           icon-class="i-solar:pen-2-bold text-1em mr-1"

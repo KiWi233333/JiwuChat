@@ -711,7 +711,7 @@ defineExpose({
       <div
         v-show="!chat.isScrollBottom"
         data-fade
-        class="mb-2 ml-a mr-2 w-fit btn-info border-default-hover rounded-full card-bg-color px-3 text-right shadow-lg"
+        class="mb-2 ml-a mr-2 w-fit btn-default-text border-default-hover rounded-full card-bg-color px-3 text-right shadow-md hover:shadow-lg"
         @click="setReadAndScrollBottom"
       >
         <i class="i-solar:double-alt-arrow-down-line-duotone block h-5 w-5 transition-200" />
@@ -729,7 +729,7 @@ defineExpose({
           <div class="max-w-4/5 truncate">
             {{ `${chat.replyMsg?.fromUser?.nickName}: ${chat.replyMsg ? resolveMsgReplyText(chat.replyMsg as ChatMessageVO) : '未知'}` }}
           </div>
-          <div class="i-solar:close-circle-bold ml-a h-6 w-6 btn-default text-dark op-80 transition-200 transition-color sm:(h-5 w-5) dark:text-light hover:text-[var(--el-color-danger)]" @click="chat.setReplyMsg({})" />
+          <div class="i-solar:close-circle-bold ml-a h-6 w-6 btn-default text-dark op-80 transition-200 transition-color sm:(h-5 w-5) dark:text-light hover:text-theme-danger" @click="chat.setReplyMsg({})" />
         </div>
       </div>
     </div>
@@ -1061,7 +1061,7 @@ defineExpose({
     </div>
   </Transition>
   <!-- 新建通知 -->
-  <ChatGroupNoticeMsgDialog v-model:show="showGroupNoticeDialog" @submit="onSubmitGroupNoticeMsg" />
+  <ChatDialogGroupNoticeMsg v-model:show="showGroupNoticeDialog" @submit="onSubmitGroupNoticeMsg" />
   <!-- 上传预览弹窗 -->
   <!-- <ChatUploadPreviewDialog
     v-model:show="showUploadPreview"
@@ -1081,5 +1081,5 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-@use "./MsgFormV2.scss";
+@use "./Form.scss";
 </style>

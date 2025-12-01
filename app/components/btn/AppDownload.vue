@@ -94,7 +94,7 @@ onMounted(async () => {
       </template>
     </el-popconfirm>
     <!-- APP下载 -->
-    <el-tooltip :content="`v ${latestVersion?.version}`" placement="bottom">
+    <el-tooltip :content="latestVersion?.version ? `v ${latestVersion?.version}` : '暂未发布'" placement="bottom">
       <a
         :href="downloadUrl"
         target="_blank"

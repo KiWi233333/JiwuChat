@@ -84,7 +84,7 @@ const list = computed(() => menuList?.filter(p => p.hidden !== true));
   --at-apply: "p-1.5 sm:p-1";
 
   .menu-item {
-    --at-apply: "flex items-center pl-1.5em pr-1.65em py-2.5 tracking-0.1em text-1em sm:(py-1.5 pl-1em pr-1.2em text-sm)  cursor-pointer hover:(bg-color-3 op-80) transition-150 card-rounded-df";
+    --at-apply: "flex items-center pl-4 pr-6 py-2.5 tracking-0.1em text-1em sm:(py-1.5 pl-1em pr-1.2em text-sm)  cursor-pointer hover:(bg-color-3 op-80) transition-150 card-rounded-df";
     .icon {
       --at-apply: "h-5 w-5 sm:(h-4.5 w-4.5)";
     }

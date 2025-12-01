@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ContextMenu from "@imengyu/vue3-context-menu";
 import { FILE_TYPE_ICON_DEFAULT, FILE_TYPE_ICON_MAP, formatFileSize } from "~/composables/api/res/file";
-import { getImgSize } from "./Msg";
+import { getImgSize } from "../Msg";
 
 const {
   imgList = [] as OssFile[],
@@ -200,7 +200,7 @@ function onContextFileMenu(e: MouseEvent, key?: string, index: number = 0, type:
         <div class="max-w-4/5 truncate">
           {{ `${replyMsg?.fromUser?.nickName}: ${replyMsg ? resolveMsgReplyText(replyMsg as ChatMessageVO) : '未知'}` }}
         </div>
-        <div class="i-solar:close-circle-bold ml-a h-6 w-6 btn-default text-dark op-80 transition-200 transition-color sm:(h-5 w-5) dark:text-light hover:text-[var(--el-color-danger)]" @click="emit('clearReply')" />
+        <div class="i-solar:close-circle-bold ml-a h-6 w-6 btn-default text-dark op-80 transition-200 transition-color sm:(h-5 w-5) dark:text-light hover:text-theme-danger" @click="emit('clearReply')" />
       </div>
     </div>
   </div>

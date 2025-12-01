@@ -129,7 +129,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
           'multiple-url': isMultipleUrl && !showMentionUrls,
         }"
       >
-        <ChatUrlInfo
+        <ChatPreviewUrl
           v-for="(urlInfo, key) in urlContentMap"
           :key="key"
           ctx-name="urllink"

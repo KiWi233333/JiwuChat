@@ -42,102 +42,104 @@ const ignoreUpdate = computed({
 </script>
 
 <template>
-  <el-popover
-    v-if="!setting.appUploader.isUpdating && !ignoreShowVersionDialog"
-    placement="bottom"
-    width="fit-content"
-    :teleported="true"
-    popper-style="border-radius: 0.75rem;"
-    popper-class="popover"
-    trigger="click"
-    append-to="body"
-    :hide-after="0"
-  >
-    <template #reference>
-      <ElButton
-        class="flex-row-c-c cursor-pointer transition-all"
-        round
-        plain
-        size="small"
-        style="padding: 0 0.8em 0 0.5em; height: 1.6rem;"
-        :class="{
-          '!hover:bg-color-3': !setting.appUploader.isUpload,
-        }"
-        :text="!setting.appUploader.isUpload"
-        :type="!setting.appUploader.isUpload ? '' : 'info'"
-      >
-        <span flex-row-c-c text-1em>
-          <i
-            mr-1 inline-block
-            :class="{
-              'i-solar:refresh-outline animate-spin': setting.appUploader.isCheckUpdatateLoad,
-              'i-solar:archive-minimalistic-line-duotone animation-swing': !setting.appUploader.isCheckUpdatateLoad && !setting.appUploader.isUpload,
-              'i-solar:cloud-download-linear': !setting.appUploader.isCheckUpdatateLoad && setting.appUploader.isUpload,
-            }"
-          />
-          {{ setting.appUploader.isUpload ? '新版本' : '更新内容' }}
-        </span>
-      </ElButton>
-    </template>
-    <template #default>
-      <div class="w-20rem p-1">
-        <!-- 版本信息 -->
-        <div class="top flex">
-          <CardElImage title="去【官网】查看完整更新公告" src="/logo.png" class="mr-3 h-10 w-10" @click="useOpenUrl(`${appBlogHost}versions/v${latestVersionInfo?.version}`)" />
-          <div class="flex flex-1 flex-col justify-around text-xs">
-            <strong>
-              {{ appEnName }}
-            </strong>
-            <div class="flex-row-bt-c">
-              <span>
-                v{{ latestVersionInfo?.version.replace(/^v/, '') || '-' }} 版本
-              </span>
-              <span class="btn-info op-70" title="去【官网】查看完整更新公告" @click="useOpenUrl(`${appBlogHost}versions/v${latestVersionInfo?.version}`)">查看详情</span>
+  <div v-if="latestVersionInfo">
+    <el-popover
+      v-if="!setting.appUploader.isUpdating && !ignoreShowVersionDialog"
+      placement="bottom"
+      width="fit-content"
+      :teleported="true"
+      popper-style="border-radius: 0.75rem;"
+      popper-class="popover"
+      trigger="click"
+      append-to="body"
+      :hide-after="0"
+    >
+      <template #reference>
+        <ElButton
+          class="flex-row-c-c cursor-pointer transition-all"
+          round
+          plain
+          size="small"
+          style="padding: 0 0.8em 0 0.5em; height: 1.6rem;"
+          :class="{
+            '!hover:bg-color-3': !setting.appUploader.isUpload,
+          }"
+          :text="!setting.appUploader.isUpload"
+          :type="!setting.appUploader.isUpload ? '' : 'info'"
+        >
+          <span flex-row-c-c text-1em>
+            <i
+              mr-1 inline-block
+              :class="{
+                'i-solar:refresh-outline animate-spin': setting.appUploader.isCheckUpdatateLoad,
+                'i-solar:archive-minimalistic-line-duotone animation-swing': !setting.appUploader.isCheckUpdatateLoad && !setting.appUploader.isUpload,
+                'i-solar:cloud-download-linear': !setting.appUploader.isCheckUpdatateLoad && setting.appUploader.isUpload,
+              }"
+            />
+            {{ setting.appUploader.isUpload ? '新版本' : '更新内容' }}
+          </span>
+        </ElButton>
+      </template>
+      <template #default>
+        <div class="w-20rem p-1">
+          <!-- 版本信息 -->
+          <div class="top flex">
+            <CardElImage title="去【官网】查看完整更新公告" src="/logo.png" class="mr-3 h-10 w-10" @click="useOpenUrl(`${appBlogHost}versions/v${latestVersionInfo?.version}`)" />
+            <div class="flex flex-1 flex-col justify-around text-xs">
+              <strong>
+                {{ appEnName }}
+              </strong>
+              <div class="flex-row-bt-c">
+                <span>
+                  v{{ latestVersionInfo?.version.replace(/^v/, '') || '-' }} 版本
+                </span>
+                <span class="btn-info op-70" title="去【官网】查看完整更新公告" @click="useOpenUrl(`${appBlogHost}versions/v${latestVersionInfo?.version}`)">查看详情</span>
+              </div>
             </div>
           </div>
+          <div class="main py-3">
+            <small>{{ currentVersion !== latestVersionInfo?.version ? '发现新版本，立即更新体验新功能 🎉' : "新版本已更新，快去体验吧 🎉" }}</small>
+            <el-scrollbar max-height="25rem">
+              <MdPreview
+                language="zh-CN"
+                editor-id="version-toast"
+                show-code-row-number
+                :no-img-zoom-in="setting.isMobileSize"
+                :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
+                :code-foldable="false"
+                class="preview m-0 bg-transparent p-0"
+                :model-value="(latestVersionInfo?.noticeSummary || '').substring(0, 200)"
+              />
+            </el-scrollbar>
+          </div>
+          <div v-if="currentVersion !== latestVersionInfo?.version || setting.appUploader.isUpload" class="flex-row-bt-c">
+            <el-checkbox v-model="ignoreUpdate" size="small">
+              忽略更新
+            </el-checkbox>
+            <BtnElButton :loading="setting.appUploader.isUpdating" size="small" type="primary" @click="setting.handleAppUpdate()">
+              立即更新
+            </BtnElButton>
+          </div>
+          <div v-else class="flex-row-bt-c">
+            <span text-mini>操作</span>
+            <el-checkbox v-model="ignoreShowVersionDialog" style="padding: 0;" size="small">
+              不再提示
+            </el-checkbox>
+          </div>
         </div>
-        <div class="main py-3">
-          <small>{{ currentVersion !== latestVersionInfo?.version ? '发现新版本，立即更新体验新功能 🎉' : "新版本已更新，快去体验吧 🎉" }}</small>
-          <el-scrollbar max-height="25rem">
-            <MdPreview
-              language="zh-CN"
-              editor-id="version-toast"
-              show-code-row-number
-              :no-img-zoom-in="setting.isMobileSize"
-              :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
-              :code-foldable="false"
-              class="preview m-0 bg-transparent p-0"
-              :model-value="(latestVersionInfo?.noticeSummary || '').substring(0, 200)"
-            />
-          </el-scrollbar>
-        </div>
-        <div v-if="currentVersion !== latestVersionInfo?.version || setting.appUploader.isUpload" class="flex-row-bt-c">
-          <el-checkbox v-model="ignoreUpdate" size="small">
-            忽略更新
-          </el-checkbox>
-          <BtnElButton :loading="setting.appUploader.isUpdating" size="small" type="primary" @click="setting.handleAppUpdate()">
-            立即更新
-          </BtnElButton>
-        </div>
-        <div v-else class="flex-row-bt-c">
-          <span text-mini>操作</span>
-          <el-checkbox v-model="ignoreShowVersionDialog" style="padding: 0;" size="small">
-            不再提示
-          </el-checkbox>
-        </div>
-      </div>
-    </template>
-  </el-popover>
-  <el-progress
-    v-else-if="!ignoreShowVersionDialog"
-    :percentage="progress"
-    color="#10cf80"
-    :stroke-width="22"
-    style="padding: 0 0.8em 0 0.5em; height: 1.5rem;width: 6rem;"
-    striped
-    striped-flow
-    text-inside
-  />
+      </template>
+    </el-popover>
+    <el-progress
+      v-else-if="!ignoreShowVersionDialog"
+      :percentage="progress"
+      color="#10cf80"
+      :stroke-width="22"
+      style="padding: 0 0.8em 0 0.5em; height: 1.5rem;width: 6rem;"
+      striped
+      striped-flow
+      text-inside
+    />
+  </div>
 </template>
 
 <style lang="scss" scoped>

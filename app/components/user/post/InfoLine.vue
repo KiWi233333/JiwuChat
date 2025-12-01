@@ -177,7 +177,7 @@ function toEditView() {
 
 <style lang="scss" scoped>
 .link-text {
-  --at-apply: "opacity-80 text-0.9rem hover:(text-[var(--el-color-info)] opacity-100) cursor-pointer transition-200 ";
+  --at-apply: "opacity-80 text-0.9rem hover:(text-theme-info opacity-100) cursor-pointer transition-200 ";
 }
 
 .tip-group {

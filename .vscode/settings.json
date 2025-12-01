@@ -12,5 +12,12 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  }
+  },
+  "iconify.includes": [
+    "solar",
+    "carbon",
+    "tabler",
+    "ri"
+  ],
+  "switch2idea.ideaPath": "/Applications/WebStorm.app"
 }

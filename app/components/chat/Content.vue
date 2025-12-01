@@ -24,7 +24,7 @@ watch(
       <!-- 消息列表 -->
       <ChatMessageList @click="msgFormRef?.onClickOutside()" />
       <!-- 发送 -->
-      <ChatMsgFormV2 ref="msgFormRef" class="border-default-2-t" />
+      <ChatMessageForm ref="msgFormRef" class="border-default-2-t" />
     </div>
     <!-- 在线人数 -->
     <Transition name="fade-lr" mode="out-in">

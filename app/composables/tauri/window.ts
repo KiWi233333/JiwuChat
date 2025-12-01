@@ -109,7 +109,7 @@ export async function destroyWindow(label: Labels) {
 export async function minimizeWindow(label?: Labels) {
   const setting = useSettingStore();
   // 自定义弹窗
-  const dom = document.getElementById(CustomeDialogPopupId);
+  const dom = document.getElementById(CustomDialogPopupId);
   if (dom && dom.dataset.modelValue === "true") {
     return;
   }

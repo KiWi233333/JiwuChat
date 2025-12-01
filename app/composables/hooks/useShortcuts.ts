@@ -3,7 +3,7 @@ import { minimizeWindow } from "../tauri/window";
 export type ShortcutEventHandler = (e: KeyboardEvent) => void | Promise<void>;
 export type ShortcutEventType = "toggle-theme" | "close-window" | "minimize-window" | "send-message" | "line-break" | "switch-chat" | "";
 export type ShortcutCategory = "app" | "local";
-export const CustomeDialogPopupId = "custom-popup-dialog-model";
+export const CustomDialogPopupId = "custom-popup-dialog-model";
 
 export interface ShortcutConfig {
   key: string;
@@ -31,6 +31,9 @@ function getPlatformKey(config: ShortcutConfig): string {
 function parseKeyEvent(e: KeyboardEvent): string {
   const modifiers: string[] = [];
 
+  if (!e.key)
+    return "";
+
   if (isMac()) {
     if (e.metaKey)
       modifiers.push("cmd");
@@ -52,7 +55,7 @@ function parseKeyEvent(e: KeyboardEvent): string {
       modifiers.push("cmd");
   }
 
-  let key = e.key.toLowerCase();
+  let key = e.key?.toLowerCase();
   if (key === " ")
     key = "space";
 
