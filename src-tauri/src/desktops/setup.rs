@@ -1,37 +1,56 @@
 use tauri_plugin_deep_link::DeepLinkExt;
 use tauri::Emitter;
 
-/// OAuth 深度链接回调数据
+/// OAuth 深度链接回调数据（后端中转模式）
+/// 后端处理完 OAuth 后 302 重定向到深度链接，携带处理结果
 #[derive(Clone, serde::Serialize)]
 struct OAuthCallbackPayload {
-    code: Option<String>,
-    state: Option<String>,
     platform: Option<String>,
     action: Option<String>,
     error: Option<String>,
     raw_url: String,
+    // 后端中转模式返回的结果参数
+    #[serde(rename = "needBind")]
+    need_bind: Option<bool>,
+    token: Option<String>,
+    #[serde(rename = "oauthKey")]
+    oauth_key: Option<String>,
+    nickname: Option<String>,
+    avatar: Option<String>,
+    email: Option<String>,
+    message: Option<String>,
 }
 
 /// 解析深度链接 URL 参数
 fn parse_oauth_callback_url(url: &str) -> OAuthCallbackPayload {
     let mut payload = OAuthCallbackPayload {
-        code: None,
-        state: None,
         platform: None,
         action: None,
         error: None,
         raw_url: url.to_string(),
+        need_bind: None,
+        token: None,
+        oauth_key: None,
+        nickname: None,
+        avatar: None,
+        email: None,
+        message: None,
     };
 
-    // 解析 URL: jiwuchat://oauth/callback?code=xxx&state=xxx&platform=github&action=login
+    // 解析 URL: jiwuchat://oauth/callback?needBind=false&token=xxx&platform=github
     if let Ok(parsed_url) = url::Url::parse(url) {
         for (key, value) in parsed_url.query_pairs() {
             match key.as_ref() {
-                "code" => payload.code = Some(value.to_string()),
-                "state" => payload.state = Some(value.to_string()),
                 "platform" => payload.platform = Some(value.to_string()),
                 "action" => payload.action = Some(value.to_string()),
                 "error" => payload.error = Some(value.to_string()),
+                "needBind" => payload.need_bind = Some(value == "true"),
+                "token" => payload.token = Some(value.to_string()),
+                "oauthKey" => payload.oauth_key = Some(value.to_string()),
+                "nickname" => payload.nickname = Some(value.to_string()),
+                "avatar" => payload.avatar = Some(value.to_string()),
+                "email" => payload.email = Some(value.to_string()),
+                "message" => payload.message = Some(value.to_string()),
                 _ => {}
             }
         }
@@ -111,8 +130,8 @@ pub fn setup_desktop() {
                     // 检查是否为 OAuth 回调
                     if url_str.starts_with("jiwuchat://oauth/callback") {
                         let payload = parse_oauth_callback_url(url_str);
-                        println!("OAuth 回调参数: code={:?}, state={:?}, platform={:?}", 
-                            payload.code, payload.state, payload.platform);
+                        println!("OAuth 回调: needBind={:?}, hasToken={}, platform={:?}", 
+                            payload.need_bind, payload.token.is_some(), payload.platform);
                         
                         // 发送事件到前端
                         if let Err(e) = handle.emit("oauth-callback", payload) {

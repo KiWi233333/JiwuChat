@@ -420,7 +420,9 @@ async function processOAuthLoginResult(platform: OAuthPlatformCode, data: OAuthC
     ElMessage.error(error.message || "OAuth 登录失败");
   }
   finally {
-    authorizeUrlLoadings.value[platform] = false;
+    setTimeout(() => {
+      authorizeUrlLoadings.value[platform] = false;
+    }, 500);
   }
 }
 

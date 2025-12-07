@@ -1,11 +1,17 @@
 /**
  * OAuth 流程管理 Hook
  * 统一管理 OAuth 授权流程，支持桌面端深度链接和 Web 端 URL 跳转
+ *
+ * 后端中转模式：
+ * 1. 前端请求授权URL，传递 clientRedirectUri（前端回调地址）
+ * 2. 后端生成 state 并存储 clientRedirectUri
+ * 3. 用户授权后，OAuth 平台回调后端
+ * 4. 后端处理完成后 302 重定向到前端 clientRedirectUri，携带结果参数
+ * 5. 前端从 URL 参数解析结果
  */
 
 import type { OAuthCallbackPayload } from "./useDeepLink";
 import type { OAuthCallbackVO, OAuthPlatformCode } from "~/composables/api/user/oauth";
-import { bindOAuth, generateState, oauthCallback } from "~/composables/api/user/oauth";
 
 /**
  * OAuth 授权动作类型
@@ -49,20 +55,21 @@ export interface OAuthFlowState {
 /**
  * 深度链接协议
  */
-const DEEP_LINK_CALLBACK_BASE = "jiwuchat://oauth/callback";
+const DEEP_LINK_PROTOCOL = "jiwuchat://";
 
 /**
- * 构建回调地址
- * 桌面端和 Web 端都使用 Web 页面作为回调，桌面端添加 from=desktop 标记
+ * 构建前端回调地址（clientRedirectUri）
+ * 桌面端使用深度链接，Web 端使用 HTTP 地址
  */
-function buildRedirectUri(platform: OAuthPlatformCode, action: OAuthAction, isDesktop: boolean): string {
-  const baseUrl = isDesktop ? DEEP_LINK_CALLBACK_BASE : `${window.location.origin}/oauth/callback`;
-  const url = new URL(baseUrl);
+function buildClientRedirectUri(platform: OAuthPlatformCode, action: OAuthAction, isDesktop: boolean): string {
+  if (isDesktop) {
+    // 桌面端：使用深度链接
+    return `${DEEP_LINK_PROTOCOL}oauth/callback?platform=${platform}&action=${action}`;
+  }
+  // Web 端：使用当前域名
+  const url = new URL(`${window.location.origin}/oauth/callback`);
   url.searchParams.set("platform", platform);
   url.searchParams.set("action", action);
-  if (isDesktop) {
-    url.searchParams.set("from", "desktop");
-  }
   return url.toString();
 }
 
@@ -115,56 +122,47 @@ export function useOAuthFlow(options: UseOAuthFlowOptions) {
   });
 
   /**
-   * 获取重定向 URI
-   * 桌面端和 Web 端都使用 Web 回调页面，桌面端会在回调页面跳转到深度链接
+   * 获取前端回调地址（clientRedirectUri）
+   * 后端处理完 OAuth 后会 302 重定向到此地址
    */
-  function getRedirectUri(): string {
+  function getClientRedirectUri(): string {
     if (customRedirectUri)
       return customRedirectUri;
 
-    return buildRedirectUri(platform, action, setting.isDesktop);
+    return buildClientRedirectUri(platform, action, setting.isDesktop);
   }
 
   /**
-   * 启动 OAuth 授权流程
+   * 启动 OAuth 授权流程（后端中转模式）
    */
   async function startOAuth(): Promise<void> {
     state.isLoading = true;
     state.error = null;
 
     try {
-      // 1. 从后端获取 State（CSRF 防护）
-      const stateRes = await generateState();
-      if (stateRes.code !== StatusCode.SUCCESS || !stateRes.data) {
-        throw new Error(stateRes.message || "获取 State 失败");
-      }
-      const oauthState = stateRes.data;
-      state.currentState = oauthState;
-
-      // 2. 获取授权 URL
-      const redirectUri = getRedirectUri();
-      const res = await getAuthorizeUrl(platform, redirectUri);
+      // 获取授权 URL，传递前端回调地址
+      const clientRedirectUri = getClientRedirectUri();
+      const res = await getAuthorizeUrl(platform, clientRedirectUri);
 
       if (res.code !== StatusCode.SUCCESS || !res.data) {
         throw new Error(res.message || "获取授权链接失败");
       }
 
-      // 3. 授权 URL 添加 state 参数
-      const authorizeUrl = new URL(res.data);
-      authorizeUrl.searchParams.set("state", oauthState);
+      // 后端返回的授权 URL 已包含 state 参数
+      const authorizeUrl = res.data;
 
-      // 4. 根据平台打开授权页面
+      // 根据平台打开授权页面
       if (setting.isDesktop) {
         // 桌面端：使用系统浏览器打开
         const { openUrl } = await import("@tauri-apps/plugin-opener");
-        await openUrl(authorizeUrl.toString());
+        await openUrl(authorizeUrl);
         state.isWaitingCallback = true;
         console.log("[useOAuthFlow] 桌面端：已打开系统浏览器，等待深度链接回调");
       }
       else {
         // Web 端：页面跳转
         console.log("[useOAuthFlow] Web 端：跳转到授权页面");
-        window.location.href = authorizeUrl.toString();
+        window.location.href = authorizeUrl;
       }
     }
     catch (err) {
@@ -179,6 +177,7 @@ export function useOAuthFlow(options: UseOAuthFlowOptions) {
 
   /**
    * 处理深度链接回调（桌面端专用）
+   * 后端中转模式：回调 URL 已经包含处理结果
    * @param payload 深度链接回调数据
    */
   async function handleDeepLinkCallback(payload: OAuthCallbackPayload): Promise<void> {
@@ -187,63 +186,66 @@ export function useOAuthFlow(options: UseOAuthFlowOptions) {
 
     // 检查错误
     if (payload.error) {
-      state.error = new Error(payload.error);
+      const errorMsg = payload.message ? decodeURIComponent(payload.message) : payload.error;
+      state.error = new Error(errorMsg);
       onError?.(state.error);
       return;
     }
 
-    // 检查必要参数
-    if (!payload.code || !payload.state) {
-      state.error = new Error("回调参数不完整");
-      onError?.(state.error);
-      return;
-    }
-
-    // State 验证由后端完成，直接调用回调处理
-    await handleCallback(payload.code, payload.state);
-  }
-
-  /**
-   * 处理授权回调
-   * @param code 授权码
-   * @param stateParam State 参数
-   * @param redirectUri 重定向 URI（Web 端使用）
-   */
-  async function handleCallback(code: string, stateParam: string, redirectUri?: string): Promise<void> {
-    state.isLoading = true;
-    state.error = null;
-
-    try {
-      // 根据 action 类型处理
-      if (action === "bind") {
-        // 绑定第三方账号
-        const res = await bindOAuth(platform, code, redirectUri || getRedirectUri());
-        if (res.code === StatusCode.SUCCESS) {
-          ElMessage.success("绑定成功");
-          onBindSuccess?.();
-        }
-        else {
-          throw new Error(res.message || "绑定失败");
-        }
+    // 处理绑定流程结果
+    if (action === "bind") {
+      if (payload.bindSuccess || payload.token) {
+        // 绑定成功
+        ElMessage.success("绑定成功");
+        onBindSuccess?.();
+      }
+      else if (payload.message) {
+        // 绑定失败，有错误消息
+        state.error = new Error(decodeURIComponent(payload.message));
+        onError?.(state.error);
       }
       else {
-        // 登录 / 注册
-        const res = await oauthCallback(platform, code, stateParam, redirectUri || getRedirectUri());
-        if (res.code === StatusCode.SUCCESS && res.data) {
-          onSuccess?.(res.data);
-        }
-        else {
-          throw new Error(res.message || "授权回调处理失败");
-        }
+        state.error = new Error("绑定失败");
+        onError?.(state.error);
       }
+      return;
     }
-    catch (err) {
-      state.error = err instanceof Error ? err : new Error(String(err));
+
+    // 处理登录流程结果
+    if (payload.needBind === false && payload.token) {
+      // 无需绑定，直接登录成功
+      const data: OAuthCallbackVO = {
+        needBind: false,
+        token: payload.token,
+        oauthKey: null,
+        platform: payload.platform || null,
+        nickname: null,
+        avatar: null,
+        email: null,
+      };
+      onSuccess?.(data);
+    }
+    else if (payload.needBind === true && payload.oauthKey) {
+      // 需要绑定
+      const data: OAuthCallbackVO = {
+        needBind: true,
+        token: null,
+        oauthKey: payload.oauthKey,
+        platform: payload.platform || null,
+        nickname: payload.nickname ? decodeURIComponent(payload.nickname) : null,
+        avatar: payload.avatar ? decodeURIComponent(payload.avatar) : null,
+        email: payload.email ? decodeURIComponent(payload.email) : null,
+      };
+      onSuccess?.(data);
+    }
+    else if (payload.message) {
+      // 有错误消息
+      state.error = new Error(decodeURIComponent(payload.message));
       onError?.(state.error);
-      console.error("[useOAuthFlow] 处理授权回调失败:", err);
     }
-    finally {
-      state.isLoading = false;
+    else {
+      state.error = new Error("授权回调数据异常");
+      onError?.(state.error);
     }
   }
 
@@ -272,13 +274,11 @@ export function useOAuthFlow(options: UseOAuthFlowOptions) {
     startOAuth,
     /** 处理深度链接回调（桌面端） */
     handleDeepLinkCallback,
-    /** 处理授权回调 */
-    handleCallback,
     /** 取消等待回调 */
     cancelWaiting,
     /** 重置状态 */
     reset,
-    /** 获取重定向 URI */
-    getRedirectUri,
+    /** 获取前端回调地址 */
+    getClientRedirectUri,
   };
 }

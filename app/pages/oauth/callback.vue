@@ -6,7 +6,7 @@ import BindOption from "~/components/oauth/BindOption.vue";
 import Error from "~/components/oauth/Error.vue";
 import Loading from "~/components/oauth/Loading.vue";
 import Success from "~/components/oauth/Success.vue";
-import { bindOAuth, getAuthorizeUrl, oauthCallback, OAuthPlatformCode } from "~/composables/api/user/oauth";
+import { getAuthorizeUrl, OAuthPlatformCode } from "~/composables/api/user/oauth";
 import { useOAuthDeepLink } from "~/composables/hooks/oauth/useDeepLink";
 
 const route = useRoute();
@@ -106,143 +106,137 @@ function goToSettings() {
   });
 }
 
-// 处理 OAuth 回调
-async function handleCallback() {
-  const code = route.query.code as string;
-  const state = route.query.state as string;
-  const action = route.query.action as string;
+/**
+ * 处理 OAuth 回调（后端中转模式）
+ * 后端处理完 OAuth 后会 302 重定向到此页面，携带结果参数：
+ * - 成功登录: ?needBind=false&token=xxx&platform=xxx
+ * - 需要绑定: ?needBind=true&oauthKey=xxx&platform=xxx&nickname=xxx&avatar=xxx&email=xxx
+ * - 绑定成功: ?bindSuccess=true&platform=xxx
+ * - 错误: ?error=true&message=xxx
+ */
+function handleCallback() {
+  const query = route.query;
+  const action = query.action as string || "login";
 
-  if (!platform.value || !code || !state) {
+  // 检查是否有错误
+  if (query.error === "true") {
     status.value = "error";
-    message.value = "参数错误";
-    subMessage.value = "缺少必要参数，无法继续处理";
+    message.value = "授权失败";
+    subMessage.value = decodeURIComponent(query.message as string || "未知错误");
+    startCountdown(3, action === "bind" ? goToSettings : goToLogin);
     return;
   }
 
-  try {
-    if (action === "bind") {
-      // 绑定流程（用户已登录，在设置页发起的绑定）
-      if (!userStore.isLogin) {
-        status.value = "error";
-        message.value = "未登录";
-        subMessage.value = "请先登录后再进行绑定操作";
-        startCountdown(2, goToLogin);
-        return;
-      }
-
-      // 使用 URL 对象构建 redirectUri
-      const redirectUrl = new URL("/oauth/callback", window.location.origin);
-      redirectUrl.searchParams.set("platform", platform.value);
-      redirectUrl.searchParams.set("action", "bind");
-      const redirectUri = redirectUrl.toString();
-
-      const res = await bindOAuth(platform.value, code, redirectUri);
-      if (isUnmounted)
-        return;
-
-      if (res.code === StatusCode.SUCCESS) {
-        status.value = "success";
-        message.value = "绑定成功";
-        subMessage.value = `${platformName.value} 账号已成功绑定`;
-        startCountdown(2, goToSettings);
-      }
-      else if (res.code === StatusCode.OAUTH_ACCOUNT_ALREADY_BOUND) {
-        status.value = "already-bound";
-        message.value = "账号已被绑定";
-        subMessage.value = `该 ${platformName.value} 账号已被其他用户绑定，请更换账号或联系客服`;
-      }
-      else if (res.code === StatusCode.OAUTH_PLATFORM_ALREADY_BOUND) {
-        status.value = "already-bound";
-        message.value = "平台已绑定";
-        subMessage.value = `您已绑定过 ${platformName.value}，如需更换请先解绑`;
-        startCountdown(3, goToSettings);
-      }
-      else if (res.code === StatusCode.OAUTH_CREDENTIAL_EXPIRED) {
-        status.value = "expired";
-        message.value = "授权已过期";
-        subMessage.value = "OAuth 凭证已过期，请重新授权";
-      }
-      else {
-        status.value = "error";
-        message.value = "绑定失败";
-        subMessage.value = res.message || "未知错误，请重试";
-        startCountdown(3, goToSettings);
-      }
-    }
-    else {
-      // 登录流程
-      // 使用 URL 对象构建 redirectUri
-      const redirectUrl = new URL("/oauth/callback", window.location.origin);
-      redirectUrl.searchParams.set("platform", platform.value);
-      redirectUrl.searchParams.set("action", "login");
-      const redirectUri = redirectUrl.toString();
-
-      const res = await oauthCallback(platform.value, code, state, redirectUri);
-      if (isUnmounted)
-        return;
-
-      if (res.code === StatusCode.SUCCESS && res.data) {
-        // 判断是否需要绑定
-        if (!res.data.needBind && res.data.token) {
-          // 无需绑定，直接登录
-          status.value = "success";
-          message.value = "登录成功";
-          subMessage.value = "欢迎回来，正在准备您的对话列表...";
-
-          startCountdown(2, async () => {
-            await userStore.onUserLogin(res.data.token!, true, () => {
-              navigateTo({
-                path: "/",
-                replace: true,
-              });
-            });
-          });
-        }
-        else if (res.data.needBind && res.data.oauthKey) {
-          // 需要绑定，保存 oauthInfo 并显示选择界面
-          oauthInfo.value = res.data;
-          status.value = "need-bindoption";
-          message.value = "选择操作";
-          subMessage.value = `该 ${platformName.value} 账号尚未绑定`;
-        }
-        else {
-          status.value = "error";
-          message.value = "登录失败";
-          subMessage.value = "返回数据异常，请重试";
-          startCountdown(3, goToLogin);
-        }
-      }
-      else if (res.code === StatusCode.OAUTH_CREDENTIAL_EXPIRED) {
-        status.value = "expired";
-        message.value = "授权已过期";
-        subMessage.value = "OAuth 凭证已过期，请重新授权";
-      }
-      else {
-        status.value = "error";
-        message.value = "登录失败";
-        subMessage.value = res.message || "授权验证失败，请重试";
-        startCountdown(3, goToLogin);
-      }
-    }
+  // 处理绑定结果
+  if (action === "bind") {
+    handleBindResult();
+    return;
   }
-  catch (error: any) {
-    console.error("OAuth 回调处理失败:", error);
-    if (isUnmounted)
-      return;
 
-    status.value = "error";
-    message.value = "处理异常";
-    subMessage.value = error?.message || "网络请求失败，请检查网络";
+  // 处理登录结果
+  handleLoginResult();
+}
 
-    startCountdown(3, () => {
-      if (action === "bind") {
-        goToSettings();
-      }
-      else {
-        goToLogin();
-      }
+/**
+ * 处理绑定结果（后端中转模式）
+ */
+function handleBindResult() {
+  const query = route.query;
+
+  // 绑定成功
+  if (query.bindSuccess === "true") {
+    status.value = "success";
+    message.value = "绑定成功";
+    subMessage.value = `${platformName.value} 账号已成功绑定`;
+    startCountdown(2, goToSettings);
+    return;
+  }
+
+  // 处理绑定错误码
+  const errorCode = query.errorCode as string;
+  if (errorCode === "OAUTH_ACCOUNT_ALREADY_BOUND") {
+    status.value = "already-bound";
+    message.value = "账号已被绑定";
+    subMessage.value = `该 ${platformName.value} 账号已被其他用户绑定，请更换账号或联系客服`;
+    return;
+  }
+  if (errorCode === "OAUTH_PLATFORM_ALREADY_BOUND") {
+    status.value = "already-bound";
+    message.value = "平台已绑定";
+    subMessage.value = `您已绑定过 ${platformName.value}，如需更换请先解绑`;
+    startCountdown(3, goToSettings);
+    return;
+  }
+  if (errorCode === "OAUTH_CREDENTIAL_EXPIRED") {
+    status.value = "expired";
+    message.value = "授权已过期";
+    subMessage.value = "OAuth 凭证已过期，请重新授权";
+    return;
+  }
+
+  // 其他错误
+  status.value = "error";
+  message.value = "绑定失败";
+  subMessage.value = decodeURIComponent(query.message as string || "未知错误，请重试");
+  startCountdown(3, goToSettings);
+}
+
+/**
+ * 处理登录结果（后端中转模式）
+ */
+function handleLoginResult() {
+  const query = route.query;
+  const needBind = query.needBind as string;
+
+  // 无需绑定，直接登录
+  if (needBind === "false" && query.token) {
+    const token = query.token as string;
+    status.value = "success";
+    message.value = "登录成功";
+    subMessage.value = "欢迎回来，正在准备您的对话列表...";
+
+    startCountdown(2, async () => {
+      await userStore.onUserLogin(token, true, () => {
+        navigateTo({
+          path: "/",
+          replace: true,
+        });
+      });
     });
+    return;
   }
+
+  // 需要绑定，显示选择界面
+  if (needBind === "true" && query.oauthKey) {
+    oauthInfo.value = {
+      needBind: true,
+      token: null,
+      oauthKey: query.oauthKey as string,
+      platform: platform.value,
+      nickname: query.nickname ? decodeURIComponent(query.nickname as string) : null,
+      avatar: query.avatar ? decodeURIComponent(query.avatar as string) : null,
+      email: query.email ? decodeURIComponent(query.email as string) : null,
+    };
+    status.value = "need-bindoption";
+    message.value = "选择操作";
+    subMessage.value = `该 ${platformName.value} 账号尚未绑定`;
+    return;
+  }
+
+  // 处理错误码
+  const errorCode = query.errorCode as string;
+  if (errorCode === "OAUTH_CREDENTIAL_EXPIRED") {
+    status.value = "expired";
+    message.value = "授权已过期";
+    subMessage.value = "OAuth 凭证已过期，请重新授权";
+    return;
+  }
+
+  // 其他错误
+  status.value = "error";
+  message.value = "登录失败";
+  subMessage.value = decodeURIComponent(query.message as string || "授权验证失败，请重试");
+  startCountdown(3, goToLogin);
 }
 
 // 处理绑定/注册成功
@@ -267,56 +261,34 @@ function handleExpired() {
   subMessage.value = "OAuth 凭证已过期，请重新授权";
 }
 
-// 页面加载时处理回调
+/**
+ * 页面加载时处理回调（后端中转模式）
+ *
+ * 后端会 302 重定向到此页面，携带结果参数：
+ * - Web 端: 直接解析 URL 参数
+ * - 桌面端: 后端重定向到 jiwuchat://oauth/callback，由深链接监听处理
+ */
 onMounted(() => {
-  const code = route.query.code as string;
-  const state = route.query.state as string;
-  const fromDesktop = route.query.from === "desktop";
+  const query = route.query;
 
-  // 如果有授权码
-  if (code && state) {
-    // 检查是否来自桌面端，需要跳转到深度链接
-    if (fromDesktop) {
-      redirectToDeepLink(code, state);
-      return;
-    }
-    // Web 端正常处理
+  // 检查是否有回调结果参数（后端中转返回的结果）
+  const hasResult = query.needBind !== undefined
+    || query.token !== undefined
+    || query.bindSuccess !== undefined
+    || query.error !== undefined
+    || query.oauthKey !== undefined;
+
+  if (hasResult) {
+    // 有结果参数，处理回调
     handleCallback();
     return;
   }
 
-  // 桌面端：检查是否有 sessionStorage 中的 OAuth 数据（来自 LoginForm 的深链接回调）
-  if (route.query.needBind === "true" && setting.isDesktop) {
+  // 桌面端：检查是否有 sessionStorage 中的 OAuth 数据
+  if (query.needBind === "true" && setting.isDesktop) {
     handleSessionStorageCallback();
   }
 });
-
-// 跳转到深度链接（桌面端中间页）
-function redirectToDeepLink(code: string, state: string) {
-  const platformValue = route.query.platform as string;
-  const action = route.query.action as string || "login";
-
-  // 构建深度链接
-  const deepLink = `jiwuchat://oauth/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}&platform=${platformValue}&action=${action}`;
-
-  console.log("[OAuth Callback] 桌面端跳转深度链接:", deepLink);
-
-  // 更新页面状态
-  status.value = "loading";
-  message.value = "正在返回应用...";
-  subMessage.value = "如果没有自动跳转，请手动返回 JiwuChat 应用";
-
-  // 跳转到深度链接
-  window.location.href = deepLink;
-
-  // 3秒后如果还在页面，显示手动提示
-  setTimeout(() => {
-    if (!isUnmounted) {
-      message.value = "请手动返回应用";
-      subMessage.value = "点击下方按钮或手动打开 JiwuChat 应用完成登录";
-    }
-  }, 3000);
-}
 
 // 处理 sessionStorage 中的 OAuth 数据（桌面端 LoginForm 深链接回调后跳转）
 function handleSessionStorageCallback() {
@@ -371,150 +343,120 @@ const { isListening } = useOAuthDeepLink({
   onCallback: handleDeepLinkCallback,
 });
 
-// 处理深度链接回调（桌面端专用）
-async function handleDeepLinkCallback(payload: OAuthCallbackPayload) {
+/**
+ * 处理深度链接回调（桌面端专用 - 后端中转模式）
+ * 后端处理完 OAuth 后会 302 重定向到 jiwuchat://oauth/callback，携带结果参数
+ */
+function handleDeepLinkCallback(payload: OAuthCallbackPayload) {
   console.log("[OAuth Callback] 收到深度链接回调:", payload);
 
-  // 检查错误
-  if (payload.error) {
-    status.value = "error";
-    message.value = "授权失败";
-    subMessage.value = payload.error;
-    startCountdown(3, goToLogin);
-    return;
-  }
-
-  // 检查必要参数
-  if (!payload.code || !payload.state || !payload.platform) {
-    status.value = "error";
-    message.value = "参数错误";
-    subMessage.value = "回调参数不完整，无法继续处理";
-    startCountdown(3, goToLogin);
-    return;
-  }
-
-  // State 验证由后端完成，根据 action 处理
   const action = payload.action || "login";
 
-  if (action === "bind") {
-    await handleBindCallback(payload.platform, payload.code, payload.state);
-  }
-  else {
-    await handleLoginCallback(payload.platform, payload.code, payload.state);
-  }
-}
-
-// 处理绑定回调（桌面端深度链接）
-async function handleBindCallback(platform: OAuthPlatformCode, code: string, state: string) {
-  if (!userStore.isLogin) {
+  // 检查是否有错误
+  if (payload.error === "true") {
     status.value = "error";
-    message.value = "未登录";
-    subMessage.value = "请先登录后再进行绑定操作";
-    startCountdown(2, goToLogin);
+    message.value = "授权失败";
+    subMessage.value = payload.message ? decodeURIComponent(payload.message) : "未知错误";
+    startCountdown(3, action === "bind" ? goToSettings : goToLogin);
     return;
   }
 
-  // 构建回调 URI（与发起授权时一致，使用 Web 地址）
-  const redirectUrl = new URL(`${window.location.origin}/oauth/callback`);
-  redirectUrl.searchParams.set("platform", platform);
-  redirectUrl.searchParams.set("action", "bind");
-  redirectUrl.searchParams.set("from", "desktop");
-  const redirectUri = redirectUrl.toString();
-
-  try {
-    const res = await bindOAuth(platform, code, redirectUri);
-
-    if (res.code === StatusCode.SUCCESS) {
-      status.value = "success";
-      message.value = "绑定成功";
-      subMessage.value = `${getPlatformName(platform)} 账号已成功绑定`;
-      startCountdown(2, goToSettings);
-    }
-    else if (res.code === StatusCode.OAUTH_ACCOUNT_ALREADY_BOUND) {
-      status.value = "already-bound";
-      message.value = "账号已被绑定";
-      subMessage.value = `该 ${getPlatformName(platform)} 账号已被其他用户绑定`;
-    }
-    else if (res.code === StatusCode.OAUTH_PLATFORM_ALREADY_BOUND) {
-      status.value = "already-bound";
-      message.value = "平台已绑定";
-      subMessage.value = `您已绑定过 ${getPlatformName(platform)}，如需更换请先解绑`;
-      startCountdown(3, goToSettings);
-    }
-    else {
-      status.value = "error";
-      message.value = "绑定失败";
-      subMessage.value = res.message || "未知错误，请重试";
-      startCountdown(3, goToSettings);
-    }
+  // 处理绑定结果
+  if (action === "bind") {
+    handleDeepLinkBindResult(payload);
+    return;
   }
-  catch (error: any) {
-    console.error("[OAuth Callback] 绑定失败:", error);
-    status.value = "error";
-    message.value = "处理异常";
-    subMessage.value = error?.message || "网络请求失败";
-    startCountdown(3, goToSettings);
-  }
+
+  // 处理登录结果
+  handleDeepLinkLoginResult(payload);
 }
 
-// 处理登录回调（桌面端深度链接）
-async function handleLoginCallback(platform: OAuthPlatformCode, code: string, state: string) {
-  // 构建回调 URI（与发起授权时一致，使用 Web 地址）
-  const redirectUrl = new URL(`${window.location.origin}/oauth/callback`);
-  redirectUrl.searchParams.set("platform", platform);
-  redirectUrl.searchParams.set("action", "login");
-  redirectUrl.searchParams.set("from", "desktop");
-  const redirectUri = redirectUrl.toString();
+/**
+ * 处理深度链接绑定结果
+ */
+function handleDeepLinkBindResult(payload: OAuthCallbackPayload) {
+  // 绑定成功
+  if (payload.bindSuccess === true) {
+    status.value = "success";
+    message.value = "绑定成功";
+    subMessage.value = `${platformName.value} 账号已成功绑定`;
+    startCountdown(2, goToSettings);
+    return;
+  }
 
-  try {
-    const res = await oauthCallback(platform, code, state, redirectUri);
+  // 处理绑定错误码
+  if (payload.errorCode === "OAUTH_ACCOUNT_ALREADY_BOUND") {
+    status.value = "already-bound";
+    message.value = "账号已被绑定";
+    subMessage.value = `该 ${platformName.value} 账号已被其他用户绑定`;
+    return;
+  }
+  if (payload.errorCode === "OAUTH_PLATFORM_ALREADY_BOUND") {
+    status.value = "already-bound";
+    message.value = "平台已绑定";
+    subMessage.value = `您已绑定过 ${platformName.value}，如需更换请先解绑`;
+    startCountdown(3, goToSettings);
+    return;
+  }
 
-    if (res.code === StatusCode.SUCCESS && res.data) {
-      if (!res.data.needBind && res.data.token) {
-        // 无需绑定，直接登录
-        status.value = "success";
-        message.value = "登录成功";
-        subMessage.value = "欢迎回来，正在准备您的对话列表...";
+  // 其他错误
+  status.value = "error";
+  message.value = "绑定失败";
+  subMessage.value = payload.message ? decodeURIComponent(payload.message) : "未知错误，请重试";
+  startCountdown(3, goToSettings);
+}
 
-        startCountdown(2, async () => {
-          await userStore.onUserLogin(res.data.token!, true, () => {
-            navigateTo({ path: "/", replace: true });
-          });
+/**
+ * 处理深度链接登录结果
+ */
+function handleDeepLinkLoginResult(payload: OAuthCallbackPayload) {
+  // 无需绑定，直接登录
+  if (payload.needBind === false && payload.token) {
+    status.value = "success";
+    message.value = "登录成功";
+    subMessage.value = "欢迎回来，正在准备您的对话列表...";
+
+    startCountdown(2, async () => {
+      await userStore.onUserLogin(payload.token!, true, () => {
+        navigateTo({
+          path: "/",
+          replace: true,
         });
-      }
-      else if (res.data.needBind && res.data.oauthKey) {
-        // 需要绑定，显示选择界面
-        oauthInfo.value = res.data;
-        status.value = "need-bindoption";
-        message.value = "选择操作";
-        subMessage.value = `该 ${getPlatformName(platform)} 账号尚未绑定`;
-      }
-      else {
-        status.value = "error";
-        message.value = "登录失败";
-        subMessage.value = "返回数据异常，请重试";
-        startCountdown(3, goToLogin);
-      }
-    }
-    else if (res.code === StatusCode.OAUTH_CREDENTIAL_EXPIRED) {
-      status.value = "expired";
-      message.value = "授权已过期";
-      subMessage.value = "OAuth 凭证已过期，请重新授权";
-    }
-    else {
-      status.value = "error";
-      message.value = "登录失败";
-      subMessage.value = res.message || "授权验证失败，请重试";
-      startCountdown(3, goToLogin);
-    }
+      });
+    });
+    return;
   }
-  catch (error: any) {
-    console.error("[OAuth Callback] 登录失败:", error);
-    status.value = "error";
-    message.value = "处理异常";
-    subMessage.value = error?.message || "网络请求失败";
-    startCountdown(3, goToLogin);
+
+  // 需要绑定，显示选择界面
+  if (payload.needBind === true && payload.oauthKey) {
+    oauthInfo.value = {
+      needBind: true,
+      token: null,
+      oauthKey: payload.oauthKey,
+      platform: payload.platform,
+      nickname: payload.nickname ? decodeURIComponent(payload.nickname) : null,
+      avatar: payload.avatar ? decodeURIComponent(payload.avatar) : null,
+      email: payload.email ? decodeURIComponent(payload.email) : null,
+    };
+    status.value = "need-bindoption";
+    message.value = "选择操作";
+    subMessage.value = `该 ${platformName.value} 账号尚未绑定`;
+    return;
   }
+
+  // 处理错误码
+  if (payload.errorCode === "OAUTH_CREDENTIAL_EXPIRED") {
+    status.value = "expired";
+    message.value = "授权已过期";
+    subMessage.value = "OAuth 凭证已过期，请重新授权";
+    return;
+  }
+
+  // 其他错误
+  status.value = "error";
+  message.value = "登录失败";
+  subMessage.value = payload.message ? decodeURIComponent(payload.message) : "授权验证失败，请重试";
+  startCountdown(3, goToLogin);
 }
 
 // 获取平台名称

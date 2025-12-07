@@ -87,25 +87,13 @@ export function getOAuthPlatforms(): Promise<Result<OAuthPlatformVO[]>> {
 }
 
 /**
- * 获取授权 URL
+ * 获取授权 URL（后端中转模式）
  * @param platform 平台代码 (github/google/gitee)
- * @param redirectUri 回调地址（可选）
+ * @param clientRedirectUri 前端回调地址（后端处理完 OAuth 后会 302 重定向到此地址）
  * @returns Promise<Result<string>>
  */
-export function getAuthorizeUrl(platform: OAuthPlatformCode, redirectUri?: string): Promise<Result<string>> {
-  return useHttp.get<Result<string>>(`/oauth/authorize/${platform}`, { redirectUri });
-}
-
-/**
- * OAuth 回调登录
- * @param platform 平台代码
- * @param code 授权码
- * @param state 状态参数
- * @param redirectUri 回调地址（可选）
- * @returns Promise<Result<OAuthCallbackVO>> 返回 OAuth 回调结果
- */
-export function oauthCallback(platform: OAuthPlatformCode, code: string, state: string, redirectUri?: string): Promise<Result<OAuthCallbackVO>> {
-  return useHttp.get<Result<OAuthCallbackVO>>(`/oauth/callback/${platform}`, { code, state, redirectUri });
+export function getAuthorizeUrl(platform: OAuthPlatformCode, clientRedirectUri?: string): Promise<Result<string>> {
+  return useHttp.get<Result<string>>(`/oauth/authorize/${platform}`, { clientRedirectUri });
 }
 
 /**

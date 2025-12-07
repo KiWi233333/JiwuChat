@@ -7,14 +7,33 @@ import type { UnlistenFn } from "@tauri-apps/api/event";
 import type { OAuthPlatformCode } from "~/composables/api/user/oauth";
 
 /**
- * 深度链接回调数据结构（与 Rust 层 OAuthCallbackPayload 对应）
+ * 深度链接回调数据结构（后端中转模式）
+ * 后端处理完 OAuth 后会 302 重定向到深度链接，携带结果参数
  */
 export interface OAuthCallbackPayload {
-  code: string | null;
-  state: string | null;
+  // 基础信息
   platform: OAuthPlatformCode | null;
   action: "login" | "bind" | "register" | null;
-  error: string | null;
+
+  // 登录结果（needBind=false 时）
+  needBind?: boolean;
+  token?: string;
+
+  // 需要绑定时的信息（needBind=true 时）
+  oauthKey?: string;
+  nickname?: string;
+  avatar?: string;
+  email?: string;
+
+  // 绑定结果
+  bindSuccess?: boolean;
+
+  // 错误信息
+  error?: string;
+  errorCode?: string;
+  message?: string;
+
+  // 原始 URL（调试用）
   raw_url: string;
 }
 
@@ -94,7 +113,6 @@ export function useOAuthDeepLink(options: UseOAuthDeepLinkOptions = {}) {
       unlistenFn = null;
     }
     isListening.value = false;
-    console.log("[useOAuthDeepLink] 停止监听深度链接");
   }
 
   /**
