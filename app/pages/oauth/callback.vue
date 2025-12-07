@@ -269,8 +269,18 @@ function handleExpired() {
 
 // 页面加载时处理回调
 onMounted(() => {
-  // 如果有 URL 参数，直接处理（Web 端回调或深度链接已解析）
-  if (route.query.code) {
+  const code = route.query.code as string;
+  const state = route.query.state as string;
+  const fromDesktop = route.query.from === "desktop";
+
+  // 如果有授权码
+  if (code && state) {
+    // 检查是否来自桌面端，需要跳转到深度链接
+    if (fromDesktop) {
+      redirectToDeepLink(code, state);
+      return;
+    }
+    // Web 端正常处理
     handleCallback();
     return;
   }
@@ -280,6 +290,33 @@ onMounted(() => {
     handleSessionStorageCallback();
   }
 });
+
+// 跳转到深度链接（桌面端中间页）
+function redirectToDeepLink(code: string, state: string) {
+  const platformValue = route.query.platform as string;
+  const action = route.query.action as string || "login";
+
+  // 构建深度链接
+  const deepLink = `jiwuchat://oauth/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}&platform=${platformValue}&action=${action}`;
+
+  console.log("[OAuth Callback] 桌面端跳转深度链接:", deepLink);
+
+  // 更新页面状态
+  status.value = "loading";
+  message.value = "正在返回应用...";
+  subMessage.value = "如果没有自动跳转，请手动返回 JiwuChat 应用";
+
+  // 跳转到深度链接
+  window.location.href = deepLink;
+
+  // 3秒后如果还在页面，显示手动提示
+  setTimeout(() => {
+    if (!isUnmounted) {
+      message.value = "请手动返回应用";
+      subMessage.value = "点击下方按钮或手动打开 JiwuChat 应用完成登录";
+    }
+  }, 3000);
+}
 
 // 处理 sessionStorage 中的 OAuth 数据（桌面端 LoginForm 深链接回调后跳转）
 function handleSessionStorageCallback() {
@@ -377,8 +414,12 @@ async function handleBindCallback(platform: OAuthPlatformCode, code: string, sta
     return;
   }
 
-  // 构建深度链接回调 URI
-  const redirectUri = `jiwuchat://oauth/callback?platform=${platform}&action=bind`;
+  // 构建回调 URI（与发起授权时一致，使用 Web 地址）
+  const redirectUrl = new URL(`${window.location.origin}/oauth/callback`);
+  redirectUrl.searchParams.set("platform", platform);
+  redirectUrl.searchParams.set("action", "bind");
+  redirectUrl.searchParams.set("from", "desktop");
+  const redirectUri = redirectUrl.toString();
 
   try {
     const res = await bindOAuth(platform, code, redirectUri);
@@ -418,8 +459,12 @@ async function handleBindCallback(platform: OAuthPlatformCode, code: string, sta
 
 // 处理登录回调（桌面端深度链接）
 async function handleLoginCallback(platform: OAuthPlatformCode, code: string, state: string) {
-  // 构建深度链接回调 URI
-  const redirectUri = `jiwuchat://oauth/callback?platform=${platform}&action=login`;
+  // 构建回调 URI（与发起授权时一致，使用 Web 地址）
+  const redirectUrl = new URL(`${window.location.origin}/oauth/callback`);
+  redirectUrl.searchParams.set("platform", platform);
+  redirectUrl.searchParams.set("action", "login");
+  redirectUrl.searchParams.set("from", "desktop");
+  const redirectUri = redirectUrl.toString();
 
   try {
     const res = await oauthCallback(platform, code, state, redirectUri);

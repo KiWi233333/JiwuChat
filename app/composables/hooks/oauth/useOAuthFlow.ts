@@ -47,23 +47,23 @@ export interface OAuthFlowState {
 }
 
 /**
- * 深度链接回调地址前缀
+ * 深度链接协议
  */
 const DEEP_LINK_CALLBACK_BASE = "jiwuchat://oauth/callback";
 
 /**
- * 构建深度链接回调地址
+ * 构建回调地址
+ * 桌面端和 Web 端都使用 Web 页面作为回调，桌面端添加 from=desktop 标记
  */
-function buildDeepLinkRedirectUri(platform: OAuthPlatformCode, action: OAuthAction): string {
-  return `${DEEP_LINK_CALLBACK_BASE}?platform=${platform}&action=${action}`;
-}
-
-/**
- * 构建 Web 端回调地址
- */
-function buildWebRedirectUri(platform: OAuthPlatformCode, action: OAuthAction): string {
-  const baseUrl = window.location.origin;
-  return `${baseUrl}/oauth/callback?platform=${platform}&action=${action}`;
+function buildRedirectUri(platform: OAuthPlatformCode, action: OAuthAction, isDesktop: boolean): string {
+  const baseUrl = isDesktop ? DEEP_LINK_CALLBACK_BASE : `${window.location.origin}/oauth/callback`;
+  const url = new URL(baseUrl);
+  url.searchParams.set("platform", platform);
+  url.searchParams.set("action", action);
+  if (isDesktop) {
+    url.searchParams.set("from", "desktop");
+  }
+  return url.toString();
 }
 
 /**
@@ -116,16 +116,13 @@ export function useOAuthFlow(options: UseOAuthFlowOptions) {
 
   /**
    * 获取重定向 URI
+   * 桌面端和 Web 端都使用 Web 回调页面，桌面端会在回调页面跳转到深度链接
    */
   function getRedirectUri(): string {
     if (customRedirectUri)
       return customRedirectUri;
 
-    if (setting.isDesktop) {
-      return buildDeepLinkRedirectUri(platform, action);
-    }
-
-    return buildWebRedirectUri(platform, action);
+    return buildRedirectUri(platform, action, setting.isDesktop);
   }
 
   /**
