@@ -231,7 +231,7 @@ onMounted(() => {
         </el-form-item>
         <!-- 新旧密码 -->
         <el-form-item
-          v-else
+          v-else-if="user.userInfo.isPasswordVerified"
           key="code-3"
           type="password"
           label="旧密码"
@@ -250,6 +250,7 @@ onMounted(() => {
           />
         </el-form-item>
         <el-form-item
+          key="code-4"
           type="password" label="新密码" prop="newPassword" class="animated"
         >
           <el-input
@@ -263,7 +264,7 @@ onMounted(() => {
             @keyup.enter="onUpdatePwd(userFormRefs)"
           />
         </el-form-item>
-        <el-radio-group v-model="chooseType" size="small" class="check-type-list w-full pt-2">
+        <el-radio-group key="radio" v-model="chooseType" size="small" class="check-type-list w-full pt-2">
           <el-radio v-if="user.userInfo.isPhoneVerified" :value="CheckTypeEnum.PHONE">
             手机号
           </el-radio>
@@ -274,7 +275,7 @@ onMounted(() => {
             原密码
           </el-radio>
         </el-radio-group>
-        <el-form-item mt-1em>
+        <el-form-item key="btn" mt-1em>
           <el-button
             type="danger"
             class="submit w-full"

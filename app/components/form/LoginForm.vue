@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { OAuthPlatformVO } from "~/composables/api/user/oauth";
 import { CardLoading } from "#components";
 import {
   DeviceType,
@@ -7,6 +8,7 @@ import {
   toLoginByPhone,
   toLoginByPwd,
 } from "~/composables/api/user";
+import { getAuthorizeUrl, getOAuthPlatforms, OAuthPlatformCode } from "~/composables/api/user/oauth";
 import { appName } from "~/constants";
 import { LoginType } from "~/types/user/index.js";
 
@@ -300,6 +302,65 @@ function forgetPassword() {
   ElMessage.warning("请手机或者邮箱验证登录后，找回密码！");
 }
 
+// OAuth 第三方登录
+const oauthPlatforms = useLocalStorage<OAuthPlatformVO[]>("oauth-platforms", []);
+const isLoadingOAuth = ref(false);
+const authorizeUrlLoadings = ref<Record<string, boolean>>({});
+// @unocss-include
+const oauthPlatformsClass = computed<Partial<Record<OAuthPlatformCode, string>>>(() => ({
+  [OAuthPlatformCode.GITHUB]: "dark:invert",
+}));
+
+// 加载 OAuth 平台列表
+async function loadOAuthPlatforms() {
+  try {
+    isLoadingOAuth.value = true;
+    const res = await getOAuthPlatforms();
+    if (res.code === StatusCode.SUCCESS) {
+      oauthPlatforms.value = res.data.filter(p => p.enabled);
+    }
+  }
+  catch (error) {
+    console.error("加载 OAuth 平台失败:", error);
+  }
+  finally {
+    isLoadingOAuth.value = false;
+  }
+}
+
+// 第三方登录
+async function handleOAuthLogin(platform: OAuthPlatformCode) {
+  if (authorizeUrlLoadings.value[platform])
+    return;
+
+  authorizeUrlLoadings.value[platform] = true;
+  try {
+    const redirectUri = `${window.location.origin}/oauth/callback?platform=${platform}&action=login`;
+    const res = await getAuthorizeUrl(platform, redirectUri);
+
+    if (res.code === StatusCode.SUCCESS && res.data) {
+      // 跳转到授权页面
+      window.location.href = res.data;
+    }
+    else {
+      ElMessage.error(res.message || "获取授权链接失败");
+    }
+  }
+  catch (error: any) {
+    ElMessage.error(error.message || "获取授权链接失败");
+  }
+  finally {
+    setTimeout(() => {
+      authorizeUrlLoadings.value[platform] = false;
+    }, 400);
+  }
+}
+
+// 初始化加载 OAuth 平台
+onMounted(() => {
+  loadOAuthPlatforms();
+});
+
 defineExpose({
   historyAccounts,
   theAccount: theHistoryAccount,
@@ -471,7 +532,7 @@ defineExpose({
       </el-form-item>
       <!-- 底部 -->
       <div
-        class="mt-3 text-right text-0.8em sm:text-sm"
+        class="mt-3 text-right text-0.8em sm:text-mini"
       >
         <el-checkbox v-model="autoLogin" class="mt-1" style="padding: 0;font-size: inherit;float: left; height: fit-content;">
           记住我
@@ -488,6 +549,43 @@ defineExpose({
         >
           注册账号
         </span>
+      </div>
+      <!-- 第三方登录 -->
+      <div
+        v-if="oauthPlatforms.length > 0"
+      >
+        <div class="my-4 flex items-center justify-between">
+          <div class="h-1px flex-1 border-default-b" />
+          <span class="px-3 text-mini">第三方登录/注册</span>
+          <div class="h-1px flex-1 border-default-b" />
+        </div>
+        <div
+          class="flex items-center justify-center gap-3"
+        >
+          <div
+            v-for="platform in oauthPlatforms"
+            :key="platform.code"
+            class="relative flex cursor-pointer items-center justify-center overflow-hidden border-default rounded-1/2 transition-200 hover:op-80"
+            :title="`使用 ${platform.name} 登录`"
+            @click="handleOAuthLogin(platform.code)"
+          >
+            <CardElImage
+              :src="getOAuthPlatformIcon(platform.code)"
+              error-root-class="hidden"
+              :alt="platform.name"
+              :class="[oauthPlatformsClass[platform.code], {
+                'filter-blur-2px': authorizeUrlLoadings[platform.code],
+              }]"
+              class="h-5 w-5"
+            />
+            <!-- loading icon -->
+            <CardLoading
+              v-if="authorizeUrlLoadings[platform.code]"
+              size="1.2em"
+              class="absolute z-1 animate-spin op-50"
+            />
+          </div>
+        </div>
       </div>
     </template>
     <template v-else>
@@ -540,6 +638,11 @@ defineExpose({
 
   :deep(.el-form-item) {
     padding: 0;
+
+    .el-input__wrapper {
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
 
     .el-input-group__append {
       --at-apply: "w-8rem min-w-fit text-theme-primary card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-primary op-100)";
@@ -608,6 +711,11 @@ defineExpose({
   }
   .avatar {
     --at-apply: "mx-a h-20 w-20 border-2px border-default rounded-full shadow-lg block";
+  }
+}
+:deep(.el-divider.login-type) {
+  .el-divider__text {
+    --at-apply: "bg-transparent";
   }
 }
 </style>

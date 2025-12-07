@@ -1,4 +1,12 @@
 <script lang="ts" setup>
+import type { OAuthPlatformCode, OAuthPlatformVO, UserOAuthVO } from "~/composables/api/user/oauth";
+import {
+  getAuthorizeUrl,
+  getBindList,
+  getOAuthPlatforms,
+  unbindOAuth,
+} from "~/composables/api/user/oauth";
+
 const user = useUserStore();
 const showMarkPhone = ref(true);
 
@@ -16,6 +24,107 @@ const form = ref({
   showUpdatePhone: false,
   showUpdateEmail: false,
 });
+
+watch(
+  form,
+  ({ showUpdatePwd, showUpdatePhone, showUpdateEmail }) => {
+    if (showUpdatePwd || showUpdatePhone || showUpdateEmail) {
+      reloadUserInfo();
+    }
+  },
+  { immediate: true, deep: true },
+);
+
+// OAuth 相关状态
+const oauthPlatforms = ref<OAuthPlatformVO[]>([]);
+const bindRecords = ref<UserOAuthVO[]>([]);
+const isLoadingOAuth = ref(false);
+
+// 获取平台绑定状态
+function getBindStatus(platform: OAuthPlatformCode): UserOAuthVO | null {
+  return bindRecords.value.find(item => item.platform === platform) || null;
+}
+
+// 加载 OAuth 数据
+async function loadOAuthData() {
+  if (!user.isLogin)
+    return;
+
+  try {
+    isLoadingOAuth.value = true;
+    const [platformsRes, bindListRes] = await Promise.all([
+      getOAuthPlatforms(),
+      getBindList(),
+    ]);
+
+    if (platformsRes.code === StatusCode.SUCCESS) {
+      oauthPlatforms.value = platformsRes.data.filter(p => p.enabled);
+    }
+
+    if (bindListRes.code === StatusCode.SUCCESS) {
+      bindRecords.value = bindListRes.data;
+    }
+  }
+  catch (error) {
+    console.error("加载 OAuth 数据失败:", error);
+  }
+  finally {
+    isLoadingOAuth.value = false;
+  }
+}
+
+// 绑定第三方账号
+async function handleBind(platform: OAuthPlatformCode) {
+  try {
+    const redirectUri = `${window.location.origin}/oauth/callback?platform=${platform}&action=bind`;
+    const res = await getAuthorizeUrl(platform, redirectUri);
+
+    if (res.code === StatusCode.SUCCESS && res.data) {
+      // 跳转到授权页面
+      window.location.href = res.data;
+    }
+    else {
+      ElMessage.error(res.message || "获取授权链接失败");
+    }
+  }
+  catch (error: any) {
+    console.error("绑定失败:", error);
+    ElMessage.error(error?.message || "绑定失败，请稍后重试");
+  }
+}
+
+// 解绑第三方账号
+async function handleUnbind(platform: OAuthPlatformCode) {
+  try {
+    ElMessageBox.confirm(
+      `确定要解绑 ${platform} 账号吗？`,
+      "确认解绑",
+      {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      },
+    ).then(async () => {
+      const res = await unbindOAuth(platform);
+      if (res.code === StatusCode.SUCCESS) {
+        ElMessage.success("解绑成功");
+        await loadOAuthData();
+        await reloadUserInfo();
+      }
+    }).catch(() => {});
+  }
+  catch (error: any) {
+    console.error("解绑失败:", error);
+    ElMessage.error(error?.message || "解绑失败，请稍后重试");
+  }
+}
+
+// 初始化加载
+onMounted(() => {
+  if (user.isLogin) {
+    loadOAuthData();
+  }
+});
 </script>
 
 <template>
@@ -27,7 +136,7 @@ const form = ref({
     <!-- 用户信息 -->
     <div
       v-loading="isLoading"
-      class="group flex flex-col border-default-hover card-default p-4"
+      class="group flex flex-col card-default"
       flex flex-1 flex-col
     >
       <div class="flex items-center">
@@ -93,6 +202,55 @@ const form = ref({
         >
           {{ user.userInfo.email ? "修改邮箱" : "绑定" }}
         </small>
+      </div>
+      <!-- 第三方账号 -->
+      <div
+        v-if="oauthPlatforms.length > 0"
+        ml-1 mt-6
+      >
+        <div mb-2 flex-row-bt-c>
+          <small>第三方账号：</small>
+        </div>
+        <div
+          v-loading="isLoadingOAuth"
+          class="mt-4 flex flex-col gap-2"
+        >
+          <div
+            v-for="platform in oauthPlatforms"
+            :key="platform.code"
+            class="flex-row-bt-c"
+          >
+            <div class="flex items-center gap-2">
+              <img
+                :src="getOAuthPlatformIcon(platform.code)"
+                :alt="platform.name"
+                class="h-5 w-5"
+              >
+              <small>{{ platform.name }}</small>
+              <small
+                v-if="getBindStatus(platform.code)"
+                opacity-60
+                class="ml-2"
+              >
+                {{ getBindStatus(platform.code)?.nickname || "已绑定" }}
+              </small>
+            </div>
+            <small
+              v-if="getBindStatus(platform.code)"
+              class="cursor-pointer text-red-5 transition-300 hover:text-red-6"
+              @click="handleUnbind(platform.code)"
+            >
+              解绑
+            </small>
+            <small
+              v-else
+              class="cursor-pointer transition-300 hover:text-theme-primary"
+              @click="handleBind(platform.code)"
+            >
+              绑定
+            </small>
+          </div>
+        </div>
       </div>
       <div
         mt-a

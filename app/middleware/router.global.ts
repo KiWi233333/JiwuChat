@@ -15,6 +15,24 @@ const MAIN_ROUTES: Record<string, number> = {
   "/setting": 5,
 };
 
+// 白名单配置（支持字符串精确匹配和正则表达式）
+const WHITE_LIST: (string | RegExp)[] = [
+  "/login",
+  /^\/oauth\/callback.*$/, // OAuth 回调页面
+];
+
+/**
+ * 检查路径是否在白名单中
+ */
+function checkInWhiteList(path: string): boolean {
+  return WHITE_LIST.some((item) => {
+    if (typeof item === "string") {
+      return item === path;
+    }
+    return item.test(path);
+  });
+}
+
 // 路由中间件
 export default defineNuxtRouteMiddleware((to: RouteLocationNormalized, from: RouteLocationNormalized): NavigationGuardReturn => {
   // 处理对话框和弹窗
@@ -106,6 +124,11 @@ function handleDesktopNavigation(
   from: RouteLocationNormalized,
 ): NavigationGuardReturn {
   const user = useUserStore() as any;
+
+  // 检查是否在白名单中
+  const inWhiteList = checkInWhiteList(to.path);
+  console.log(inWhiteList);
+
   // 登录状态路由控制
   if (!user.isLogin) {
     loadLoginWindow();
@@ -155,13 +178,16 @@ function handleMobileWebNavigation(
 ): NavigationGuardReturn {
   const user = useUserStore() as any;
 
-  if (to.path !== "/login") {
+  // 检查是否在白名单中
+  const inWhiteList = checkInWhiteList(to.path);
+
+  if (!inWhiteList) {
     if (!user.isLogin) {
       user.showLoginPageType = "login";
       return "/login";
     }
   }
-  else {
+  else if (to.path === "/login") {
     if (user.isLogin) {
       return from.path && from.path !== "/login" ? from.path : "/";
     }

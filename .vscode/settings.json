@@ -19,5 +19,8 @@
     "tabler",
     "ri"
   ],
-  "switch2idea.ideaPath": "/Applications/WebStorm.app"
+  "switch2idea.ideaPath": "/Applications/WebStorm.app",
+  "cSpell.words": [
+    "unocss"
+  ]
 }

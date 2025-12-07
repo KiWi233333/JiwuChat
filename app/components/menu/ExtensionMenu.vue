@@ -244,7 +244,7 @@ function createItem() {
       </div>
     </ListTransitionGroup>
     <template #footer>
-      <div class="px-3 pb-2 text-right">
+      <div class="pb-2 text-right">
         <el-button class="ml-a" size="small" @click="isShow = false">
           取消
         </el-button>
