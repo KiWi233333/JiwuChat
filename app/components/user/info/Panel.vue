@@ -277,14 +277,12 @@ onMounted(() => {
             alt="Design By Kiwi23333"
             :src="BaseUrlImg + avatarUrl"
             class="avatar-mark h-6em w-6em select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
-          >
-            <template #empty>
-              <ElIconPlus
-                v-if="isEdit"
-                class="avatar-mark h-1/2 w-1/2 select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
-              />
-            </template>
-          </CardAvatar>
+          />
+
+          <ElIconPlus
+            v-if="isEdit"
+            class="absolute-center-center z-99 h-1/2 w-1/2 select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 text-light op-0 filter-drop-shadow transition-300 group-hover-op-80"
+          />
         </div>
       </el-upload>
     </div>

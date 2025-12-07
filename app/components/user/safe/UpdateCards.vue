@@ -213,7 +213,7 @@ onMounted(() => {
         </div>
         <div
           v-loading="isLoadingOAuth"
-          class="mt-4 flex flex-col gap-2"
+          class="mt-4 flex flex-col gap-4"
         >
           <div
             v-for="platform in oauthPlatforms"
