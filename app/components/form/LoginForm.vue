@@ -65,6 +65,7 @@ const rules = reactive({
   ],
 });
 
+
 // 验证码配置类型
 interface CodeConfigItem {
   timer: Ref<number>
@@ -261,6 +262,8 @@ const findAccountAvatar = computed(() =>
   historyAccounts.value.find(item => item.account === userForm.value.username),
 );
 
+// 头像展示URL
+const getShowAvatarUrl = computed(() => findAccountAvatar.value?.userInfo?.avatar ? BaseUrlImg + findAccountAvatar.value?.userInfo?.avatar : "/logo.png");
 async function handleSelectAccount(item: Record<string, any>) {
   if (!item?.account)
     return;
@@ -275,6 +278,11 @@ async function handleSelectAccount(item: Record<string, any>) {
     password: item.password || "",
     userInfo: item.userInfo,
   };
+}
+
+function handleClearAccount() {
+  userForm.value.username = "";
+  // userForm.value.password = "";
 }
 
 function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
@@ -384,15 +392,22 @@ defineExpose({
     autocomplete="off"
   >
     <template v-if="!userStore.isLogin">
-      <div class="header flex-row-c-c">
-        <CardAvatar
-          style="--anima: blur-in;"
-          :src="findAccountAvatar?.userInfo?.avatar ? BaseUrlImg + findAccountAvatar?.userInfo?.avatar : '/logo.png'"
-          class="avatar"
-        />
-        <div v-show="!findAccountAvatar" class="title">
-          {{ appName }}
-        </div>
+      <div class="h-24 flex-row-c-c">
+        <transition name="pop-list" mode="out-in">
+          <div :key="getShowAvatarUrl" class="header flex-row-c-c">
+            <CardAvatar
+              style="--anima: blur-in;"
+              :src="getShowAvatarUrl"
+              :class="{
+                'has-account': findAccountAvatar?.userInfo?.avatar,
+              }"
+              class="avatar"
+            />
+            <div v-show="!findAccountAvatar" class="title">
+              {{ appName }}
+            </div>
+          </div>
+        </transition>
       </div>
       <!-- 切换登录 -->
       <el-segmented
@@ -482,6 +497,7 @@ defineExpose({
           hide-loading
           value-key="account"
           placeholder="请输入用户名、手机号或邮箱"
+          @clear="handleClearAccount"
           @select="handleSelectAccount"
         >
           <template #default="{ item }">
@@ -696,21 +712,15 @@ defineExpose({
 }
 
 .header {
-  --at-apply: "h-24 transition-height flex-row-c-c";
-
   .avatar {
     --at-apply: "mx-0 h-8 w-8";
+
+    &.has-account {
+      --at-apply: "mx-a h-18 w-18 border-2px border-default !border-color-light rounded-full shadow-lg hover:(shadow-xl scale-105) transition-200 block";
+    }
   }
   .title {
     --at-apply: "ml-3 pr-2 text-lg font-500 tracking-0.2em text-5.2";
-  }
-}
-.has-account {
-  .header {
-    --at-apply: "h-30 flex-row-c-c";
-  }
-  .avatar {
-    --at-apply: "mx-a h-20 w-20 border-2px border-default rounded-full shadow-lg block";
   }
 }
 :deep(.el-divider.login-type) {

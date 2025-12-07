@@ -259,8 +259,8 @@ function checkIsDesktop(): boolean {
  */
 async function loadLoginWindow(): Promise<void> {
   try {
+    await createWindow(LOGIN_WINDOW_LABEL);
     destroyWindow(MAIN_WINDOW_LABEL);
-    createWindow(LOGIN_WINDOW_LABEL);
     destroyWindow(MSGBOX_WINDOW_LABEL);
     destroyWindow(EXTEND_WINDOW_LABEL);
     destroyWindow(SETTING_WINDOW_LABEL);
