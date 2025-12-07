@@ -677,7 +677,7 @@ onActivated(() => {
 }
 </style>
 
-<style lang="scss">
+<style scope lang="scss">
 .mcp-app-markdown {
   background-color: transparent !important;
   .md-editor-code {

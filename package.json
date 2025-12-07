@@ -44,6 +44,7 @@
     "@imengyu/vue3-context-menu": "1.5.2",
     "@nuxtjs/color-mode": "3.5.2",
     "@tauri-apps/plugin-autostart": "2.5.1",
+    "@tauri-apps/plugin-deep-link": "2.4.5",
     "@tauri-apps/plugin-dialog": "2.4.2",
     "@tauri-apps/plugin-fs": "2.4.4",
     "@tauri-apps/plugin-notification": "2.3.3",

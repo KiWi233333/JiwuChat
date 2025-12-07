@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import type { OAuthPlatformCode, OAuthPlatformVO, UserOAuthVO } from "~/composables/api/user/oauth";
+import type { OAuthCallbackPayload } from "~/composables/hooks/oauth/useDeepLink";
 import {
-  getAuthorizeUrl,
   getBindList,
   getOAuthPlatforms,
   unbindOAuth,
 } from "~/composables/api/user/oauth";
+import { useOAuthDeepLink } from "~/composables/hooks/oauth/useDeepLink";
+import { useOAuthFlow } from "~/composables/hooks/oauth/useOAuthFlow";
 
 const user = useUserStore();
+const setting = useSettingStore();
 const showMarkPhone = ref(true);
 
 /**
@@ -74,23 +77,62 @@ async function loadOAuthData() {
 }
 
 // 绑定第三方账号
-async function handleBind(platform: OAuthPlatformCode) {
-  try {
-    const redirectUri = `${window.location.origin}/oauth/callback?platform=${platform}&action=bind`;
-    const res = await getAuthorizeUrl(platform, redirectUri);
+const currentBindingPlatform = ref<OAuthPlatformCode | null>(null);
 
-    if (res.code === StatusCode.SUCCESS && res.data) {
-      // 跳转到授权页面
-      window.location.href = res.data;
-    }
-    else {
-      ElMessage.error(res.message || "获取授权链接失败");
-    }
-  }
-  catch (error: any) {
-    console.error("绑定失败:", error);
-    ElMessage.error(error?.message || "绑定失败，请稍后重试");
-  }
+// 深度链接监听（桌面端）
+const { isListening } = useOAuthDeepLink({
+  autoListen: setting.isDesktop,
+  onCallback: handleDeepLinkCallback,
+});
+
+// 处理深度链接回调
+async function handleDeepLinkCallback(payload: OAuthCallbackPayload) {
+  if (!currentBindingPlatform.value)
+    return;
+  if (payload.action !== "bind")
+    return;
+  if (payload.platform !== currentBindingPlatform.value)
+    return;
+
+  const oauthFlow = useOAuthFlow({
+    platform: currentBindingPlatform.value,
+    action: "bind",
+    onBindSuccess: async () => {
+      await loadOAuthData();
+      await reloadUserInfo();
+      currentBindingPlatform.value = null;
+    },
+    onError: (err) => {
+      ElMessage.error(err.message || "绑定失败");
+      currentBindingPlatform.value = null;
+    },
+    onStateInvalid: (error) => {
+      ElMessage.error(error || "授权验证失败，请重试");
+      currentBindingPlatform.value = null;
+    },
+  });
+
+  await oauthFlow.handleDeepLinkCallback(payload);
+}
+
+async function handleBind(platform: OAuthPlatformCode) {
+  currentBindingPlatform.value = platform;
+
+  const oauthFlow = useOAuthFlow({
+    platform,
+    action: "bind",
+    onBindSuccess: async () => {
+      await loadOAuthData();
+      await reloadUserInfo();
+      currentBindingPlatform.value = null;
+    },
+    onError: (err) => {
+      ElMessage.error(err.message || "绑定失败");
+      currentBindingPlatform.value = null;
+    },
+  });
+
+  await oauthFlow.startOAuth();
 }
 
 // 解绑第三方账号

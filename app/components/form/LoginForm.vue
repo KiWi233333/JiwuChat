@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { OAuthPlatformVO } from "~/composables/api/user/oauth";
+import type { OAuthCallbackVO, OAuthPlatformVO } from "~/composables/api/user/oauth";
+import type { OAuthCallbackPayload } from "~/composables/hooks/oauth/useDeepLink";
 import { CardLoading } from "#components";
 import {
   DeviceType,
@@ -8,7 +9,9 @@ import {
   toLoginByPhone,
   toLoginByPwd,
 } from "~/composables/api/user";
-import { getAuthorizeUrl, getOAuthPlatforms, OAuthPlatformCode } from "~/composables/api/user/oauth";
+import { getOAuthPlatforms, OAuthPlatformCode } from "~/composables/api/user/oauth";
+import { useOAuthDeepLink } from "~/composables/hooks/oauth/useDeepLink";
+import { useOAuthFlow } from "~/composables/hooks/oauth/useOAuthFlow";
 import { appName } from "~/constants";
 import { LoginType } from "~/types/user/index.js";
 
@@ -336,26 +339,103 @@ async function loadOAuthPlatforms() {
   }
 }
 
+// ==================== 桌面端 OAuth 深链接支持 ====================
+const setting = useSettingStore();
+
+// 创建各平台的 OAuth flow 实例
+const oauthFlows = new Map<OAuthPlatformCode, ReturnType<typeof useOAuthFlow>>();
+
+function getOAuthFlow(platform: OAuthPlatformCode) {
+  if (!oauthFlows.has(platform)) {
+    const flow = useOAuthFlow({
+      platform,
+      action: "login",
+      onSuccess: async (data: OAuthCallbackVO) => {
+        await processOAuthLoginResult(platform, data);
+      },
+      onError: (error: Error) => {
+        ElMessage.error(error.message || "OAuth 登录失败");
+        authorizeUrlLoadings.value[platform] = false;
+      },
+    });
+    oauthFlows.set(platform, flow);
+  }
+  return oauthFlows.get(platform)!;
+}
+
+// 桌面端深链接回调监听
+useOAuthDeepLink({
+  autoListen: setting.isDesktop,
+  onCallback: (payload: OAuthCallbackPayload) => {
+    if (payload.action !== "login")
+      return;
+
+    const platform = payload.platform as OAuthPlatformCode;
+    const flow = oauthFlows.get(platform);
+    if (flow) {
+      flow.handleDeepLinkCallback(payload);
+    }
+  },
+});
+
+// 处理 OAuth 登录结果（来自 useOAuthFlow 的 onSuccess 回调）
+async function processOAuthLoginResult(platform: OAuthPlatformCode, data: OAuthCallbackVO) {
+  try {
+    if (!data.needBind && data.token) {
+      // 无需绑定，直接登录
+      ElMessage.success("登录成功");
+      await userStore.onUserLogin(data.token, true, () => {
+        navigateTo({
+          path: "/",
+          replace: true,
+        });
+      });
+    }
+    else if (data.needBind && data.oauthKey) {
+      // 需要绑定，跳转到回调页面处理（显示绑定选项）
+      // 保存 OAuth 信息到 sessionStorage 供回调页面使用
+      sessionStorage.setItem("oauth_callback_data", JSON.stringify({
+        platform,
+        action: "login",
+        needBind: true,
+        oauthKey: data.oauthKey,
+        nickname: data.nickname,
+        avatar: data.avatar,
+        email: data.email,
+      }));
+      navigateTo({
+        path: "/oauth/callback",
+        query: {
+          platform,
+          action: "login",
+          needBind: "true",
+        },
+      });
+    }
+    else {
+      ElMessage.error("登录失败：返回数据异常");
+    }
+  }
+  catch (error: any) {
+    ElMessage.error(error.message || "OAuth 登录失败");
+  }
+  finally {
+    authorizeUrlLoadings.value[platform] = false;
+  }
+}
+
 // 第三方登录
 async function handleOAuthLogin(platform: OAuthPlatformCode) {
   if (authorizeUrlLoadings.value[platform])
     return;
 
   authorizeUrlLoadings.value[platform] = true;
-  try {
-    const redirectUri = `${window.location.origin}/oauth/callback?platform=${platform}&action=login`;
-    const res = await getAuthorizeUrl(platform, redirectUri);
 
-    if (res.code === StatusCode.SUCCESS && res.data) {
-      // 跳转到授权页面
-      window.location.href = res.data;
-    }
-    else {
-      ElMessage.error(res.message || "获取授权链接失败");
-    }
+  try {
+    const flow = getOAuthFlow(platform);
+    await flow.startOAuth();
   }
   catch (error: any) {
-    ElMessage.error(error.message || "获取授权链接失败");
   }
   finally {
     setTimeout(() => {

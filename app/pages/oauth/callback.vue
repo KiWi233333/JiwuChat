@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import type { OAuthCallbackVO } from "~/composables/api/user/oauth";
+import type { OAuthCallbackPayload } from "~/composables/hooks/oauth/useDeepLink";
 import AlreadyBound from "~/components/oauth/AlreadyBound.vue";
 import BindOption from "~/components/oauth/BindOption.vue";
 import Error from "~/components/oauth/Error.vue";
 import Loading from "~/components/oauth/Loading.vue";
 import Success from "~/components/oauth/Success.vue";
 import { bindOAuth, getAuthorizeUrl, oauthCallback, OAuthPlatformCode } from "~/composables/api/user/oauth";
+import { useOAuthDeepLink } from "~/composables/hooks/oauth/useDeepLink";
 
 const route = useRoute();
 const userStore = useUserStore();
+const setting = useSettingStore();
 
 // 状态定义
 type Status = "loading" | "success" | "error" | "need-bindoption" | "already-bound" | "expired";
@@ -266,8 +269,219 @@ function handleExpired() {
 
 // 页面加载时处理回调
 onMounted(() => {
-  handleCallback();
+  // 如果有 URL 参数，直接处理（Web 端回调或深度链接已解析）
+  if (route.query.code) {
+    handleCallback();
+    return;
+  }
+
+  // 桌面端：检查是否有 sessionStorage 中的 OAuth 数据（来自 LoginForm 的深链接回调）
+  if (route.query.needBind === "true" && setting.isDesktop) {
+    handleSessionStorageCallback();
+  }
 });
+
+// 处理 sessionStorage 中的 OAuth 数据（桌面端 LoginForm 深链接回调后跳转）
+function handleSessionStorageCallback() {
+  const storedData = sessionStorage.getItem("oauth_callback_data");
+  if (!storedData) {
+    status.value = "error";
+    message.value = "数据丢失";
+    subMessage.value = "OAuth 回调数据不存在，请重新登录";
+    startCountdown(3, goToLogin);
+    return;
+  }
+
+  try {
+    const data = JSON.parse(storedData);
+    // 清除已使用的数据
+    sessionStorage.removeItem("oauth_callback_data");
+
+    if (data.needBind && data.oauthKey) {
+      // 构造 OAuthCallbackVO 格式的数据
+      oauthInfo.value = {
+        needBind: true,
+        token: null,
+        oauthKey: data.oauthKey,
+        platform: data.platform,
+        nickname: data.nickname || null,
+        avatar: data.avatar || null,
+        email: data.email || null,
+      };
+      status.value = "need-bindoption";
+      message.value = "选择操作";
+      subMessage.value = `该 ${platformName.value} 账号尚未绑定`;
+    }
+    else {
+      status.value = "error";
+      message.value = "数据错误";
+      subMessage.value = "OAuth 回调数据格式不正确";
+      startCountdown(3, goToLogin);
+    }
+  }
+  catch (error) {
+    console.error("[OAuth Callback] 解析 sessionStorage 数据失败:", error);
+    status.value = "error";
+    message.value = "数据解析失败";
+    subMessage.value = "请重新登录";
+    startCountdown(3, goToLogin);
+  }
+}
+
+// 桌面端：监听深度链接回调
+const { isListening } = useOAuthDeepLink({
+  autoListen: setting.isDesktop,
+  onCallback: handleDeepLinkCallback,
+});
+
+// 处理深度链接回调（桌面端专用）
+async function handleDeepLinkCallback(payload: OAuthCallbackPayload) {
+  console.log("[OAuth Callback] 收到深度链接回调:", payload);
+
+  // 检查错误
+  if (payload.error) {
+    status.value = "error";
+    message.value = "授权失败";
+    subMessage.value = payload.error;
+    startCountdown(3, goToLogin);
+    return;
+  }
+
+  // 检查必要参数
+  if (!payload.code || !payload.state || !payload.platform) {
+    status.value = "error";
+    message.value = "参数错误";
+    subMessage.value = "回调参数不完整，无法继续处理";
+    startCountdown(3, goToLogin);
+    return;
+  }
+
+  // State 验证由后端完成，根据 action 处理
+  const action = payload.action || "login";
+
+  if (action === "bind") {
+    await handleBindCallback(payload.platform, payload.code, payload.state);
+  }
+  else {
+    await handleLoginCallback(payload.platform, payload.code, payload.state);
+  }
+}
+
+// 处理绑定回调（桌面端深度链接）
+async function handleBindCallback(platform: OAuthPlatformCode, code: string, state: string) {
+  if (!userStore.isLogin) {
+    status.value = "error";
+    message.value = "未登录";
+    subMessage.value = "请先登录后再进行绑定操作";
+    startCountdown(2, goToLogin);
+    return;
+  }
+
+  // 构建深度链接回调 URI
+  const redirectUri = `jiwuchat://oauth/callback?platform=${platform}&action=bind`;
+
+  try {
+    const res = await bindOAuth(platform, code, redirectUri);
+
+    if (res.code === StatusCode.SUCCESS) {
+      status.value = "success";
+      message.value = "绑定成功";
+      subMessage.value = `${getPlatformName(platform)} 账号已成功绑定`;
+      startCountdown(2, goToSettings);
+    }
+    else if (res.code === StatusCode.OAUTH_ACCOUNT_ALREADY_BOUND) {
+      status.value = "already-bound";
+      message.value = "账号已被绑定";
+      subMessage.value = `该 ${getPlatformName(platform)} 账号已被其他用户绑定`;
+    }
+    else if (res.code === StatusCode.OAUTH_PLATFORM_ALREADY_BOUND) {
+      status.value = "already-bound";
+      message.value = "平台已绑定";
+      subMessage.value = `您已绑定过 ${getPlatformName(platform)}，如需更换请先解绑`;
+      startCountdown(3, goToSettings);
+    }
+    else {
+      status.value = "error";
+      message.value = "绑定失败";
+      subMessage.value = res.message || "未知错误，请重试";
+      startCountdown(3, goToSettings);
+    }
+  }
+  catch (error: any) {
+    console.error("[OAuth Callback] 绑定失败:", error);
+    status.value = "error";
+    message.value = "处理异常";
+    subMessage.value = error?.message || "网络请求失败";
+    startCountdown(3, goToSettings);
+  }
+}
+
+// 处理登录回调（桌面端深度链接）
+async function handleLoginCallback(platform: OAuthPlatformCode, code: string, state: string) {
+  // 构建深度链接回调 URI
+  const redirectUri = `jiwuchat://oauth/callback?platform=${platform}&action=login`;
+
+  try {
+    const res = await oauthCallback(platform, code, state, redirectUri);
+
+    if (res.code === StatusCode.SUCCESS && res.data) {
+      if (!res.data.needBind && res.data.token) {
+        // 无需绑定，直接登录
+        status.value = "success";
+        message.value = "登录成功";
+        subMessage.value = "欢迎回来，正在准备您的对话列表...";
+
+        startCountdown(2, async () => {
+          await userStore.onUserLogin(res.data.token!, true, () => {
+            navigateTo({ path: "/", replace: true });
+          });
+        });
+      }
+      else if (res.data.needBind && res.data.oauthKey) {
+        // 需要绑定，显示选择界面
+        oauthInfo.value = res.data;
+        status.value = "need-bindoption";
+        message.value = "选择操作";
+        subMessage.value = `该 ${getPlatformName(platform)} 账号尚未绑定`;
+      }
+      else {
+        status.value = "error";
+        message.value = "登录失败";
+        subMessage.value = "返回数据异常，请重试";
+        startCountdown(3, goToLogin);
+      }
+    }
+    else if (res.code === StatusCode.OAUTH_CREDENTIAL_EXPIRED) {
+      status.value = "expired";
+      message.value = "授权已过期";
+      subMessage.value = "OAuth 凭证已过期，请重新授权";
+    }
+    else {
+      status.value = "error";
+      message.value = "登录失败";
+      subMessage.value = res.message || "授权验证失败，请重试";
+      startCountdown(3, goToLogin);
+    }
+  }
+  catch (error: any) {
+    console.error("[OAuth Callback] 登录失败:", error);
+    status.value = "error";
+    message.value = "处理异常";
+    subMessage.value = error?.message || "网络请求失败";
+    startCountdown(3, goToLogin);
+  }
+}
+
+// 获取平台名称
+function getPlatformName(platform: OAuthPlatformCode): string {
+  const names: Record<string, string> = {
+    [OAuthPlatformCode.GITHUB]: "GitHub",
+    [OAuthPlatformCode.GOOGLE]: "Google",
+    [OAuthPlatformCode.GITEE]: "Gitee",
+    [OAuthPlatformCode.WECHAT]: "微信",
+  };
+  return names[platform] || platform;
+}
 
 onBeforeUnmount(() => {
   isUnmounted = true;
