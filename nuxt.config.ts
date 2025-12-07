@@ -1,3 +1,4 @@
+import type { Editor } from "launch-ide";
 // 打包分包插件解决潜在循环依赖
 // import { prismjsPlugin } from "vite-plugin-prismjs";
 // import { pwa } from "./config/pwa";
@@ -178,21 +179,13 @@ export default defineNuxtConfig({
   // pwa,
   devServer: {
     host: process.env.TAURI_DEV_HOST || "localhost",
+    // host: "0",
     port: 3000,
   },
   // nuxt开发者工具
   devtools: {
     enabled: false,
   },
-  // hooks: {
-  //   "vite:extend": function ({ config }) {
-  //     if (config.server && config.server.hmr && config.server.hmr !== true) {
-  //       config.server.hmr.protocol = "ws";
-  //       config.server.hmr.host = "192.168.31.14";
-  //       config.server.hmr.port = 3000;
-  //     }
-  //   },
-  // },
   // vite
   vite: {
     // 为 Tauri 命令输出提供更好的支持
@@ -202,6 +195,7 @@ export default defineNuxtConfig({
     plugins: [
       codeInspectorPlugin({
         bundler: "vite",
+        editor: process.env.CODE_INSPECTOR_EDITOR as Editor || "code",
       }),
     ],
     server: {
@@ -330,5 +324,5 @@ export default defineNuxtConfig({
       },
     },
   },
-  compatibilityDate: "2024-08-14",
+  compatibilityDate: "2025-08-14",
 });

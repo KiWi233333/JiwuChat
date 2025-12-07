@@ -18,6 +18,7 @@
     "dev:android": "tauri android dev --host 127.0.0.1",
     "dev:ios": "tauri ios dev",
     "dev:nuxt": "nuxt dev --dotenv .env.development.local --host",
+    "dev:vscode:nuxt": "nuxt dev --dotenv .env.development.local --host CODE_INSPECTOR_EDITOR=code",
     "prod:nuxt": "nuxt dev --dotenv .env.production --host",
     "prod:nuxt:local": "nuxt dev --dotenv .env.production.local --host",
     "preview": "nuxt preview",
