@@ -34,7 +34,10 @@ function checkInWhiteList(path: string): boolean {
 }
 
 // 路由中间件
-export default defineNuxtRouteMiddleware((to: RouteLocationNormalized, from: RouteLocationNormalized): NavigationGuardReturn => {
+export default defineNuxtRouteMiddleware(async (
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+): Promise<NavigationGuardReturn> => {
   // 处理对话框和弹窗
   const dialogCleanupFunction = checkAndCleanupDialogs();
   if (dialogCleanupFunction && !to.query?.dis) {
@@ -51,8 +54,9 @@ export default defineNuxtRouteMiddleware((to: RouteLocationNormalized, from: Rou
   }
 
   // 桌面端导航逻辑
-  if (checkIsDesktop()) {
-    return handleDesktopNavigation(to, from);
+  const isDesktop = await checkIsDesktop();
+  if (isDesktop) {
+    return await handleDesktopNavigation(to, from);
   }
   // 移动端和Web端导航逻辑
   else {
@@ -119,19 +123,27 @@ function getBlockNavigationMessage(path: string): string {
 /**
  * 处理桌面端导航
  */
-function handleDesktopNavigation(
+async function handleDesktopNavigation(
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
-): NavigationGuardReturn {
+): Promise<NavigationGuardReturn> {
   const user = useUserStore() as any;
 
   // 检查是否在白名单中
-  const inWhiteList = checkInWhiteList(to.path);
-  console.log(inWhiteList);
+  const toInWhiteList = checkInWhiteList(to.path);
+  const fromInWhiteList = checkInWhiteList(from.path);
+
+  // 登录流程或回调页之间跳转不拦截（桌面端）
+  if (toInWhiteList && fromInWhiteList) {
+    return;
+  }
+  if (to.path.startsWith("/oauth/callback")) {
+    return;
+  }
 
   // 登录状态路由控制
   if (!user.isLogin) {
-    loadLoginWindow();
+    await loadLoginWindow();
 
     // 登录页面导航限制
     if ((from.path !== "/login" && to.path === "/login")
@@ -147,7 +159,7 @@ function handleDesktopNavigation(
 
     // 从登录页导航逻辑
     if (from.path === "/login") {
-      loadMainWindow();
+      await loadMainWindow();
       if (to.path !== "/login") {
         return abortNavigation();
       }
@@ -239,15 +251,16 @@ function setPageTransition(
 /**
  * 检查是否为桌面端
  */
-function checkIsDesktop(): boolean {
+async function checkIsDesktop(): Promise<boolean> {
   const setting = useSettingStore() as any;
 
   try {
     if (setting.isDesktop) {
       return true;
     }
-    const osType = type();
-    return DESKTOP_OS_TYPES.includes(osType);
+    const osTypeName = type() as OSType;
+    const isDesktop = DESKTOP_OS_TYPES.includes(osTypeName);
+    return isDesktop;
   }
   catch (error) {
     return false;
@@ -259,6 +272,7 @@ function checkIsDesktop(): boolean {
  */
 async function loadLoginWindow(): Promise<void> {
   try {
+    await checkIsDesktop();
     await createWindow(LOGIN_WINDOW_LABEL);
     destroyWindow(MAIN_WINDOW_LABEL);
     destroyWindow(MSGBOX_WINDOW_LABEL);

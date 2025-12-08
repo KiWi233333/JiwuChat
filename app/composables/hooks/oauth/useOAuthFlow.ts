@@ -267,6 +267,11 @@ export function useOAuthFlow(options: UseOAuthFlowOptions) {
     state.currentState = null;
   }
 
+  onBeforeUnmount(() => {
+    cancelWaiting();
+    reset();
+  });
+
   return {
     /** 流程状态 */
     state: readonly(state),

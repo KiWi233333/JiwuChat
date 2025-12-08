@@ -122,12 +122,22 @@ export function useOAuthDeepLink(options: UseOAuthDeepLinkOptions = {}) {
     lastPayload.value = null;
   }
 
-  // 自动开始监听
-  onMounted(() => {
-    if (autoListen && setting.isDesktop) {
-      startListening();
-    }
-  });
+  // 自动开始监听（桌面端且允许自动监听时立即启动，环境变化时同步关闭）
+  const canAutoStart = computed(
+    () => autoListen && setting.isDesktop && typeof window !== "undefined",
+  );
+  watch(
+    canAutoStart,
+    (shouldListen) => {
+      if (shouldListen) {
+        startListening();
+      }
+      else if (isListening.value) {
+        stopListening();
+      }
+    },
+    { immediate: true },
+  );
 
   // 组件卸载时取消监听
   onUnmounted(() => {
