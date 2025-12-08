@@ -56,7 +56,9 @@ function openPreview() {
   </el-image>
   <template v-else>
     <div :ctx-name="ctxName" class="flex-row-c-c text-mini" :class="$attrs.class">
-      <i :ctx-name="ctxName" class="icon i-solar-gallery-remove-bold-duotone op-60" :class="errorClass" />
+      <slot name="empty">
+        <i :ctx-name="ctxName" class="icon i-solar-gallery-remove-bold-duotone op-60" :class="errorClass" />
+      </slot>
     </div>
   </template>
 </template>

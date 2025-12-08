@@ -155,7 +155,11 @@ onBeforeUnmount(() => {
           :src="BaseUrlImg + p.user?.avatar" fit="cover" @click="chat.setTheFriendOpt(FriendOptType.User, {
             id: p.userId,
           })"
-        />
+        >
+          <template #empty>
+            <i class="i-solar-user-line-duotone p-2.5 op-80" />
+          </template>
+        </CardElImage>
         <div class="flex flex-col truncate">
           <p truncate text-sm>
             {{ p.user?.nickName || "未填写" }}

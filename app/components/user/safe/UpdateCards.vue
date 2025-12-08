@@ -178,7 +178,7 @@ onMounted(() => {
     <!-- 用户信息 -->
     <div
       v-loading="isLoading"
-      class="group flex flex-col card-default"
+      class="group flex flex-col card-default p-4 sm:(bg-transparent p-0)"
       flex flex-1 flex-col
     >
       <div class="flex items-center">
@@ -248,14 +248,14 @@ onMounted(() => {
       <!-- 第三方账号 -->
       <div
         v-if="oauthPlatforms.length > 0"
-        ml-1 mt-6
+        class="ml-1 mt-6 flex flex-col gap-6"
       >
-        <div mb-2 flex-row-bt-c>
+        <div flex-row-bt-c>
           <small>第三方账号：</small>
         </div>
         <div
           v-loading="isLoadingOAuth"
-          class="mt-4 flex flex-col gap-4"
+          class="flex flex-col gap-6"
         >
           <div
             v-for="platform in oauthPlatforms"
