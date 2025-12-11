@@ -37,13 +37,13 @@ export function shouldBypassDesktopGuard(
   fromPath: string,
 ): boolean {
   const toInWhiteList = checkInWhiteList(toPath);
-  const fromInWhiteList = checkInWhiteList(fromPath);
+  // const fromInWhiteList = checkInWhiteList(fromPath);
 
-  if (toInWhiteList && fromInWhiteList) {
+  if (toInWhiteList) {
     return true;
   }
 
-  return toPath.startsWith("/oauth/callback");
+  return false;
 }
 
 /**

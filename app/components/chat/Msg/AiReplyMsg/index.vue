@@ -197,6 +197,35 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
         --at-apply: "my-1";
         border-radius: 6px 1em 1em 1em;
       }
+
+      // 表格圆角样式
+      table {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border-collapse: separate;
+        border-spacing: 0;
+
+        thead tr:first-child th:first-child {
+          border-top-left-radius: 0.75rem;
+        }
+
+        thead tr:first-child th:last-child {
+          border-top-right-radius: 0.75rem;
+        }
+
+        tbody tr:last-child td:first-child {
+          border-bottom-left-radius: 0.75rem;
+        }
+
+        tbody tr:last-child td:last-child {
+          border-bottom-right-radius: 0.75rem;
+        }
+      }
+
+      // 引用块
+      blockquote {
+        --at-apply: "rounded-3 rounded-l-1 border-l-color-[var(--el-color-warning)] overflow-hidden border-collapse-separate border-spacing-0";
+      }
     }
   }
 }
