@@ -686,7 +686,7 @@ onActivated(() => {
 }
 
 :deep(.segmented.el-segmented) {
-  --at-apply: "p-2";
+  --at-apply: "p-0.5";
 
   .el-segmented__item {
     --at-apply: "flex items-center";
