@@ -152,6 +152,7 @@ function handleCallback() {
  */
 function handleBindResult() {
   const query = route.query;
+  console.log(query);
 
   // 绑定成功
   if (query.bindSuccess === "true") {
@@ -288,15 +289,14 @@ onMounted(() => {
     || query.error !== undefined
     || query.oauthKey !== undefined;
 
-  if (hasResult) {
-    // 有结果参数，处理回调
-    handleCallback();
-    return;
-  }
 
   // 桌面端：检查是否有 sessionStorage 中的 OAuth 数据
   if (query.needBind === "true" && setting.isDesktop) {
     handleSessionStorageCallback();
+  }
+  else if (hasResult) {
+    // 有结果参数，处理回调
+    handleCallback();
   }
 });
 

@@ -19,7 +19,7 @@ defineProps<{
       {{ subMessage }}
     </p>
 
-    <div class="flex-row-c-c gap-2 text-small text-xs">
+    <div v-show="countdown" class="flex-row-c-c gap-2 text-small text-xs">
       <i class="i-svg-spinners:ring-resize" />
       <span>{{ countdown }}秒后自动跳转</span>
     </div>
