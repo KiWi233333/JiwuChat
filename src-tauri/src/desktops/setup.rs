@@ -19,6 +19,10 @@ struct OAuthCallbackPayload {
     avatar: Option<String>,
     email: Option<String>,
     message: Option<String>,
+    #[serde(rename = "bindSuccess")]
+    bind_success: Option<bool>,
+    #[serde(rename = "errorCode")]
+    error_code: Option<String>,
 }
 
 /// 解析深度链接 URL 参数
@@ -35,6 +39,8 @@ fn parse_oauth_callback_url(url: &str) -> OAuthCallbackPayload {
         avatar: None,
         email: None,
         message: None,
+        bind_success: None,
+        error_code: None,
     };
 
     // 解析 URL: jiwuchat://oauth/callback?needBind=false&token=xxx&platform=github
@@ -51,6 +57,8 @@ fn parse_oauth_callback_url(url: &str) -> OAuthCallbackPayload {
                 "avatar" => payload.avatar = Some(value.to_string()),
                 "email" => payload.email = Some(value.to_string()),
                 "message" => payload.message = Some(value.to_string()),
+                "bindSuccess" => payload.bind_success = Some(value == "true"),
+                "errorCode" => payload.error_code = Some(value.to_string()),
                 _ => {}
             }
         }
@@ -130,14 +138,21 @@ pub fn setup_desktop() {
                     // 检查是否为 OAuth 回调
                     if url_str.starts_with("jiwuchat://oauth/callback") {
                         let payload = parse_oauth_callback_url(url_str);
-                        println!("OAuth 回调: needBind={:?}, hasToken={}, platform={:?}", 
-                            payload.need_bind, payload.token.is_some(), payload.platform);
-                        
+                        println!("OAuth 回调 URL: {}", url_str);
+                        println!("OAuth 回调解析结果: needBind={:?}, token={:?}, oauthKey={:?}, platform={:?}, nickname={:?}, avatar={:?}",
+                            payload.need_bind,
+                            payload.token.as_ref().map(|t| &t[..t.len().min(20)]),
+                            payload.oauth_key.as_ref().map(|k| &k[..k.len().min(30)]),
+                            payload.platform,
+                            payload.nickname,
+                            payload.avatar.as_ref().map(|a| &a[..a.len().min(50)])
+                        );
+
                         // 发送事件到前端
                         if let Err(e) = handle.emit("oauth-callback", payload) {
                             eprintln!("发送 OAuth 回调事件失败: {:?}", e);
                         }
-                        
+
                         // 聚焦窗口
                         super::window::show_window(&handle);
                     }

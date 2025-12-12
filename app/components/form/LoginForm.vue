@@ -652,13 +652,13 @@ defineExpose({
       <div
         v-if="oauthPlatforms.length > 0"
       >
-        <div class="my-4 flex items-center justify-between">
+        <div class="mt-4 flex items-center justify-between">
           <div class="h-1px flex-1 border-default-b" />
           <span class="px-3 text-mini">第三方登录/注册</span>
           <div class="h-1px flex-1 border-default-b" />
         </div>
         <div
-          class="flex items-center justify-center gap-3"
+          class="mt-2 flex items-center justify-center gap-3"
         >
           <div
             v-for="platform in oauthPlatforms"

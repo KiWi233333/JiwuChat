@@ -19,6 +19,16 @@ const status = ref<Status>("loading");
 const message = ref("正在连接授权...");
 const subMessage = ref("请稍候，正在与第三方平台验证...");
 
+// 调试日志（开发模式下显示）
+const debugLogs = ref<string[]>([]);
+const showDebugPanel = ref(true);
+
+function addDebugLog(log: string) {
+  const timestamp = new Date().toLocaleTimeString();
+  debugLogs.value.push(`[${timestamp}] ${log}`);
+  console.log(`[OAuth Callback Debug] ${log}`);
+}
+
 // OAuth 回调信息（用于绑定流程）
 const oauthInfo = ref<OAuthCallbackVO | null>(null);
 
@@ -348,12 +358,14 @@ const { isListening } = useOAuthDeepLink({
  * 后端处理完 OAuth 后会 302 重定向到 jiwuchat://oauth/callback，携带结果参数
  */
 function handleDeepLinkCallback(payload: OAuthCallbackPayload) {
-  console.log("[OAuth Callback] 收到深度链接回调:", payload);
+  addDebugLog(`收到深度链接回调: ${JSON.stringify(payload, null, 2)}`);
+  addDebugLog(`详细信息 - needBind: ${payload.needBind}, hasToken: ${!!payload.token}, hasOauthKey: ${!!payload.oauthKey}, action: ${payload.action}, platform: ${payload.platform}, error: ${payload.error}`);
 
   const action = payload.action || "login";
 
-  // 检查是否有错误
-  if (payload.error === "true") {
+  // 检查是否有错误（error 字段存在即表示有错误）
+  if (payload.error) {
+    addDebugLog(`检测到错误: ${payload.error}`);
     status.value = "error";
     message.value = "授权失败";
     subMessage.value = payload.message ? decodeURIComponent(payload.message) : "未知错误";
@@ -363,11 +375,13 @@ function handleDeepLinkCallback(payload: OAuthCallbackPayload) {
 
   // 处理绑定结果
   if (action === "bind") {
+    addDebugLog("进入绑定结果处理分支");
     handleDeepLinkBindResult(payload);
     return;
   }
 
   // 处理登录结果
+  addDebugLog("进入登录结果处理分支");
   handleDeepLinkLoginResult(payload);
 }
 
@@ -410,8 +424,11 @@ function handleDeepLinkBindResult(payload: OAuthCallbackPayload) {
  * 处理深度链接登录结果
  */
 function handleDeepLinkLoginResult(payload: OAuthCallbackPayload) {
+  addDebugLog(`处理登录结果 - needBind: ${payload.needBind}, hasToken: ${!!payload.token}, hasOauthKey: ${!!payload.oauthKey}`);
+
   // 无需绑定，直接登录
   if (payload.needBind === false && payload.token) {
+    addDebugLog("✓ 匹配条件：直接登录（needBind=false, 有token）");
     status.value = "success";
     message.value = "登录成功";
     subMessage.value = "欢迎回来，正在准备您的对话列表...";
@@ -429,6 +446,7 @@ function handleDeepLinkLoginResult(payload: OAuthCallbackPayload) {
 
   // 需要绑定，显示选择界面
   if (payload.needBind === true && payload.oauthKey) {
+    addDebugLog("✓ 匹配条件：需要绑定（needBind=true, 有oauthKey）");
     oauthInfo.value = {
       needBind: true,
       token: null,
@@ -446,6 +464,7 @@ function handleDeepLinkLoginResult(payload: OAuthCallbackPayload) {
 
   // 处理错误码
   if (payload.errorCode === "OAUTH_CREDENTIAL_EXPIRED") {
+    addDebugLog("✓ 匹配错误码：凭证过期");
     status.value = "expired";
     message.value = "授权已过期";
     subMessage.value = "OAuth 凭证已过期，请重新授权";
@@ -453,6 +472,7 @@ function handleDeepLinkLoginResult(payload: OAuthCallbackPayload) {
   }
 
   // 其他错误
+  addDebugLog(`✗ 未匹配任何条件，进入错误分支 - payload: ${JSON.stringify(payload)}`);
   status.value = "error";
   message.value = "登录失败";
   subMessage.value = payload.message ? decodeURIComponent(payload.message) : "授权验证失败，请重试";
@@ -534,6 +554,21 @@ onBeforeUnmount(() => {
         @login="goToLogin"
       />
     </Transition>
+
+    <!-- 调试面板 -->
+    <div v-if="showDebugPanel && debugLogs.length > 0" class="debug-panel">
+      <div class="debug-header">
+        <span class="debug-title">调试日志</span>
+        <button class="debug-close" @click="showDebugPanel = false">
+          ×
+        </button>
+      </div>
+      <div class="debug-logs">
+        <div v-for="(log, index) in debugLogs" :key="index" class="debug-log-item">
+          {{ log }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -550,5 +585,101 @@ onBeforeUnmount(() => {
 .fade-leave-to {
   opacity: 0;
   transform: translateY(10px);
+}
+
+// 调试面板样式
+.debug-panel {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 500px;
+  max-height: 400px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  font-family: "Monaco", "Menlo", "Courier New", monospace;
+
+  .debug-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    .debug-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .debug-close {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      line-height: 20px;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #f56c6c;
+      }
+    }
+  }
+
+  .debug-logs {
+    max-height: 350px;
+    overflow-y: auto;
+    padding: 10px 15px;
+
+    .debug-log-item {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #e0e0e0;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      word-break: break-all;
+      white-space: pre-wrap;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      // 高亮不同类型的日志
+      &:has(✓) {
+        color: #67c23a;
+      }
+
+      &:has(✗) {
+        color: #f56c6c;
+      }
+    }
+  }
+
+  // 自定义滚动条
+  .debug-logs::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .debug-logs::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+  }
+
+  .debug-logs::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
 }
 </style>

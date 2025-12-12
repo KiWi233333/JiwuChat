@@ -20,7 +20,7 @@ const body = computed(() => data.message?.body);
 const initFold = data.message?.content?.length && data.message?.content?.length > 200 && chat.theContact.lastMsgId !== data.message.id;
 const isContentExpanded = ref(!initFold);
 const showReasonLoading = computed(() => body.value?.status === AiReplyStatusEnum.IN_PROGRESS && !data.message?.content);
-const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS && (data.message?.content || !body.value?.reasoningContent)));
+const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS && (!!data.message?.content || !body.value?.reasoningContent)));
 </script>
 
 <template>
@@ -44,6 +44,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
           :max-height="200"
           :max-height-with-expand-button="40"
           :default-expanded="!initFold"
+          :disabled-animate="showContentLoading"
           class="content-wrapper"
         >
           <!-- 思考内容 -->
@@ -52,6 +53,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
             :max-height="36"
             :max-height-with-expand-button="40"
             :default-expanded="true"
+            :disabled-animate="showReasonLoading"
             class="reason-content-wrapper"
           >
             <div class="reason-content-inner">

@@ -9,7 +9,7 @@ pub fn setup_desktop_window(app: &AppHandle) -> tauri::Result<()> {
             .center()
             .shadow(false)
             .decorations(false)
-            .inner_size(340.0, 480.0)
+            .inner_size(340.0, 472.0)
             .visible(true);
 
     #[cfg(any(target_os = "windows", target_os = "linux"))]
