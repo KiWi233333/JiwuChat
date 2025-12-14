@@ -186,7 +186,7 @@ onMounted(() => {
     hide-required-asterisk
     :rules="rules"
     :model="userForm"
-    class="block w-95vw overflow-hidden border-default-2 card-default rounded-2 py-2em backdrop-blur-5px sm:w-360px"
+    class="form-box"
   >
     <div my-2 text-center text-lg font-bold tracking-0.2em>
       密码修改
@@ -292,59 +292,62 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-:deep(.el-input-group__append) {
-  .el-button {
-    height: 100%;
-    color: var(--el-color-danger);
+.form-box {
+  --at-apply: "block w-95vw overflow-hidden border-default-2 card-default rounded-2 pt-2em pb-1em backdrop-blur-5px sm:w-340px";
+  :deep(.el-input-group__append) {
+    .el-button {
+      height: 100%;
+      color: var(--el-color-danger);
+    }
   }
-}
 
-:deep(.el-input__wrapper) {
-  padding: 0 1em;
-}
+  :deep(.el-input__wrapper) {
+    padding: 0 1em;
+  }
 
-:deep(.check-type-list.el-radio-group) {
-  display: flex;
-  justify-content: right;
-  margin-left: auto;
+  :deep(.check-type-list.el-radio-group) {
+    display: flex;
+    justify-content: right;
+    margin-left: auto;
 
-  .el-radio {
-    height: fit-content;
-    border-right: 1px solid var(--el-border-color);
-    padding-right: 1em;
-    margin-right: 0;
+    .el-radio {
+      height: fit-content;
+      border-right: 1px solid var(--el-border-color);
+      padding-right: 1em;
+      margin-right: 0;
 
-    &.is-checked {
-      .el-radio__label {
-        color: var(--el-color-danger);
+      &.is-checked {
+        .el-radio__label {
+          color: var(--el-color-danger);
+        }
+      }
+
+      &:nth-last-child(1) {
+        border: none;
+        padding-right: 2.4em;
+      }
+
+      .el-radio__input {
+        display: none;
       }
     }
+  }
 
-    &:nth-last-child(1) {
-      border: none;
-      padding-right: 2.4em;
-    }
+  :deep(.el-form-item) {
+    padding: 0.2em 1em;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
 
-    .el-radio__input {
-      display: none;
+    .el-form-item__error {
+      position: static;
+      padding-top: 0.2em;
     }
   }
-}
 
-:deep(.el-form-item) {
-  padding: 0.2em 2em;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 0;
-
-  .el-form-item__error {
-    position: static;
-    padding-top: 0.2em;
+  :deep(.el-button) {
+    padding: 0 1em;
   }
-}
-
-:deep(.el-button) {
-  padding: 0 1em;
 }
 </style>
 
