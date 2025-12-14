@@ -1,0 +1,16 @@
+{
+  "bundle": {
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": true,
+        "files": {}
+      },
+      "deb": {
+        "files": {
+          "/usr/share/README.md": "../README.md",
+          "/usr/share/public": "../public/"
+        }
+      }
+    }
+  }
+}

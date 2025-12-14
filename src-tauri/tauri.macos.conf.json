@@ -1,0 +1,15 @@
+{
+  "app": {
+    "macOSPrivateApi": true
+  },
+  "bundle": {
+    "macOS": {
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null,
+      "minimumSystemVersion": "10.13",
+      "entitlements": "Entitlements.plist"
+    }
+  }
+}

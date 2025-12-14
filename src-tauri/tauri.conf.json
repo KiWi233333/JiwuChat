@@ -9,8 +9,7 @@
     "security": {
       "capabilities": ["default-capability", "desktop-capability", "mobile-capability"],
       "csp": null
-    },
-    "macOSPrivateApi": true
+    }
   },
   "build": {
     "frontendDist": "../.output/public",
@@ -27,13 +26,6 @@
         {
           "schemes": ["jiwuchat"]
         }
-      ],
-      "mobile": [
-        {
-          "schemes": ["jiwuchat"],
-          "appLink": false,
-          "host": "oauth"
-        }
       ]
     }
   },
@@ -47,40 +39,6 @@
     "licenseFile": "./LICENSE/LICENSE.txt",
     "createUpdaterArtifacts": true,
     "resources": ["./res/**/*"],
-    "shortDescription": "",
-    "windows": {
-      "nsis": {
-        "installerIcon": "./icons/icon.ico"
-      },
-      "wix": {
-        "language": "zh-CN"
-      }
-    },
-    "android": {
-      "minSdkVersion": 24
-    },
-    "iOS": {
-      "minimumSystemVersion": "13.0"
-    },
-    "macOS": {
-      "exceptionDomain": "",
-      "frameworks": [],
-      "providerShortName": null,
-      "signingIdentity": null,
-      "minimumSystemVersion": "10.13",
-      "entitlements": "Entitlements.plist"
-    },
-    "linux": {
-      "appimage": {
-        "bundleMediaFramework": true,
-        "files": {}
-      },
-      "deb": {
-        "files": {
-          "/usr/share/README.md": "../README.md",
-          "/usr/share/public": "../public/"
-        }
-      }
-    }
+    "shortDescription": ""
   }
 }

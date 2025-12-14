@@ -1,0 +1,18 @@
+{
+  "plugins": {
+    "deep-link": {
+      "mobile": [
+        {
+          "schemes": ["jiwuchat"],
+          "appLink": false,
+          "host": "oauth"
+        }
+      ]
+    }
+  },
+  "bundle": {
+    "iOS": {
+      "minimumSystemVersion": "13.0"
+    }
+  }
+}
