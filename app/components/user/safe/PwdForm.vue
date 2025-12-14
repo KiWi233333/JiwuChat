@@ -192,101 +192,99 @@ onMounted(() => {
       密码修改
     </div>
     <div class="relative">
-      <transition-group :name="setting.settingPage.isCloseAllTransition ? '' : 'group-list'" mode="ease-in-out">
-        <!-- 二步验证 -->
-        <el-form-item v-if="isSecondCheck" key="code-1" type="password" :label="`${chooseType === CheckTypeEnum.PHONE ? '手机号' : '邮箱'}`" prop="password" class="animated">
-          <el-input
-            v-model:model-value="checkTypeValue"
-            disabled
-            :prefix-icon="ElIconUser"
-            size="large"
-            :placeholder="`请输入${chooseType === CheckTypeEnum.PHONE ? '手机号' : '邮箱'}`"
-            required
-            :type="chooseType === CheckTypeEnum.PHONE ? 'phone' : 'email'"
-            @keyup.enter="onUpdatePwd(userFormRefs)"
-          >
-            <template #append>
-              <el-button type="primary" class="code-btn" :disabled="codeStorage > 0" @click="getCheckCodeReq(chooseType)">
-                {{ codeStorage > 0 ? `${codeStorage}s后重新发送` : "获取验证码" }}
-              </el-button>
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item
-          v-if="isSecondCheck"
-          key="code-2"
-          type="text" label="验证码" prop="code" class="animated"
+      <!-- 二步验证 -->
+      <el-form-item v-if="isSecondCheck" key="code-1" type="password" :label="`${chooseType === CheckTypeEnum.PHONE ? '手机号' : '邮箱'}`" prop="password" class="animated">
+        <el-input
+          v-model:model-value="checkTypeValue"
+          disabled
+          :prefix-icon="ElIconUser"
+          size="large"
+          :placeholder="`请输入${chooseType === CheckTypeEnum.PHONE ? '手机号' : '邮箱'}`"
+          required
+          :type="chooseType === CheckTypeEnum.PHONE ? 'phone' : 'email'"
+          @keyup.enter="onUpdatePwd(userFormRefs)"
         >
-          <el-input
-            v-model.trim="userForm.code"
-            :prefix-icon="ElIconUnlock"
-            :maxlength="6"
-            :minlength="6"
-            size="large"
-            placeholder="请输入验证码"
-            required
-            type="text"
-            @keyup.enter="onUpdatePwd(userFormRefs)"
-          />
-        </el-form-item>
-        <!-- 新旧密码 -->
-        <el-form-item
-          v-else-if="user.userInfo.isPasswordVerified"
-          key="code-3"
+          <template #append>
+            <el-button type="primary" class="code-btn" :disabled="codeStorage > 0" @click="getCheckCodeReq(chooseType)">
+              {{ codeStorage > 0 ? `${codeStorage}s后重新发送` : "获取验证码" }}
+            </el-button>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        v-if="isSecondCheck"
+        key="code-2"
+        type="text" label="验证码" prop="code" class="animated"
+      >
+        <el-input
+          v-model.trim="userForm.code"
+          :prefix-icon="ElIconUnlock"
+          :maxlength="6"
+          :minlength="6"
+          size="large"
+          placeholder="请输入验证码"
+          required
+          type="text"
+          @keyup.enter="onUpdatePwd(userFormRefs)"
+        />
+      </el-form-item>
+      <!-- 新旧密码 -->
+      <el-form-item
+        v-else-if="user.userInfo.isPasswordVerified"
+        key="code-3"
+        type="password"
+        label="旧密码"
+        prop="password"
+        class="animated"
+      >
+        <el-input
+          v-model.trim="userForm.password"
+          :prefix-icon="ElIconUnlock"
+          size="large"
+          placeholder="请输入旧密码"
+          required
+          show-password
           type="password"
-          label="旧密码"
-          prop="password"
-          class="animated"
+          @keyup.enter="onUpdatePwd(userFormRefs)"
+        />
+      </el-form-item>
+      <el-form-item
+        key="code-4"
+        type="password" label="新密码" prop="newPassword" class="animated"
+      >
+        <el-input
+          v-model.trim="userForm.newPassword"
+          :prefix-icon="ElIconUnlock"
+          size="large"
+          placeholder="请输入新密码"
+          required
+          show-password
+          type="password"
+          @keyup.enter="onUpdatePwd(userFormRefs)"
+        />
+      </el-form-item>
+      <el-radio-group key="radio" v-model="chooseType" size="small" class="check-type-list w-full pt-2">
+        <el-radio v-if="user.userInfo.isPhoneVerified" :value="CheckTypeEnum.PHONE">
+          手机号
+        </el-radio>
+        <el-radio v-if="user.userInfo.isEmailVerified" :value="CheckTypeEnum.EMAIL">
+          邮箱
+        </el-radio>
+        <el-radio v-if="user.userInfo.isPasswordVerified" :value="CheckTypeEnum.OLD_PASSWORD">
+          原密码
+        </el-radio>
+      </el-radio-group>
+      <el-form-item key="btn" mt-1em>
+        <el-button
+          type="danger"
+          class="submit w-full"
+          style="padding: 1.2em 0"
+          @keyup.enter="onUpdatePwd(userFormRefs)"
+          @click="onUpdatePwd(userFormRefs)"
         >
-          <el-input
-            v-model.trim="userForm.password"
-            :prefix-icon="ElIconUnlock"
-            size="large"
-            placeholder="请输入旧密码"
-            required
-            show-password
-            type="password"
-            @keyup.enter="onUpdatePwd(userFormRefs)"
-          />
-        </el-form-item>
-        <el-form-item
-          key="code-4"
-          type="password" label="新密码" prop="newPassword" class="animated"
-        >
-          <el-input
-            v-model.trim="userForm.newPassword"
-            :prefix-icon="ElIconUnlock"
-            size="large"
-            placeholder="请输入新密码"
-            required
-            show-password
-            type="password"
-            @keyup.enter="onUpdatePwd(userFormRefs)"
-          />
-        </el-form-item>
-        <el-radio-group key="radio" v-model="chooseType" size="small" class="check-type-list w-full pt-2">
-          <el-radio v-if="user.userInfo.isPhoneVerified" :value="CheckTypeEnum.PHONE">
-            手机号
-          </el-radio>
-          <el-radio v-if="user.userInfo.isEmailVerified" :value="CheckTypeEnum.EMAIL">
-            邮箱
-          </el-radio>
-          <el-radio v-if="user.userInfo.isPasswordVerified" :value="CheckTypeEnum.OLD_PASSWORD">
-            原密码
-          </el-radio>
-        </el-radio-group>
-        <el-form-item key="btn" mt-1em>
-          <el-button
-            type="danger"
-            class="submit w-full"
-            style="padding: 1.2em 0"
-            @keyup.enter="onUpdatePwd(userFormRefs)"
-            @click="onUpdatePwd(userFormRefs)"
-          >
-            修 改
-          </el-button>
-        </el-form-item>
-      </transition-group>
+          修 改
+        </el-button>
+      </el-form-item>
     </div>
   </el-form>
 </template>

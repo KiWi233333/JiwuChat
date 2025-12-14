@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue";
+import { useZIndex } from "element-plus";
 import { CustomDialogPopupId } from "@/composables/hooks/useShortcuts";
 
 interface DialogPosition {
@@ -29,7 +30,6 @@ interface DialogProps {
   duration?: number
   destroyOnClose?: boolean
   center?: boolean
-  zIndex?: number
   disableClass?: string
   modelClass?: string
   minScale?: number
@@ -53,7 +53,6 @@ const {
   contentClass = "",
   disableClass = "disabled-anima",
   duration = 300,
-  zIndex = 1999,
   center = false,
   destroyOnClose = false,
   minScale = 0.80,
@@ -76,6 +75,9 @@ const emit = defineEmits<{
 // ==================== 状态管理 ====================
 const dialogModelRef = useTemplateRef<HTMLElement>("dialogModelRef");
 const dialogRef = useTemplateRef<HTMLElement>("dialogRef");
+
+// 使用 Element Plus 的 useZIndex hook 计算 zIndex
+const { currentZIndex, nextZIndex } = useZIndex();
 
 // 控制内容渲染的状态
 const shouldRenderContent = ref(modelValue);
@@ -197,6 +199,8 @@ function handleConfirm() {
 function onBeforeEnter(): void {
   emit("open");
   loadingAnima.value = true;
+  // 使用 Element Plus 的 nextZIndex 获取下一个 zIndex
+  nextZIndex();
   // 重置样式,准备开始入场动画
   dialogStyle.value = {
     transform: `scale(${minScale})`,
@@ -311,7 +315,7 @@ defineExpose({
         ref="dialogModelRef"
         :style="{
           '--duration': `${duration}ms`,
-          'zIndex': `${zIndex}`,
+          'zIndex': currentZIndex,
         }"
         v-bind="overlayerAttrs"
         class="fixed inset-0 flex items-center justify-center"
