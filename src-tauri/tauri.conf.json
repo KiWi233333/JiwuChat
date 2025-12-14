@@ -9,18 +9,24 @@
     "security": {
       "capabilities": ["default-capability", "desktop-capability", "mobile-capability"],
       "csp": null
-    },
-    "macOSPrivateApi": true
+    }
   },
   "build": {
     "frontendDist": "../.output/public",
-    "devUrl": "http://localhost:3000",
+    "devUrl": "http://127.0.0.1:3000/",
     "removeUnusedCommands": true
   },
   "plugins": {
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDU3RjREQTA3MkU1MzNEMzkKUldRNVBWTXVCOXIwVjlBVXhBY0J3WEVNZW5ZTWZSYXJNdlM4VmpoaXBrSDFiOU1QYk85RDBkYW0K",
       "endpoints": ["https://api.jiwu.kiwi2333.top/res/app/latest"]
+    },
+    "deep-link": {
+      "desktop": [
+        {
+          "schemes": ["jiwuchat"]
+        }
+      ]
     }
   },
   "bundle": {
@@ -33,40 +39,6 @@
     "licenseFile": "./LICENSE/LICENSE.txt",
     "createUpdaterArtifacts": true,
     "resources": ["./res/**/*"],
-    "shortDescription": "",
-    "windows": {
-      "nsis": {
-        "installerIcon": "./icons/icon.ico"
-      },
-      "wix": {
-        "language": "zh-CN"
-      }
-    },
-    "android": {
-      "minSdkVersion": 24
-    },
-    "iOS": {
-      "minimumSystemVersion": "13.0"
-    },
-    "macOS": {
-      "exceptionDomain": "",
-      "frameworks": [],
-      "providerShortName": null,
-      "signingIdentity": null,
-      "minimumSystemVersion": "10.13",
-      "entitlements": "Entitlements.plist"
-    },
-    "linux": {
-      "appimage": {
-        "bundleMediaFramework": true,
-        "files": {}
-      },
-      "deb": {
-        "files": {
-          "/usr/share/README.md": "../README.md",
-          "/usr/share/public": "../public/"
-        }
-      }
-    }
+    "shortDescription": ""
   }
 }

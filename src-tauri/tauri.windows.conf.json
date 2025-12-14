@@ -1,0 +1,12 @@
+{
+  "bundle": {
+    "windows": {
+      "nsis": {
+        "installerIcon": "./icons/icon.ico"
+      },
+      "wix": {
+        "language": "zh-CN"
+      }
+    }
+  }
+}

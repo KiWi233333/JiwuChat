@@ -20,7 +20,7 @@ const body = computed(() => data.message?.body);
 const initFold = data.message?.content?.length && data.message?.content?.length > 200 && chat.theContact.lastMsgId !== data.message.id;
 const isContentExpanded = ref(!initFold);
 const showReasonLoading = computed(() => body.value?.status === AiReplyStatusEnum.IN_PROGRESS && !data.message?.content);
-const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS && (data.message?.content || !body.value?.reasoningContent)));
+const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS && (!!data.message?.content || !body.value?.reasoningContent)));
 </script>
 
 <template>
@@ -44,6 +44,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
           :max-height="200"
           :max-height-with-expand-button="40"
           :default-expanded="!initFold"
+          :disabled-animate="showContentLoading"
           class="content-wrapper"
         >
           <!-- 思考内容 -->
@@ -52,6 +53,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
             :max-height="36"
             :max-height-with-expand-button="40"
             :default-expanded="true"
+            :disabled-animate="showReasonLoading"
             class="reason-content-wrapper"
           >
             <div class="reason-content-inner">
@@ -196,6 +198,35 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
       .md-editor-code:first-child {
         --at-apply: "my-1";
         border-radius: 6px 1em 1em 1em;
+      }
+
+      // 表格圆角样式
+      table {
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border-collapse: separate;
+        border-spacing: 0;
+
+        thead tr:first-child th:first-child {
+          border-top-left-radius: 0.75rem;
+        }
+
+        thead tr:first-child th:last-child {
+          border-top-right-radius: 0.75rem;
+        }
+
+        tbody tr:last-child td:first-child {
+          border-bottom-left-radius: 0.75rem;
+        }
+
+        tbody tr:last-child td:last-child {
+          border-bottom-right-radius: 0.75rem;
+        }
+      }
+
+      // 引用块
+      blockquote {
+        --at-apply: "rounded-3 rounded-l-1 border-l-color-[var(--el-color-warning)] overflow-hidden border-collapse-separate border-spacing-0";
       }
     }
   }

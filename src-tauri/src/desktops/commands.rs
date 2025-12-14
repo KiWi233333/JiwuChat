@@ -283,7 +283,7 @@ pub async fn create_login_window(app_handle: AppHandle, shadow: bool) -> tauri::
             .center()
             .shadow(shadow)
             .decorations(false)
-            .inner_size(340.0, 440.0)
+            .inner_size(340.0, 472.0)
             .visible(true);
 
     #[cfg(any(target_os = "windows", target_os = "linux"))]

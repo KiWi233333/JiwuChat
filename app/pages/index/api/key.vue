@@ -677,16 +677,16 @@ onActivated(() => {
 }
 </style>
 
-<style lang="scss">
+<style scoped lang="scss">
 .mcp-app-markdown {
   background-color: transparent !important;
-  .md-editor-code {
+  :deep(.md-editor-code) {
     margin: 0 !important;
   }
 }
 
 :deep(.segmented.el-segmented) {
-  --at-apply: "p-2";
+  --at-apply: "p-0.5";
 
   .el-segmented__item {
     --at-apply: "flex items-center";

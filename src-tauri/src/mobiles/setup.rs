@@ -1,3 +1,5 @@
+use tauri::Listener;
+
 pub fn setup_mobile() {
     println!("App from Mobile!");
     tauri::Builder::default()
@@ -9,8 +11,17 @@ pub fn setup_mobile() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_deep_link::init())
         .setup(|app| {
             super::window::setup_mobile_window(app.handle())?;
+            
+            // 注册 deep-link 事件监听器
+            let app_handle = app.handle().clone();
+            app.listen("deep-link://new-url", move |event| {
+                let url = event.payload();
+                super::deeplink::handlers::handle_runtime_url(&app_handle, url);
+            });
+            
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { OAuthCallbackVO, OAuthPlatformVO } from "~/composables/api/user/oauth";
+import type { OAuthCallbackPayload } from "~/composables/hooks/oauth/useDeepLink";
 import { CardLoading } from "#components";
 import {
   DeviceType,
@@ -7,6 +9,9 @@ import {
   toLoginByPhone,
   toLoginByPwd,
 } from "~/composables/api/user";
+import { getOAuthPlatforms, OAuthPlatformCode } from "~/composables/api/user/oauth";
+import { useOAuthDeepLink } from "~/composables/hooks/oauth/useDeepLink";
+import { useOAuthFlow } from "~/composables/hooks/oauth/useOAuthFlow";
 import { appName } from "~/constants";
 import { LoginType } from "~/types/user/index.js";
 
@@ -62,6 +67,7 @@ const rules = reactive({
     },
   ],
 });
+
 
 // 验证码配置类型
 interface CodeConfigItem {
@@ -259,6 +265,8 @@ const findAccountAvatar = computed(() =>
   historyAccounts.value.find(item => item.account === userForm.value.username),
 );
 
+// 头像展示URL
+const getShowAvatarUrl = computed(() => findAccountAvatar.value?.userInfo?.avatar ? BaseUrlImg + findAccountAvatar.value?.userInfo?.avatar : "/logo.png");
 async function handleSelectAccount(item: Record<string, any>) {
   if (!item?.account)
     return;
@@ -273,6 +281,11 @@ async function handleSelectAccount(item: Record<string, any>) {
     password: item.password || "",
     userInfo: item.userInfo,
   };
+}
+
+function handleClearAccount() {
+  userForm.value.username = "";
+  // userForm.value.password = "";
 }
 
 function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
@@ -300,6 +313,172 @@ function forgetPassword() {
   ElMessage.warning("请手机或者邮箱验证登录后，找回密码！");
 }
 
+// OAuth 第三方登录
+const oauthPlatforms = useLocalStorage<OAuthPlatformVO[]>("oauth-platforms", []);
+const isLoadingOAuth = ref(false);
+const authorizeUrlLoadings = ref<Record<string, boolean>>({});
+// @unocss-include
+const oauthPlatformsClass = computed<Partial<Record<OAuthPlatformCode, string>>>(() => ({
+  [OAuthPlatformCode.GITHUB]: "dark:invert",
+}));
+
+// 加载 OAuth 平台列表
+async function loadOAuthPlatforms() {
+  try {
+    isLoadingOAuth.value = true;
+    const res = await getOAuthPlatforms();
+    if (res.code === StatusCode.SUCCESS) {
+      oauthPlatforms.value = res.data.filter(p => p.enabled);
+    }
+  }
+  catch (error) {
+    console.error("加载 OAuth 平台失败:", error);
+  }
+  finally {
+    isLoadingOAuth.value = false;
+  }
+}
+
+// ==================== 桌面端 OAuth 深链接支持 ====================
+const setting = useSettingStore();
+
+// 创建各平台的 OAuth flow 实例
+const oauthFlows = new Map<OAuthPlatformCode, ReturnType<typeof useOAuthFlow>>();
+
+function getOAuthFlow(platform: OAuthPlatformCode) {
+  if (!oauthFlows.has(platform)) {
+    const flow = useOAuthFlow({
+      platform,
+      action: "login",
+      onSuccess: async (data: OAuthCallbackVO) => {
+        await processOAuthLoginResult(platform, data);
+      },
+      onError: (error: Error) => {
+        ElMessage.error(error.message || "OAuth 登录失败");
+        authorizeUrlLoadings.value[platform] = false;
+      },
+    });
+    oauthFlows.set(platform, flow);
+  }
+  return oauthFlows.get(platform)!;
+}
+
+// 桌面端深链接回调监听
+useOAuthDeepLink({
+  autoListen: setting.isDesktop || setting.isMobile,
+  onCallback: async (payload: OAuthCallbackPayload) => {
+    // 只处理登录动作
+    if (payload.action !== "login")
+      return;
+
+    const platform = payload.platform as OAuthPlatformCode;
+
+    // 处理错误
+    if (payload.error) {
+      ElMessage.error(payload.message ? decodeURIComponent(payload.message) : "OAuth 登录失败");
+      authorizeUrlLoadings.value[platform] = false;
+      return;
+    }
+
+    // 直接处理登录结果（不依赖 oauthFlows Map）
+    if (payload.needBind === false && payload.token) {
+      // 无需绑定，直接登录
+      ElMessage.success("登录成功");
+      authorizeUrlLoadings.value[platform] = false;
+      await userStore.onUserLogin(payload.token, true, () => {
+        navigateTo({ path: "/", replace: true });
+      });
+    }
+    else if (payload.needBind === true && payload.oauthKey) {
+      // 需要绑定，跳转到回调页面处理
+      authorizeUrlLoadings.value[platform] = false;
+      navigateTo({
+        path: "/oauth/callback",
+        query: {
+          platform,
+          action: "login",
+          needBind: "true",
+          oauthKey: payload.oauthKey,
+          nickname: payload.nickname || "",
+          avatar: payload.avatar || "",
+          email: payload.email || "",
+        },
+      });
+    }
+    else {
+      ElMessage.error("登录失败：返回数据异常");
+      authorizeUrlLoadings.value[platform] = false;
+    }
+  },
+});
+
+// 处理 OAuth 登录结果（来自 useOAuthFlow 的 onSuccess 回调）
+async function processOAuthLoginResult(platform: OAuthPlatformCode, data: OAuthCallbackVO) {
+  try {
+    if (!data.needBind && data.token) {
+      // 无需绑定，直接登录
+      ElMessage.success("登录成功");
+      await userStore.onUserLogin(data.token, true, () => {
+        navigateTo({
+          path: "/",
+          replace: true,
+        });
+      });
+    }
+    else if (data.needBind && data.oauthKey) {
+      // 需要绑定，跳转到回调页面处理（通过 URL 参数传递数据）
+      navigateTo({
+        path: "/oauth/callback",
+        query: {
+          platform,
+          action: "login",
+          needBind: "true",
+          oauthKey: data.oauthKey,
+          nickname: data.nickname || "",
+          avatar: data.avatar || "",
+          email: data.email || "",
+        },
+      });
+    }
+    else {
+      ElMessage.error("登录失败：返回数据异常");
+    }
+  }
+  catch (error: any) {
+    ElMessage.error(error.message || "OAuth 登录失败");
+  }
+  finally {
+    setTimeout(() => {
+      authorizeUrlLoadings.value[platform] = false;
+    }, 500);
+  }
+}
+
+// 第三方登录
+async function handleOAuthLogin(platform: OAuthPlatformCode) {
+  if (authorizeUrlLoadings.value[platform])
+    return;
+
+  authorizeUrlLoadings.value[platform] = true;
+
+  try {
+    const flow = getOAuthFlow(platform);
+    await flow.startOAuth();
+  }
+  catch (error: any) {
+  }
+  finally {
+    setTimeout(() => {
+      authorizeUrlLoadings.value[platform] = false;
+    }, 400);
+  }
+}
+
+// 初始化加载 OAuth 平台
+onMounted(() => {
+  loadOAuthPlatforms();
+});
+
 defineExpose({
   historyAccounts,
   theAccount: theHistoryAccount,
@@ -323,15 +502,22 @@ defineExpose({
     autocomplete="off"
   >
     <template v-if="!userStore.isLogin">
-      <div class="header flex-row-c-c">
-        <CardAvatar
-          style="--anima: blur-in;"
-          :src="findAccountAvatar?.userInfo?.avatar ? BaseUrlImg + findAccountAvatar?.userInfo?.avatar : '/logo.png'"
-          class="avatar"
-        />
-        <div v-show="!findAccountAvatar" class="title">
-          {{ appName }}
-        </div>
+      <div class="h-24 flex-row-c-c">
+        <transition name="pop-list" mode="out-in">
+          <div :key="getShowAvatarUrl" class="header flex-row-c-c">
+            <CardAvatar
+              style="--anima: blur-in;"
+              :src="getShowAvatarUrl"
+              :class="{
+                'has-account': findAccountAvatar?.userInfo?.avatar,
+              }"
+              class="avatar"
+            />
+            <div v-show="!findAccountAvatar" class="title">
+              {{ appName }}
+            </div>
+          </div>
+        </transition>
       </div>
       <!-- 切换登录 -->
       <el-segmented
@@ -421,6 +607,7 @@ defineExpose({
           hide-loading
           value-key="account"
           placeholder="请输入用户名、手机号或邮箱"
+          @clear="handleClearAccount"
           @select="handleSelectAccount"
         >
           <template #default="{ item }">
@@ -471,7 +658,7 @@ defineExpose({
       </el-form-item>
       <!-- 底部 -->
       <div
-        class="mt-3 text-right text-0.8em sm:text-sm"
+        class="mt-3 text-right text-0.8em sm:text-mini"
       >
         <el-checkbox v-model="autoLogin" class="mt-1" style="padding: 0;font-size: inherit;float: left; height: fit-content;">
           记住我
@@ -488,6 +675,44 @@ defineExpose({
         >
           注册账号
         </span>
+      </div>
+      <!-- 第三方登录 -->
+      <div
+        v-if="oauthPlatforms.length > 0"
+      >
+        <div class="mt-4 flex items-center justify-between">
+          <div class="h-1px flex-1 border-default-b" />
+          <span class="px-3 text-mini">第三方登录/注册</span>
+          <div class="h-1px flex-1 border-default-b" />
+        </div>
+        <div
+          class="mt-3 flex items-center justify-center gap-3"
+        >
+          <div
+            v-for="platform in oauthPlatforms"
+            :key="platform.code"
+            class="relative flex cursor-pointer items-center justify-center overflow-hidden rounded-1/2 transition-200 hover:(op-80 filter-brightness-125)"
+            :title="`使用 ${platform.name} 登录`"
+            @click="handleOAuthLogin(platform.code)"
+          >
+            <CardElImage
+              :src="getOAuthPlatformIcon(platform.code)"
+              error-root-class="hidden"
+              :alt="platform.name"
+              :class="[oauthPlatformsClass[platform.code], {
+                         'filter-blur-2px': authorizeUrlLoadings[platform.code],
+                       },
+                       setting.isDesktop ? 'h-5 w-5' : 'h-6 w-6',
+              ]"
+            />
+            <!-- loading icon -->
+            <CardLoading
+              v-if="authorizeUrlLoadings[platform.code]"
+              size="1.2em"
+              class="absolute z-1 animate-spin op-50"
+            />
+          </div>
+        </div>
       </div>
     </template>
     <template v-else>
@@ -541,6 +766,11 @@ defineExpose({
   :deep(.el-form-item) {
     padding: 0;
 
+    .el-input__wrapper {
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
+
     .el-input-group__append {
       --at-apply: "w-8rem min-w-fit text-theme-primary card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-primary op-100)";
     }
@@ -593,21 +823,20 @@ defineExpose({
 }
 
 .header {
-  --at-apply: "h-24 transition-height flex-row-c-c";
-
   .avatar {
     --at-apply: "mx-0 h-8 w-8";
+
+    &.has-account {
+      --at-apply: "mx-a h-18 w-18 border-2px border-default !border-color-light rounded-full shadow-lg hover:(shadow-xl scale-105) transition-200 block";
+    }
   }
   .title {
     --at-apply: "ml-3 pr-2 text-lg font-500 tracking-0.2em text-5.2";
   }
 }
-.has-account {
-  .header {
-    --at-apply: "h-30 flex-row-c-c";
-  }
-  .avatar {
-    --at-apply: "mx-a h-20 w-20 border-2px border-default rounded-full shadow-lg block";
+:deep(.el-divider.login-type) {
+  .el-divider__text {
+    --at-apply: "bg-transparent";
   }
 }
 </style>

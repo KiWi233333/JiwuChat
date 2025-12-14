@@ -3,7 +3,6 @@ import { useIframeInit } from "./iframe";
 import { useAuthInit, useMsgBoxWebViewInit, userTauriInit } from "./init";
 import { useMacOsInit } from "./macos";
 import { useHotkeyInit, useSettingInit, useWindowVisibilityInit } from "./setting";
-import { initSettingStoreSync } from "./share";
 import { initSystemConstant } from "./system";
 import { useWsInit, useWSUnmounted } from "./ws";
 
@@ -13,7 +12,6 @@ let unMountedSettingInit: (() => void) | undefined;
 let unMountedHotkeyInit: (() => void) | undefined;
 let unMountedIframeInit: (() => void) | undefined;
 let unMountedWindowVisibilityInit: (() => void) | undefined;
-let unMountedSettingStoreSync: (() => void) | undefined;
 let unMountedMacOsInit: (() => void) | undefined;
 
 
@@ -37,8 +35,6 @@ async function useDefaultInit() {
   useHardwareAcceleration();
   // 主题自定义管理
   initThemeCustomization();
-  // 跨标签页同步
-  unMountedSettingStoreSync = initSettingStoreSync();
   // macos初始化
   unMountedMacOsInit = useMacOsInit();
 }
@@ -64,11 +60,11 @@ async function useUnmounted() {
   unMountedTauri?.();
   useWSUnmounted?.();
   unMountedMsgBoxWebView?.();
-  unMountedSettingStoreSync?.();
   unMountedSettingInit?.();
   unMountedHotkeyInit?.();
   unMountedIframeInit?.();
   unMountedWindowVisibilityInit?.();
+  unMountedMacOsInit?.();
 }
 
 /**
@@ -85,7 +81,7 @@ export function appMounted() {
   const getRootClass = computed(() =>
     ({
       "sm:(w-100vw mx-a h-full)  md:(w-100vw mx-a h-full) lg:(w-1360px mx-a h-92vh max-w-86vw max-h-1020px ) shadow-lg": !isIframe.value && setting.isWeb, // iframe
-      "!w-24rem h-fit !min-h-28rem flex-row-c-c h-fit !max-h-30rem !rounded-3 border-default-3 dark:(!border-op-20 bg-dark-8 bg-op-90 backdrop-blur-4) shadow-lg": route.path === "/login" && !setting.isMobileSize && setting.isWeb, // 登录页
+      "!w-24rem h-fit !min-h-28rem flex-row-c-c h-fit !max-h-32rem !rounded-3 border-default-3 dark:(!border-op-20 bg-dark-8 bg-op-90 backdrop-blur-4) shadow-lg": ["login", "oauth-callback"].includes(route.name as string) && !setting.isMobileSize && setting.isWeb, // 登录页
       "!rounded-2 !wind-border-default": showShadowBorderRadius.value || route.path === "/msg" || (setting.isDesktop && isWindow10 && !setting.settingPage.isWindow10Shadow && route.path !== "/msg"),
       "!rounded-0 border-default-t border-color-[#595959b3] dark:border-color-dark-2": (setting.isDesktop && isWindow10 && setting.settingPage.isWindow10Shadow && route.path !== "/msg"),
     }));

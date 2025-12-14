@@ -16,8 +16,8 @@ export function httpRequest<T = unknown>(
     method,
     baseURL: BaseUrlRef.value,
     headers: {
-      // Authoriztion: user.token,
-    } as { Authoriztion?: string },
+      Authorization: user?.token,
+    },
     // 请求拦截器
     onRequest: (config: any) => {
       // 需要登录操作
@@ -93,10 +93,10 @@ export const useHttp = {
 
   get<T = unknown>(
     request: ReqType,
-    body?: any | null | object,
+    query?: any | null | object,
     opts?: FetchOptions,
   ) {
-    return httpRequest<T>("get", request, body, opts);
+    return httpRequest<T>("get", request, query, opts);
   },
 
 

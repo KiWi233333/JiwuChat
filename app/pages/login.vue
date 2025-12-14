@@ -32,7 +32,7 @@ function initWindowAnimate() {
     watch(() => user.showLoginPageType, async (val) => {
       if (val !== "") {
         // 关闭窗口动画
-        const height = val === "login" ? 440 : val === "register" ? 480 : val === "env-config" ? 460 : 460;
+        const height = 472;
         if (setting.settingPage.isCloseAllTransition || setting.osType === "macos") { // mac动态变化有问题
           wind?.setSize(new LogicalSize(340, height));
           return;

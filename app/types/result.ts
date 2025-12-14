@@ -21,6 +21,12 @@ export enum StatusCode {
   TOKEN_EXPIRED_ERR = 40007,
   STATUS_OFF_ERR = 40008,
   TOKEN_DEVICE_ERR = 40009,
+  // OAuth 相关状态码
+  OAUTH_ACCOUNT_NOT_BOUND = 40100,
+  OAUTH_ACCOUNT_ALREADY_BOUND = 40101,
+  OAUTH_PLATFORM_ALREADY_BOUND = 40102,
+  OAUTH_CREDENTIAL_EXPIRED = 40103,
+  OAUTH_BIND_FAILED = 40104,
 }
 
 export const StatusCodeText: {
@@ -41,6 +47,12 @@ export const StatusCodeText: {
   [StatusCode.TOKEN_EXPIRED_ERR]: "身份过期，请重新登录！",
   [StatusCode.STATUS_OFF_ERR]: "账号被封禁，详情联系客服！",
   [StatusCode.TOKEN_DEVICE_ERR]: "认证失败，登录设备有误！",
+  // OAuth 相关状态码文本
+  [StatusCode.OAUTH_ACCOUNT_NOT_BOUND]: "第三方账号未绑定",
+  [StatusCode.OAUTH_ACCOUNT_ALREADY_BOUND]: "该第三方账号已被其他用户绑定",
+  [StatusCode.OAUTH_PLATFORM_ALREADY_BOUND]: "已绑定该平台，请先解绑",
+  [StatusCode.OAUTH_CREDENTIAL_EXPIRED]: "OAuth凭证已过期，请重新授权",
+  [StatusCode.OAUTH_BIND_FAILED]: "绑定第三方账号失败",
 };
 
 

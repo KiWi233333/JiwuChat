@@ -10,6 +10,12 @@
     "urls": ["https://*.kiwi2333.top", "https://*.kiwi233.top"]
   },
   "permissions": [
+    "deep-link:default",
+    "deep-link:allow-get-current",
+    "deep-link:allow-register",
+    "deep-link:allow-unregister",
+    "deep-link:allow-is-registered",
+
     "updater:default",
     "updater:allow-check",
     "updater:allow-download",
