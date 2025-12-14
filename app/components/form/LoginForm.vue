@@ -691,7 +691,7 @@ defineExpose({
           <div
             v-for="platform in oauthPlatforms"
             :key="platform.code"
-            class="relative flex cursor-pointer items-center justify-center overflow-hidden border-default rounded-1/2 transition-200 hover:op-80"
+            class="relative flex cursor-pointer items-center justify-center overflow-hidden rounded-1/2 transition-200 hover:(op-80 filter-brightness-125)"
             :title="`使用 ${platform.name} 登录`"
             @click="handleOAuthLogin(platform.code)"
           >

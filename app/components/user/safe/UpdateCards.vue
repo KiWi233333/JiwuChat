@@ -169,9 +169,6 @@ useOAuthDeepLink({
 
 // 绑定第三方账号
 async function handleBind(platform: OAuthPlatformCode) {
-  if (bindingPlatform.value)
-    return;
-
   bindingPlatform.value = platform;
 
   try {
@@ -266,7 +263,6 @@ onMounted(() => {
     </div>
     <!-- 用户信息 -->
     <div
-      v-loading="isLoading"
       class="group flex flex-col card-default p-4 sm:(bg-transparent p-0)"
       flex flex-1 flex-col
     >

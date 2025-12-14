@@ -49,7 +49,6 @@ export function useOAuthDeepLink(options: UseOAuthDeepLinkOptions = {}) {
   async function startListening() {
     if (!setting.isDesktop || isListening.value)
       return;
-
     try {
       const { listen } = await import("@tauri-apps/api/event");
       unlistenFn = await listen<OAuthCallbackPayload>("oauth-callback", (event) => {
@@ -58,8 +57,9 @@ export function useOAuthDeepLink(options: UseOAuthDeepLinkOptions = {}) {
       });
       isListening.value = true;
     }
-    catch {
+    catch (e) {
       // 监听失败时静默处理
+      console.error(e);
     }
   }
 
