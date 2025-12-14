@@ -47,7 +47,7 @@ export function useOAuthDeepLink(options: UseOAuthDeepLinkOptions = {}) {
   let unlistenFn: UnlistenFn | null = null;
 
   async function startListening() {
-    if (!setting.isDesktop || isListening.value)
+    if ((!setting.isDesktop && !setting.isMobile) || isListening.value)
       return;
     try {
       const { listen } = await import("@tauri-apps/api/event");
@@ -74,7 +74,7 @@ export function useOAuthDeepLink(options: UseOAuthDeepLinkOptions = {}) {
   }
 
   const canAutoStart = computed(
-    () => autoListen && setting.isDesktop && typeof window !== "undefined",
+    () => autoListen && (setting.isDesktop || setting.isMobile) && typeof window !== "undefined",
   );
 
   watch(canAutoStart, (shouldListen) => {

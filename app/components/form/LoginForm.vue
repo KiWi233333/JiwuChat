@@ -365,7 +365,7 @@ function getOAuthFlow(platform: OAuthPlatformCode) {
 
 // 桌面端深链接回调监听
 useOAuthDeepLink({
-  autoListen: setting.isDesktop,
+  autoListen: setting.isDesktop || setting.isMobile,
   onCallback: async (payload: OAuthCallbackPayload) => {
     // 只处理登录动作
     if (payload.action !== "login")

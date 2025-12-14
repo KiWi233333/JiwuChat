@@ -29,14 +29,16 @@ const DEEP_LINK_PROTOCOL = "jiwuchat://";
  * - login: 回调到 /oauth/callback 处理登录/注册
  * - bind: 回调到 /user/safe 处理绑定结果
  */
-function buildClientRedirectUri(platform: OAuthPlatformCode, action: OAuthAction, isDesktop: boolean): string {
+function buildClientRedirectUri(platform: OAuthPlatformCode, action: OAuthAction, setting: any): string {
   // 根据 action 确定回调路径
   const callbackPath = action === "bind" ? "/user/safe" : "/oauth/callback";
 
-  if (isDesktop) {
+  // 桌面端和移动端都使用深度链接
+  if (setting.isDesktop || setting.isMobile) {
     return `${DEEP_LINK_PROTOCOL}oauth/callback?platform=${platform}&action=${action}`;
   }
 
+  // Web 端使用 HTTP 回调
   const url = new URL(`${window.location.origin}${callbackPath}`);
   url.searchParams.set("platform", platform);
   url.searchParams.set("action", action);
@@ -57,7 +59,7 @@ export function useOAuthFlow(options: UseOAuthFlowOptions) {
   });
 
   function getClientRedirectUri(): string {
-    return customRedirectUri || buildClientRedirectUri(platform, action, setting.isDesktop);
+    return customRedirectUri || buildClientRedirectUri(platform, action, setting);
   }
 
   async function startOAuth(): Promise<void> {
@@ -72,7 +74,7 @@ export function useOAuthFlow(options: UseOAuthFlowOptions) {
         throw new Error(res.message || "获取授权链接失败");
       }
 
-      if (setting.isDesktop) {
+      if (setting.isDesktop || setting.isMobile) {
         const { openUrl } = await import("@tauri-apps/plugin-opener");
         await openUrl(res.data);
         state.isWaitingCallback = true;

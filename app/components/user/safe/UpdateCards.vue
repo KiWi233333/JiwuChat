@@ -139,9 +139,10 @@ async function handleBindCallback(data: {
 function buildBindRedirectUri(platform: OAuthPlatformCode): string {
   const baseUrl = window.location.origin;
   const isDesktop = setting.isDesktop;
+  const isMobile = setting.isMobile;
 
-  if (isDesktop) {
-    // 桌面端使用深度链接
+  // 桌面端和移动端使用深度链接
+  if (isDesktop || isMobile) {
     return `jiwuchat://oauth/callback?platform=${platform}&action=bind`;
   }
   // Web 端回调到当前页面
@@ -150,7 +151,7 @@ function buildBindRedirectUri(platform: OAuthPlatformCode): string {
 
 // 桌面端深度链接监听
 useOAuthDeepLink({
-  autoListen: setting.isDesktop,
+  autoListen: setting.isDesktop || setting.isMobile,
   onCallback: async (payload: OAuthCallbackPayload) => {
     // 只处理绑定动作
     if (payload.action !== "bind")
@@ -184,8 +185,8 @@ async function handleBind(platform: OAuthPlatformCode) {
     }
 
     // 跳转到授权页面
-    if (setting.isDesktop) {
-      // 桌面端打开外部浏览器
+    if (setting.isDesktop || setting.isMobile) {
+      // 桌面端和移动端打开外部浏览器
       const { open } = await import("@tauri-apps/plugin-shell");
       await open(res.data);
     }

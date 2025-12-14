@@ -25,7 +25,7 @@
     "build": "nuxi generate --dotenv .env.production && tauri build",
     "build:nuxt": "nuxi generate --dotenv .env.production",
     "build:tauri": "tauri build",
-    "build:android": "tauri android build --apk",
+    "build:android": "tauri android build",
     "android-init": "pnpm tauri plugin android init",
     "build:ios": "tauri ios build --ipa",
     "ios-init": "pnpm tauri plugin ios init",

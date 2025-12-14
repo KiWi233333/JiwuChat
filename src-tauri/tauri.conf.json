@@ -14,7 +14,7 @@
   },
   "build": {
     "frontendDist": "../.output/public",
-    "devUrl": "http://localhost:3000",
+    "devUrl": "http://127.0.0.1:3000/",
     "removeUnusedCommands": true
   },
   "plugins": {
@@ -23,9 +23,18 @@
       "endpoints": ["https://api.jiwu.kiwi2333.top/res/app/latest"]
     },
     "deep-link": {
-      "desktop": {
-        "schemes": ["jiwuchat"]
-      }
+      "desktop": [
+        {
+          "schemes": ["jiwuchat"]
+        }
+      ],
+      "mobile": [
+        {
+          "schemes": ["jiwuchat"],
+          "appLink": false,
+          "host": "oauth"
+        }
+      ]
     }
   },
   "bundle": {

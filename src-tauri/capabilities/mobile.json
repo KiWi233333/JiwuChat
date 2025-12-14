@@ -7,12 +7,19 @@
   "permissions": [
     "core:default",
     "core:webview:allow-internal-toggle-devtools",
+    "core:event:default",
 
     "os:default",
     "os:allow-os-type",
     "os:allow-arch",
     "os:allow-version",
     "os:allow-hostname",
+
+    "deep-link:default",
+    "deep-link:allow-get-current",
+    "deep-link:allow-register",
+    "deep-link:allow-unregister",
+    "deep-link:allow-is-registered",
 
     "notification:allow-is-permission-granted",
     "notification:allow-request-permission",
