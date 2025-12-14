@@ -474,12 +474,14 @@ function toLoginForm() {
         立即注册
       </BtnElButton>
     </el-form-item>
-    <div class="mt-3 text-right text-0.8em sm:text-sm">
+    <div class="mt-3 flex-row-bt-c text-right">
       <el-checkbox v-model="isAgreeTerm" style="--el-color-primary: var(--el-color-info);padding: 0;font-size: inherit;opacity: 0.8;float: left; height: fit-content;">
-        同意并遵守
-        <span text-color-info>《用户协议》</span>
+        <div class="flex-row-c-c text-0.8rem sm:text-mini">
+          同意并遵守
+          <span text-color-info>《用户协议》</span>
+        </div>
       </el-checkbox>
-      <span ml-a btn-info cursor-pointer transition-300 @click="toLoginForm">
+      <span ml-a btn-info cursor-pointer text-0.8rem transition-300 sm:text-mini @click="toLoginForm">
         返回登录
       </span>
     </div>
@@ -491,7 +493,7 @@ function toLoginForm() {
       destroy-on-close
       content-class="z-1200"
     >
-      <div class="h-100vh w-100vw flex flex-col border-default-2 card-default bg-color p-4 sm:(h-500px w-400px border-default card-rounded-df shadow-lg)">
+      <div class="h-100vh w-100vw flex flex-col bg-color p-4 sm:(h-500px w-400px border-default border-default-2 card-rounded-df shadow-lg)">
         <h3 :data-tauri-drag-region="setting.isDesktop" class="relative mb-4 select-none text-center text-1.2rem">
           用户协议
           <ElButton text size="small" class="absolute right-0 -top-1" style="width: 2rem;height: 1.4rem;" @click="agreeDetail.showDetail = false">
@@ -545,17 +547,11 @@ function toLoginForm() {
 
   // 报错信息
   :deep(.el-form-item) {
-    padding: 0.2em 0;
-
     .el-input-group__append {
-      --at-apply: "w-8rem min-w-fit  text-theme-info card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em hover:(!text-theme-info op-100)";
+      --at-apply: "w-8rem min-w-fit text-theme-iofo card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-iofo op-100)";
     }
     .code-btn {
       --at-apply: "h-full flex-row-c-c px-4 transition-200 ";
-    }
-
-    .el-form-item__error {
-      padding-top: 0;
     }
   }
 }

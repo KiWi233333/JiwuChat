@@ -686,7 +686,7 @@ defineExpose({
           <div class="h-1px flex-1 border-default-b" />
         </div>
         <div
-          class="mt-2 flex items-center justify-center gap-3"
+          class="mt-3 flex items-center justify-center gap-3"
         >
           <div
             v-for="platform in oauthPlatforms"
@@ -700,9 +700,10 @@ defineExpose({
               error-root-class="hidden"
               :alt="platform.name"
               :class="[oauthPlatformsClass[platform.code], {
-                'filter-blur-2px': authorizeUrlLoadings[platform.code],
-              }]"
-              class="h-5 w-5"
+                         'filter-blur-2px': authorizeUrlLoadings[platform.code],
+                       },
+                       setting.isDesktop ? 'h-5 w-5' : 'h-6 w-6',
+              ]"
             />
             <!-- loading icon -->
             <CardLoading
