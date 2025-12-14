@@ -1,7 +1,7 @@
 use tauri_plugin_deep_link::DeepLinkExt;
 use tauri::Emitter;
 
-/// OAuth 深度链接回调数据（后端中转模式）
+/// OAuth 深度链接回调数据
 /// 后端处理完 OAuth 后 302 重定向到深度链接，携带处理结果
 #[derive(Clone, serde::Serialize)]
 struct OAuthCallbackPayload {
@@ -9,7 +9,7 @@ struct OAuthCallbackPayload {
     action: Option<String>,
     error: Option<String>,
     raw_url: String,
-    // 后端中转模式返回的结果参数
+    // 登录场景返回的参数
     #[serde(rename = "needBind")]
     need_bind: Option<bool>,
     token: Option<String>,
@@ -18,11 +18,13 @@ struct OAuthCallbackPayload {
     nickname: Option<String>,
     avatar: Option<String>,
     email: Option<String>,
+    // 通用参数
     message: Option<String>,
-    #[serde(rename = "bindSuccess")]
-    bind_success: Option<bool>,
     #[serde(rename = "errorCode")]
     error_code: Option<String>,
+    // 绑定场景返回的参数
+    #[serde(rename = "bindSuccess")]
+    bind_success: Option<bool>,
 }
 
 /// 解析深度链接 URL 参数
@@ -39,26 +41,28 @@ fn parse_oauth_callback_url(url: &str) -> OAuthCallbackPayload {
         avatar: None,
         email: None,
         message: None,
-        bind_success: None,
         error_code: None,
+        bind_success: None,
     };
 
-    // 解析 URL: jiwuchat://oauth/callback?needBind=false&token=xxx&platform=github
+    // 解析 URL: jiwuchat://oauth/callback?platform=github&action=bind&bindSuccess=true
     if let Ok(parsed_url) = url::Url::parse(url) {
         for (key, value) in parsed_url.query_pairs() {
             match key.as_ref() {
                 "platform" => payload.platform = Some(value.to_string()),
                 "action" => payload.action = Some(value.to_string()),
                 "error" => payload.error = Some(value.to_string()),
+                "message" => payload.message = Some(value.to_string()),
+                "errorCode" => payload.error_code = Some(value.to_string()),
+                // 登录场景
                 "needBind" => payload.need_bind = Some(value == "true"),
                 "token" => payload.token = Some(value.to_string()),
                 "oauthKey" => payload.oauth_key = Some(value.to_string()),
                 "nickname" => payload.nickname = Some(value.to_string()),
                 "avatar" => payload.avatar = Some(value.to_string()),
                 "email" => payload.email = Some(value.to_string()),
-                "message" => payload.message = Some(value.to_string()),
+                // 绑定场景
                 "bindSuccess" => payload.bind_success = Some(value == "true"),
-                "errorCode" => payload.error_code = Some(value.to_string()),
                 _ => {}
             }
         }
@@ -68,12 +72,10 @@ fn parse_oauth_callback_url(url: &str) -> OAuthCallbackPayload {
 }
 
 pub fn setup_desktop() {
-    println!("App from Desktop!");
     tauri::Builder::default()
         // ⚠️ single-instance 插件必须首先注册（官方文档要求）
         // 当使用 deep-link feature 时，深度链接会自动触发已运行的实例
-        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
-            println!("单实例模式触发，参数: {:?}", argv);
+        .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
             let _ = super::window::show_window(app);
         }))
         // deep-link 插件
@@ -100,16 +102,11 @@ pub fn setup_desktop() {
             // Linux/Windows 开发模式下注册深度链接（macOS 不支持运行时注册）
             #[cfg(any(target_os = "linux", all(debug_assertions, windows)))]
             {
-                if let Err(e) = app.deep_link().register_all() {
-                    eprintln!("注册深度链接失败: {:?}", e);
-                } else {
-                    println!("深度链接已注册（开发模式）");
-                }
+                let _ = app.deep_link().register_all();
             }
 
             // 检查应用是否由深度链接启动
             if let Ok(Some(urls)) = app.deep_link().get_current() {
-                println!("应用由深度链接启动: {:?}", urls);
                 for url in urls {
                     let url_str = url.as_str();
                     if url_str.starts_with("jiwuchat://oauth/callback") {
@@ -118,9 +115,7 @@ pub fn setup_desktop() {
                         let handle = app.handle().clone();
                         std::thread::spawn(move || {
                             std::thread::sleep(std::time::Duration::from_millis(500));
-                            if let Err(e) = handle.emit("oauth-callback", payload) {
-                                eprintln!("发送启动时 OAuth 回调事件失败: {:?}", e);
-                            }
+                            let _ = handle.emit("oauth-callback", payload);
                         });
                     }
                 }
@@ -130,28 +125,15 @@ pub fn setup_desktop() {
             let handle = app.handle().clone();
             app.deep_link().on_open_url(move |event| {
                 let urls = event.urls();
-                println!("深度链接触发: {:?}", urls);
-                
                 for url in urls {
                     let url_str = url.as_str();
                     
                     // 检查是否为 OAuth 回调
                     if url_str.starts_with("jiwuchat://oauth/callback") {
                         let payload = parse_oauth_callback_url(url_str);
-                        println!("OAuth 回调 URL: {}", url_str);
-                        println!("OAuth 回调解析结果: needBind={:?}, token={:?}, oauthKey={:?}, platform={:?}, nickname={:?}, avatar={:?}",
-                            payload.need_bind,
-                            payload.token.as_ref().map(|t| &t[..t.len().min(20)]),
-                            payload.oauth_key.as_ref().map(|k| &k[..k.len().min(30)]),
-                            payload.platform,
-                            payload.nickname,
-                            payload.avatar.as_ref().map(|a| &a[..a.len().min(50)])
-                        );
 
                         // 发送事件到前端
-                        if let Err(e) = handle.emit("oauth-callback", payload) {
-                            eprintln!("发送 OAuth 回调事件失败: {:?}", e);
-                        }
+                        let _ = handle.emit("oauth-callback", payload);
 
                         // 聚焦窗口
                         super::window::show_window(&handle);

@@ -2,12 +2,12 @@
 import type { OAuthPlatformCode, OAuthPlatformVO, UserOAuthVO } from "~/composables/api/user/oauth";
 import type { OAuthCallbackPayload } from "~/composables/hooks/oauth/useDeepLink";
 import {
+  getAuthorizeUrl,
   getBindList,
   getOAuthPlatforms,
   unbindOAuth,
 } from "~/composables/api/user/oauth";
 import { useOAuthDeepLink } from "~/composables/hooks/oauth/useDeepLink";
-import { useOAuthFlow } from "~/composables/hooks/oauth/useOAuthFlow";
 
 const user = useUserStore();
 const setting = useSettingStore();
@@ -42,6 +42,7 @@ watch(
 const oauthPlatforms = ref<OAuthPlatformVO[]>([]);
 const bindRecords = ref<UserOAuthVO[]>([]);
 const isLoadingOAuth = ref(false);
+const bindingPlatform = ref<OAuthPlatformCode | null>(null);
 
 // 获取平台绑定状态
 function getBindStatus(platform: OAuthPlatformCode): UserOAuthVO | null {
@@ -76,63 +77,131 @@ async function loadOAuthData() {
   }
 }
 
-// 绑定第三方账号
-const currentBindingPlatform = ref<OAuthPlatformCode | null>(null);
+// 处理绑定回调结果（方案 B：后端直接完成绑定）
+async function handleBindCallback(data: {
+  platform?: string;
+  action?: string;
+  error?: string;
+  errorCode?: string;
+  message?: string;
+  bindSuccess?: boolean | string;
+}) {
+  const platform = data.platform as OAuthPlatformCode;
 
-// 深度链接监听（桌面端）
-const { isListening } = useOAuthDeepLink({
-  autoListen: setting.isDesktop,
-  onCallback: handleDeepLinkCallback,
-});
+  // 错误码映射
+  const errorMessages: Record<string, string> = {
+    OAUTH_ACCOUNT_ALREADY_BOUND: `该 ${platform} 账号已被其他用户绑定`,
+    OAUTH_PLATFORM_ALREADY_BOUND: `您已绑定过 ${platform}，如需更换请先解绑`,
+    TOKEN_EXPIRED: "登录已过期，请重新登录后再绑定",
+    TOKEN_INVALID: "登录状态无效，请重新登录",
+    USER_NOT_FOUND: "用户不存在",
+  };
 
-// 处理深度链接回调
-async function handleDeepLinkCallback(payload: OAuthCallbackPayload) {
-  if (!currentBindingPlatform.value)
+  // 处理错误
+  if (data.error || data.errorCode) {
+    const msg = errorMessages[data.errorCode || ""]
+      || (data.message ? decodeURIComponent(data.message) : "绑定失败");
+    ElMessage.error(msg);
+    bindingPlatform.value = null;
     return;
-  if (payload.action !== "bind")
-    return;
-  if (payload.platform !== currentBindingPlatform.value)
-    return;
+  }
 
-  const oauthFlow = useOAuthFlow({
-    platform: currentBindingPlatform.value,
-    action: "bind",
-    onBindSuccess: async () => {
-      await loadOAuthData();
+  // 绑定成功（bindSuccess 为 true 或 "true"）
+  if (data.bindSuccess === true || data.bindSuccess === "true") {
+    ElMessage.success("绑定成功");
+    bindingPlatform.value = null;
+    await loadOAuthData();
+    await reloadUserInfo();
+    return;
+  }
+
+  // 兼容处理：后端可能没有显式返回 bindSuccess，尝试刷新绑定列表判断
+  if (platform && !data.error && !data.errorCode) {
+    const oldBindCount = bindRecords.value.length;
+    await loadOAuthData();
+    const newBindCount = bindRecords.value.length;
+
+    // 如果绑定记录增加了，说明绑定成功
+    if (newBindCount > oldBindCount || getBindStatus(platform)) {
+      ElMessage.success("绑定成功");
+      bindingPlatform.value = null;
       await reloadUserInfo();
-      currentBindingPlatform.value = null;
-    },
-    onError: (err) => {
-      ElMessage.error(err.message || "绑定失败");
-      currentBindingPlatform.value = null;
-    },
-    onStateInvalid: (error) => {
-      ElMessage.error(error || "授权验证失败，请重试");
-      currentBindingPlatform.value = null;
-    },
-  });
+      return;
+    }
+  }
 
-  await oauthFlow.handleDeepLinkCallback(payload);
+  // 未知情况
+  ElMessage.error("绑定失败，请稍后重试");
+  bindingPlatform.value = null;
 }
 
+// 构建绑定回调 URI
+function buildBindRedirectUri(platform: OAuthPlatformCode): string {
+  const baseUrl = window.location.origin;
+  const isDesktop = setting.isDesktop;
+
+  if (isDesktop) {
+    // 桌面端使用深度链接
+    return `jiwuchat://oauth/callback?platform=${platform}&action=bind`;
+  }
+  // Web 端回调到当前页面
+  return `${baseUrl}/user/safe?platform=${platform}&action=bind`;
+}
+
+// 桌面端深度链接监听
+useOAuthDeepLink({
+  autoListen: setting.isDesktop,
+  onCallback: async (payload: OAuthCallbackPayload) => {
+    // 只处理绑定动作
+    if (payload.action !== "bind")
+      return;
+
+    await handleBindCallback({
+      platform: payload.platform || undefined,
+      action: payload.action,
+      error: payload.error,
+      errorCode: payload.errorCode,
+      message: payload.message,
+      bindSuccess: payload.bindSuccess,
+    });
+  },
+});
+
+// 绑定第三方账号
 async function handleBind(platform: OAuthPlatformCode) {
-  currentBindingPlatform.value = platform;
+  if (bindingPlatform.value)
+    return;
 
-  const oauthFlow = useOAuthFlow({
-    platform,
-    action: "bind",
-    onBindSuccess: async () => {
-      await loadOAuthData();
-      await reloadUserInfo();
-      currentBindingPlatform.value = null;
-    },
-    onError: (err) => {
-      ElMessage.error(err.message || "绑定失败");
-      currentBindingPlatform.value = null;
-    },
-  });
+  bindingPlatform.value = platform;
 
-  await oauthFlow.startOAuth();
+  try {
+    // 构建回调 URI
+    const redirectUri = buildBindRedirectUri(platform);
+
+    // 获取授权 URL（传递 action=bind，后端会从 Token 获取 userId）
+    const res = await getAuthorizeUrl(platform, redirectUri, "bind");
+    if (res.code !== StatusCode.SUCCESS || !res.data) {
+      ElMessage.error(res.message || "获取授权地址失败");
+      bindingPlatform.value = null;
+      return;
+    }
+
+    // 跳转到授权页面
+    if (setting.isDesktop) {
+      // 桌面端打开外部浏览器
+      const { open } = await import("@tauri-apps/plugin-shell");
+      await open(res.data);
+    }
+    else {
+      // Web 端直接跳转
+      window.location.href = res.data;
+    }
+  }
+  catch (error: any) {
+    console.error("绑定失败:", error);
+    ElMessage.error(error?.message || "绑定失败，请稍后重试");
+    bindingPlatform.value = null;
+  }
 }
 
 // 解绑第三方账号
@@ -161,8 +230,28 @@ async function handleUnbind(platform: OAuthPlatformCode) {
   }
 }
 
-// 初始化加载
+// Web 端：处理 URL 参数回调
+const route = useRoute();
 onMounted(() => {
+  // 检查是否有绑定回调参数
+  const query = route.query;
+  if (query.action === "bind" && query.platform) {
+    // 清除 URL 参数（避免刷新时重复处理）
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, "", cleanUrl);
+
+    // 处理绑定回调
+    handleBindCallback({
+      platform: query.platform as string,
+      action: query.action as string,
+      error: query.error as string,
+      errorCode: query.errorCode as string,
+      message: query.message as string,
+      bindSuccess: query.bindSuccess as string,
+    });
+  }
+
+  // 加载 OAuth 数据
   if (user.isLogin) {
     loadOAuthData();
   }

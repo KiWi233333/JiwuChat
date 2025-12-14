@@ -366,14 +366,48 @@ function getOAuthFlow(platform: OAuthPlatformCode) {
 // 桌面端深链接回调监听
 useOAuthDeepLink({
   autoListen: setting.isDesktop,
-  onCallback: (payload: OAuthCallbackPayload) => {
+  onCallback: async (payload: OAuthCallbackPayload) => {
+    // 只处理登录动作
     if (payload.action !== "login")
       return;
 
     const platform = payload.platform as OAuthPlatformCode;
-    const flow = oauthFlows.get(platform);
-    if (flow) {
-      flow.handleDeepLinkCallback(payload);
+
+    // 处理错误
+    if (payload.error) {
+      ElMessage.error(payload.message ? decodeURIComponent(payload.message) : "OAuth 登录失败");
+      authorizeUrlLoadings.value[platform] = false;
+      return;
+    }
+
+    // 直接处理登录结果（不依赖 oauthFlows Map）
+    if (payload.needBind === false && payload.token) {
+      // 无需绑定，直接登录
+      ElMessage.success("登录成功");
+      authorizeUrlLoadings.value[platform] = false;
+      await userStore.onUserLogin(payload.token, true, () => {
+        navigateTo({ path: "/", replace: true });
+      });
+    }
+    else if (payload.needBind === true && payload.oauthKey) {
+      // 需要绑定，跳转到回调页面处理
+      authorizeUrlLoadings.value[platform] = false;
+      navigateTo({
+        path: "/oauth/callback",
+        query: {
+          platform,
+          action: "login",
+          needBind: "true",
+          oauthKey: payload.oauthKey,
+          nickname: payload.nickname || "",
+          avatar: payload.avatar || "",
+          email: payload.email || "",
+        },
+      });
+    }
+    else {
+      ElMessage.error("登录失败：返回数据异常");
+      authorizeUrlLoadings.value[platform] = false;
     }
   },
 });
@@ -392,23 +426,17 @@ async function processOAuthLoginResult(platform: OAuthPlatformCode, data: OAuthC
       });
     }
     else if (data.needBind && data.oauthKey) {
-      // 需要绑定，跳转到回调页面处理（显示绑定选项）
-      // 保存 OAuth 信息到 sessionStorage 供回调页面使用
-      sessionStorage.setItem("oauth_callback_data", JSON.stringify({
-        platform,
-        action: "login",
-        needBind: true,
-        oauthKey: data.oauthKey,
-        nickname: data.nickname,
-        avatar: data.avatar,
-        email: data.email,
-      }));
+      // 需要绑定，跳转到回调页面处理（通过 URL 参数传递数据）
       navigateTo({
         path: "/oauth/callback",
         query: {
           platform,
           action: "login",
           needBind: "true",
+          oauthKey: data.oauthKey,
+          nickname: data.nickname || "",
+          avatar: data.avatar || "",
+          email: data.email || "",
         },
       });
     }

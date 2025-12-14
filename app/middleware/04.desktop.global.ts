@@ -1,9 +1,16 @@
 import type { NavigationGuardReturn, RouteLocationNormalized } from "vue-router";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import {
-  detectIsDesktop,
-  shouldBypassDesktopGuard,
-} from "~/utils/routerGuard";
+import { detectIsDesktop } from "~/utils/routerGuard";
+
+/** 未登录时开放的路由（登录页、OAuth 回调页） */
+const UNAUTHENTICATED_ROUTES = ["/login", "/oauth/callback"];
+
+/** 检查路径是否为未登录开放路由 */
+function isUnauthenticatedRoute(path: string): boolean {
+  return UNAUTHENTICATED_ROUTES.some(route =>
+    path === route || path.startsWith(`${route}/`) || path.startsWith(`${route}?`),
+  );
+}
 
 export default defineNuxtRouteMiddleware(async (
   to: RouteLocationNormalized,
@@ -23,80 +30,87 @@ async function handleDesktopNavigation(
   from: RouteLocationNormalized,
 ): Promise<NavigationGuardReturn> {
   const user = useUserStore();
+  const toPath = to.path;
+  const fromPath = from.path;
+  const isToUnauthRoute = isUnauthenticatedRoute(toPath);
+  const isFromUnauthRoute = isUnauthenticatedRoute(fromPath);
 
-  // 登录流程或回调页之间跳转不拦截（桌面端）
-  if (shouldBypassDesktopGuard(to.path, from.path)) {
+  // ========== 未登录状态 ==========
+  if (!user.isLogin) {
+    // 未登录时，只允许访问开放路由
+    if (isToUnauthRoute) {
+      // 确保登录窗口已打开
+      await ensureLoginWindow();
+      return;
+    }
+
+    // 未登录访问受保护路由，重定向到登录页
+    await ensureLoginWindow();
+    return navigateTo("/login");
+  }
+
+  // ========== 已登录状态 ==========
+
+  // 已登录用户访问开放路由（如 /oauth/callback），放行
+  if (isToUnauthRoute) {
     return;
   }
 
-  // 登录状态路由控制
-  if (!user.isLogin) {
-    await loadLoginWindow();
-
-    // 登录页面导航限制
-    if ((from.path !== "/login" && to.path === "/login")
-      || (from.path === "/login" && to.path !== "/login")) {
+  // 从开放路由（登录页/回调页）跳转到主页面，需要切换窗口
+  if (isFromUnauthRoute && !isToUnauthRoute) {
+    await switchToMainWindow();
+    // 在登录窗口中阻止导航，让主窗口处理
+    if (getCurrentWindow().label === LOGIN_WINDOW_LABEL) {
       return abortNavigation();
     }
+    return;
   }
-  else {
-    // 已登录用户的登录页面访问限制
-    if (from.path !== "/login" && to.path === "/login") {
-      return abortNavigation();
-    }
 
-    // 从登录页导航逻辑
-    if (from.path === "/login") {
-      await loadMainWindow();
-      if (to.path !== "/login") {
-        return abortNavigation();
-      }
-    }
-    // 扩展页面权限检查
-    if (!from.path.startsWith("/extend") && to.path.startsWith("/extend")) {
+  // 扩展页面权限检查
+  if (!fromPath.startsWith("/extend") && toPath.startsWith("/extend")) {
+    return abortNavigation();
+  }
+
+  // 设置页面处理
+  if (toPath === "/setting") {
+    const { open } = useOpenSettingWind();
+    open({ url: "/desktop/setting" });
+    if (getCurrentWindow().label !== SETTING_WINDOW_LABEL) {
       return abortNavigation();
-    }
-    // 页面权限检查
-    if (to.path === "/setting") {
-      const { open } = useOpenSettingWind();
-      open({
-        url: "/desktop/setting",
-      });
-      if (getCurrentWindow().label !== SETTING_WINDOW_LABEL) {
-        return abortNavigation();
-      }
     }
   }
 }
 
 /**
- * 加载登录页
+ * 确保登录窗口已打开（未登录状态）
  */
-async function loadLoginWindow(): Promise<void> {
+async function ensureLoginWindow(): Promise<void> {
   try {
-    await detectIsDesktop(useSettingStore());
     await createWindow(LOGIN_WINDOW_LABEL);
+    // 关闭其他窗口
     destroyWindow(MAIN_WINDOW_LABEL);
     destroyWindow(MSGBOX_WINDOW_LABEL);
     destroyWindow(EXTEND_WINDOW_LABEL);
     destroyWindow(SETTING_WINDOW_LABEL);
   }
   catch (e) {
-    console.error(e);
+    console.error("ensureLoginWindow error:", e);
   }
 }
 
 /**
- * 加载主页
+ * 切换到主窗口（登录成功后）
  */
-async function loadMainWindow(): Promise<void> {
+async function switchToMainWindow(): Promise<void> {
   try {
-    await createWindow(MSGBOX_WINDOW_LABEL);
+    // 先创建主窗口
     await createWindow(MAIN_WINDOW_LABEL);
+    await createWindow(MSGBOX_WINDOW_LABEL);
+    // 再关闭登录窗口
     await destroyWindow(LOGIN_WINDOW_LABEL);
   }
   catch (e) {
-    console.error(e);
+    console.error("switchToMainWindow error:", e);
   }
 }
 

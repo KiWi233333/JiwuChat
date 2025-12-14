@@ -90,10 +90,18 @@ export function getOAuthPlatforms(): Promise<Result<OAuthPlatformVO[]>> {
  * 获取授权 URL（后端中转模式）
  * @param platform 平台代码 (github/google/gitee)
  * @param clientRedirectUri 前端回调地址（后端处理完 OAuth 后会 302 重定向到此地址）
+ * @param action 动作类型：login（默认）| bind（绑定第三方账号）
  * @returns Promise<Result<string>>
  */
-export function getAuthorizeUrl(platform: OAuthPlatformCode, clientRedirectUri?: string): Promise<Result<string>> {
-  return useHttp.get<Result<string>>(`/oauth/authorize/${platform}`, { clientRedirectUri });
+export function getAuthorizeUrl(
+  platform: OAuthPlatformCode,
+  clientRedirectUri?: string,
+  action: "login" | "bind" = "login",
+): Promise<Result<string>> {
+  return useHttp.get<Result<string>>(`/oauth/authorize/${platform}`, {
+    clientRedirectUri,
+    action,
+  });
 }
 
 /**
