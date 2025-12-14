@@ -273,13 +273,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="bind-option-form flex flex-col px-6 py-4">
+  <div class="bind-option-form flex flex-col p-6">
     <!-- 第三方账号信息 -->
-    <div class="header flex-row-c-c flex-col pb-6">
+    <div class="header flex-row-c-c flex-col pb-4">
       <div class="relative">
         <CardAvatar
           :src="(oauthInfo?.avatar as string) || ''"
-          class="avatar h-16 w-16 border-default rounded-full shadow-sm"
+          class="avatar h-16 w-16 border-default border-op-30 rounded-full shadow-sm"
         />
         <div class="absolute bottom-1 right-0 h-5 w-5 flex-row-c-c rounded-full bg-color shadow-sm">
           <!-- 床上 -->
@@ -303,7 +303,7 @@ onBeforeUnmount(() => {
     <!-- Tab 切换 -->
     <el-segmented
       v-model="activeBindTab"
-      class="toggle-tab mb-6 w-full card-bg-color-2"
+      class="toggle-tab mb-4 w-full card-bg-color-2"
       :options="tabOptions"
       block
     />
@@ -419,7 +419,7 @@ onBeforeUnmount(() => {
     </el-form>
 
     <!-- 底部链接 -->
-    <div class="mt-4 text-center">
+    <div class="mt-2 text-center">
       <span class="cursor-pointer text-xs text-dark-50 transition-200 dark:text-light-50 hover:text-theme-primary" @click="$emit('back')">
         返回登录页
       </span>

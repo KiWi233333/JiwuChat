@@ -23,12 +23,12 @@ defineEmits<{
     <h2 class="mb-2 text-lg text-color font-bold">
       {{ message }}
     </h2>
-    <p class="mb-6 px-4 text-small leading-relaxed">
+    <p class="mb-6 px-4 text-mini leading-relaxed">
       {{ subMessage }}
     </p>
 
     <!-- 加载指示器 -->
-    <div class="mb-6 flex-row-c-c gap-2 text-small">
+    <div class="mb-6 flex-row-c-c gap-2">
       <img src="/images/icon/loaded-ball.svg" alt="loading" class="h-6 w-6">
     </div>
 
@@ -66,7 +66,7 @@ defineEmits<{
   }
 
   .cancel-btn {
-    --at-apply: "text-small op-60 hover:op-100";
+    --at-apply: "op-60 hover:op-100";
   }
 }
 </style>
