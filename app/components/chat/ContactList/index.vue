@@ -433,6 +433,7 @@ onActivated(() => {
       <template #default="{ item: room }">
         <div
           :id="`contact-${room.roomId}`"
+          v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.05)', duration: 800 }"
           class="contact"
           :class="{
             'is-pin': room.pinTime,

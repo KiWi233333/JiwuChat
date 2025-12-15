@@ -436,104 +436,100 @@ onActivated(() => {
     </div>
 
     <!-- API Key 列表 -->
-    <div class="flex flex-1 flex-col overflow-y-auto pb-4">
-      <AutoIncre
+    <el-scrollbar height="calc(100vh - 16.75rem)" class="flex flex-1 flex-col pb-4">
+      <ListAutoIncre
         :no-more="noMore"
         :loading="loading"
         :immediate="false"
         :enable-pull-to-refresh="true"
         :on-refresh="handleRefresh"
         class="flex flex-1 flex-col gap-3"
+        loading-class="op-0"
         @load="handleLoadMore"
       >
         <template #default>
-          <div
-            v-for="item in tableData"
-            :key="item.id"
-            class="border border-default rounded-lg bg-color p-4"
-          >
-            <!-- 头部：头像和名称 -->
-            <div class="mb-3 flex items-center gap-3">
-              <ElAvatar
-                :size="40"
-                :class="getAvatarBgColor(item.keyName)"
-                class="flex-shrink-0 text-white"
-              >
-                {{ getAvatarLetter(item.keyName) }}
-              </ElAvatar>
-              <div class="min-w-0 flex-1">
-                <div class="text-sm text-color font-500">
-                  {{ item.keyName }}
+          <ListTransitionGroup name="api-key-mobile">
+            <div
+              v-for="item in tableData"
+              :key="item.id"
+              v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.05)' }"
+              class="border border-default-2 rounded-lg bg-color p-4"
+            >
+              <div class="mb-3 flex items-center gap-3">
+                <div class="min-w-0 flex flex-1 items-center gap-2">
+                  <div class="truncate text-sm text-color font-500">
+                    {{ item.keyName }}
+                  </div>
+                  <div class="text-color-3 truncate text-xs">
+                    创建于 {{ item.createTime?.split(' ')[0] || '-' }}
+                  </div>
                 </div>
-                <div class="text-color-3 mt-1 text-xs">
-                  创建于 {{ item.createTime?.split(' ')[0] || '-' }}
+                <!-- 状态 -->
+                <div class="flex shrink-0 items-center gap-1">
+                  <span class="dot h-2 w-2 rounded-full" :class="getStatusType(item.status)" />
+                  <span class="text-color-3 text-xs">{{ item.statusDesc }}</span>
                 </div>
               </div>
-              <!-- 状态 -->
-              <div class="flex items-center gap-1">
-                <span class="dot h-2 w-2 rounded-full" :class="getStatusType(item.status)" />
-                <span class="text-color-3 text-xs">{{ item.statusDesc }}</span>
-              </div>
-            </div>
 
-            <!-- API Key 显示 -->
-            <div class="mb-3 border border-default rounded bg-color-2 p-2">
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-color-3 flex-1 truncate text-xs font-mono">{{ item.apiKeyMasked }}</span>
-                <el-button
-                  size="small"
-                  text
-                  class="flex-shrink-0"
-                  @click="copyKey(item.apiKeyMasked || '', 'Key已复制')"
-                >
-                  <i class="i-solar:copy-bold-duotone mr-1" />
-                  复制
-                </el-button>
+              <!-- API Key 显示 -->
+              <div class="mb-3 border border-default rounded bg-color-2 p-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-color-3 flex-1 truncate text-xs font-mono">{{ item.apiKeyMasked }}</span>
+                  <el-button
+                    size="small"
+                    text
+                    class="flex-shrink-0"
+                    @click="copyKey(item.apiKeyMasked || '', 'Key已复制')"
+                  >
+                    <i class="i-solar:copy-bold-duotone mr-1" />
+                    复制
+                  </el-button>
+                </div>
               </div>
-            </div>
 
-            <!-- 操作按钮 -->
-            <div class="flex items-center justify-end gap-2">
-              <el-button
-                size="small"
-                text
-                bg
-                @click="handleEdit(item)"
-              >
-                <i class="i-solar:edit-bold-duotone mr-1" />
-                编辑
-              </el-button>
-              <el-dropdown trigger="click" @command="(cmd) => handleCommand(cmd, item)">
+              <!-- 操作按钮 -->
+              <div class="flex items-center justify-end gap-2">
                 <el-button
                   size="small"
                   text
                   bg
+                  @click="handleEdit(item)"
                 >
-                  <i class="i-solar:menu-dots-bold" />
+                  <i class="i-solar:edit-bold-duotone mr-1" />
+                  编辑
                 </el-button>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item
-                      :command="`toggle-${item.status === ApiKeyStatus.ENABLE ? ApiKeyStatus.DISABLE : ApiKeyStatus.ENABLE}`"
-                    >
-                      {{ item.status === ApiKeyStatus.ENABLE ? '停用' : '启用' }}
-                    </el-dropdown-item>
-                    <el-dropdown-item command="delete" divided>
-                      删除
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
+                <el-dropdown trigger="click" @command="(cmd) => handleCommand(cmd, item)">
+                  <el-button
+                    size="small"
+                    text
+                    bg
+                  >
+                    <i class="i-solar:menu-dots-bold" />
+                  </el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item
+                        :command="`toggle-${item.status === ApiKeyStatus.ENABLE ? ApiKeyStatus.DISABLE : ApiKeyStatus.ENABLE}`"
+                      >
+                        {{ item.status === ApiKeyStatus.ENABLE ? '停用' : '启用' }}
+                      </el-dropdown-item>
+                      <el-dropdown-item command="delete" divided>
+                        删除
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </div>
             </div>
-          </div>
 
-          <!-- 空状态 -->
-          <div v-if="!loading && tableData.length === 0" class="flex flex-col items-center justify-center py-12 op-60">
-            <i class="text-color-3 i-solar:key-line-duotone mb-2 text-4xl" />
-            <p class="text-color-3 text-sm">
-              暂无数据
-            </p>
-          </div>
+            <!-- 空状态 -->
+            <div v-if="!loading && tableData.length === 0" key="empty" class="flex flex-col items-center justify-center py-12 op-60">
+              <i class="text-color-3 i-solar:key-line-duotone mb-2 text-4xl" />
+              <p class="text-color-3 text-sm">
+                暂无数据
+              </p>
+            </div>
+          </ListTransitionGroup>
         </template>
 
         <template #done>
@@ -541,8 +537,8 @@ onActivated(() => {
             共 {{ pagination.total }} 条数据，已加载全部
           </div>
         </template>
-      </AutoIncre>
-    </div>
+      </ListAutoIncre>
+    </el-scrollbar>
 
     <!-- 添加/编辑对话框 -->
     <dialog-popup
@@ -658,7 +654,7 @@ onActivated(() => {
     >
       <div class="w-full space-y-4">
         <!-- 警告信息 -->
-        <div class="text-sm text-color leading-relaxed">
+        <div class="rounded bg-color p-2 text-sm text-color leading-relaxed">
           请将此 API key 保存在安全且易于访问的地方。出于<br>
           安全原因，你将无法通过 API keys 管理界面再次查<br>
           看它。如果你丢失了这个 key，将需要重新创建。
@@ -725,14 +721,21 @@ onActivated(() => {
     --at-apply: "flex items-center";
   }
 }
-</style>
-
-<style scoped lang="scss">
 .mcp-app-markdown {
   background-color: transparent !important;
   :deep(.md-editor-code) {
     margin: 0 !important;
   }
+}
+.api-key-mobile-enter-active,
+.api-key-mobile-leave-active {
+  transition: all 0.2s $animate-cubic;
+  overflow: hidden;
+}
+.api-key-mobile-enter-from,
+.api-key-mobile-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
 }
 </style>
 
