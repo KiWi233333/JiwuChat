@@ -343,7 +343,7 @@ onActivated(() => {
 <template>
   <div class="min-w-0 w-full flex flex-1 flex-col card-bg-color-2 px-4 sm:bg-color sm:px-6">
     <!-- 页面头部 -->
-    <div class="mb-4 mt-12 flex select-none items-end">
+    <div class="mb-4 mt-10 flex select-none items-end">
       <div>
         <h2 class="text-xl text-color font-500">
           API Key
