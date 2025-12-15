@@ -42,7 +42,7 @@
   "dependencies": {
     "@iconify/vue": "5.0.0",
     "@imengyu/vue3-context-menu": "1.5.2",
-    "@nuxtjs/color-mode": "3.5.2",
+    "@nuxtjs/color-mode": "4.0.0",
     "@tauri-apps/plugin-autostart": "2.5.1",
     "@tauri-apps/plugin-deep-link": "2.4.5",
     "@tauri-apps/plugin-dialog": "2.4.2",
@@ -56,16 +56,18 @@
     "@tauri-apps/plugin-upload": "2.3.2",
     "@tauri-apps/plugin-websocket": "2.4.1",
     "@vueuse/core": "14.1.0",
+    "dayjs": "1.11.19",
     "element-plus": "2.11.2",
     "markdown-it-link-attributes": "4.0.1",
     "md-editor-v3": "5.8.4",
     "ogl": "1.0.11",
     "pinia": "3.0.4",
     "qiniu-js": "3.4.3",
+    "rolldown-vite": "7.2.11",
     "streamsaver": "2.0.6"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "5.4.1",
+    "@antfu/eslint-config": "6.7.1",
     "@commitlint/cli": "20.2.0",
     "@commitlint/config-conventional": "20.2.0",
     "@element-plus/icons-vue": "2.3.2",
@@ -76,29 +78,29 @@
     "@iconify-json/solar": "1.2.5",
     "@iconify-json/tabler": "1.2.23",
     "@inquirer/prompts": "8.1.0",
-    "@nuxt/devtools": "2.6.5",
-    "@nuxt/eslint": "1.9.0",
+    "@nuxt/devtools": "3.1.1",
+    "@nuxt/eslint": "1.12.1",
     "@pinia/nuxt": "0.11.3",
     "@tauri-apps/api": "2.9.1",
     "@tauri-apps/cli": "2.9.6",
     "@types/sanitize-html": "2.16.0",
     "@unocss/eslint-plugin": "66.5.3",
     "@unocss/nuxt": "66.5.3",
-    "@vueuse/nuxt": "14.0.0",
+    "@vueuse/nuxt": "14.1.0",
     "code-inspector-plugin": "1.3.3",
-    "eslint": "9.35.0",
-    "eslint-plugin-format": "1.0.2",
+    "eslint": "9.39.2",
+    "eslint-plugin-format": "1.1.0",
     "husky": "9.1.7",
     "inquirer": "13.1.0",
     "lint-staged": "16.2.7",
-    "nuxt": "4.0.3",
+    "nuxt": "4.2.2",
     "sass": "1.92.1",
     "typescript": "5.9.3",
-    "vue-tsc": "3.1.3"
+    "vue-tsc": "3.1.8"
   },
   "pnpm": {
     "overrides": {
-      "vite": "npm:rolldown-vite@7.2.2"
+      "vite": "npm:rolldown-vite@7.2.11"
     }
   },
   "husky": {
