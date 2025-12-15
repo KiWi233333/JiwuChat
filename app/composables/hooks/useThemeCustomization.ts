@@ -202,6 +202,10 @@ export function useThemeCustomization() {
           if (prop.includes("Light") || prop.includes("Dark")) {
             target[prop] = useCssVar(`--el-color-${prop.replace(/([A-Z])/g, "-$1").toLowerCase().replace(/^-/, "")}`);
           }
+          else if (prop.includes("Rgb")) {
+            // 处理 RGB 变量，如 primaryRgb -> --el-color-primary-rgb
+            target[prop] = useCssVar(`--el-color-${prop.replace(/Rgb$/, "").replace(/([A-Z])/g, "-$1").toLowerCase().replace(/^-/, "")}-rgb`);
+          }
           else {
             target[prop] = useCssVar(`--el-color-${prop}`);
           }
@@ -396,6 +400,14 @@ export function useThemeCustomization() {
         // 使用更精确的感知亮度公式
         return (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114) < 128;
       },
+
+      // 获取颜色的 RGB 值字符串（用于 CSS 变量）
+      getRgbString(color: string): string {
+        const rgb = this.hexToRgb(color);
+        if (!rgb)
+          return "0, 0, 0";
+        return `${rgb.r}, ${rgb.g}, ${rgb.b}`;
+      },
     };
   })(); // 优化后的应用主题配置函数
   function apply(config: ThemeConfig) {
@@ -417,6 +429,12 @@ export function useThemeCustomization() {
 
       // 动态设置基础颜色
       (elementPlusVars as any)[colorType].value = currentColor;
+
+      // 同步设置 RGB 格式的 CSS 变量
+      const rgbKey = `${colorType}Rgb`;
+      if ((elementPlusVars as any)[rgbKey]) {
+        (elementPlusVars as any)[rgbKey].value = colorUtils.getRgbString(currentColor);
+      }
 
       // 批量设置变体颜色
       LIGHT_VARIANTS.forEach((variant) => {
