@@ -1,0 +1,105 @@
+@use "@/assets/styles/variables.scss" as *;
+
+// 硬件加速优化
+.hardware-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+// 禁用硬件加速
+.no-hardware-acceleration {
+  transform: none;
+  will-change: auto;
+  backface-visibility: visible;
+  perspective: none;
+}
+
+// 硬件加速优化的常用动画元素
+body.hardware-acceleration-enabled {
+  // 对话框和模态框
+  .el-dialog,
+  .el-drawer,
+  .el-popover,
+  .el-tooltip__popper {
+    @extend .hardware-accelerated;
+  }
+
+  // 列表项动画
+  .el-table__row,
+  .chat-item,
+  .message-item {
+    @extend .hardware-accelerated;
+  }
+
+  // 按钮和交互元素
+  .el-button,
+  .chat-btn,
+  .menu-item {
+    @extend .hardware-accelerated;
+  }
+
+  // 图片和媒体元素
+  img,
+  video,
+  .image-container {
+    @extend .hardware-accelerated;
+  }
+}
+
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all $transition-delay ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+.fade-leave-active {
+  position: absolute;
+}
+
+.animate__animated {
+  animation-duration: $transition-delay;
+}
+
+// 关闭所有动画渐变保证变化的流畅
+html.stop-transition {
+  &,
+  * {
+    transition: none !important;
+  }
+}
+html.stop-transition-all {
+  &,
+  * {
+    transition: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    animation: none !important;
+  }
+}
+
+// 夜间模式切换动画
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  transition: none !important;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 9999;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+.dark::view-transition-old(root) {
+  z-index: 1;
+}
+.dark::view-transition-new(root) {
+  z-index: 9999;
+}

@@ -1,0 +1,561 @@
+@use "@/assets/styles/variables.scss" as *;
+
+// 图标动画
+// 购物车撞到背景
+.hover\:animate-shopcart:hover {
+  animation: shopcart 1s ease-in-out 1;
+}
+@keyframes shopcart {
+  0% {
+    transform: translateX(0%);
+  }
+  30% {
+    transform: translateX(20%) rotate(0deg);
+  }
+  40% {
+    transform: translate(22%) rotate(-15deg);
+  }
+  60% {
+    transform: translateX(-10%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.hover\:animate-portanim:hover {
+  animation: portanim 1s ease-in-out 1;
+}
+@keyframes portanim {
+  0% {
+    transform: translateX(0%);
+  }
+  30% {
+    transform: translateX(20%);
+  }
+  40% {
+    transform: translateX(-22%);
+  }
+  60% {
+    transform: translateX(18%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+// 加载动画
+.load-alexruix {
+  width: 1.5em;
+  height: 1.5em;
+  margin: auto;
+  position: relative;
+
+  &:before {
+    content: "";
+    width: 1.5em;
+    height: 0.2em;
+    background: var(--el-color-primary-light-3);
+    position: absolute;
+    top: 2.2em;
+    left: 0;
+    border-radius: 50%;
+    animation: shadow324 0.5s linear infinite;
+  }
+
+  &:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: var(--el-color-primary);
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 0.4em;
+    animation: jump7456 0.5s linear infinite;
+  }
+
+  @keyframes jump7456 {
+    15% {
+      border-bottom-right-radius: 0.4em;
+    }
+
+    25% {
+      transform: translateY(0.5em) rotate(22.5deg);
+    }
+
+    50% {
+      transform: translateY(1em) scale(1, 0.9) rotate(45deg);
+      border-bottom-right-radius: 1.5em;
+    }
+
+    75% {
+      transform: translateY(0.5em) rotate(67.5deg);
+    }
+
+    100% {
+      transform: translateY(0) rotate(90deg);
+    }
+  }
+
+  @keyframes shadow324 {
+    0%,
+    100% {
+      transform: scale(1, 1);
+    }
+
+    50% {
+      transform: scale(1.2, 1);
+    }
+  }
+}
+// 双方块动画
+.load-db-rule {
+  --size: 1em;
+  --first-block-clr: var(--el-color-info);
+  --second-block-clr: var(--el-color-warning);
+  --block-radius: 0.2em;
+  --clr: #111;
+  width: 1em;
+  height: 1em;
+  position: relative;
+
+  &::after,
+  &::before {
+    border-radius: var(--block-radius);
+    box-sizing: border-box;
+    position: absolute;
+    content: "";
+    width: var(--size);
+    height: var(--size);
+    top: 50%;
+    animation: up 2.4s cubic-bezier(0, 0, 0.24, 1.21) infinite;
+    left: 50%;
+    background: var(--first-block-clr);
+  }
+
+  &::after {
+    background: var(--second-block-clr);
+    top: calc(50% - var(--size));
+    left: calc(50% - var(--size));
+    animation: down 2.4s cubic-bezier(0, 0, 0.24, 1.21) infinite;
+  }
+
+  @keyframes down {
+    0%,
+    100% {
+      transform: none;
+    }
+
+    25% {
+      transform: translateX(100%);
+    }
+
+    50% {
+      transform: translateX(100%) translateY(100%);
+    }
+
+    75% {
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes up {
+    0%,
+    100% {
+      transform: none;
+    }
+
+    25% {
+      transform: translateX(-100%);
+    }
+
+    50% {
+      transform: translateX(-100%) translateY(-100%);
+    }
+
+    75% {
+      transform: translateY(-100%);
+    }
+  }
+}
+// 语音聊天球load
+.load-popper-cy {
+  background-image: linear-gradient(rgb(186, 66, 255) 35%, rgb(0, 225, 255));
+  width: 2em;
+  height: 2em;
+  animation: spinning82341 1.7s linear infinite;
+  text-align: center;
+  border-radius: 50%;
+  filter: blur(1px);
+  box-shadow:
+    0px -0.2em 0.6em 0px rgb(186, 66, 255),
+    0px 0.2em 0.6em 0px rgb(0, 225, 255);
+  div {
+    content: "";
+    background-color: rgb(36, 36, 36);
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    filter: blur(0.6em);
+  }
+
+  @keyframes spinning82341 {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.load-empty-circle {
+  position: relative;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    border-radius: inherit;
+  }
+
+  &::before {
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(0deg, #ff00cc 0%, var(--el-color-primary) 100%);
+    animation: loadCircleAnima 0.5s infinite linear;
+  }
+
+  &::after {
+    width: 85%;
+    height: 85%;
+    background-color: var(--el-bg-color-page);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  @keyframes loadCircleAnima {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+// 双球load
+.load-chaotic-orbit {
+  --uib-size: 1em;
+  --uib-speed: 1.5s;
+  --uib-color: var(--el-color-primary);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--uib-size);
+  width: var(--uib-size);
+  animation: rotate936 calc(var(--uib-speed) * 1.667) infinite linear;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    height: 60%;
+    width: 60%;
+    border-radius: 50%;
+    background-color: var(--uib-color);
+    will-change: transform;
+    flex-shrink: 0;
+  }
+
+  &::before {
+    animation: orbit var(--uib-speed) linear infinite;
+  }
+
+  &::after {
+    animation: orbit var(--uib-speed) linear calc(var(--uib-speed) / -2) infinite;
+  }
+
+  @keyframes rotate936 {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes orbit {
+    0% {
+      transform: translate(calc(var(--uib-size) * 0.5)) scale(0.73684);
+      opacity: 0.65;
+    }
+
+    5% {
+      transform: translate(calc(var(--uib-size) * 0.4)) scale(0.684208);
+      opacity: 0.58;
+    }
+
+    10% {
+      transform: translate(calc(var(--uib-size) * 0.3)) scale(0.631576);
+      opacity: 0.51;
+    }
+
+    15% {
+      transform: translate(calc(var(--uib-size) * 0.2)) scale(0.578944);
+      opacity: 0.44;
+    }
+
+    20% {
+      transform: translate(calc(var(--uib-size) * 0.1)) scale(0.526312);
+      opacity: 0.37;
+    }
+
+    25% {
+      transform: translate(0%) scale(0.47368);
+      opacity: 0.3;
+    }
+
+    30% {
+      transform: translate(calc(var(--uib-size) * -0.1)) scale(0.526312);
+      opacity: 0.37;
+    }
+
+    35% {
+      transform: translate(calc(var(--uib-size) * -0.2)) scale(0.578944);
+      opacity: 0.44;
+    }
+
+    40% {
+      transform: translate(calc(var(--uib-size) * -0.3)) scale(0.631576);
+      opacity: 0.51;
+    }
+
+    45% {
+      transform: translate(calc(var(--uib-size) * -0.4)) scale(0.684208);
+      opacity: 0.58;
+    }
+
+    50% {
+      transform: translate(calc(var(--uib-size) * -0.5)) scale(0.73684);
+      opacity: 0.65;
+    }
+
+    55% {
+      transform: translate(calc(var(--uib-size) * -0.4)) scale(0.789472);
+      opacity: 0.72;
+    }
+
+    60% {
+      transform: translate(calc(var(--uib-size) * -0.3)) scale(0.842104);
+      opacity: 0.79;
+    }
+
+    65% {
+      transform: translate(calc(var(--uib-size) * -0.2)) scale(0.894736);
+      opacity: 0.86;
+    }
+
+    70% {
+      transform: translate(calc(var(--uib-size) * -0.1)) scale(0.947368);
+      opacity: 0.93;
+    }
+
+    75% {
+      transform: translate(0%) scale(1);
+      opacity: 1;
+    }
+
+    80% {
+      transform: translate(calc(var(--uib-size) * 0.1)) scale(0.947368);
+      opacity: 0.93;
+    }
+
+    85% {
+      transform: translate(calc(var(--uib-size) * 0.2)) scale(0.894736);
+      opacity: 0.86;
+    }
+
+    90% {
+      transform: translate(calc(var(--uib-size) * 0.3)) scale(0.842104);
+      opacity: 0.79;
+    }
+
+    95% {
+      transform: translate(calc(var(--uib-size) * 0.4)) scale(0.789472);
+      opacity: 0.72;
+    }
+
+    100% {
+      transform: translate(calc(var(--uib-size) * 0.5)) scale(0.73684);
+      opacity: 0.65;
+    }
+  }
+}
+
+// popper 进入动画 el-popper
+$popper-placements: (
+  "bottom": center top,
+  "bottom-end": right top,
+  "bottom-start": left top,
+  "top": center bottom,
+  "top-end": right bottom,
+  "top-start": left bottom,
+  "left": right center,
+  "left-start": right bottom,
+  "left-end": left bottom,
+  "right": left center,
+  "right-start": left 60%,
+  "right-end": left bottom,
+);
+
+@each $placement, $origin in $popper-placements {
+  [data-popper-placement="#{$placement}"] {
+    transform-origin: #{$origin} !important;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+}
+
+.popper-fade-move,
+.popper-fade-enter-active,
+.popper-fade-leave-active {
+  transition-duration: $transition-delay;
+  transition-timing-function: $animate-cubic;
+  transition-property: opacity, transform;
+}
+
+.popper-fade-enter-from,
+.popper-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.9) translateY(-5%);
+}
+.popper-fade-leave-active {
+  position: absolute;
+}
+
+.popper-fade-down-move,
+.popper-fade-down-enter-active,
+.popper-fade-down-leave-active {
+  transition-timing-function: $animate-cubic;
+  transition-property: opacity, transform;
+}
+
+.popper-fade-down-enter-from,
+.popper-fade-down-leave-to {
+  opacity: 0;
+  transform: scale(0.9) translateY(-5%);
+  transform-origin: center top;
+}
+.popper-fade-down-leave-active {
+  position: absolute !important;
+}
+
+@keyframes popper-fade-anim {
+  from {
+    opacity: 0;
+    transform: scale(var(--popper-fade-anima-scale, 0.98)) translateY(var(--popper-fade-anima-translate, 2%));
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.popper-blur-move,
+.popper-blur-enter-active,
+.popper-blur-leave-active {
+  transition-duration: $transition-delay;
+  transition-property: opacity, filter;
+}
+
+.popper-blur-enter-from,
+.popper-blur-leave-to {
+  opacity: 0;
+  filter: blur(6px);
+}
+.popper-blur-leave-active {
+  position: absolute;
+}
+
+// svg路径动画
+@keyframes svg-path-anima {
+  0% {
+    stroke-dashoffset: 1px;
+    stroke-dasharray: 0 var(--dash, 300%);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  35% {
+    stroke-dasharray: var(--dash, 300%) 0;
+    fill: transparent;
+  }
+
+  50% {
+    stroke-dasharray: var(--dash, 300%) 0;
+    fill: var(--anima-color, currentColor);
+  }
+
+  55% {
+    fill: transparent;
+  }
+
+  95%,
+  100% {
+    stroke-dasharray: 0 var(--dash, 300%);
+  }
+}
+.svg-path-anima,
+.svg-path-anima path {
+  fill: transparent;
+  stroke-dashoffset: 1px;
+  stroke-dasharray: var(--anima-dash, 300%) 0;
+  animation: svg-path-anima var(--anima-duration, 6s) ease forwards;
+  animation-iteration-count: var(--anima-iteration, infinite);
+  animation-delay: var(--anima-delay, 0s);
+  stroke: var(--anima-color, currentColor);
+}
+
+// 移动端视窗的推入推出动画
+.mobile-slice-enter-active,
+.mobile-slice-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.mobile-slice-enter-from,
+.mobile-slice-leave-to {
+  transform: translateX(100%); /* 从右侧滑出 */
+}
+
+.mobile-slice-enter-to,
+.mobile-slice-leave-from {
+  transform: translateX(0); /* 滑动到原位置 */
+}
+
+// el-popver
+.el-zoom-in-top-enter-active,
+.el-zoom-in-top-leave-active {
+  opacity: 1;
+  transform: translateY(0) scale3d(1, 1, 1) !important;
+  transition-duration: 0.2s !important;
+  transition-timing-function: $animate-cubic !important;
+}
+.el-zoom-in-top-enter-from,
+.el-zoom-in-top-leave-active {
+  opacity: 0.5;
+  transform: translateY(-1%) scale3d(0.97, 0.98, 1) !important;
+}
+.el-zoom-in-bottom-enter-active,
+.el-zoom-in-bottom-leave-active {
+  opacity: 1;
+  transform: translateY(0) scale3d(1, 1, 1) !important;
+  transition-duration: 0.2s !important;
+  transition-timing-function: $animate-cubic !important;
+}
+.el-zoom-in-bottom-enter-from,
+.el-zoom-in-bottom-leave-active {
+  opacity: 0.5;
+  transform: translateY(1%) scale3d(0.97, 0.98, 1) !important;
+}
+
