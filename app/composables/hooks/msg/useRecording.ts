@@ -140,10 +140,21 @@ function useRecordingCore(
       state.audioElement = undefined;
     }
 
-    // 释放 MediaRecorder
+    // 释放 MediaRecorder 和麦克风
     if (state.mediaRecorder) {
       try {
-        state.mediaRecorder.stop();
+        // 停止录音器
+        if (state.mediaRecorder.state === "recording") {
+          state.mediaRecorder.stop();
+        }
+
+        // 释放麦克风流
+        const stream = state.mediaRecorder.stream;
+        if (stream) {
+          stream.getTracks().forEach((track) => {
+            track.stop();
+          });
+        }
       }
       catch (error) {
         console.warn("停止录音器失败:", error);
@@ -397,7 +408,20 @@ export function useRecording(options: {
       return;
 
     speechToText.stopSpeechRecognition();
-    state.mediaRecorder.stop();
+
+    // 停止录音并释放麦克风
+    if (state.mediaRecorder.state === "recording") {
+      state.mediaRecorder.stop();
+    }
+
+    // 释放麦克风流
+    const stream = state.mediaRecorder.stream;
+    if (stream) {
+      stream.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
+
     state.isRecording = false;
   };
 
