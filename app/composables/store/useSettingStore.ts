@@ -78,10 +78,11 @@ export const useSettingStore = defineStore(
     // 非持久化的设备状态
     const isMobileSize = ref(false);
     const isOpenContactSearch = useLocalStorage(`${SETTING_STORE_KEY}:isOpenContactSearch`, true);
-    const isUseWebsocket = useLocalStorage(`${SETTING_STORE_KEY}:isUseWebsocket`, true);
+    // const isUseWebsocket = useLocalStorage(`${SETTING_STORE_KEY}:isUseWebsocket`, true);
 
     const isDesktop = computed(() => ["windows", "linux", "macos"].includes(osType.value));
     const isMobile = computed(() => ["android", "ios"].includes(osType.value));
+    const isUseWebsocket = computed(() => !isDesktop.value);
     // --------------------- 系统环境常量 -----------------
     const systemConstant = ref<SystemConstantVO>({
       ossInfo: {
@@ -574,7 +575,7 @@ export const useSettingStore = defineStore(
       isChatFold.value = false;
       showChatMenu.value = true;
       isThemeChangeLoad.value = false;
-      isUseWebsocket.value = true;
+      // isUseWebsocket.value = true;
       appUploader.value = {
         isCheckUpdatateLoad: false,
         isUpdating: false,
