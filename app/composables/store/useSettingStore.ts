@@ -212,6 +212,10 @@ export const useSettingStore = defineStore(
           lastSelectedMicrophone: "" as string, // 上次选择的麦克风ID
           autoDetectDevice: true, // 是否自动检测新设备
         },
+        // dock badge设置 (仅macOS)
+        dockBadge: {
+          enabled: true, // 是否启用dock徽章显示
+        },
       };
     }
     const openShadow = computed(() => appPlatform.value !== "windows" || settingPage.value.isWindow10Shadow);
