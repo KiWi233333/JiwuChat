@@ -59,6 +59,15 @@ pub fn setup_desktop() {
             crate::desktops::commands::create_window,
             crate::desktops::commands::animate_window_resize,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .build(tauri::generate_context!())
+        .expect("error while running tauri application")
+        .run(|app_handle, event| match event {
+            tauri::RunEvent::Reopen { has_visible_windows, .. } => {
+                // 当点击 macOS 程序坞图标时，显示并聚焦主窗口
+                if !has_visible_windows {
+                    let _ = super::window::show_window(&app_handle);
+                }
+            }
+            _ => {}
+        });
 }
