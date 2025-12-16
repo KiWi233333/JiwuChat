@@ -53,14 +53,14 @@ const activeNames = useLocalStorage(`${route.fullPath}_activeNames`, {
       </div>
       <el-collapse v-model="activeNames.arr">
         <!-- 群聊 -->
-        <el-collapse-item name="group" title="群聊">
-          <Transition enter-active-class="animate-(fade-in duration-200) z-0" leave-active-class="animate-fade-out !z-0" mode="in-out">
+        <el-collapse-item name="group" title="群聊" class="select-none">
+          <Transition name="zoom-toggle" mode="out-in">
             <ChatFriendGroupList v-if="activeNames.arr.includes('group')" type="group" />
           </Transition>
         </el-collapse-item>
         <!-- 好友 -->
         <el-collapse-item name="friend" title="好友">
-          <Transition enter-active-class="animate-(fade-in duration-200) z-0" leave-active-class="animate-fade-out !z-0" mode="in-out">
+          <Transition name="zoom-toggle" mode="out-in">
             <ChatFriendGroupList v-if="activeNames.arr.includes('friend')" type="friend" />
           </Transition>
         </el-collapse-item>

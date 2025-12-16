@@ -45,7 +45,7 @@ export function createRipple(event: MouseEvent, options: RippleOptions = {}) {
   };
 
   const {
-    color = `rgba(${getPrimaryColor()}, 0.3)`,
+    color = `rgba(${getPrimaryColor()}, 0.1)`,
     duration = 600,
     scale = 2.5,
     disabled = false,

@@ -559,3 +559,21 @@ $popper-placements: (
   transform: translateY(1%) scale3d(0.97, 0.98, 1) !important;
 }
 
+// zoom-toggle
+.zoom-toggle-enter-active,
+.zoom-toggle-leave-active {
+  transition:
+    transform 0.3s ease-in-out,
+    opacity 0.2s ease-in-out;
+  transform-origin: var(--zoom-toggle-origin, top center);
+}
+.zoom-toggle-enter-from,
+.zoom-toggle-leave-to {
+  opacity: 0;
+  transform: perspective(480px) scale(var(--zoom-toggle-scale, 0.96));
+}
+.zoom-toggle-enter-to,
+.zoom-toggle-leave-from {
+  opacity: 1;
+  transform: perspective(480px) scale(1);
+}

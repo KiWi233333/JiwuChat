@@ -61,6 +61,12 @@ const rippleDirective: Directive<RippleElement, RippleOptions | undefined> = {
   },
 
   unmounted(el: RippleElement) {
+    // 清理所有正在进行的 ripple 元素
+    const ripples = el.querySelectorAll(".ripple-effect");
+    ripples.forEach((ripple) => {
+      ripple.remove();
+    });
+
     // 清理事件监听
     if (el._rippleClickHandler) {
       el.removeEventListener("click", el._rippleClickHandler);
