@@ -63,7 +63,7 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
       <div
         v-else
         key="chat-friend-empty"
-        class="flex-row-c-c flex-1 flex-shrink-0 bg-color-2"
+        class="flex-row-c-c flex-1 flex-shrink-0 select-none bg-color-2"
       >
         <div data-fades class="h-full w-full flex flex-col items-center justify-center text-gray-600 op-80 dark:(text-gray-300 op-50)">
           <i i-solar:users-group-two-rounded-bold-duotone class="mb-2 h-12 w-12" />

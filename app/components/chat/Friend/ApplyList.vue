@@ -168,7 +168,7 @@ onBeforeUnmount(() => {
             <span v-if="p.createTime" class="text-mini">{{ formatContactDate(p.createTime) }}</span>
           </small>
         </div>
-        <div class="ml-a flex-row-c-c flex-shrink-0">
+        <div class="ml-a flex-row-c-c flex-shrink-0 select-none">
           <template v-if="p.status === ChatApplyStatusType.Load">
             <el-button-group class="card-rounded-df bg-color-2 transition-200 hover:shadow">
               <BtnElButton size="small" @click="onArgeeFriend(p.applyId)">

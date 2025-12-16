@@ -570,10 +570,10 @@ $popper-placements: (
 .zoom-toggle-enter-from,
 .zoom-toggle-leave-to {
   opacity: 0;
-  transform: perspective(480px) scale(var(--zoom-toggle-scale, 0.96));
+  transform: var(--zoom-toggle-transform, perspective(480px) scale(var(--zoom-toggle-scale, 0.98)) translateY(-4px));
 }
 .zoom-toggle-enter-to,
 .zoom-toggle-leave-from {
   opacity: 1;
-  transform: perspective(480px) scale(1);
+  transform: var(--zoom-toggle-transform, perspective(480px) scale(1) translateY(0));
 }

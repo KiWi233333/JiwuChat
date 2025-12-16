@@ -131,7 +131,9 @@ export interface MenuItem {
         :is="p.path ? NuxtLink : 'div'"
         v-for="p in menuList"
         :key="p.path"
-        v-loading="(p as any).loading" :to="p.path"
+        v-loading="(p as any).loading"
+        v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.2)', duration: 800 }"
+        :to="p.path"
         :index="p.path"
         :element-loading-spinner="defaultLoadingIcon"
         element-loading-custom-class="text-.4em"
@@ -148,7 +150,9 @@ export interface MenuItem {
           }
         }"
       >
-        <el-badge :value="p.tipValue" :hidden="!p?.tipValue" :is-dot="!!p?.isDot" :offset="[-2, -2]" :max="99">
+        <el-badge
+          :value="p.tipValue" :hidden="!p?.tipValue" :is-dot="!!p?.isDot" :offset="[-2, -2]" :max="99"
+        >
           <i class="icon p-2.6" :class="route.path === p.path ? p.activeIcon : p.icon" />
         </el-badge>
       </component>

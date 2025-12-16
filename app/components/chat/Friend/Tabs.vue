@@ -14,7 +14,7 @@ const activeNames = useLocalStorage(`${route.fullPath}_activeNames`, {
 
 <template>
   <div
-    class="border-0 transition-200 transition-width"
+    class="select-none border-0 transition-200 transition-width"
     v-bind="$attrs"
   >
     <slot name="top">
@@ -51,9 +51,9 @@ const activeNames = useLocalStorage(`${route.fullPath}_activeNames`, {
           <small>探索机器人</small>
         </div>
       </div>
-      <el-collapse v-model="activeNames.arr">
+      <el-collapse v-model="activeNames.arr" class="select-none">
         <!-- 群聊 -->
-        <el-collapse-item name="group" title="群聊" class="select-none">
+        <el-collapse-item name="group" title="群聊">
           <Transition name="zoom-toggle" mode="out-in">
             <ChatFriendGroupList v-if="activeNames.arr.includes('group')" type="group" />
           </Transition>

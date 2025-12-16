@@ -38,7 +38,7 @@ function openPreview() {
     :preview-teleported="false"
     :preview-src-list="[]"
     :ctx-name="ctxName"
-    class="cursor-pointer"
+    class="cursor-pointer select-none"
     @click="openPreview"
   >
     <!-- 占位 -->

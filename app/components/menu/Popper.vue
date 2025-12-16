@@ -61,7 +61,7 @@ function handleVisibleUpdate(value: boolean) {
     @update:visible="handleVisibleUpdate"
   >
     <template #reference>
-      <span>
+      <span class="select-none">
         <slot name="reference" />
       </span>
     </template>
