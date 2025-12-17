@@ -27,6 +27,12 @@
         {
           "schemes": ["jiwuchat"]
         }
+      ],
+      "mobile": [
+        {
+          "scheme": ["jiwuchat"],
+          "appLink": false
+        }
       ]
     }
   },
