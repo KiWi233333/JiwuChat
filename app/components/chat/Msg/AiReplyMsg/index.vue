@@ -107,7 +107,6 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
       </small>
     </template>
   </ChatMsgTemplate>
-  {{ body?.status }}
 </template>
 
 <style lang="scss" scoped>
