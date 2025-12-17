@@ -18,8 +18,8 @@ const body = computed(() => data.message?.body);
 // 初始折叠状态：内容长度超过200  // 且不是最后一条消息时，默认折叠  && chat.theContact.lastMsgId !== data.message.id
 const initFold = data.message?.content?.length && data.message?.content?.length > 200;
 const isContentExpanded = ref(!initFold);
-const showReasonLoading = computed(() => body.value?.status === AiReplyStatusEnum.IN_PROGRESS);
-const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS));
+const showReasonLoading = computed(() => body.value?.status === AiReplyStatusEnum.IN_PROGRESS && !data.message?.content);
+const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS && (!!data.message?.content || !body.value?.reasoningContent)));
 </script>
 
 <template>
@@ -43,7 +43,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
           :max-height="200"
           :max-height-with-expand-button="40"
           :default-expanded="!initFold"
-          :disabled="showContentLoading"
+          :disabled-animate="showContentLoading || showReasonLoading"
           class="content-wrapper"
         >
           <!-- 思考内容 -->
@@ -52,7 +52,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
             :max-height="36"
             :max-height-with-expand-button="40"
             :default-expanded="true"
-            :disabled="showReasonLoading"
+            :disabled-animate="showReasonLoading || showContentLoading"
             class="reason-content-wrapper"
           >
             <div class="reason-content-inner">
@@ -107,6 +107,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
       </small>
     </template>
   </ChatMsgTemplate>
+  {{ body?.status }}
 </template>
 
 <style lang="scss" scoped>
