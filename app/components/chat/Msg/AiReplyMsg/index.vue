@@ -43,7 +43,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
           :max-height="200"
           :max-height-with-expand-button="40"
           :default-expanded="!initFold"
-          :disabled-animate="showContentLoading || showReasonLoading"
+          :disabled="showContentLoading || showReasonLoading"
           class="content-wrapper"
         >
           <!-- 思考内容 -->
@@ -65,7 +65,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
             </div>
             <template #toggle-button="{ isExpanded, toggleExpand }">
               <button
-                class="reason-toggle-btn"
+                class="reason-toggle-btn cursor-pointer"
                 :class="isExpanded ? '' : 'is-folded-btn'"
                 @click="toggleExpand()"
               >

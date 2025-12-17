@@ -136,9 +136,9 @@ onBeforeUnmount(() => {
       :toggle-expand="toggleExpand"
     >
       <div
-        class="sticky bottom-0 z-12 min-w-fit flex btn-default-text cursor-pointer items-center justify-center border-1px border-transparent rounded-2 p-1 px-2 pb-2 text-mini-50 transition-all-200"
+        class="sticky bottom-0 left-0 right-0 z-100 min-w-fit flex btn-default-text cursor-pointer items-center justify-center border-1px border-transparent rounded-2 bg-color-br p-1 px-2 pb-2 text-mini-50 transition-all-200"
         :class="{
-          'op-0 transition-opacity-200': autoHideExpandButton,
+          'op-80 sm:op-20 transition-opacity-200 bg-transparent': autoHideExpandButton,
         }"
         @click="() => toggleExpand()"
       >

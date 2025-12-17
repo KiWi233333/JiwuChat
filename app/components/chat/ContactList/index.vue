@@ -347,6 +347,18 @@ onActivated(() => {
   if (!chat.getContactList.length) {
     reload();
   }
+  mitter.on(MittEventType.WS_SYNC, ({ lastDisconnectTime, reconnectTime }) => {
+    // 重连
+    console.log(`会话同步，时延：${reconnectTime - lastDisconnectTime}ms`);
+    fetchContacts();
+  });
+});
+
+onUnmounted(() => {
+  mitter.off(MittEventType.WS_SYNC);
+});
+onDeactivated(() => {
+  mitter.off(MittEventType.WS_SYNC);
 });
 </script>
 
