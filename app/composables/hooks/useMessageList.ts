@@ -285,10 +285,20 @@ export function useMessageList() {
    * 滚动到底部
    */
   function scrollBottom(animate = true) {
-    if (!scrollbarRef?.value?.wrapRef?.scrollHeight) {
+    const wrapRef = scrollbarRef?.value?.wrapRef;
+    if (!wrapRef || !wrapRef.scrollHeight) {
       return false;
     }
-    scrollTop(scrollbarRef?.value?.wrapRef?.scrollHeight, animate);
+    if (!animate) {
+      // 直接设置 scrollTop 属性，几乎瞬间滚到底部
+      wrapRef.scrollTop = wrapRef.scrollHeight;
+    }
+    else {
+      // 对于平滑滚动，依赖原生behavior，部分环境有加速
+      wrapRef.scrollTo
+        ? wrapRef.scrollTo({ top: wrapRef.scrollHeight, left: 0, behavior: "smooth" })
+        : (wrapRef.scrollTop = wrapRef.scrollHeight);
+    }
     return true;
   }
 

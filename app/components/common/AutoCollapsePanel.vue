@@ -130,7 +130,7 @@ onBeforeUnmount(() => {
       <slot />
     </div>
     <slot
-      v-if="shouldShowExpandButton"
+      v-if="shouldShowExpandButton && !disabled"
       name="toggle-button"
       :is-expanded="isExpanded"
       :toggle-expand="toggleExpand"

@@ -12,15 +12,14 @@ const {
   prevMsg: ChatMessageVO
   index: number
 }>();
-const chat = useChatStore();
 const user = useUserStore();
 
 const body = computed(() => data.message?.body);
-// 初始折叠状态：内容长度超过200且不是最后一条消息时，默认折叠
-const initFold = data.message?.content?.length && data.message?.content?.length > 200 && chat.theContact.lastMsgId !== data.message.id;
+// 初始折叠状态：内容长度超过200  // 且不是最后一条消息时，默认折叠  && chat.theContact.lastMsgId !== data.message.id
+const initFold = data.message?.content?.length && data.message?.content?.length > 200;
 const isContentExpanded = ref(!initFold);
-const showReasonLoading = computed(() => body.value?.status === AiReplyStatusEnum.IN_PROGRESS && !data.message?.content);
-const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS && (!!data.message?.content || !body.value?.reasoningContent)));
+const showReasonLoading = computed(() => body.value?.status === AiReplyStatusEnum.IN_PROGRESS);
+const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS));
 </script>
 
 <template>
@@ -44,7 +43,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
           :max-height="200"
           :max-height-with-expand-button="40"
           :default-expanded="!initFold"
-          :disabled-animate="showContentLoading"
+          :disabled="showContentLoading"
           class="content-wrapper"
         >
           <!-- 思考内容 -->
@@ -53,7 +52,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
             :max-height="36"
             :max-height-with-expand-button="40"
             :default-expanded="true"
-            :disabled-animate="showReasonLoading"
+            :disabled="showReasonLoading"
             class="reason-content-wrapper"
           >
             <div class="reason-content-inner">
