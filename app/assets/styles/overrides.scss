@@ -352,18 +352,54 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 
 // 3. Tooltip/Popper 动画
 $popper-placements: (
-  "bottom": (center top, translateY(-4px)),
-  "bottom-end": (center top, translateY(-4px)),
-  "bottom-start": (center top, translateY(-4px)),
-  "top": (center bottom, translateY(4px)),
-  "top-end": (center bottom, translateY(4px)),
-  "top-start": (center bottom, translateY(4px)),
-  "left": (right center, translateX(4px)),
-  "left-start": (right center, translateX(4px)),
-  "left-end": (right center, translateX(4px)),
-  "right": (left center, translateX(-4px)),
-  "right-start": (left center, translateX(-4px)),
-  "right-end": (left center, translateX(-4px)),
+  "bottom": (
+    center top,
+    translateY(-4px),
+  ),
+  "bottom-end": (
+    center top,
+    translateY(-4px),
+  ),
+  "bottom-start": (
+    center top,
+    translateY(-4px),
+  ),
+  "top": (
+    center bottom,
+    translateY(4px),
+  ),
+  "top-end": (
+    center bottom,
+    translateY(4px),
+  ),
+  "top-start": (
+    center bottom,
+    translateY(4px),
+  ),
+  "left": (
+    right center,
+    translateX(4px),
+  ),
+  "left-start": (
+    right center,
+    translateX(4px),
+  ),
+  "left-end": (
+    right center,
+    translateX(4px),
+  ),
+  "right": (
+    left center,
+    translateX(-4px),
+  ),
+  "right-start": (
+    left center,
+    translateX(-4px),
+  ),
+  "right-end": (
+    left center,
+    translateX(-4px),
+  ),
 );
 
 $zoom-classes: (el-zoom-in-top, el-zoom-in-bottom, el-zoom-in-left, el-zoom-in-right, el-fade-in-linear);
@@ -536,7 +572,7 @@ $zoom-classes: (el-zoom-in-top, el-zoom-in-bottom, el-zoom-in-left, el-zoom-in-r
   --popper-fade-anima-scale: 0.9;
   transform-origin: center top;
   --at-apply: "!border-default-2 dark:!bg-[#111111] !bg-white animate-[popper-fade-anim_0.15s]";
-  
+
   .mx-context-menu-items {
     .mx-context-menu-item {
       .mx-item-row {
@@ -566,7 +602,7 @@ $zoom-classes: (el-zoom-in-top, el-zoom-in-bottom, el-zoom-in-left, el-zoom-in-r
     --mx-menu-hover-backgroud: var(--el-color-primary);
     --mx-menu-open-hover-backgroud: var(--el-color-primary);
     --mx-menu-open-backgroud: #71717188;
-    
+
     &:hover {
       .mx-icon-placeholder {
         i {

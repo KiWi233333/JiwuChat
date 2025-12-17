@@ -19,7 +19,9 @@
 ```vue
 <template>
   <!-- 基础用法 -->
-  <button v-ripple>点击我</button>
+  <button v-ripple>
+    点击我
+  </button>
 
   <!-- 自定义颜色 -->
   <button v-ripple="{ color: 'rgba(255, 0, 0, 0.3)' }">
@@ -55,7 +57,7 @@
 ```vue
 <script setup lang="ts">
 const { createRipple } = useRipple({
-  color: 'rgba(var(--el-color-primary-rgb), 0.3)',
+  color: "rgba(var(--el-color-primary-rgb), 0.3)",
   duration: 600,
   scale: 2.5,
 });
@@ -86,12 +88,12 @@ function handleClick(event: MouseEvent) {
 
 ```vue
 <script setup lang="ts">
-import { createRipple } from '@/composables/utils/useRipple';
+import { createRipple } from "@/composables/utils/useRipple";
 
 function handleClick(event: MouseEvent) {
   // 直接调用
   createRipple(event, {
-    color: 'rgba(255, 0, 0, 0.3)',
+    color: "rgba(255, 0, 0, 0.3)",
     duration: 800,
   });
 }
@@ -104,7 +106,7 @@ function handleClick(event: MouseEvent) {
 
 ```vue
 <script setup lang="ts">
-import { addRippleEffect } from '@/composables/utils/useRipple';
+import { addRippleEffect } from "@/composables/utils/useRipple";
 
 const buttonRef = ref<HTMLElement>();
 
@@ -112,7 +114,7 @@ onMounted(() => {
   if (buttonRef.value) {
     // 添加波纹效果，返回清理函数
     const cleanup = addRippleEffect(buttonRef.value, {
-      color: 'rgba(0, 0, 255, 0.3)',
+      color: "rgba(0, 0, 255, 0.3)",
     });
 
     // 需要时可以移除
@@ -124,7 +126,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <button ref="buttonRef">动态波纹</button>
+  <button ref="buttonRef">
+    动态波纹
+  </button>
 </template>
 ```
 
@@ -140,17 +144,35 @@ onMounted(() => {
   </RippleButton>
 
   <!-- 不同类型 -->
-  <RippleButton type="primary">主要按钮</RippleButton>
-  <RippleButton type="success">成功按钮</RippleButton>
-  <RippleButton type="warning">警告按钮</RippleButton>
-  <RippleButton type="danger">危险按钮</RippleButton>
-  <RippleButton type="info">信息按钮</RippleButton>
-  <RippleButton type="text">文本按钮</RippleButton>
+  <RippleButton type="primary">
+    主要按钮
+  </RippleButton>
+  <RippleButton type="success">
+    成功按钮
+  </RippleButton>
+  <RippleButton type="warning">
+    警告按钮
+  </RippleButton>
+  <RippleButton type="danger">
+    危险按钮
+  </RippleButton>
+  <RippleButton type="info">
+    信息按钮
+  </RippleButton>
+  <RippleButton type="text">
+    文本按钮
+  </RippleButton>
 
   <!-- 不同大小 -->
-  <RippleButton size="large">大按钮</RippleButton>
-  <RippleButton size="default">默认按钮</RippleButton>
-  <RippleButton size="small">小按钮</RippleButton>
+  <RippleButton size="large">
+    大按钮
+  </RippleButton>
+  <RippleButton size="default">
+    默认按钮
+  </RippleButton>
+  <RippleButton size="small">
+    小按钮
+  </RippleButton>
 
   <!-- 自定义波纹 -->
   <RippleButton
@@ -164,7 +186,9 @@ onMounted(() => {
   </RippleButton>
 
   <!-- 禁用状态 -->
-  <RippleButton disabled>禁用按钮</RippleButton>
+  <RippleButton disabled>
+    禁用按钮
+  </RippleButton>
 </template>
 ```
 
@@ -316,4 +340,3 @@ function handleMenuClick(event: MouseEvent, path: string) {
 
 - [Material Design - Ripple](https://material.io/design/interaction/states.html#ripple)
 - [CSS Transform Performance](https://web.dev/animations-guide/)
-
