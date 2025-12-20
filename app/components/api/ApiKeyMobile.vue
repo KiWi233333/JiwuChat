@@ -448,11 +448,11 @@ onActivated(() => {
         @load="handleLoadMore"
       >
         <template #default>
-          <ListTransitionGroup name="api-key-mobile">
+          <div data-fades class="flex flex-col gap-4">
             <div
               v-for="item in tableData"
               :key="item.id"
-              v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.05)' }"
+              v-ripple="{ color: 'rgba(var(--el-color-info-rgb), 0.05)' }"
               class="border border-default-2 rounded-lg bg-color p-4"
             >
               <div class="mb-3 flex items-center gap-3">
@@ -523,18 +523,12 @@ onActivated(() => {
             </div>
 
             <!-- 空状态 -->
-            <div v-if="!loading && tableData.length === 0" key="empty" class="flex flex-col items-center justify-center py-12 op-60">
+            <div v-if="!loading && tableData.length === 0" key="empty" class="flex flex-col items-center justify-center py-12 op-50">
               <i class="text-color-3 i-solar:key-line-duotone mb-2 text-4xl" />
               <p class="text-color-3 text-sm">
                 暂无数据
               </p>
             </div>
-          </ListTransitionGroup>
-        </template>
-
-        <template #done>
-          <div v-if="tableData.length > 0" class="text-color-3 py-4 text-center text-xs">
-            共 {{ pagination.total }} 条数据，已加载全部
           </div>
         </template>
       </ListAutoIncre>
