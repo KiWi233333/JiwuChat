@@ -117,32 +117,30 @@ function initWindowAnimate() {
       ]"
       data-fade
     >
-      <div class="form-main mx-a my-a w-full text-center sm:px-4">
-        <transition name="blur">
-          <!-- 登录 -->
-          <FormLoginForm
-            v-if="user.showLoginPageType === 'login'"
-            key="login-form"
-            style="--anima: blur-in;"
-            class="login-form"
-          />
-          <!-- 注册 -->
-          <FormRegisterForm
-            v-else-if="user.showLoginPageType === 'register'"
-            key="register-form"
-            style="--anima: blur-in;"
-            :size="setting.isDesktop ? 'default' : 'large'"
-            class="register-form"
-          />
-          <!-- 环境配置 -->
-          <SettingEnvConfigForm
-            v-else-if="user.showLoginPageType === 'env-config'"
-            key="env-config-form"
-            style="--anima: blur-in;"
-            :size="setting.isDesktop ? 'default' : 'large'"
-            class="env-config-form"
-          />
-        </transition>
+      <div data-fades class="form-main relative mx-a w-full text-center sm:px-4">
+        <!-- 登录 -->
+        <FormLoginForm
+          v-if="user.showLoginPageType === 'login'"
+          key="login-form"
+          style="--anima: blur-in;"
+          class="login-form"
+        />
+        <!-- 注册 -->
+        <FormRegisterForm
+          v-else-if="user.showLoginPageType === 'register'"
+          key="register-form"
+          style="--anima: blur-in;"
+          :size="setting.isDesktop ? 'default' : 'large'"
+          class="register-form"
+        />
+        <!-- 环境配置 -->
+        <SettingEnvConfigForm
+          v-else-if="user.showLoginPageType === 'env-config'"
+          key="env-config-form"
+          style="--anima: blur-in;"
+          :size="setting.isDesktop ? 'default' : 'large'"
+          class="env-config-form"
+        />
       </div>
     </div>
   </div>
