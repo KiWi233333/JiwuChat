@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import type { ElForm } from "#components";
+import type { ChatMessageMobileToolPanel, ElForm } from "#components";
+import type { ToolItem } from "./MobileToolPanel.vue";
+import MobileEmojiPanel from "./MobileEmojiPanel.vue";
 
 const emit = defineEmits<{
   (e: "submit", newMsg: ChatMessageVO): void
@@ -435,16 +437,18 @@ watch(
   },
 );
 // 移动端工具栏配置
-interface ToolItem {
-  id: string;
-  icon: string;
-  label: string;
-  className?: string;
-  disabled?: boolean;
-  onClick?: () => void;
-}
-const mobileTools = computed(() => {
+const mobileToolPanelRef = shallowRef<InstanceType<typeof ChatMessageMobileToolPanel> | null>(null);
+const mobileTools = computed<ToolItem[]>(() => {
   const tools: ToolItem[] = [
+    {
+      id: "emoji",
+      icon: "i-solar:sticker-smile-circle-2-bold",
+      label: "表情",
+      panel: MobileEmojiPanel,
+      panelProps: {
+        onSubmit: handleEmojiSubmit,
+      },
+    },
     {
       id: "image",
       icon: "i-solar:album-bold",
@@ -520,6 +524,16 @@ function setReadAndScrollBottom() {
   if (chat.theRoomId) {
     chat.setReadRoom(chat.theRoomId);
     chat.scrollBottom();
+  }
+}
+
+// 表情提交
+function handleEmojiSubmit(emoji: string) {
+  if (msgInputRef.value) {
+    msgInputRef.value.textContent += emoji;
+    nextTick(() => {
+      selectionManager.focusAtEnd();
+    });
   }
 }
 
@@ -799,6 +813,8 @@ defineExpose({
               <i class="i-solar:video-library-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" @click.stop="fileActions.selectVideoFiles()" />
               <!-- 文件 -->
               <i class="i-solar:folder-with-files-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" @click.stop="fileActions.selectFile({ multiple: true, directory: false })" />
+              <!-- Emoji -->
+              <CommonEmojiSelect @submit="handleEmojiSubmit" />
             </div>
             <!-- AI机器人选择器 -->
             <el-select
@@ -1037,29 +1053,12 @@ defineExpose({
     </div>
   </el-form>
   <!-- 移动端菜单栏 -->
-  <Transition name="slide-height">
-    <div
-      v-if="showMobileTools && !isAiRoom && setting.isMobileSize"
-      class="w-full overflow-hidden"
-    >
-      <div class="grid-container h-32vh flex select-none overflow-hidden">
-        <div class="grid grid-cols-4 my-a w-full gap-4 p-4">
-          <div
-            v-for="tool in mobileTools"
-            :key="tool.id"
-            class="flex-row-c-c flex-col gap-1 transition-200 hover:op-70"
-            :class="[tool.className, tool.disabled ? 'op-50 pointer-events-none' : 'cursor-pointer']"
-            @click="!tool.disabled ? tool.onClick?.() : undefined"
-          >
-            <span h-15 w-15 flex-row-c-c card-default>
-              <i class="p-3.6" :class="[tool.icon]" />
-            </span>
-            <span class="text-xs">{{ tool.label }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Transition>
+  <ChatMessageMobileToolPanel
+    v-if="!isAiRoom && setting.isMobileSize"
+    ref="mobileToolPanelRef"
+    v-model:show="showMobileTools"
+    :tools="mobileTools"
+  />
   <!-- 新建通知 -->
   <ChatDialogGroupNoticeMsg v-model:show="showGroupNoticeDialog" @submit="onSubmitGroupNoticeMsg" />
   <!-- 上传预览弹窗 -->

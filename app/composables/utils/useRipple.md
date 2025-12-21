@@ -340,4 +340,3 @@ function handleMenuClick(event: MouseEvent, path: string) {
 
 - [Material Design - Ripple](https://material.io/design/interaction/states.html#ripple)
 - [CSS Transform Performance](https://web.dev/animations-guide/)
-

@@ -9,6 +9,16 @@ $popup-scale-from: 0.96;
 $popover-animation-duration: 0.16s;
 $popover-animation-timing: ease;
 
+// el-input
+.el-input {
+  &.input-weak {
+    .el-input__wrapper {
+      box-shadow: none;
+      --at-apply: "input-bg-color";
+    }
+  }
+}
+
 // 消息确认框
 .el-message-box {
   --at-apply: "border-default-sm";
