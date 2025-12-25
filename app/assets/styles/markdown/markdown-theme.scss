@@ -1,0 +1,340 @@
+.markdown-body {
+  --at-apply: "m-0 text-color leading-normal break-words text-4";
+  color-scheme: light dark;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  color: var(--el-text-color-primary);
+
+  // 基础元素
+  a {
+    --at-apply: "bg-transparent text-color-primary no-underline hover:underline";
+  }
+
+  b,
+  strong {
+    --at-apply: "font-600";
+  }
+  dfn {
+    --at-apply: "italic";
+  }
+  small {
+    --at-apply: "text-90%";
+  }
+  sub,
+  sup {
+    --at-apply: "text-75% leading-none relative align-baseline";
+  }
+  sub {
+    bottom: -0.25em;
+  }
+  sup {
+    top: -0.5em;
+  }
+
+  // 标题
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    --at-apply: "mt-6 mb-4 font-600 leading-tight";
+    .anchor {
+      --at-apply: "float-left pr-1 -ml-5 leading-none focus:outline-none";
+    }
+    &:hover .anchor .octicon-link {
+      visibility: visible;
+    }
+  }
+
+  h1 {
+    --at-apply: "pb-0.3em text-2em border-default-b";
+  }
+  h2 {
+    --at-apply: "pb-0.3em text-1.5em border-default-b";
+  }
+  h3 {
+    --at-apply: "text-1.25em";
+  }
+  h4 {
+    --at-apply: "text-1em";
+  }
+  h5 {
+    --at-apply: "text-0.875em";
+  }
+  h6 {
+    --at-apply: "text-0.85em text-small-color";
+  }
+
+  // 段落与引用
+  p,
+  blockquote,
+  ul,
+  ol,
+  dl,
+  table,
+  pre,
+  details {
+    --at-apply: "mt-0 mb-4";
+  }
+
+  blockquote {
+    --at-apply: "m-0 px-1em text-small-color border-default-l border-l-0.25em";
+    & > :first-child {
+      margin-top: 0;
+    }
+    & > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // 列表
+  ul,
+  ol {
+    --at-apply: "pl-2em";
+    ol,
+    ul {
+      margin: 0;
+    }
+  }
+
+  li {
+    & + li {
+      margin-top: 0.25em;
+    }
+    & > p {
+      --at-apply: "mt-4";
+    }
+  }
+
+  // 任务列表 (GFM)
+  ul.task-list,
+  ul[data-type="taskList"] {
+    --at-apply: "list-none p-0";
+    & > li {
+      --at-apply: "flex items-start gap-2 mt-1";
+      &::marker {
+        display: none;
+        content: none;
+      }
+      & > label {
+        --at-apply: "flex-shrink-0 mt-1 inline-flex items-center cursor-default";
+        input[type="checkbox"] {
+          --at-apply: "m-0 appearance-none w-4.5 h-4.5 bg-color-2 border-default rounded-1 cursor-pointer transition-all flex items-center justify-center outline-none!";
+          &:checked {
+            --at-apply: "border-theme-primary";
+            background-color: var(--el-color-primary-light-9);
+            &::after {
+              content: "";
+              --at-apply: "i-tabler:check w-3.2 h-3.2 text-theme-primary";
+              display: block;
+            }
+          }
+          &:hover {
+            --at-apply: "border-theme-primary";
+          }
+          &:focus-visible {
+            --at-apply: "ring-2 ring-theme-primary ring-op-20";
+          }
+        }
+      }
+      & > div {
+        --at-apply: "flex-1 min-w-0";
+        & > p {
+          margin: 0;
+        }
+      }
+      &[data-checked="true"] > div {
+        --at-apply: "text-small-color line-through";
+      }
+    }
+  }
+
+  // 代码
+  code,
+  tt,
+  kbd,
+  samp {
+    --at-apply: "font-mono text-0.85em";
+  }
+
+  code,
+  tt {
+    --at-apply: "px-0.2em py-0.1em m-0 bg-color-3 rounded-1.5 break-spaces";
+    background-color: var(--el-fill-color-dark);
+  }
+
+  pre {
+    --at-apply: "p-4 overflow-auto bg-color-2 rounded-1.5 leading-[1.45]";
+    background-color: var(--el-fill-color-dark);
+    code {
+      --at-apply: "p-0 m-0 bg-transparent border-0 text-80% break-normal whitespace-pre";
+    }
+  }
+
+  kbd {
+    --at-apply: "inline-block p-1 text-0.7em text-color bg-color-2 border-default border-b-2 rounded-1.5 align-middle";
+  }
+
+  // 表格
+  table {
+    --at-apply: "border-spacing-0 border-separate block w-max max-w-full overflow-auto rounded-2 border-default";
+
+    tr {
+      --at-apply: "bg-color";
+      &:nth-child(2n) {
+        --at-apply: "bg-color-2";
+      }
+    }
+
+    th,
+    td {
+      --at-apply: "py-2 px-4 border-default-b border-default-r last:border-r-0";
+      & > p {
+        margin: 0;
+      }
+    }
+
+    // 移除最后一行单元格的底边框，防止与容器边框重合
+    tr:last-child {
+      th,
+      td {
+        border-bottom: 0;
+      }
+    }
+
+    th {
+      --at-apply: "font-600 bg-color-2/50";
+    }
+  }
+
+  // 图片
+  img {
+    --at-apply: "max-w-full box-content bg-transparent border-none";
+    &[align="right"] {
+      --at-apply: "pl-5";
+    }
+    &[align="left"] {
+      --at-apply: "pr-5";
+    }
+  }
+
+  // 脚注
+  .footnotes {
+    --at-apply: "text-3 text-small-color border-default-t mt-8 pt-4";
+    ol {
+      --at-apply: "pl-4";
+    }
+    li:target {
+      --at-apply: "text-color";
+      &::before {
+        --at-apply: "absolute -inset-2 pointer-events-none border-2 border-theme-primary rounded-1.5";
+      }
+    }
+  }
+
+  // Alert (GFM)
+  .markdown-alert {
+    --at-apply: "py-2 px-4 mb-4 text-inherit border-default-l border-l-0.25em";
+    & > :first-child {
+      margin-top: 0;
+    }
+    & > :last-child {
+      margin-bottom: 0;
+    }
+    .markdown-alert-title {
+      --at-apply: "flex font-500 items-center leading-none gap-2 mb-2";
+    }
+
+    &.markdown-alert-note {
+      --at-apply: "border-theme-primary";
+      .markdown-alert-title {
+        --at-apply: "text-theme-primary";
+      }
+    }
+    &.markdown-alert-tip {
+      --at-apply: "border-success";
+      .markdown-alert-title {
+        --at-apply: "text-success";
+      }
+    }
+    &.markdown-alert-important {
+      --at-apply: "border-theme-primary";
+      .markdown-alert-title {
+        --at-apply: "text-theme-primary";
+      }
+    }
+    &.markdown-alert-warning {
+      --at-apply: "border-warning";
+      .markdown-alert-title {
+        --at-apply: "text-warning";
+      }
+    }
+    &.markdown-alert-caution {
+      --at-apply: "border-danger";
+      .markdown-alert-title {
+        --at-apply: "text-danger";
+      }
+    }
+  }
+
+  // 语法高亮 (部分支持)
+  .pl-c {
+    --at-apply: "text-small-color";
+  }
+  .pl-c1,
+  .pl-s .pl-v,
+  .pl-e,
+  .pl-en {
+    --at-apply: "text-color-primary";
+  }
+  .pl-smi,
+  .pl-s .pl-s1 {
+    --at-apply: "text-color";
+  }
+  .pl-ent {
+    --at-apply: "text-success";
+  }
+  .pl-k,
+  .pl-bu {
+    --at-apply: "text-danger";
+  }
+  .pl-v,
+  .pl-smw,
+  .pl-ml {
+    --at-apply: "text-warning";
+  }
+  .pl-s,
+  .pl-pds,
+  .pl-sr {
+    --at-apply: "text-color-info";
+  }
+  .pl-mi {
+    --at-apply: "italic";
+  }
+  .pl-mb {
+    --at-apply: "font-bold";
+  }
+  .pl-md {
+    --at-apply: "text-danger bg-danger/10";
+  }
+  .pl-mi1 {
+    --at-apply: "text-success bg-success/10";
+  }
+  .pl-mc {
+    --at-apply: "text-warning bg-warning/10";
+  }
+
+  // 辅助类
+  .octicon {
+    --at-apply: "inline-block fill-current align-text-bottom";
+  }
+  hr {
+    --at-apply: "h-0.25em p-0 my-6 bg-color-2 border-none overflow-hidden";
+    border-bottom: 1px solid var(--el-border-color);
+  }
+  summary {
+    --at-apply: "cursor-pointer display-list-item";
+  }
+}
