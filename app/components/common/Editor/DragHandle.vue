@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { MiddlewareState, Placement, Strategy } from "@floating-ui/dom";
 import type { DragHandleProps } from "@tiptap/extension-drag-handle-vue-3";
-import type { Node } from "@tiptap/pm/model";
 import type { Editor, JSONContent } from "@tiptap/vue-3";
 </script>
 
@@ -84,24 +83,50 @@ const currentNode = shallowRef<{ type: string; level?: number }>({
 /**
  * 处理节点变化事件
  * 更新当前选中节点的位置和类型信息
+ * 根据 TipTap DragHandle 文档，onNodeChange 会在节点悬停时被调用
+ * 参数格式: { node: Node | null, editor: Editor, pos: number }
  */
-function handleNodeChange(payload: { node: Node | null; pos: number; editor?: any }) {
-  const { node, pos } = payload as { node: Node | null; pos: number; editor?: Editor };
+const handleNodeChange: DragHandleProps["onNodeChange"] = (payload) => {
+  const { node, pos, editor: payloadEditor } = payload;
+
+  // 如果节点为空或位置无效，忽略此次调用（不清空状态）
+  // 原因：在快速移动鼠标时，DragHandle 扩展会在节点之间触发 pos=-1 的回调
+  // 但随后会有新的有效节点回调，如果立即清空状态会导致手柄消失
+  // 只有当真正没有节点悬停时（由 DragHandle 扩展本身处理），手柄才会隐藏
   if (pos == null || pos < 0 || !node) {
-    currentNodePos.value = null;
-    currentNode.value = {
-      type: "",
-      level: undefined,
-    };
+    // 不清空状态，保持当前节点信息，让 DragHandle 扩展自己处理显示/隐藏
     return;
   }
 
+  // 更新当前节点位置
   currentNodePos.value = pos;
-  currentNode.value = {
-    type: node.type?.name || "",
-    level: node.attrs?.level,
-  };
-}
+
+  // 获取节点类型名称
+  const nodeTypeName = node.type?.name || "";
+
+  // 对于列表项（listItem），需要检查父节点类型以显示正确的图标
+  // 因为 listItem 本身没有区分是 bulletList 还是 orderedList
+  let displayType = nodeTypeName;
+  const level = node.attrs?.level;
+
+  if (nodeTypeName === "listItem" && payloadEditor) {
+    // 尝试获取父节点类型
+    const $pos = payloadEditor.state.doc.resolve(pos);
+    // 向上查找父节点，找到 bulletList 或 orderedList
+    for (let depth = $pos.depth; depth > 0; depth--) {
+      const parentNode = $pos.node(depth);
+      if (parentNode.type.name === "bulletList" || parentNode.type.name === "orderedList") {
+        displayType = parentNode.type.name;
+        break;
+      }
+    }
+  }
+
+  // currentNode.value = {
+  //   type: displayType,
+  //   level,
+  // };
+};
 
 /**
  * 点击手柄时的处理逻辑
@@ -176,23 +201,32 @@ const computePositionConfig = computed<DragHandleProps["computePositionConfig"]>
   middleware: middleware.value,
 }));
 
-// 根据节点类型获取对应的图标
-// @unocss-include i-tabler:h-1 i-tabler:h-2 i-tabler:h-3 i-tabler:h-4 i-tabler:h-5 i-tabler:h-6
+/**
+ * 根据节点类型获取对应的图标
+ * 节点类型通过 onNodeChange 回调准确获取
+ * @unocss-include i-tabler:h-1 i-tabler:h-2 i-tabler:h-3 i-tabler:h-4 i-tabler:h-5 i-tabler:h-6
+ */
 const nodeTypeIcon = computed(() => {
-  if (!currentNode.value || !currentNode.value.type)
+  if (!currentNode.value || !currentNode.value.type) {
     return "";
+  }
 
   const { type, level } = currentNode.value;
+
   switch (type) {
     case "heading":
+      // 标题节点，根据 level 显示对应的图标（h1-h6）
       return `i-tabler:h-${level || 1}`;
     case "paragraph":
       return "i-tabler:text-size";
     case "bulletList":
+      // 无序列表
       return "i-tabler:list";
     case "orderedList":
+      // 有序列表
       return "i-tabler:list-numbers";
     case "listItem":
+      // 列表项（如果无法确定父节点类型，使用默认图标）
       return "i-tabler:list-details";
     case "blockquote":
       return "i-tabler:quote";
@@ -202,6 +236,16 @@ const nodeTypeIcon = computed(() => {
       return "i-tabler:separator-horizontal";
     case "image":
       return "i-tabler:photo";
+    case "table":
+      return "i-tabler:table";
+    case "tableRow":
+      return "i-tabler:row-insert-bottom";
+    case "tableCell":
+      return "i-tabler:layout-grid";
+    case "taskList":
+      return "i-tabler:list-check";
+    case "taskItem":
+      return "i-tabler:checkbox";
     default:
       return "";
   }
@@ -215,6 +259,7 @@ const nodeTypeIcon = computed(() => {
     :plugin-key="pluginKey"
     :compute-position-config="computePositionConfig"
     :locked="locked"
+    :on-node-change="handleNodeChange as any"
     class="cursor-grab transition-all active:cursor-grabbing"
     :on-element-drag-start="onElementDragStart"
     :on-element-drag-end="onElementDragEnd"
@@ -222,7 +267,7 @@ const nodeTypeIcon = computed(() => {
   >
     <slot :node-type-icon="nodeTypeIcon" :on-click="onClick">
       <div data-slot="handle" class="px-1.5">
-        <div class="gap-0.5 border-default-3 rounded bg-color p-1 text-xs shadow-sm transition-200 hover:shadow-md">
+        <div class="gap-0.5 border-default rounded bg-color-br p-1 text-xs shadow-sm transition-200 !border-op-50">
           <i
             v-if="showNodeType"
             class="p-2 text-theme-primary"
@@ -231,7 +276,7 @@ const nodeTypeIcon = computed(() => {
           <i
             v-if="showDragIcon"
             data-slot="icon"
-            class="p-2.2 text-color leading-none op-50 transition-colors active:op-100 hover:op-100"
+            class="p-2 text-color leading-none op-50 transition-colors active:op-100 hover:op-100"
             :class="icon"
           />
         </div>

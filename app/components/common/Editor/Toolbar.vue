@@ -22,6 +22,7 @@ export interface EditorToolbarProps {
   size?: "small" | "default" | "large"
   tippyOptions?: Record<string, any>
   shouldShow?: (props: { editor: Editor, view: any, state: any, from: number, to: number }) => boolean
+  showAfter?: number
 }
 
 defineOptions({ name: "CommonEditorToolbar" });
@@ -33,6 +34,7 @@ const {
   size = "small",
   tippyOptions,
   shouldShow,
+  showAfter = 400,
 } = defineProps<EditorToolbarProps>();
 
 const injectedEditor = inject<Ref<Editor | undefined>>("tiptapEditor");
@@ -40,20 +42,20 @@ const editor = computed(() => propsEditor || injectedEditor?.value);
 
 const virtualRef = ref<Measurable | undefined>();
 const tooltipContent = ref("");
+
 const tooltipVisible = ref(false);
 const tooltipVisibleDelayed = ref(false);
 let delayTimer: ReturnType<typeof setTimeout> | null = null;
-const tooltipAnimationDuration = 200;
 
-watch(tooltipVisible, (val) => {
+watch([tooltipVisible], ([visible]) => {
   if (delayTimer) {
     clearTimeout(delayTimer);
     delayTimer = null;
   }
-  if (val) {
+  if (visible) {
     delayTimer = setTimeout(() => {
       tooltipVisibleDelayed.value = true;
-    }, tooltipAnimationDuration);
+    }, showAfter);
   }
   else {
     tooltipVisibleDelayed.value = false;
@@ -83,6 +85,12 @@ function isDisabled(item: ToolbarItem): boolean {
 function onClick(item: ToolbarItem) {
   if (!editor.value?.isEditable || isDisabled(item))
     return;
+  if (delayTimer) {
+    clearTimeout(delayTimer);
+    delayTimer = null;
+  }
+  tooltipVisible.value = false;
+  tooltipVisibleDelayed.value = false;
   item.action?.(editor.value);
 }
 
@@ -96,7 +104,12 @@ function onMouseEnter(e: MouseEvent, item: ToolbarItem) {
 }
 
 function onMouseLeave() {
+  if (delayTimer) {
+    clearTimeout(delayTimer);
+    delayTimer = null;
+  }
   tooltipVisible.value = false;
+  virtualRef.value = undefined;
 }
 
 const Component = computed(() => {
@@ -127,6 +140,17 @@ const layoutClass = computed(() => {
   }
   return classes;
 });
+
+// 销毁
+onUnmounted(() => {
+  if (delayTimer) {
+    clearTimeout(delayTimer);
+    delayTimer = null;
+  }
+  tooltipVisible.value = false;
+  tooltipVisibleDelayed.value = false;
+  virtualRef.value = undefined;
+});
 </script>
 
 <template>
@@ -141,7 +165,8 @@ const layoutClass = computed(() => {
       :virtual-ref="virtualRef"
       virtual-triggering
       trigger="click"
-      :show-after="300"
+      :show-after="0"
+      :hide-after="0"
       :popper-options="{
         modifiers: [
           {

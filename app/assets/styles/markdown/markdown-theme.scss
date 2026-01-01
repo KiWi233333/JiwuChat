@@ -49,10 +49,10 @@
   }
 
   h1 {
-    --at-apply: "pb-0.3em text-2em border-default-b";
+    --at-apply: "text-2em";
   }
   h2 {
-    --at-apply: "pb-0.3em text-1.5em border-default-b";
+    --at-apply: "text-1.5em";
   }
   h3 {
     --at-apply: "text-1.25em";
@@ -80,7 +80,11 @@
   }
 
   blockquote {
-    --at-apply: "m-0 px-1em text-small-color border-default-l border-l-0.25em";
+    --at-apply: "m-0 px-1em text-small-color relative";
+    &::before {
+      content: "";
+      --at-apply: "absolute left-0 top-0 bottom-0 w-0.25em bg-theme-primary rounded-full";
+    }
     & > :first-child {
       margin-top: 0;
     }

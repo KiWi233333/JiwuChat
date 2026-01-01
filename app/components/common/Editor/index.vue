@@ -154,6 +154,7 @@ const starterKitOptions = computed(() => {
     horizontalRule: false,
     heading: { levels: [1, 2, 3, 4] },
     dropcursor: { color: "var(--el-color-primary)", width: 2 },
+    link: false,
   };
 
   if (contentType.value === "text") {
