@@ -1,33 +1,18 @@
-import type { Message as BackMessage } from "@tauri-apps/plugin-websocket";
-import type BackWebSocket from "@tauri-apps/plugin-websocket";
+import type { WebSocketManager } from "~/composables/hooks/ws/WebSocketManager";
+import type { WsSendMsgDTO } from "~/types/chat/WsType";
 import { acceptHMRUpdate, defineStore } from "pinia";
 import { useWsMessage } from "~/composables/hooks/ws/useWsCore";
+import { getWebSocketManager } from "~/composables/hooks/ws/WebSocketManager";
 import { WsStatusEnum } from "~/types/chat/WsType";
 
-
-// @unocss-include
 export const useWsStore = defineStore(
   WS_STORE_KEY,
   () => {
     const isWindBlur = ref<boolean>(false);
+    const setting = useSettingStore();
 
-    // WebSocket核心hooks
-    const {
-      webSocketHandler,
-      status,
-      fullWsUrl,
-      lastDisconnectTime,
-      connectTime,
-      initBrowserWebSocket,
-      initTauriWebSocket,
-      handleTauriWsError,
-      closeConnection,
-      removeEventListeners,
-      send,
-      sendHeart,
-    } = useWebSocket();
+    const manager = shallowRef<WebSocketManager | null>(null);
 
-    // 消息处理hooks
     const {
       wsMsgList,
       isNewMsg,
@@ -35,112 +20,71 @@ export const useWsStore = defineStore(
       resetMsgList,
     } = useWsMessage();
 
-    /**
-     * 重新加载WebSocket连接
-     */
+    const status = computed(() => manager.value?.status.value ?? WsStatusEnum.CLOSE);
+
     const reload = () => mitter.emit(MittEventType.CHAT_WS_RELOAD);
 
-    /**
-     * 默认初始化WebSocket连接
-     */
     async function initDefault(call: () => any) {
-      const setting = useSettingStore();
       const user = useUserStore();
       if (!user.getToken) {
-        await closeConnection();
-        status.value = WsStatusEnum.SAFE_CLOSE;
+        await close(false);
         return false;
       }
 
-      // 如果已经连接且状态为OPEN或CONNECTION，直接返回
-      if (webSocketHandler.value && (status.value === WsStatusEnum.OPEN || status.value === WsStatusEnum.CONNECTION)) {
-        return webSocketHandler.value;
+      if (manager.value && (status.value === WsStatusEnum.OPEN || status.value === WsStatusEnum.CONNECTION)) {
+        return true;
       }
-      // 根据设置选择WebSocket实现
-      return setting.isUseWebsocket
-        ? initBrowserWebSocket(fullWsUrl.value, call)
-        : initTauriWebSocket(fullWsUrl.value, call);
+
+      const useTauri = !setting.isUseWebsocket;
+      manager.value = getWebSocketManager(useTauri);
+
+      const fullWsUrl = `${BaseWSUrlRef.value}?Authorization=${user.getToken}`;
+      const success = await manager.value.connect(fullWsUrl);
+
+      if (success) {
+        call();
+      }
+
+      return success;
     }
 
-    /**
-     * 接收消息
-     */
     function onMessage() {
-      if (!webSocketHandler.value)
+      if (!manager.value)
         return;
 
-      const setting = useSettingStore();
-      if (setting.isUseWebsocket) {
-        // 浏览器WebSocket实现
-        (webSocketHandler.value as WebSocket).onmessage = (event: MessageEvent) => {
-          if (event && !event.data)
-            return false;
-
-          try {
-            const data = JSON.parse(event.data) as Result<WsMsgBodyVO>;
-            checkResponse(data); // 处理错误
-            if (data) {
-              processWsMessage(data);
-            }
+      manager.value.onMessage((data: string) => {
+        try {
+          const msgData = JSON.parse(data) as Result<WsMsgBodyVO>;
+          checkResponse(msgData);
+          if (msgData) {
+            processWsMessage(msgData);
           }
-          catch (err) {
-            return null;
-          }
-        };
-      }
-      else {
-        // Tauri WebSocket实现
-        (webSocketHandler.value as BackWebSocket).addListener((msg: BackMessage) => {
-          // 处理WebSocket错误
-          if (handleTauriWsError(msg))
-            return;
-
-          // 处理关闭事件
-          if (msg.type === "Close") {
-            status.value = WsStatusEnum.SAFE_CLOSE;
-            webSocketHandler.value = null;
-            return;
-          }
-
-          // 处理文本消息
-          if (msg.type === "Text" && msg.data) {
-            try {
-              const data = JSON.parse(String(msg.data)) as Result<WsMsgBodyVO>;
-              if (data) {
-                processWsMessage(data);
-              }
-            }
-            catch (err) {
-              return null;
-            }
-          }
-          // 忽略其他类型的消息
-          else if (!["Binary", "Ping", "Pong"].includes(msg.type)) {
-            status.value = WsStatusEnum.SAFE_CLOSE;
-            webSocketHandler.value = null;
-          }
-        });
-      }
+        }
+        catch (err) {
+          // ignore
+        }
+      });
     }
 
-    /**
-     * 关闭WebSocket连接
-     */
+    function send(data: WsSendMsgDTO) {
+      manager.value?.send(data);
+    }
+
+    function sendHeart() {
+      manager.value?.sendHeart();
+    }
+
     async function close(isConfirm = true) {
       if (!isConfirm) {
         try {
-          await closeConnection();
+          await manager.value?.disconnect();
         }
         finally {
-          // 记录断开时刻
-          lastDisconnectTime.value = Date.now();
-          webSocketHandler.value = null;
-          status.value = WsStatusEnum.SAFE_CLOSE;
+          // ignore
         }
         return;
       }
 
-      // 需要确认的关闭
       ElMessageBox.confirm("是否断开会话？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -149,56 +93,34 @@ export const useWsStore = defineStore(
         center: true,
         callback: async (res: string) => {
           if (res === "confirm") {
-            if (!webSocketHandler.value)
-              return;
-
-            try {
-              await closeConnection();
-            }
-            catch (err) {
-              // 忽略错误
-            }
-
-            // 记录断开时刻
-            lastDisconnectTime.value = Date.now();
-            status.value = WsStatusEnum.SAFE_CLOSE;
+            await manager.value?.disconnect();
             ElNotification.success("断开成功！");
           }
         },
       });
     }
 
-    /**
-     * 重置Store
-     */
     function resetStore() {
       try {
         close(false);
-        removeEventListeners();
-        closeConnection();
+        manager.value?.dispose();
       }
       catch (err) {
-        // 忽略错误
+        // ignore
       }
       finally {
         resetMsgList();
-        status.value = WsStatusEnum.SAFE_CLOSE;
+        manager.value = null;
         isWindBlur.value = false;
-        webSocketHandler.value = null;
-        // 记录断开时刻
-        lastDisconnectTime.value = Date.now();
-        connectTime.value = 0;
       }
     }
 
     return {
-      // state
       isNewMsg,
-      webSocketHandler,
+      manager,
       status,
       isWindBlur,
       wsMsgList,
-      // 方法
       resetStore,
       reload,
       initDefault,
@@ -214,4 +136,3 @@ export const useWsStore = defineStore(
 
 if (import.meta.hot)
   import.meta.hot.accept(acceptHMRUpdate(useWsStore, import.meta.hot));
-

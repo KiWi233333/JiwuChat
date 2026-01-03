@@ -162,7 +162,7 @@ export function useWsWorker() {
       if (e.data.type === "reload")
         reload();
       if (e.data.type === "heart") {
-        if (ws.status !== WsStatusEnum.OPEN || !ws.webSocketHandler)
+        if (ws.status !== WsStatusEnum.OPEN)
           return reload();
         try {
           ws.sendHeart();
