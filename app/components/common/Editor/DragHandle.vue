@@ -259,7 +259,6 @@ const nodeTypeIcon = computed(() => {
     :plugin-key="pluginKey"
     :compute-position-config="computePositionConfig"
     :locked="locked"
-    :on-node-change="handleNodeChange as any"
     class="cursor-grab transition-all active:cursor-grabbing"
     :on-element-drag-start="onElementDragStart"
     :on-element-drag-end="onElementDragEnd"
@@ -268,11 +267,11 @@ const nodeTypeIcon = computed(() => {
     <slot :node-type-icon="nodeTypeIcon" :on-click="onClick">
       <div data-slot="handle" class="px-1.5">
         <div class="gap-0.5 border-default rounded bg-color-br p-1 text-xs shadow-sm transition-200 !border-op-50">
-          <i
+          <!-- <i
             v-if="showNodeType"
             class="p-2 text-theme-primary"
             :class="nodeTypeIcon"
-          />
+          /> -->
           <i
             v-if="showDragIcon"
             data-slot="icon"
