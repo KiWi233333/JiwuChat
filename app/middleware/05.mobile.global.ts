@@ -46,27 +46,26 @@ function handleMobileWebNavigation(
     return from.path && from.path !== toPath ? from.path : "/";
   }
 
-  // 检查是否在白名单中
-  const inWhiteList = isWhiteListRoute(toPath);
-
-  if (!inWhiteList) {
-    // 非白名单路由，需要登录
-    if (!user.isLogin) {
-      user.showLoginPageType = "login";
-      return "/login";
-    }
-  }
-  else if (toPath === "/login") {
-    // 已登录用户访问登录页，重定向
-    if (user.isLogin) {
-      return from.path && from.path !== "/login" ? from.path : "/";
-    }
-  }
-
-  // 扩展页面权限检查
+  // 扩展页面在新窗口打开
   if (toPath.startsWith("/extend") && !from.path.startsWith("/extend")) {
     window.open(toPath, "_blank");
     return abortNavigation();
+  }
+
+  // 未登录处理
+  if (!user.isLogin) {
+    // 访问白名单路由，允许访问
+    if (isWhiteListRoute(toPath))
+      return;
+    // 访问受保护路由，跳转登录页
+    user.showLoginPageType = "login";
+    return "/login";
+  }
+
+  // 已登录处理
+  // 已登录访问登录页，重定向到来源页或首页
+  if (toPath === "/login") {
+    return from.path && from.path !== "/login" ? from.path : "/";
   }
 }
 

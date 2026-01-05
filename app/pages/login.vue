@@ -117,7 +117,7 @@ function initWindowAnimate() {
       ]"
       data-fade
     >
-      <div data-fades class="form-main mx-a my-a w-full text-center sm:px-4">
+      <div data-fades class="form-main relative mx-a w-full text-center sm:px-4">
         <!-- 登录 -->
         <FormLoginForm
           v-if="user.showLoginPageType === 'login'"
@@ -190,7 +190,7 @@ body > .controls {
 .dark .main-box {
   :deep(.el-form) {
     .el-input__wrapper {
-      --el-input-bg-color: rgba(26, 26, 26, 0.4);
+      --el-input-bg-color: #1b1b1b;
     }
   }
 }

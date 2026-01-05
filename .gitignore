@@ -33,3 +33,5 @@ report.html
 CLAUDE.md
 .cursor
 .dev
+.docs
+app/pages/test.vue

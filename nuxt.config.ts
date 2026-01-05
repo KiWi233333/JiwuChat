@@ -137,10 +137,9 @@ export default defineNuxtConfig({
   // css
 
   css: [
-    "@/assets/styles/init.scss",
-    "@/assets/styles/index.scss",
+    "@/assets/styles/base.scss",
     "@/assets/styles/animate.scss",
-    "@/assets/styles/element-ui.scss",
+    "@/assets/styles/overrides.scss",
   ],
   nitro: {
     devProxy: {
@@ -219,9 +218,9 @@ export default defineNuxtConfig({
           silenceDeprecations: ["legacy-js-api", "global-builtin"],
           // WARNING: additionalData 只应该包含：变量、mixins、函数等不会生成实际 CSS 代码的内容（其他不应该放入）
           additionalData: `
+          @use "@/assets/styles/variables.scss" as *;
           @use "@/assets/styles/element/index.scss" as element;
           @use "@/assets/styles/element/dark.scss" as dark;
-          @use "@/assets/styles/var.scss" as *;
           `,
         },
       },

@@ -67,7 +67,7 @@ onMounted(async () => {
           v-bind="$attrs"
           @click="handleRepo(OAuthPlatformCode.GITHUB, false)"
         >
-          <CardElImage error-root-class="hidden" src="/images/brand/github.svg" alt="GitHub" class="h-5/6 w-5/6 object-contain" />
+          <CardElImage error-root-class="hidden" src="/images/brand/github.svg" alt="GitHub" class="h-5/6 w-5/6 object-contain dark:invert" />
         </div>
       </template>
     </el-popconfirm>

@@ -1,0 +1,345 @@
+@use "@/assets/styles/variables.scss" as *;
+
+// item动画
+.item-list-move,
+.item-list-enter-active,
+.item-list-leave-active {
+  transition: all 0.4s $animate-cubic-bount;
+}
+
+.item-list-enter-from,
+.item-list-leave-to {
+  opacity: 0;
+  filter: blur(2%);
+  transform: translateX(20%);
+}
+
+.item-list-leave-active {
+  position: absolute;
+  z-index: -1;
+}
+
+// item动画
+.fade-list-move,
+.fade-list-enter-active,
+.fade-list-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.fade-list-enter-from,
+.fade-list-leave-to {
+  opacity: 0;
+}
+
+.fade-list-leave-active {
+  position: absolute;
+  z-index: -1;
+}
+
+// item动画
+.blur-enter-active,
+.blur-leave-active {
+  transition: all $transition-delay ease-in-out;
+}
+
+.blur-enter-from,
+.blur-leave-to {
+  opacity: 0;
+  filter: blur(6px) grayscale(1);
+}
+
+// group动画
+.group-list-move, /* 对移动中的元素应用的过渡 */
+.group-list-enter-active,
+.group-list-leave-active {
+  transition: 0.3s ease-in-out;
+}
+
+.group-list-enter-from,
+.group-list-leave-to {
+  opacity: 0;
+  transform: translateY(1em);
+}
+
+.group-list-leave-active {
+  position: absolute !important;
+}
+
+// blur 列表动画
+.pop-list-move,
+.pop-list-enter-active,
+.pop-list-leave-active {
+  transition-duration: $transition-delay;
+  // transition-timing-function: $animate-cubic;
+  transition-property: all;
+}
+
+.pop-list-enter-from,
+.pop-list-leave-to {
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.9);
+}
+
+.pop-list-leave-active {
+  position: absolute !important;
+}
+
+// 放大消失动画
+.scale-pop-move,
+.scale-pop-enter-active,
+.scale-pop-leave-active {
+  transform: scale(1);
+  transition: all 0.4s $animate-cubic-bount;
+}
+
+.scale-pop-enter-from,
+.scale-pop-leave-to {
+  transform: scale(1.04);
+  opacity: 0;
+}
+
+.scale-pop-leave-active {
+  position: absolute;
+  z-index: -1;
+}
+// fade动画
+.fade-bt-list-move,
+.fade-bt-list-enter-active,
+.fade-bt-list-leave-active {
+  transition: 0.3s ease-in-out;
+}
+
+.fade-bt-list-enter-from {
+  opacity: 0;
+  transform: translateY(30%);
+}
+.fade-bt-list-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translateY(30%);
+}
+
+.fade-bt-list-leave-active {
+  position: absolute;
+  z-index: -1;
+}
+//  scale
+.filp-scale-list-move,
+.filp-scale-list-enter-active,
+.filp-scale-list-leave-active {
+  transition: 0.4s ease;
+}
+
+.filp-scale-list-enter-from,
+.filp-scale-list-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) rotateX(90deg);
+}
+
+.filp-scale-list-leave-active {
+  position: absolute;
+  z-index: -1;
+}
+
+// fade动画
+.fade-lr-list-move,
+.fade-lr-list-enter-active,
+.fade-lr-list-leave-active {
+  transition: 0.4s ease;
+}
+
+.fade-lr-list-enter-from,
+.fade-lr-list-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translateX(20%);
+}
+
+.fade-lr-list-leave-active {
+  position: absolute;
+  z-index: -1;
+}
+// fade动画
+.fade-lr-move,
+.fade-lr-enter-active,
+.fade-lr-leave-active {
+  transition: 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.fade-lr-enter-from,
+.fade-lr-leave-to {
+  transform: translateX(100%);
+}
+
+.sliceX-enter-active,
+.sliceX-leave-active {
+  transform: translateX(0);
+}
+
+.sliceX-enter-from,
+.sliceX-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* 单个 */
+[data-fade] {
+  --lv: 0;
+  --delay: 0.1s;
+  --start: 0ms;
+  --anima: latter-slice-top;
+}
+[data-fade-blur] {
+  --lv: 0;
+  --delay: 0.1s;
+  --start: 0ms;
+  --anima: latter-slice-blur-top;
+}
+@for $i from 1 through 20 {
+  [data-fades-blur] > *:nth-child(#{$i}),
+  [data-fades] > *:nth-child(#{$i}) {
+    --lv: #{$i};
+  }
+}
+
+/* 段落 */
+[data-fades-blur] > *,
+[data-fades] > * {
+  --lv: 0;
+  --delay: 0.1s;
+  --start: 0ms;
+  --anima: latter-slice-top;
+  animation: var(--anima) 0.5s both;
+  animation-delay: calc(var(--start) + var(--lv) * var(--delay));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-fades] > *,
+  [data-fades-blur] > *,
+  [data-fade-blur],
+  [data-fade] {
+    animation: var(--anima) 0.5s both;
+    animation-delay: calc(var(--lv) * var(--delay) + var(--start));
+  }
+}
+
+[data-fade-blur="false"],
+[data-fade="false"],
+[data-fade-blur-controller="false"][data-fade-blur],
+[data-fade-controller="false"][data-fade] {
+  animation: none;
+}
+[data-fades-blur="false"] > *,
+[data-fades="false"] > *,
+[data-fades-blur-controller="false"][data-fades-blur] > *,
+[data-fades-controller="false"][data-fades] > * {
+  animation: none;
+}
+
+/* 渐进动画 下进入 */
+@keyframes latter-slice-top {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    transform: none;
+  }
+}
+@keyframes latter-zoom-top {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.8) translate(10px, 10px);
+    transform-origin: right top;
+  }
+
+  to {
+    transform: none;
+  }
+}
+@keyframes latter-slice-bottom {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    transform: none;
+  }
+}
+/* 渐进动画 */
+@keyframes latter-slice-left {
+  0% {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes latter-slice-right {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes latter-slice-blur-top {
+  0% {
+    opacity: 0;
+    transform: translateY(0.5rem);
+    filter: blur(0.8em);
+  }
+
+  80% {
+    filter: none;
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+/* 渐进动画 下进入 */
+@keyframes latter-blur-top {
+  0% {
+    opacity: 0;
+    transform: translateY(0.5em);
+    filter: blur(0.8em);
+  }
+
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* sky-loading 骨架屏 */
+.sky-loading {
+  background-color: #edededb4;
+  background: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 225, 0) 60%
+    )
+    #edededb4;
+  background-size: 200% 100%;
+  background-position-x: 120%;
+  animation: 1s sky-loading ease-in-out infinite;
+}
+.dark .sky-loading {
+  background-color: #1d1d1d00;
+  background: linear-gradient(100deg, rgba(17, 17, 17, 0) 40%, rgba(60, 60, 60, 0.4) 50%, rgba(255, 255, 225, 0) 60%)
+    transparent;
+  background-size: 200% 100%;
+  background-position-x: 120%;
+  animation: 1s sky-loading ease-in-out infinite;
+}
+@keyframes sky-loading {
+  to {
+    background-position-x: -20%;
+  }
+}

@@ -12,6 +12,7 @@ const ws = useWsStore();
 const setting = useSettingStore();
 const chat = useChatStore();
 const applyUnRead = ref(0);
+
 /**
  * 获取好友申请数量 (未读)
  */
@@ -139,7 +140,11 @@ const activeMenu = computed({
     class="relative z-998 grid grid-cols-5 select-none justify-center bg-white shadow-md dark:bg-dark-8"
   >
     <div
-      v-for="p in menuList" :key="p.path" :index="p.path" class="item"
+      v-for="p in menuList"
+      :key="p.path"
+      v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.1)', duration: 800 }"
+      :index="p.path"
+      class="item"
       :class="{ active: activeMenu === p.path }"
       @click.stop="() => {
         if (p.path)
@@ -156,36 +161,35 @@ const activeMenu = computed({
         <i class="icon p-3" :class="route.path === p.path ? p.activeIcon : p.icon" />
         <span mt-2 block select-none text-center text-3>{{ p.title }}</span>
       </el-badge>
-      <el-popover
+      <el-dropdown
         v-else
-        :width="30"
+        placement="top"
         :offset="25"
-        trigger="click"
       >
-        <template #reference>
-          <el-badge
-            :value="p.tipValue"
-            :hidden="!p.tipValue"
-            :max="99"
-            :offset="[-15, 2]"
-            class="h-full w-full flex-row-c-c flex-col"
-            :is-dot="p.isDot"
-            @click.stop="(e: MouseEvent) => {
-              if (p.onClick) {
-                e.stopPropagation();
-                p.onClick(e);
-              }
-            }"
-          >
-            <i class="p-3" :class="route.path === p.path ? p.activeIcon : p.icon" />
-            <span mt-2 block select-none text-center text-3>{{ p.title }}</span>
-          </el-badge>
-        </template>
-        <template #default>
-          <ul class="grid cols-1 gap-3">
-            <el-badge
+        <el-badge
+          :value="p.tipValue"
+          :hidden="!p.tipValue"
+          :max="99"
+          :offset="[-15, 2]"
+          class="h-full w-full flex-row-c-c flex-col"
+          :is-dot="p.isDot"
+          @click.stop="(e: MouseEvent) => {
+            if (p.onClick) {
+              e.stopPropagation();
+              p.onClick(e);
+            }
+          }"
+        >
+          <i class="p-3" :class="route.path === p.path ? p.activeIcon : p.icon" />
+          <span mt-2 block select-none text-center text-3>{{ p.title }}</span>
+        </el-badge>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item
               v-for="item in p.children"
-              :key="item.path" :value="item.tipValue || 0" :hidden="!item.tipValue" :max="99" :is-dot="item.isDot" class="popper-item" :index="p.path" :class="{ active: activeMenu === item.path }"
+              :key="item.path"
+              class="dropdown-item"
+              :class="{ active: activeMenu === item.path }"
               @click.stop="(e: MouseEvent) => {
                 if (item.path) {
                   activeMenu = item.path
@@ -196,28 +200,43 @@ const activeMenu = computed({
                 }
               }"
             >
-              <i class="inline-block p-3" :class="route.path === item.path ? item.activeIcon : item.icon" />
-              <span>{{ item.title }}</span>
-            </el-badge>
-          </ul>
+              <div>
+                <el-badge
+                  :value="item.tipValue || 0"
+                  :hidden="!item.tipValue"
+                  :max="99"
+                  :is-dot="item.isDot"
+                >
+                  <div class="flex-row-c-c gap-2 p-1">
+                    <i class="inline-block p-2.6" :class="route.path === item.path ? item.activeIcon : item.icon" />
+                    <span>{{ item.title }}</span>
+                  </div>
+                </el-badge>
+              </div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
         </template>
-      </el-popover>
+      </el-dropdown>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-.popper-item {
-  --at-apply: "flex items-center cursor-pointer rounded gap-3 px-3 py-1";
+.dropdown-item {
+  --at-apply: "flex items-center cursor-pointer rounded gap-3 !hover:bg-color-3";
+  position: relative;
+  overflow: hidden;
+
   &.active {
     --at-apply: "bg-color-3 w-full";
   }
 }
-.item {
-  --at-apply: "flex-row-c-c flex-col cursor-pointer gap-2 rounded-2 py-4 transition-all-300";
-}
 
 .item {
+  --at-apply: "flex-row-c-c flex-col cursor-pointer gap-2 rounded-2 py-4 transition-all-300";
+  position: relative;
+  overflow: hidden;
+
   .title {
     --at-apply: "h-1.5em overflow-hidden";
   }

@@ -1,8 +1,24 @@
-/**  ------------------------------element-plus---------------------------------------  **/
+/**  ------------------------------ Third-party Components Overrides ---------------------------------------  **/
 
-@use "./var.scss" as *;
+// ==================== Element Plus 组件覆盖 ====================
 
-// element-plus
+// 统一动画参数
+$popup-animation-duration: 0.22s;
+$popup-animation-timing: var(--animate-cubic);
+$popup-scale-from: 0.96;
+$popover-animation-duration: 0.16s;
+$popover-animation-timing: ease;
+
+// el-input
+.el-input {
+  &.input-weak {
+    .el-input__wrapper {
+      box-shadow: none;
+      --at-apply: "input-bg-color";
+    }
+  }
+}
+
 // 消息确认框
 .el-message-box {
   --at-apply: "border-default-sm";
@@ -47,7 +63,6 @@
     box-shadow:
       rgba(0, 0, 0, 0.05) 0px 7px 29px 0px,
       rgba(0, 0, 0, 0.05) 0px 3px 18px 0px;
-    // --at-apply: "";
   }
 }
 
@@ -71,6 +86,8 @@ body .el-message {
     transform: scale(1.1);
   }
 }
+
+// 对话框
 .el-dialog {
   --at-apply: "border-default-sm";
   .el-dialog__headerbtn {
@@ -90,20 +107,23 @@ body .el-message {
   transition: $transition-delay;
 }
 
-// popper
+// Popper
 .el-popper-init {
   padding: 2px 4px;
 }
 
+// 表单
 .el-form-item {
   .el-form-item__error {
     margin-top: 0.1em;
   }
 }
+
 .el-overlay {
   border-radius: 0.3rem;
 }
 
+// 下拉菜单
 .el-dropdown-menu {
   .el-dropdown-menu__item {
     --at-apply: "h-fit mx-1 transition-100 rounded-1";
@@ -118,11 +138,12 @@ body .el-message {
     --at-apply: "border-default-t";
   }
 }
+
 .el-dropdown__popper {
   --at-apply: "!border-default-hover";
 }
 
-// 弹出层
+// Select/Mention 弹出层
 .el-popper.el-mention__popper,
 .el-popper.el-select__popper.global-custom-select {
   --at-apply: "bg-white dark:bg-dark-8 rounded-10px border-default";
@@ -158,9 +179,6 @@ body .el-message {
 
 // 自动填充组件
 .el-popper.el-autocomplete__popper {
-  // .el-popper__arrow {
-  //   // display: none;
-  // }
   --at-apply: "p-0 rounded-10px border-default";
   .el-autocomplete-suggestion {
     padding: 0.5em;
@@ -185,6 +203,7 @@ body .el-message {
   --at-apply: "card-rounded-df overflow-hidden";
 }
 
+// 加载遮罩
 .el-loading-mask {
   background-color: rgba(0, 0, 0, 0.1);
   -webkit-backdrop-filter: blur(6px);
@@ -213,6 +232,7 @@ body .el-message {
   }
 }
 
+// 图片查看器
 .el-image-viewer__wrapper {
   border-radius: 6px;
   overflow: hidden;
@@ -229,55 +249,30 @@ body .el-message {
   }
 }
 
-// el-image
 .el-image-viewer__wrapper:focus {
   animation: none;
-  // animation: fade-in-anim 0.3s ease-in-out;
   .el-image-viewer__canvas {
     animation: none;
-    // animation: fade-blur 0.2s ease-in-out;
   }
 }
 
-@keyframes fade-blur {
-  0% {
-    opacity: 0;
-    filter: blur(1rem);
-    transform: scale(0.9);
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    filter: blur(0);
-  }
-}
-@keyframes fade-in-anim {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+// Drawer 动画
+$drawer-animation-duration: 0.5s;
+$drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
+.el-drawer {
+  transition-duration: $drawer-animation-duration;
+  transition-timing-function: $drawer-animation-timing;
 }
 
-// ==================== 统一弹出层动画（Dialog、Popover、Tooltip、Select）====================
+// ==================== Element Plus 动画覆盖 ====================
 
-// 统一动画参数
-$popup-animation-duration: 0.22s;
-$popup-animation-timing: $animate-cubic;
-$popup-scale-from: 0.96;
-
-$popover-animation-duration: 0.16s;
-$popover-animation-timing: ease;
-
-// 1. Dialog 动画（element-plus 2.10.2 -> 2.11.2 更新了动画类名 el-modal-dialog）
+// 1. Dialog 动画
 .el-modal-dialog.dialog-fade-enter-active,
 .el-modal-dialog.dialog-fade-leave-active,
 .el-overlay.dialog-fade-enter-active,
 .el-overlay.dialog-fade-leave-active {
   transition: opacity $popup-animation-duration $popup-animation-timing !important;
-  user-select: none; // 优化点击过快选中了文本
+  user-select: none;
 
   .el-overlay-dialog {
     animation: none !important;
@@ -320,12 +315,12 @@ $popover-animation-timing: ease;
   }
 }
 
-// 2. MessageBox 动画 (与 Dialog 保持一致)
+// 2. MessageBox 动画
 .el-overlay.is-message-box {
   &.fade-in-linear-enter-active,
   &.fade-in-linear-leave-active {
     transition: opacity $popup-animation-duration $popup-animation-timing !important;
-    user-select: none; // 优化点击过快选中了文本
+    user-select: none;
 
     .el-overlay-message-box {
       animation: none !important;
@@ -365,8 +360,7 @@ $popover-animation-timing: ease;
   }
 }
 
-// 3. Tooltip 的相关组件动画
-// 定义各方向的 transform-origin 和动画参数
+// 3. Tooltip/Popper 动画
 $popper-placements: (
   "bottom": (
     center top,
@@ -418,11 +412,8 @@ $popper-placements: (
   ),
 );
 
-// 动画类名列表
 $zoom-classes: (el-zoom-in-top, el-zoom-in-bottom, el-zoom-in-left, el-zoom-in-right, el-fade-in-linear);
-$tooltip-classes: (el-fade-in-linear);
 
-// 为每个方向生成动画样式
 @each $placement, $config in $popper-placements {
   $origin: nth($config, 1);
   $translate: nth($config, 2);
@@ -430,7 +421,6 @@ $tooltip-classes: (el-fade-in-linear);
   [data-popper-placement="#{$placement}"] {
     transform-origin: #{$origin};
 
-    // mention 不使用动画
     &.el-popper:not(.item-animate-wave, .el-mention__popper) {
       @each $class in $zoom-classes {
         &.#{$class}-enter-active,
@@ -456,7 +446,6 @@ $tooltip-classes: (el-fade-in-linear);
   }
 }
 
-// 兼容旧的类名动画
 @each $class in $zoom-classes {
   .el-popper:not(.item-animate-wave, .el-mention__popper) {
     &.#{$class}-enter-active,
@@ -474,16 +463,7 @@ $tooltip-classes: (el-fade-in-linear);
   }
 }
 
-// 4. Drawer 动画
-$drawer-animation-duration: 0.5s;
-$drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
-.el-drawer {
-  transition-duration: $drawer-animation-duration;
-  transition-timing-function: $drawer-animation-timing;
-}
-
-// 5. 独立的 Zoom 动画 (用于非 popper 场景)
-// el-zoom-in-center: 中心缩放
+// 独立 Zoom 动画
 .el-zoom-in-center-enter-active,
 .el-zoom-in-center-leave-active {
   transition:
@@ -503,7 +483,6 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   transform: scale3d(1, 1, 1);
 }
 
-// el-zoom-in-top: 从顶部缩放进入
 .el-zoom-in-top-enter-active,
 .el-zoom-in-top-leave-active {
   transition:
@@ -524,7 +503,6 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   transform: translateY(0) scale3d(1, 1, 1);
 }
 
-// el-zoom-in-bottom: 从底部缩放进入
 .el-zoom-in-bottom-enter-active,
 .el-zoom-in-bottom-leave-active {
   transition:
@@ -545,7 +523,6 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   transform: translateY(0) scale3d(1, 1, 1);
 }
 
-// el-zoom-in-left: 从左侧缩放进入
 .el-zoom-in-left-enter-active,
 .el-zoom-in-left-leave-active {
   transition:
@@ -566,7 +543,6 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   transform: translateX(0) scale3d(1, 1, 1);
 }
 
-// el-zoom-in-right: 从右侧缩放进入
 .el-zoom-in-right-enter-active,
 .el-zoom-in-right-leave-active {
   transition:
@@ -585,4 +561,81 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 .el-zoom-in-right-leave-from {
   opacity: 1;
   transform: translateX(0) scale3d(1, 1, 1);
+}
+
+// ==================== Markdown 编辑器覆盖 ====================
+
+.md-editor-preview {
+  a {
+    &:hover {
+      border: none !important;
+    }
+    &::after {
+      display: none !important;
+    }
+  }
+}
+
+// ==================== 右键菜单覆盖 ====================
+
+.mx-context-menu {
+  --popper-fade-anima-scale: 0.9;
+  transform-origin: center top;
+  --at-apply: "!border-default-2 dark:!bg-[#111111] !bg-white animate-[popper-fade-anim_0.15s]";
+
+  .mx-context-menu-items {
+    .mx-context-menu-item {
+      .mx-item-row {
+        --at-apply: "text-color";
+        margin: 4px 2px;
+      }
+      &:hover .mx-item-row {
+        --at-apply: "text-white";
+      }
+    }
+  }
+
+  .mx-context-menu-item-sperator {
+    --mx-menu-divider: rgba(132, 132, 132, 0.2);
+    background-color: transparent;
+  }
+
+  .mx-icon-placeholder {
+    i {
+      font-size: 0.9em;
+      transition: transform 0.2s;
+    }
+  }
+
+  .mx-context-menu-item {
+    --mx-menu-active-backgroud: var(--el-color-primary);
+    --mx-menu-hover-backgroud: var(--el-color-primary);
+    --mx-menu-open-hover-backgroud: var(--el-color-primary);
+    --mx-menu-open-backgroud: #71717188;
+
+    &:hover {
+      .mx-icon-placeholder {
+        i {
+          --at-apply: "light:text-light";
+        }
+      }
+    }
+  }
+
+  --mx-menu-active-backgroud: var(--el-color-primary);
+  --mx-menu-hover-backgroud: var(--el-color-primary);
+  --mx-menu-open-hover-backgroud: var(--el-color-primary);
+  --mx-menu-open-backgroud: #71717188 !important;
+}
+
+// ==================== nprogress 进度条 ====================
+
+#nprogress .bar {
+  height: 3px;
+  background: $loading-color2 !important;
+}
+
+.dark #nprogress .bar {
+  height: 3px;
+  background: $loading-color-dark2 !important;
 }

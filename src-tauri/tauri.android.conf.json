@@ -3,9 +3,8 @@
     "deep-link": {
       "mobile": [
         {
-          "schemes": ["jiwuchat"],
-          "appLink": false,
-          "host": "oauth"
+          "scheme": ["jiwuchat"],
+          "appLink": false
         }
       ]
     }

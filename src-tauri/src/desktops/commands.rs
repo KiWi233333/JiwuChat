@@ -157,7 +157,6 @@ pub async fn create_main_window(app_handle: AppHandle, shadow: bool) -> tauri::R
             .shadow(shadow)
             .decorations(false)
             .min_inner_size(375.0, 780.0)
-            .max_inner_size(1920.0, 1080.0)
             .inner_size(1280.0, 860.0)
             .visible(false);
 
@@ -325,7 +324,6 @@ async fn create_extend_window(
     url: String,
     shadow: bool,
 ) -> tauri::Result<()> {
-    // 主窗口配置
     let mut wind_builder =
         WebviewWindowBuilder::new(&app_handle, "extend", WebviewUrl::App(url.into()))
             .title(title)
@@ -334,7 +332,6 @@ async fn create_extend_window(
             .shadow(shadow)
             .decorations(false)
             .min_inner_size(375.0, 780.0)
-            .max_inner_size(1920.0, 1080.0)
             .inner_size(1024.0, 960.0)
             .visible(false);
 

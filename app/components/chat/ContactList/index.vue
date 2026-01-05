@@ -347,6 +347,18 @@ onActivated(() => {
   if (!chat.getContactList.length) {
     reload();
   }
+  mitter.on(MittEventType.WS_SYNC, ({ lastDisconnectTime, reconnectTime }) => {
+    // 重连
+    console.log(`会话同步，时延：${reconnectTime - lastDisconnectTime}ms`);
+    fetchContacts();
+  });
+});
+
+onUnmounted(() => {
+  mitter.off(MittEventType.WS_SYNC);
+});
+onDeactivated(() => {
+  mitter.off(MittEventType.WS_SYNC);
 });
 </script>
 
@@ -433,6 +445,7 @@ onActivated(() => {
       <template #default="{ item: room }">
         <div
           :id="`contact-${room.roomId}`"
+          v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.05)', duration: 800 }"
           class="contact"
           :class="{
             'is-pin': room.pinTime,

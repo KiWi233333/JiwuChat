@@ -5,6 +5,7 @@
   "identifier": "com.jiwuchat.app",
   "app": {
     "withGlobalTauri": true,
+    "macOSPrivateApi": true,
     "windows": [],
     "security": {
       "capabilities": ["default-capability", "desktop-capability", "mobile-capability"],
@@ -13,7 +14,7 @@
   },
   "build": {
     "frontendDist": "../.output/public",
-    "devUrl": "http://127.0.0.1:3000/",
+    "devUrl": "http://localhost:3000/",
     "removeUnusedCommands": true
   },
   "plugins": {
@@ -25,6 +26,12 @@
       "desktop": [
         {
           "schemes": ["jiwuchat"]
+        }
+      ],
+      "mobile": [
+        {
+          "scheme": ["jiwuchat"],
+          "appLink": false
         }
       ]
     }

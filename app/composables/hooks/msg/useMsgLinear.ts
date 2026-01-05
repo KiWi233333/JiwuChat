@@ -191,7 +191,9 @@ function handleRTCMsg(msg: ChatMessageVO<RtcLiteBodyMsgVO>) {
   const targetCtx = chat.contactMap?.[msg.message.roomId];
   // 更新滚动位置
   if (targetCtx && msg.message.roomId === targetCtx.roomId && rtcMsg.senderId === user.userInfo.id) {
-    chat.scrollBottom(false);
+    nextTick(() => {
+      chat.scrollBottom(false);
+    });
   }
 }
 
@@ -244,8 +246,8 @@ function handleProgressUpdate(
   data: WSAiStreamMsg,
   contact: ChatContactDetailVO,
   oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
-  count = 30,
-  delay = 50,
+  count = 1,
+  delay = 0,
 ) {
   // 初始化缓冲区
   if (oldMsg && !bufferMap.has(oldMsg)) {
@@ -287,7 +289,9 @@ function handleProgressUpdate(
 
       // 仅在有实际内容更新且需要自动滚动时才触发滚动
       if (hasContentUpdate && chat.shouldAutoScroll) {
-        chat.scrollBottom(false);
+        requestAnimationFrame(() => {
+          chat.scrollBottom(false);
+        });
       }
 
       // 如果没有待处理内容且收到了结束信号，清除定时器
@@ -385,9 +389,11 @@ function handleFinalState(
     // AI消息完成时，如果应该自动滚动，则在内容更新后滚动到底部
     const chat = useChatStore();
     if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
-      nextTick(() => {
-        chat.scrollBottom(false);
-      });
+      setTimeout(() => {
+        if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
+          chat.scrollBottom(false);
+        }
+      }, 100);
     }
   }
 }

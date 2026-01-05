@@ -1,12 +1,5 @@
 // /* 覆盖你需要的变量 */
 @forward "element-plus/theme-chalk/src/dark/var.scss" with (
-  $bg-color: (
-    "page": #1e2327,
-    "overlay": #1d1e1f,
-  ),
-  $border-color: (
-    "primary": #1f2020,
-  ),
   $colors: (
     "white": #ffffffe1,
     "black": #131313,
@@ -32,5 +25,15 @@
     "info": (
       "base": #11e08a,
     ),
+  ),
+  $bg-color: (
+    "page": #1e2327,
+    "overlay": #1d1e1f,
+  ),
+  $fill-color: (
+    // "light": #fafcff0d,
+  ),
+  $border-color: (
+    "primary": #1f2020,
   )
 );

@@ -54,17 +54,4 @@ onMounted(() => {
 .dark .forms {
   background-color: rgba(20, 20, 20, 0.4);
 }
-
-// fade-in-out
-.fadeInOutShadow-enter-active {
-  animation: 0.2s fadeIn $animate-cubic;
-}
-
-.fadeInOutShadow-leave-active {
-  animation: 0.2s fadeOut $animate-cubic;
-}
-
-.animate__animated {
-  animation-duration: 0.2s;
-}
 </style>

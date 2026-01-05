@@ -32,6 +32,10 @@ export default defineConfig({
     ["bg-menu-color", "bg-[#f6f6f6]  dark:bg-dark-8"],
     ["bg-color-second", "bg-light-5 dark:bg-dark"],
     ["bg-skeleton", "bg-gray-1 dark:bg-[#1f1f1f]"],
+    // 渐变背景
+    // 1. 底部到顶部
+    ["bg-color-linear-up", "bg-gradient-to-b from-white to-transparent dark:from-dark-5 dark:to-transparent"],
+    ["bg-color-linear-down", "bg-gradient-to-t from-white to-transparent dark:from-dark-5 dark:to-transparent"],
     // dialog颜色
     ["dialog-bg-color", "bg-white dark:bg-dark-9"],
     // 文本颜色

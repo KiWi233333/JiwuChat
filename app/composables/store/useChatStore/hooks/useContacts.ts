@@ -11,6 +11,7 @@ export interface ContactsContext {
  */
 export function createContactsModule(ctx: ContactsContext) {
   const user = useUserStore();
+  const setting = useSettingStore();
 
   // 关键词与会话面板开关
   const searchKeyWords = ref("");
@@ -54,6 +55,22 @@ export function createContactsModule(ctx: ContactsContext) {
   });
   const isNewMsg = computed(() => unReadContactList.value.length > 0 || applyUnReadCount.value > 0);
 
+  const totalUnreadCount = computed(() => {
+    const contactUnread = unReadContactList.value.reduce((total, contact) => {
+      return total + (contact.unreadCount || 0);
+    }, 0);
+    return contactUnread + applyUnReadCount.value;
+  });
+
+  // 总未读数量
+  const dockBadge = useDockBadge();
+
+  // 监听未读数量变化，自动更新 dock badge
+  watch(totalUnreadCount, (newCount) => {
+    if (setting.osType === "macos") {
+      dockBadge.setDockBadgeCount(newCount);
+    }
+  }, { immediate: true });
   // 优化后的更新会话基础信息方法
   function refreshContact(vo: ChatContactVO, oldVo?: ChatContactExtra) {
     if (!vo?.roomId) {
@@ -334,6 +351,7 @@ export function createContactsModule(ctx: ContactsContext) {
     unReadContactList,
     isNewMsg,
     applyUnReadCount,
+    totalUnreadCount,
     theFriendOpt,
     showTheFriendPanel,
 

@@ -1,4 +1,11 @@
+import rippleDirective from "@/directives/ripple";
+
 export default defineNuxtPlugin((nuxtApp) => {
+  /**
+   * 波纹涟漪效果
+   */
+  nuxtApp.vueApp.directive("ripple", rippleDirective);
+
   /**
    * 长按事件
    */

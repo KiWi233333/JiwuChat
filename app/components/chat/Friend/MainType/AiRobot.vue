@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="relative flex flex-col">
+  <div class="relative flex flex-col select-none">
     <div class="h-4.2rem flex items-center rounded-0 px-6 md:p-4">
       <i i-ri:robot-2-line class="mx-2 h-6 w-6 text-color" />
       <strong text-0.9em font-500>

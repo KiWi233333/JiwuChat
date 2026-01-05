@@ -1,10 +1,10 @@
 
+import { useWsInit, useWSUnmounted } from "~/composables/hooks/ws/useWsCore";
 import { useIframeInit } from "./iframe";
 import { useAuthInit, useMsgBoxWebViewInit, userTauriInit } from "./init";
 import { useMacOsInit } from "./macos";
 import { useHotkeyInit, useSettingInit, useWindowVisibilityInit } from "./setting";
 import { initSystemConstant } from "./system";
-import { useWsInit, useWSUnmounted } from "./ws";
 
 let unMountedMsgBoxWebView: (() => void) | undefined;
 let unMountedTauri: (() => void) | undefined;

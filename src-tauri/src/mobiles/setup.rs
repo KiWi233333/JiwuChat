@@ -1,8 +1,17 @@
-use tauri::Listener;
+use tauri_plugin_deep_link::DeepLinkExt;
+use super::deeplink::handlers::{handle_startup_urls, handle_runtime_url};
 
 pub fn setup_mobile() {
     println!("App from Mobile!");
+    
+    // localhost 插件配置
+    // 在开发模式下，插件会代理到 devUrl (http://127.0.0.1:3000)
+    // 在生产模式下，插件会服务静态文件 (frontendDist)
+    let port = portpicker::pick_unused_port().expect("failed to find unused port");
+    println!("Using localhost plugin on port: {}", port);
+    
     tauri::Builder::default()
+        .plugin(tauri_plugin_localhost::Builder::new(port).build())
         .plugin(tauri_plugin_websocket::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_shell::init())
@@ -12,14 +21,20 @@ pub fn setup_mobile() {
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_deep_link::init())
-        .setup(|app| {
-            super::window::setup_mobile_window(app.handle())?;
+        .setup(move |app| {
+            super::window::setup_mobile_window(app.handle(), port)?;
             
-            // 注册 deep-link 事件监听器
-            let app_handle = app.handle().clone();
-            app.listen("deep-link://new-url", move |event| {
-                let url = event.payload();
-                super::deeplink::handlers::handle_runtime_url(&app_handle, url);
+            // 检查应用是否由深度链接启动
+            if let Ok(Some(urls)) = app.deep_link().get_current() {
+                handle_startup_urls(app.handle(), urls);
+            }
+
+            // 注册深度链接监听（应用运行时收到的深度链接）
+            let handle = app.handle().clone();
+            app.deep_link().on_open_url(move |event| {
+                for url in event.urls() {
+                    handle_runtime_url(&handle, url.as_str());
+                }
             });
             
             Ok(())

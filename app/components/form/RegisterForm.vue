@@ -415,7 +415,10 @@ function toLoginForm() {
         placeholder="请输入邮箱"
       >
         <template #append>
-          <span class="code-btn" @click="getRegCode(registerType)">
+          <span
+            v-ripple="{ color: 'var(--el-color-info-light-9)' }"
+            class="code-btn" @click="getRegCode(registerType)"
+          >
             {{ emailCodeStorage > 0 ? `${emailCodeStorage}s后重新发送` : "获取验证码" }}
           </span>
         </template>
@@ -425,7 +428,10 @@ function toLoginForm() {
     <el-form-item v-if="registerType === RegisterType.PHONE" type="tel" prop="phone" class="animated">
       <el-input v-model.trim="formUser.phone" :prefix-icon="ElIconIphone" autocomplete="off" :size="size" placeholder="请输入手机号">
         <template #append>
-          <span class="code-btn" @click="getRegCode(registerType)">
+          <span
+            v-ripple="{ color: 'var(--el-color-info-light-9)' }"
+            class="code-btn" @click="getRegCode(registerType)"
+          >
             {{ phoneCodeStorage > 0 ? `${phoneCodeStorage}s后重新发送` : "获取验证码" }}
           </span>
         </template>
@@ -547,6 +553,10 @@ function toLoginForm() {
 
   // 报错信息
   :deep(.el-form-item) {
+    .el-input__wrapper {
+      border-color: transparent !important;
+      box-shadow: none !important;
+    }
     .el-input-group__append {
       --at-apply: "w-8rem min-w-fit text-theme-iofo card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-iofo op-100)";
     }

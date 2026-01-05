@@ -1,0 +1,216 @@
+/**  ------------------------------ Base Styles & Utilities ---------------------------------------  **/
+
+// ==================== CSS 变量 ====================
+:root {
+  --font-size: 16px;
+  --font-family:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  --el-box-shadow: rgba(0, 0, 0, 0.2) 2px 6px 26px 0px, rgba(0, 0, 0, 0.2) -2px -6px 26px 0px !important;
+  --animate-cubic: cubic-bezier(0.61, 0.225, 0.195, 1.25);
+  --animate-cubic-bount: cubic-bezier(1, -0.155, 0.165, 1.3);
+}
+
+// ==================== 响应式字体 ====================
+@media screen and (width <= 768px) {
+  html {
+    font-size: var(--font-size, 16px);
+  }
+}
+
+@media screen and (width >= 750px) {
+  html {
+    font-size: var(--font-size, 16px);
+  }
+}
+
+// ==================== 重置样式 ====================
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: var(--el-text-color);
+}
+
+a:active,
+a:focus,
+a:valid,
+a:active {
+  background-color: none;
+}
+
+// ==================== 页面基础 ====================
+html,
+body {
+  font-family: var(--font-family);
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden; // 解决触摸板拖拽
+
+  * {
+    font-family: var(--font-family);
+  }
+
+  // 表单自动填充背景色去除
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--el-input-bg-color, --el-bg-color) inset !important;
+    -webkit-text-fill-color: var(--el-text-color-primary) !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+// ==================== 文本选择 ====================
+::selection {
+  background-color: var(--el-color-primary);
+  color: #f0f0f0;
+}
+
+.dark ::selection {
+  background-color: var(--el-color-primary);
+  color: #f0f0f0;
+}
+
+// ==================== 字体声明 ====================
+@font-face {
+  font-display: swap;
+  font-family: AlimamaFangYuanTiVF;
+  src: url("/font/AlimamaFangYuanTiVF.woff2") format("woff2");
+}
+
+// ==================== 移动端优化 ====================
+*,
+.cursor-pointer {
+  -webkit-tap-highlight-color: transparent;
+}
+
+// ==================== 全局滚动条 ====================
+::-webkit-scrollbar {
+  width: 6px;
+  height: 0;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 0.8rem;
+  background-color: transparent;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 0.8rem;
+  background-color: rgb(216, 216, 216);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(85, 85, 85, 0.2);
+}
+
+// 自定义滚动条
+.scroll-bar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 0.25rem;
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background-color: #85858538;
+    }
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+// ==================== 布局工具类 ====================
+.nav-padding-top-2 {
+  --at-apply: "sm:pt-2";
+}
+.nav-padding-top-6 {
+  --at-apply: "sm:pt-6";
+}
+.nav-padding-top-10 {
+  --at-apply: "sm:pt-10";
+}
+.nav-padding-top-12 {
+  --at-apply: "sm:pt-12";
+}
+
+.position-c-c {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.h-100dvh {
+  height: 100vh;
+  height: 100dvh;
+}
+
+// ==================== 背景工具类 ====================
+.bg-mark {
+  position: absolute;
+  z-index: -99;
+  width: 60%;
+  height: 60%;
+  background:
+    radial-gradient(
+      104.24% 141.88% at 8.26% 9.64%,
+      #b95be6 0%,
+      rgb(185 91 230 / 18%) 69.92%,
+      rgb(185 91 230 / 0%) 100%
+    ),
+    radial-gradient(
+      103.57% 140.97% at 14.06% 105.21%,
+      #f97c59 0%,
+      rgb(249 124 89 / 19%) 72.45%,
+      rgb(249 124 89 / 0%) 100%
+    );
+  border-radius: 50%;
+  filter: blur(60px);
+  transform: translate(50%, -50%);
+}
+
+.bg-linear {
+  background-image: linear-gradient(to right, var(--el-color-primary) 0, transparent 50%);
+  -webkit-backdrop-filter: blur(1em);
+  backdrop-filter: blur(1em);
+}
+
+// ==================== 文本工具类 ====================
+// 使用循环生成文本折叠类
+@for $i from 1 through 10 {
+  .text-overflow-#{$i} {
+    @include text-overflow($i);
+  }
+}
+
+.text-overflow-h {
+  @include text-overflow(var(--h));
+}
+
+// ==================== 阴影工具类 ====================
+.shadow-b {
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.05);
+}
+.shadow-t {
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.05);
+}
+.shadow-l {
+  box-shadow: -1px 0px 4px rgba(0, 0, 0, 0.05);
+}
+.shadow-r {
+  box-shadow: 1px 0px 4px rgba(0, 0, 0, 0.05);
+}

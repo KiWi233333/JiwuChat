@@ -541,7 +541,7 @@ defineExpose({
           @keyup.enter="getLoginCode(loginType)"
         >
           <template #append>
-            <span class="code-btn" @click="getLoginCode(loginType)">
+            <span v-ripple class="code-btn" @click="getLoginCode(loginType)">
               {{ codeConfig[LoginType.EMAIL].storage.value > 0 ? `${codeConfig[LoginType.EMAIL].storage.value}s后重新发送` : "获取验证码" }}
             </span>
           </template>
@@ -564,7 +564,7 @@ defineExpose({
           @keyup.enter="getLoginCode(loginType)"
         >
           <template #append>
-            <span class="code-btn" @click="getLoginCode(loginType)">
+            <span v-ripple class="code-btn" @click="getLoginCode(loginType)">
               {{ codeConfig[LoginType.PHONE].storage.value > 0 ? `${codeConfig[LoginType.PHONE].storage.value}s后重新发送` : "获取验证码" }}
             </span>
           </template>
