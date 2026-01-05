@@ -81,14 +81,14 @@ const menuList = computed<MenuItem[]>(() => ([
     path: "/api/key", // 密钥管理
     icon: "i-solar:code-square-outline",
     activeIcon: "i-solar:code-square-bold",
-    class: "absolute bottom-28 diabled-bg",
+    class: "absolute bottom-26 diabled-bg",
   },
   {
     title: "账号",
     path: "/user/safe",
     icon: "i-solar:devices-outline",
     activeIcon: "i-solar:devices-bold",
-    class: "absolute bottom-15 diabled-bg",
+    class: "absolute bottom-13 diabled-bg",
   },
   // {
   //   title: "设置",
@@ -126,7 +126,7 @@ export interface MenuItem {
       />
     </div>
     <!-- 菜单 -->
-    <el-scrollbar height="100%" class="relative flex-1" :view-class="`flex flex-col gap-3 p-2 ${setting.osType === 'macos' ? 'px-2.8' : ''}`">
+    <el-scrollbar height="100%" class="relative flex-1" :view-class="`flex flex-col gap-2 p-2 ${setting.osType === 'macos' ? 'px-2.8' : ''}`">
       <component
         :is="p.path ? NuxtLink : 'div'"
         v-for="p in menuList"
