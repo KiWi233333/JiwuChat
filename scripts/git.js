@@ -164,9 +164,7 @@ class GitManager {
       }
 
       // 获取提交历史
-      const gitLogCommand = lastTag
-        ? `git log ${lastTag}..HEAD --oneline --no-merges`
-        : "git log --oneline --no-merges";
+      const gitLogCommand = lastTag ? `git log ${lastTag}..HEAD --oneline --no-merges` : "git log --oneline --no-merges";
 
       const commits = execSync(gitLogCommand, {
         encoding: "utf8",
@@ -274,41 +272,117 @@ class GitManager {
       return;
     }
 
-    // 3. 更新版本号
-    log.step(`更新版本号 (${type})...`);
+    // 3. 计算新版本号
+    log.step(`计算新版本号 (${type})...`);
+    let newVersion;
     try {
-      execSync(`npm version ${type} --no-git-tag-version`, {
+      // 先使用 npm version 计算新版本号（不实际更新文件）
+      const currentVersion = this.packageJson.version;
+      const versionParts = currentVersion.split(".").map(Number);
+
+      let newVersionParts;
+      switch (type) {
+        case "major":
+          newVersionParts = [versionParts[0] + 1, 0, 0];
+          break;
+        case "minor":
+          newVersionParts = [versionParts[0], versionParts[1] + 1, 0];
+          break;
+        case "patch":
+        default:
+          newVersionParts = [versionParts[0], versionParts[1], versionParts[2] + 1];
+          break;
+      }
+
+      newVersion = newVersionParts.join(".");
+      log.info(`当前版本: ${currentVersion}`);
+      log.info(`新版本: ${newVersion}`);
+    }
+    catch (error) {
+      log.error(`计算版本号失败: ${error.message}`);
+      return;
+    }
+
+    // 4. 使用 update-version.js 更新所有版本号
+    log.step(`更新所有版本号到 ${newVersion}...`);
+    try {
+      const updateVersionScript = path.join(this.projectRoot, "scripts", "update-version.js");
+      if (!fs.existsSync(updateVersionScript)) {
+        log.warning("update-version.js 脚本不存在，使用 npm version 更新");
+        execSync(`npm version ${type} --no-git-tag-version`, {
+          cwd: this.projectRoot,
+          stdio: "inherit",
+        });
+      }
+      else {
+        execSync(`node "${updateVersionScript}" ${newVersion}`, {
+          cwd: this.projectRoot,
+          stdio: "inherit",
+        });
+      }
+      log.success(`版本已更新到: ${newVersion}`);
+    }
+    catch (error) {
+      log.error(`更新版本号失败: ${error.message}`);
+      return;
+    }
+
+    // 5. 生成变更日志
+    this.generateChangelog();
+
+    // 6. 提交更改
+    log.step("提交版本更改...");
+    try {
+      execSync("git add package.json src-tauri/Cargo.toml src-tauri/gen/android/app/tauri.properties", {
+        cwd: this.projectRoot,
+        stdio: "pipe",
+      });
+      execSync(
+        `git commit -m "chore(release): 更新版本号至 ${newVersion}
+
+- 更新 package.json 版本号
+- 更新 Cargo.toml 版本号
+- 更新 Android 版本配置"`,
+        {
+          cwd: this.projectRoot,
+          stdio: "inherit",
+        },
+      );
+    }
+    catch (error) {
+      log.warning("提交更改时出错，可能没有需要提交的文件");
+    }
+
+    // 7. 创建标签
+    log.step("创建 Git 标签...");
+    try {
+      execSync(`git tag -a v${newVersion} -m "Release v${newVersion}"`, {
         cwd: this.projectRoot,
         stdio: "inherit",
       });
-
-      // 重新读取更新后的版本
-      const updatedPackageJson = JSON.parse(fs.readFileSync(path.join(this.projectRoot, "package.json"), "utf8"));
-      const newVersion = updatedPackageJson.version;
-      log.success(`版本已更新到: ${newVersion}`);
-
-      // 4. 生成变更日志
-      this.generateChangelog();
-
-      // 5. 提交更改
-      log.step("提交版本更改...");
-      execSync("git add package.json CHANGELOG.md", { cwd: this.projectRoot });
-      execSync(`git commit -m "chore: release v${newVersion}"`, { cwd: this.projectRoot });
-
-      // 6. 创建标签
-      log.step("创建 Git 标签...");
-      execSync(`git tag v${newVersion}`, { cwd: this.projectRoot });
-
-      // 7. 推送到远程
-      log.step("推送到远程仓库...");
-      execSync("git push", { cwd: this.projectRoot });
-      execSync("git push --tags", { cwd: this.projectRoot });
-
-      log.success(`🎉 版本 v${newVersion} 发布成功!`);
     }
     catch (error) {
-      log.error(`版本发布失败: ${error.message}`);
+      log.error(`创建标签失败: ${error.message}`);
+      return;
     }
+
+    // 8. 推送到远程
+    log.step("推送到远程仓库...");
+    try {
+      execSync("git push", { cwd: this.projectRoot, stdio: "inherit" });
+      execSync("git push --tags", { cwd: this.projectRoot, stdio: "inherit" });
+    }
+    catch (error) {
+      log.error(`推送到远程失败: ${error.message}`);
+      log.warning("请手动推送: git push && git push --tags");
+      return;
+    }
+
+    log.success(`🎉 版本 v${newVersion} 发布成功!`);
+    log.info(`\n下一步:`);
+    log.info(`  1. 创建 GitHub Release: https://github.com/KiWi233333/JiwuChat/releases/new`);
+    log.info(`  2. 选择标签: v${newVersion}`);
+    log.info(`  3. 复制 .github/releasemd/v${newVersion}.md 的内容作为 Release 说明`);
   }
 
   /**
