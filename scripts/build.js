@@ -83,8 +83,8 @@ class BuildScript {
   /**
    * 构建项目
    */
-  async build(mode = "production") {
-    log.title(`开始构建项目 (${mode})...`);
+  async build() {
+    log.title("开始构建项目 (production)...");
 
     this.checkBuildEnv();
     this.clean();
@@ -95,8 +95,8 @@ class BuildScript {
       // 设置环境变量
       const env = {
         ...process.env,
-        NODE_ENV: mode,
-        NUXT_PUBLIC_NODE_ENV: mode,
+        NODE_ENV: "production",
+        NUXT_PUBLIC_NODE_ENV: "production",
       };
 
       log.step("安装依赖...");
@@ -119,9 +119,8 @@ class BuildScript {
         log.warning("代码检查失败，但继续构建");
       }
 
-      log.step(`构建 Nuxt 应用 (${mode})...`);
-      const buildCommand = mode === "production" ? "build:nuxt" : "build:nuxt:test";
-      execSync(`pnpm ${buildCommand}`, {
+      log.step("构建 Nuxt 应用 (production)...");
+      execSync("pnpm build:nuxt", {
         cwd: this.projectRoot,
         stdio: "inherit",
         env,
@@ -206,27 +205,6 @@ class BuildScript {
     return { size: totalSize, files: totalFiles };
   }
 
-  /**
-   * 预览构建结果
-   */
-  preview() {
-    log.step("启动预览服务器...");
-
-    if (!fs.existsSync(this.buildDir) && !fs.existsSync(this.distDir)) {
-      log.error("没有找到构建产物，请先运行构建命令");
-      process.exit(1);
-    }
-
-    try {
-      execSync("pnpm preview", {
-        cwd: this.projectRoot,
-        stdio: "inherit",
-      });
-    }
-    catch (error) {
-      log.error(`预览启动失败: ${error.message}`);
-    }
-  }
 
   /**
    * 分析构建产物
@@ -249,7 +227,6 @@ class BuildScript {
 
 // 命令行参数处理
 const command = process.argv[2];
-const mode = process.argv[3] || "production";
 const builder = new BuildScript();
 
 switch (command) {
@@ -257,31 +234,26 @@ switch (command) {
     builder.clean();
     break;
   case "build":
-    builder.build(mode);
+    builder.build();
     break;
   case "desktop":
     builder.buildDesktop();
-    break;
-  case "preview":
-    builder.preview();
     break;
   case "analyze":
     builder.analyze();
     break;
   default:
     console.log(`
-用法: node scripts/build.js <command> [mode]
+用法: node scripts/build.js <command>
 
 命令:
   clean     清理构建产物
-  build     构建项目 [production|development]
+  build     构建项目 (production)
   desktop   构建桌面应用
-  preview   预览构建结果
   analyze   分析构建产物
 
 示例:
-  node scripts/build.js build production
+  node scripts/build.js build
   node scripts/build.js desktop
-  node scripts/build.js preview
     `);
 }

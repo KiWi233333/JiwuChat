@@ -47,8 +47,9 @@ class EngineeeringCLI {
           { key: "4", label: "构建管理", action: "build" },
           { key: "5", label: "开发服务", action: "development" },
           { key: "6", label: "Git 工作流", action: "git" },
-          { key: "7", label: "性能分析", action: "performance" },
-          { key: "8", label: "快速操作", action: "quick" },
+          { key: "7", label: "版本管理", action: "version" },
+          { key: "8", label: "性能分析", action: "performance" },
+          { key: "9", label: "快速操作", action: "quick" },
           { key: "0", label: "退出", action: "exit" },
         ],
       },
@@ -56,8 +57,6 @@ class EngineeeringCLI {
         title: "🔧 环境管理",
         options: [
           { key: "1", label: "检查开发环境", script: "check-env.js", args: [] },
-          { key: "2", label: "系统信息", script: "dev.js", args: ["info"] },
-          { key: "3", label: "健康检查", script: "dev.js", args: ["health"] },
           { key: "0", label: "返回主菜单", action: "main" },
         ],
       },
@@ -79,8 +78,6 @@ class EngineeeringCLI {
           { key: "2", label: "ESLint 检查", script: "quality.js", args: ["lint"] },
           { key: "3", label: "自动修复代码格式", script: "quality.js", args: ["lint", "--fix"] },
           { key: "4", label: "TypeScript 类型检查", script: "quality.js", args: ["typecheck"] },
-          { key: "5", label: "代码复杂度分析", script: "quality.js", args: ["complexity"] },
-          { key: "6", label: "运行测试", script: "quality.js", args: ["test"] },
           { key: "0", label: "返回主菜单", action: "main" },
         ],
       },
@@ -89,10 +86,8 @@ class EngineeeringCLI {
         options: [
           { key: "1", label: "清理构建产物", script: "build.js", args: ["clean"] },
           { key: "2", label: "构建生产版本", script: "build.js", args: ["build", "production"] },
-          { key: "3", label: "构建开发版本", script: "build.js", args: ["build", "development"] },
-          { key: "4", label: "构建桌面应用", script: "build.js", args: ["desktop"] },
-          { key: "5", label: "预览构建结果", script: "build.js", args: ["preview"] },
-          { key: "6", label: "分析构建产物", script: "build.js", args: ["analyze"] },
+          { key: "3", label: "构建桌面应用", script: "build.js", args: ["desktop"] },
+          { key: "4", label: "分析构建产物", script: "build.js", args: ["analyze"] },
           { key: "0", label: "返回主菜单", action: "main" },
         ],
       },
@@ -100,11 +95,10 @@ class EngineeeringCLI {
         title: "🚀 开发服务",
         options: [
           { key: "1", label: "启动 Nuxt 开发服务器", script: "dev.js", args: ["nuxt", "development"] },
-          { key: "2", label: "启动 Nuxt 生产模式", script: "dev.js", args: ["nuxt", "production"] },
-          { key: "3", label: "启动 Tauri 开发", script: "dev.js", args: ["tauri"] },
-          { key: "4", label: "启动 Android 开发", script: "dev.js", args: ["mobile", "android"] },
-          { key: "5", label: "启动 iOS 开发", script: "dev.js", args: ["mobile", "ios"] },
-          { key: "6", label: "停止所有服务", script: "dev.js", args: ["stop"] },
+          { key: "2", label: "启动 Tauri 开发", script: "dev.js", args: ["tauri"] },
+          { key: "3", label: "启动 Android 开发", script: "dev.js", args: ["mobile", "android"] },
+          { key: "4", label: "启动 iOS 开发", script: "dev.js", args: ["mobile", "ios"] },
+          { key: "5", label: "停止所有服务", script: "dev.js", args: ["stop"] },
           { key: "0", label: "返回主菜单", action: "main" },
         ],
       },
@@ -121,14 +115,18 @@ class EngineeeringCLI {
           { key: "0", label: "返回主菜单", action: "main" },
         ],
       },
+      version: {
+        title: "🔢 版本管理",
+        options: [
+          { key: "1", label: "查看当前版本", action: "showVersion" },
+          { key: "2", label: "更新版本号", action: "updateVersion" },
+          { key: "0", label: "返回主菜单", action: "main" },
+        ],
+      },
       performance: {
         title: "⚡ 性能分析",
         options: [
           { key: "1", label: "分析构建产物大小", script: "performance.js", args: ["bundle"] },
-          { key: "2", label: "Lighthouse 性能分析", script: "performance.js", args: ["lighthouse"] },
-          { key: "3", label: "内存使用监控", script: "performance.js", args: ["memory"] },
-          { key: "4", label: "网络性能测试", script: "performance.js", args: ["network"] },
-          { key: "5", label: "生成完整性能报告", script: "performance.js", args: ["report"] },
           { key: "0", label: "返回主菜单", action: "main" },
         ],
       },
@@ -155,7 +153,8 @@ class EngineeeringCLI {
 ║                    🛠️  前端工程化工具 v1.0                    ║
 ║                                                               ║
 ║  📦 依赖管理  🔍 代码质量  🏗️  构建管理  🚀 开发服务          ║
-║  📝 Git工作流  ⚡ 性能分析  🔧 环境管理  ⚡ 快速操作          ║
+║  📝 Git工作流  🔢 版本管理  ⚡ 性能分析  🔧 环境管理          ║
+║  ⚡ 快速操作                                                      ║
 ╚═══════════════════════════════════════════════════════════════╝
 ${colors.reset}`);
 
@@ -231,8 +230,6 @@ ${colors.reset}`);
     const iconMap = {
       environment: {
         检查开发环境: "🔍",
-        系统信息: "ℹ️",
-        健康检查: "🏥",
       },
       dependencies: {
         检查所有依赖问题: "🔍",
@@ -246,20 +243,15 @@ ${colors.reset}`);
         "ESLint 检查": "📋",
         "自动修复代码格式": "🔧",
         "TypeScript 类型检查": "📝",
-        "代码复杂度分析": "📊",
-        "运行测试": "🧪",
       },
       build: {
         清理构建产物: "🧹",
         构建生产版本: "🏭",
-        构建开发版本: "🔨",
         构建桌面应用: "💻",
-        预览构建结果: "👁️",
         分析构建产物: "📊",
       },
       development: {
         "启动 Nuxt 开发服务器": "🌐",
-        "启动 Nuxt 生产模式": "🚀",
         "启动 Tauri 开发": "💻",
         "启动 Android 开发": "📱",
         "启动 iOS 开发": "🍎",
@@ -274,12 +266,12 @@ ${colors.reset}`);
         "版本发布 (major)": "🚀",
         "设置 Git Hooks": "🪝",
       },
+      version: {
+        查看当前版本: "👁️",
+        更新版本号: "🔢",
+      },
       performance: {
-        "分析构建产物大小": "📦",
-        "Lighthouse 性能分析": "⚡",
-        "内存使用监控": "🧠",
-        "网络性能测试": "🌐",
-        "生成完整性能报告": "📊",
+        分析构建产物大小: "📦",
       },
       quick: {
         "快速检查 (环境+依赖+质量)": "⚡",
@@ -294,6 +286,7 @@ ${colors.reset}`);
         "构建管理": "🏗️",
         "开发服务": "🚀",
         "Git 工作流": "📝",
+        "版本管理": "🔢",
         "性能分析": "⚡",
         "快速操作": "⚡",
       },
@@ -541,6 +534,118 @@ ${colors.reset}`);
   }
 
   /**
+   * 显示当前版本信息
+   */
+  async showVersion() {
+    log.title("📋 当前版本信息");
+
+    try {
+      const packageJson = JSON.parse(fs.readFileSync(path.join(this.projectRoot, "package.json"), "utf8"));
+      const cargoToml = fs.readFileSync(path.join(this.projectRoot, "src-tauri", "Cargo.toml"), "utf8");
+      const cargoVersionMatch = cargoToml.match(/version\s*=\s*"([^"]+)"/);
+
+      const tauriPropertiesPath = path.join(this.projectRoot, "src-tauri", "gen", "android", "app", "tauri.properties");
+      let androidVersion = "未生成";
+      let androidVersionCode = "未生成";
+
+      if (fs.existsSync(tauriPropertiesPath)) {
+        const propertiesContent = fs.readFileSync(tauriPropertiesPath, "utf8");
+        const versionNameMatch = propertiesContent.match(/tauri\.android\.versionName=([^\n]+)/);
+        const versionCodeMatch = propertiesContent.match(/tauri\.android\.versionCode=([^\n]+)/);
+        if (versionNameMatch)
+          androidVersion = versionNameMatch[1];
+        if (versionCodeMatch)
+          androidVersionCode = versionCodeMatch[1];
+      }
+
+      console.log("\n");
+      log.info("📦 package.json:");
+      console.log(`   版本: ${packageJson.version}`);
+
+      if (cargoVersionMatch) {
+        log.info("\n🦀 Cargo.toml:");
+        console.log(`   版本: ${cargoVersionMatch[1]}`);
+      }
+
+      log.info("\n📱 Android:");
+      console.log(`   versionName: ${androidVersion}`);
+      console.log(`   versionCode: ${androidVersionCode}`);
+
+      // 检查版本是否一致
+      const versions = [packageJson.version];
+      if (cargoVersionMatch)
+        versions.push(cargoVersionMatch[1]);
+      if (androidVersion !== "未生成")
+        versions.push(androidVersion);
+
+      const allSame = versions.every(v => v === versions[0]);
+      if (allSame) {
+        log.success("\n✅ 所有版本号已同步");
+      }
+      else {
+        log.warning("\n⚠️  版本号不一致，建议使用'更新版本号'功能同步");
+      }
+    }
+    catch (error) {
+      log.error(`获取版本信息失败: ${error.message}`);
+    }
+  }
+
+  /**
+   * 更新版本号（交互式）
+   */
+  async updateVersion() {
+    log.title("🔢 更新版本号");
+
+    try {
+      const packageJson = JSON.parse(fs.readFileSync(path.join(this.projectRoot, "package.json"), "utf8"));
+      const currentVersion = packageJson.version;
+
+      log.info(`当前版本: ${currentVersion}\n`);
+
+      const newVersion = await input({
+        message: "请输入新版本号 (格式: X.Y.Z)",
+        default: currentVersion,
+        validate: (value) => {
+          const semverRegex = /^\d+\.\d+\.\d+$/;
+          if (!semverRegex.test(value)) {
+            return "版本号格式不正确，应为 X.Y.Z (例如: 1.8.0)";
+          }
+          return true;
+        },
+      });
+
+      if (!newVersion || newVersion === currentVersion) {
+        log.warning("版本号未更改，取消操作");
+        return;
+      }
+
+      const confirmed = await confirm({
+        message: `确认将版本从 ${currentVersion} 更新到 ${newVersion}?`,
+        default: false,
+      });
+
+      if (!confirmed) {
+        log.info("已取消更新");
+        return;
+      }
+
+      log.step("正在更新版本号...");
+      await this.executeScript("update-version.js", [newVersion]);
+      log.success(`版本已更新到 ${newVersion}`);
+    }
+    catch (error) {
+      if (error.name === "ExitPromptError") {
+        log.info("用户取消了操作");
+      }
+      else {
+        log.error(`更新版本失败: ${error.message}`);
+      }
+    }
+  }
+
+
+  /**
    * 主循环（适配 inquirer@12.7.0）
    */
   async run() {
@@ -583,6 +688,14 @@ ${colors.reset}`);
               break;
             case "quickDev":
               await this.quickDev();
+              shouldPause = true;
+              break;
+            case "showVersion":
+              await this.showVersion();
+              shouldPause = true;
+              break;
+            case "updateVersion":
+              await this.updateVersion();
               shouldPause = true;
               break;
             default:

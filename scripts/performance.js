@@ -5,10 +5,7 @@
  * 参考: lighthouse, web-vitals, bundle-analyzer 等工具
  */
 
-const { execSync } = require("node:child_process");
 const fs = require("node:fs");
-const https = require("node:https");
-const os = require("node:os");
 const path = require("node:path");
 
 const colors = {
@@ -159,274 +156,24 @@ class PerformanceAnalyzer {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${Number.parseFloat((bytes / (k ** i)).toFixed(2))} ${sizes[i]}`;
   }
-
-  /**
-   * 运行 Lighthouse 分析
-   */
-  async runLighthouse(url = "http://localhost:3000") {
-    log.step(`运行 Lighthouse 分析 (${url})...`);
-    this.ensureReportsDir();
-
-    try {
-      // 检查 Lighthouse 是否安装
-      try {
-        execSync("lighthouse --version", { stdio: "pipe" });
-      }
-      catch {
-        log.warning("Lighthouse 未安装，正在安装...");
-        execSync("npm install -g lighthouse", { stdio: "inherit" });
-      }
-
-      const reportPath = path.join(this.reportsDir, "lighthouse-report.html");
-      const jsonPath = path.join(this.reportsDir, "lighthouse-report.json");
-
-      const command = `lighthouse ${url} --output=html,json --output-path=${path.join(this.reportsDir, "lighthouse-report")} --chrome-flags="--headless"`;
-
-      execSync(command, {
-        cwd: this.projectRoot,
-        stdio: "inherit",
-      });
-
-      log.success("Lighthouse 分析完成");
-      log.info(`HTML 报告: ${reportPath}`);
-      log.info(`JSON 报告: ${jsonPath}`);
-
-      // 解析 JSON 报告显示关键指标
-      if (fs.existsSync(jsonPath)) {
-        const report = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
-        this.displayLighthouseMetrics(report);
-      }
-    }
-    catch (error) {
-      log.error(`Lighthouse 分析失败: ${error.message}`);
-    }
-  }
-
-  /**
-   * 显示 Lighthouse 关键指标
-   */
-  displayLighthouseMetrics(report) {
-    const audits = report.audits;
-    const metrics = {
-      "首次内容绘制 (FCP)": audits["first-contentful-paint"]?.displayValue,
-      "最大内容绘制 (LCP)": audits["largest-contentful-paint"]?.displayValue,
-      "累积布局偏移 (CLS)": audits["cumulative-layout-shift"]?.displayValue,
-      "首次输入延迟 (FID)": audits["max-potential-fid"]?.displayValue,
-      "性能评分": report.categories?.performance?.score ? Math.round(report.categories.performance.score * 100) : "N/A",
-    };
-
-    log.success("Lighthouse 关键指标:");
-    Object.entries(metrics).forEach(([name, value]) => {
-      console.log(`  ${name}: ${value || "N/A"}`);
-    });
-  }
-
-  /**
-   * 监控内存使用
-   */
-  monitorMemory(duration = 60) {
-    log.step(`监控内存使用 (${duration}秒)...`);
-    this.ensureReportsDir();
-
-    const startTime = Date.now();
-    const memoryData = [];
-
-    const monitor = setInterval(() => {
-      const usage = process.memoryUsage();
-      const timestamp = Date.now() - startTime;
-
-      memoryData.push({
-        timestamp,
-        rss: usage.rss,
-        heapTotal: usage.heapTotal,
-        heapUsed: usage.heapUsed,
-        external: usage.external,
-      });
-
-      console.log(`内存使用: RSS=${this.formatBytes(usage.rss)}, Heap=${this.formatBytes(usage.heapUsed)}/${this.formatBytes(usage.heapTotal)}`);
-    }, 1000);
-
-    setTimeout(() => {
-      clearInterval(monitor);
-
-      // 保存监控数据
-      const reportPath = path.join(this.reportsDir, "memory-usage.json");
-      fs.writeFileSync(reportPath, JSON.stringify(memoryData, null, 2));
-
-      log.success("内存监控完成");
-      log.info(`报告已保存: ${reportPath}`);
-
-      // 显示统计信息
-      const maxRss = Math.max(...memoryData.map(d => d.rss));
-      const maxHeap = Math.max(...memoryData.map(d => d.heapUsed));
-
-      console.log(`  最大 RSS: ${this.formatBytes(maxRss)}`);
-      console.log(`  最大堆使用: ${this.formatBytes(maxHeap)}`);
-    }, duration * 1000);
-  }
-
-  /**
-   * 网络性能测试
-   */
-  async testNetworkPerformance(url = "http://localhost:3000") {
-    log.step(`测试网络性能 (${url})...`);
-
-    const tests = [
-      { name: "DNS 解析", test: () => this.measureDNS(url) },
-      { name: "连接时间", test: () => this.measureConnection(url) },
-      { name: "首字节时间", test: () => this.measureTTFB(url) },
-    ];
-
-    for (const { name, test } of tests) {
-      try {
-        const result = await test();
-        console.log(`  ${name}: ${result}ms`);
-      }
-      catch (error) {
-        console.log(`  ${name}: 失败 - ${error.message}`);
-      }
-    }
-  }
-
-  /**
-   * 测量 DNS 解析时间
-   */
-  async measureDNS(url) {
-    const { performance } = require("node:perf_hooks");
-    const { URL } = require("node:url");
-    const dns = require("node:dns").promises;
-
-    const hostname = new URL(url).hostname;
-
-    const start = performance.now();
-    await dns.lookup(hostname);
-    const end = performance.now();
-
-    return Math.round(end - start);
-  }
-
-  /**
-   * 测量连接时间
-   */
-  async measureConnection(url) {
-    const { performance } = require("node:perf_hooks");
-
-    return new Promise((resolve, reject) => {
-      const start = performance.now();
-
-      const req = https.request(url, { method: "HEAD" }, () => {
-        const end = performance.now();
-        resolve(Math.round(end - start));
-      });
-
-      req.on("error", reject);
-      req.end();
-    });
-  }
-
-  /**
-   * 测量首字节时间
-   */
-  async measureTTFB(url) {
-    const { performance } = require("node:perf_hooks");
-
-    return new Promise((resolve, reject) => {
-      const start = performance.now();
-      let ttfb = 0;
-
-      const req = https.request(url, (res) => {
-        ttfb = performance.now() - start;
-        res.on("data", () => {
-          if (ttfb === 0) {
-            ttfb = performance.now() - start;
-          }
-        });
-        res.on("end", () => resolve(Math.round(ttfb)));
-      });
-
-      req.on("error", reject);
-      req.end();
-    });
-  }
-
-  /**
-   * 生成性能报告
-   */
-  async generateReport() {
-    log.title("生成性能报告...");
-    this.ensureReportsDir();
-
-    const reportData = {
-      timestamp: new Date().toISOString(),
-      project: this.packageJson.name,
-      version: this.packageJson.version,
-      system: {
-        platform: os.platform(),
-        arch: os.arch(),
-        nodeVersion: process.version,
-        memory: os.totalmem(),
-        cpus: os.cpus().length,
-      },
-    };
-
-    // 添加构建分析
-    try {
-      await this.analyzeBundleSize();
-      const bundleReport = path.join(this.reportsDir, "bundle-size.json");
-      if (fs.existsSync(bundleReport)) {
-        reportData.bundleAnalysis = JSON.parse(fs.readFileSync(bundleReport, "utf8"));
-      }
-    }
-    catch (error) {
-      log.warning("构建分析失败，跳过");
-    }
-
-    // 保存总报告
-    const reportPath = path.join(this.reportsDir, "performance-report.json");
-    fs.writeFileSync(reportPath, JSON.stringify(reportData, null, 2));
-
-    log.success("性能报告生成完成");
-    log.info(`报告路径: ${reportPath}`);
-  }
 }
 
 // 命令行参数处理
 const command = process.argv[2];
-const option = process.argv[3];
 const analyzer = new PerformanceAnalyzer();
 
 switch (command) {
   case "bundle":
     analyzer.analyzeBundleSize();
     break;
-  case "lighthouse":
-    analyzer.runLighthouse(option || "http://localhost:3000");
-    break;
-  case "memory":
-    analyzer.monitorMemory(Number.parseInt(option) || 60);
-    break;
-  case "network":
-    analyzer.testNetworkPerformance(option || "http://localhost:3000");
-    break;
-  case "report":
-    analyzer.generateReport();
-    break;
   default:
     console.log(`
-用法: node scripts/performance.js <command> [option]
+用法: node scripts/performance.js <command>
 
 命令:
   bundle              分析构建产物大小
-  lighthouse [url]    运行 Lighthouse 分析
-  memory [duration]   监控内存使用 (秒)
-  network [url]       测试网络性能
-  report              生成完整性能报告
 
 示例:
   node scripts/performance.js bundle
-  node scripts/performance.js lighthouse http://localhost:3000
-  node scripts/performance.js memory 120
-  node scripts/performance.js network https://example.com
-  node scripts/performance.js report
     `);
 }

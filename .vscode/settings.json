@@ -22,5 +22,8 @@
   "switch2idea.ideaPath": "/Applications/WebStorm.app",
   "cSpell.words": [
     "unocss"
-  ]
+  ],
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  }
 }
