@@ -116,7 +116,7 @@ export interface MenuItem {
 
 <template>
   <div
-    class="relative z-998 h-full flex flex-col border-default-r bg-color-2"
+    class="relative z-998 h-full flex flex-col select-none border-default-r bg-color-2"
   >
     <!-- 顶部 -->
     <div class="nav-padding-top-6 mx-a h-20 w-fit flex-row-c-c flex-shrink-0 border-default-b">
