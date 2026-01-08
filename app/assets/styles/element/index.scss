@@ -114,5 +114,16 @@
     // 'level-padding': 20px,
      // 'icon-width': 24px,
   ),
+  $segmented: (
+    "color": getCssVar("text-color", "regular"),
+    "bg-color": getCssVar("fill-color", "light"),
+    "padding": 4px,
+    "item-selected-color": getCssVar("text-color", "primary"),
+    "item-selected-bg-color": getCssVar("color-white"),
+    "item-selected-disabled-bg-color": getCssVar("fill-color", "lighter"),
+    "item-hover-color": getCssVar("text-color", "regular"),
+    "item-hover-bg-color": transparent,
+    "item-active-bg-color": transparent
+  ),
   $dropdown: ()
 );

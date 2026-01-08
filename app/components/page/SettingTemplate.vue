@@ -224,6 +224,10 @@ onUnmounted(() => {
     }
   }
 
+  .el-segmented__group {
+    --at-apply: "gap-1";
+  }
+
   // 小尺寸上
   @media screen and (max-width: 640px) {
     .el-segmented__group {

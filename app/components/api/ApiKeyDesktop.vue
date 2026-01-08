@@ -518,6 +518,7 @@ onActivated(() => {
         <el-form-item key="expireType" label="有效期">
           <el-segmented
             v-model="expireType"
+            class="segmented"
             :options="[
               { label: '永不过期', value: 'never' },
               { label: '到期有效', value: 'expire' },
@@ -640,7 +641,7 @@ onActivated(() => {
 <style scoped lang="scss">
 :deep(.search.el-input) {
   .el-input__wrapper {
-    --at-apply: "border-default-2 py-0 text-xs";
+    --at-apply: "bg-color-2 py-0 text-xs";
     box-shadow: none;
   }
 }

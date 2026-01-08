@@ -1,15 +1,40 @@
-/**  ------------------------------ Third-party Components Overrides ---------------------------------------  **/
+/**
+ * 样式重写
+ * 包含：Element Plus，动画，以及外部库（Markdown、右键菜单、NProgress）
+ */
 
-// ==================== Element Plus 组件覆盖 ====================
+/* ==========================================================================
+   变量
+   ========================================================================== */
 
-// 统一动画参数
+// 动画配置
 $popup-animation-duration: 0.22s;
 $popup-animation-timing: var(--animate-cubic);
 $popup-scale-from: 0.96;
 $popover-animation-duration: 0.16s;
 $popover-animation-timing: ease;
+$drawer-animation-duration: 0.5s;
+$drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 
-// el-input
+/* ==========================================================================
+   Element Plus 覆盖
+   ========================================================================== */
+
+/* --- 基础 --- */
+
+// 按钮
+.el-button {
+  transition: $transition-delay;
+}
+
+// 遮罩层
+.el-overlay {
+  border-radius: 0.3rem;
+}
+
+/* --- 表单组件 --- */
+
+// 输入框
 .el-input {
   &.input-weak {
     .el-input__wrapper {
@@ -19,7 +44,107 @@ $popover-animation-timing: ease;
   }
 }
 
-// 消息确认框
+// 单选框组
+.el-radio-group {
+  font-size: medium;
+  .el-radio__inner {
+    border-radius: 4px;
+    transform: scale(1.1);
+  }
+}
+
+// 表单项
+.el-form-item {
+  .el-form-item__error {
+    margin-top: 0.1em;
+  }
+}
+
+// 自动补全
+.el-popper.el-autocomplete__popper {
+  --at-apply: "p-0 rounded-10px border-default";
+  .el-autocomplete-suggestion {
+    padding: 0.5em;
+  }
+  .el-scrollbar {
+    .el-autocomplete-suggestion__wrap {
+      padding: 0;
+    }
+    .el-scrollbar__view.el-autocomplete-suggestion__list {
+      padding: 0;
+    }
+  }
+  .el-autocomplete-suggestion__list li {
+    --el-mention-option-hover-background: #958c9b44;
+    padding: 0.5em;
+    border-radius: 6px;
+  }
+}
+
+// 选择框 / 提及
+.el-popper.el-mention__popper,
+.el-popper.el-select__popper.global-custom-select {
+  --at-apply: "bg-white dark:bg-dark-8 rounded-10px border-default";
+  .el-select-dropdown,
+  .el-mention-dropdown {
+    padding: 0.5em;
+    .el-select-dropdown__footer {
+      --at-apply: "p-0 pt-2 mt-2";
+    }
+  }
+  .el-scrollbar {
+    .el-scrollbar__wrap {
+      padding: 0;
+    }
+    .el-scrollbar__view.el-mention-dropdown__list {
+      padding: 0;
+    }
+    .el-scrollbar__bar {
+      opacity: 0.2;
+    }
+    .el-select-dropdown__list {
+      padding: 0;
+    }
+  }
+  .el-select-dropdown__item,
+  .el-mention-dropdown__item {
+    --el-fill-color-light: #958c9b1f;
+    --el-mention-option-hover-background: #958c9b1f;
+    padding: 0.5em;
+    border-radius: 6px;
+  }
+}
+
+// 日期选择器
+.el-picker-panel {
+  --at-apply: "card-rounded-df overflow-hidden";
+}
+
+/* --- 导航 & 数据 --- */
+
+// 下拉菜单
+.el-dropdown-menu {
+  .el-dropdown-menu__item {
+    --at-apply: "h-fit mx-1 transition-100 rounded-1";
+    &:not(.is-disabled) {
+      &:hover,
+      &:focus {
+        --at-apply: "bg-theme-primary text-white shadow";
+      }
+    }
+  }
+  .el-dropdown-menu__item--divided {
+    --at-apply: "border-default-t";
+  }
+}
+
+.el-dropdown__popper {
+  --at-apply: "!border-default-hover";
+}
+
+/* --- 反馈 & 遮罩 --- */
+
+// 消息弹框
 .el-message-box {
   --at-apply: "border-default-sm";
   .el-message-box__header {
@@ -66,7 +191,7 @@ $popover-animation-timing: ease;
   }
 }
 
-// 消息框
+// 消息提示
 body .el-message {
   width: max-content;
   max-width: 94%;
@@ -75,15 +200,6 @@ body .el-message {
   --at-apply: "text-14px rounded-2rem shadow-md";
   .el-message__content {
     --at-apply: "truncate text-12px mt-1px";
-  }
-}
-
-// 单选钮
-.el-radio-group {
-  font-size: medium;
-  .el-radio__inner {
-    border-radius: 4px;
-    transform: scale(1.1);
   }
 }
 
@@ -102,105 +218,15 @@ body .el-message {
   }
 }
 
-// 按钮
-.el-button {
-  transition: $transition-delay;
+// 抽屉
+.el-drawer {
+  transition-duration: $drawer-animation-duration;
+  transition-timing-function: $drawer-animation-timing;
 }
 
-// Popper
+// Popper 通用类
 .el-popper-init {
   padding: 2px 4px;
-}
-
-// 表单
-.el-form-item {
-  .el-form-item__error {
-    margin-top: 0.1em;
-  }
-}
-
-.el-overlay {
-  border-radius: 0.3rem;
-}
-
-// 下拉菜单
-.el-dropdown-menu {
-  .el-dropdown-menu__item {
-    --at-apply: "h-fit mx-1 transition-100 rounded-1";
-    &:not(.is-disabled) {
-      &:hover,
-      &:focus {
-        --at-apply: "bg-theme-primary text-white shadow";
-      }
-    }
-  }
-  .el-dropdown-menu__item--divided {
-    --at-apply: "border-default-t";
-  }
-}
-
-.el-dropdown__popper {
-  --at-apply: "!border-default-hover";
-}
-
-// Select/Mention 弹出层
-.el-popper.el-mention__popper,
-.el-popper.el-select__popper.global-custom-select {
-  --at-apply: "bg-white dark:bg-dark-8 rounded-10px border-default";
-  .el-select-dropdown,
-  .el-mention-dropdown {
-    padding: 0.5em;
-    .el-select-dropdown__footer {
-      --at-apply: "p-0 pt-2 mt-2";
-    }
-  }
-  .el-scrollbar {
-    .el-scrollbar__wrap {
-      padding: 0;
-    }
-    .el-scrollbar__view.el-mention-dropdown__list {
-      padding: 0;
-    }
-    .el-scrollbar__bar {
-      opacity: 0.2;
-    }
-    .el-select-dropdown__list {
-      padding: 0;
-    }
-  }
-  .el-select-dropdown__item,
-  .el-mention-dropdown__item {
-    --el-fill-color-light: #958c9b1f;
-    --el-mention-option-hover-background: #958c9b1f;
-    padding: 0.5em;
-    border-radius: 6px;
-  }
-}
-
-// 自动填充组件
-.el-popper.el-autocomplete__popper {
-  --at-apply: "p-0 rounded-10px border-default";
-  .el-autocomplete-suggestion {
-    padding: 0.5em;
-  }
-  .el-scrollbar {
-    .el-autocomplete-suggestion__wrap {
-      padding: 0;
-    }
-    .el-scrollbar__view.el-autocomplete-suggestion__list {
-      padding: 0;
-    }
-  }
-  .el-autocomplete-suggestion__list li {
-    --el-mention-option-hover-background: #958c9b44;
-    padding: 0.5em;
-    border-radius: 6px;
-  }
-}
-
-// 日期选择器
-.el-picker-panel {
-  --at-apply: "card-rounded-df overflow-hidden";
 }
 
 // 加载遮罩
@@ -232,7 +258,7 @@ body .el-message {
   }
 }
 
-// 图片查看器
+// 图片预览
 .el-image-viewer__wrapper {
   border-radius: 6px;
   overflow: hidden;
@@ -256,17 +282,101 @@ body .el-message {
   }
 }
 
-// Drawer 动画
-$drawer-animation-duration: 0.5s;
-$drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
-.el-drawer {
-  transition-duration: $drawer-animation-duration;
-  transition-timing-function: $drawer-animation-timing;
+// 分段器
+.el-segmented {
+  --at-apply: "p-1 shadow-sm shadow-inset bg-color-2";
+
+  .el-segmented__item {
+    font-size: 0.95em; // 选项字体略小
+  }
+  .el-segmented__item-selected {
+    --at-apply: "shadow-sm hover:shadow bg-color";
+  }
 }
 
-// ==================== Element Plus 动画覆盖 ====================
+/* ==========================================================================
+   外部库样式重写
+   ========================================================================== */
 
-// 1. Dialog 动画
+/* --- Markdown 编辑器 --- */
+.md-editor-preview {
+  a {
+    &:hover {
+      border: none !important;
+    }
+    &::after {
+      display: none !important;
+    }
+  }
+}
+
+/* --- 右键菜单 (mx-context-menu) --- */
+.mx-context-menu {
+  --popper-fade-anima-scale: 0.9;
+  transform-origin: center top;
+  --at-apply: "!border-default-2 dark:!bg-[#111111] !bg-white animate-[popper-fade-anim_0.15s]";
+
+  .mx-context-menu-items {
+    .mx-context-menu-item {
+      .mx-item-row {
+        --at-apply: "text-color";
+        margin: 4px 2px;
+      }
+      &:hover .mx-item-row {
+        --at-apply: "text-white";
+      }
+    }
+  }
+
+  .mx-context-menu-item-sperator {
+    --mx-menu-divider: rgba(132, 132, 132, 0.2);
+    background-color: transparent;
+  }
+
+  .mx-icon-placeholder {
+    i {
+      font-size: 0.9em;
+      transition: transform 0.2s;
+    }
+  }
+
+  .mx-context-menu-item {
+    --mx-menu-active-backgroud: var(--el-color-primary);
+    --mx-menu-hover-backgroud: var(--el-color-primary);
+    --mx-menu-open-hover-backgroud: var(--el-color-primary);
+    --mx-menu-open-backgroud: #71717188;
+
+    &:hover {
+      .mx-icon-placeholder {
+        i {
+          --at-apply: "light:text-light";
+        }
+      }
+    }
+  }
+
+  --mx-menu-active-backgroud: var(--el-color-primary);
+  --mx-menu-hover-backgroud: var(--el-color-primary);
+  --mx-menu-open-hover-backgroud: var(--el-color-primary);
+  --mx-menu-open-backgroud: #71717188 !important;
+}
+
+/* --- NProgress 进度条 --- */
+#nprogress .bar {
+  height: 3px;
+  background: $loading-color2 !important;
+}
+
+.dark #nprogress .bar {
+  height: 3px;
+  background: $loading-color-dark2 !important;
+}
+
+/* ==========================================================================
+   动画
+   ========================================================================== */
+
+// 1. 对话框与遮罩淡入淡出
 .el-modal-dialog.dialog-fade-enter-active,
 .el-modal-dialog.dialog-fade-leave-active,
 .el-overlay.dialog-fade-enter-active,
@@ -315,7 +425,7 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   }
 }
 
-// 2. MessageBox 动画
+// 2. 消息框淡入淡出
 .el-overlay.is-message-box {
   &.fade-in-linear-enter-active,
   &.fade-in-linear-leave-active {
@@ -360,7 +470,7 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   }
 }
 
-// 3. Tooltip/Popper 动画
+// 3. Tooltip/Popper 缩放动画
 $popper-placements: (
   "bottom": (
     center top,
@@ -463,7 +573,7 @@ $zoom-classes: (el-zoom-in-top, el-zoom-in-bottom, el-zoom-in-left, el-zoom-in-r
   }
 }
 
-// 独立 Zoom 动画
+// 独立缩放动画
 .el-zoom-in-center-enter-active,
 .el-zoom-in-center-leave-active {
   transition:
@@ -561,81 +671,4 @@ $zoom-classes: (el-zoom-in-top, el-zoom-in-bottom, el-zoom-in-left, el-zoom-in-r
 .el-zoom-in-right-leave-from {
   opacity: 1;
   transform: translateX(0) scale3d(1, 1, 1);
-}
-
-// ==================== Markdown 编辑器覆盖 ====================
-
-.md-editor-preview {
-  a {
-    &:hover {
-      border: none !important;
-    }
-    &::after {
-      display: none !important;
-    }
-  }
-}
-
-// ==================== 右键菜单覆盖 ====================
-
-.mx-context-menu {
-  --popper-fade-anima-scale: 0.9;
-  transform-origin: center top;
-  --at-apply: "!border-default-2 dark:!bg-[#111111] !bg-white animate-[popper-fade-anim_0.15s]";
-
-  .mx-context-menu-items {
-    .mx-context-menu-item {
-      .mx-item-row {
-        --at-apply: "text-color";
-        margin: 4px 2px;
-      }
-      &:hover .mx-item-row {
-        --at-apply: "text-white";
-      }
-    }
-  }
-
-  .mx-context-menu-item-sperator {
-    --mx-menu-divider: rgba(132, 132, 132, 0.2);
-    background-color: transparent;
-  }
-
-  .mx-icon-placeholder {
-    i {
-      font-size: 0.9em;
-      transition: transform 0.2s;
-    }
-  }
-
-  .mx-context-menu-item {
-    --mx-menu-active-backgroud: var(--el-color-primary);
-    --mx-menu-hover-backgroud: var(--el-color-primary);
-    --mx-menu-open-hover-backgroud: var(--el-color-primary);
-    --mx-menu-open-backgroud: #71717188;
-
-    &:hover {
-      .mx-icon-placeholder {
-        i {
-          --at-apply: "light:text-light";
-        }
-      }
-    }
-  }
-
-  --mx-menu-active-backgroud: var(--el-color-primary);
-  --mx-menu-hover-backgroud: var(--el-color-primary);
-  --mx-menu-open-hover-backgroud: var(--el-color-primary);
-  --mx-menu-open-backgroud: #71717188 !important;
-}
-
-// ==================== nprogress 进度条 ====================
-
-#nprogress .bar {
-  height: 3px;
-  background: $loading-color2 !important;
-}
-
-.dark #nprogress .bar {
-  height: 3px;
-  background: $loading-color-dark2 !important;
 }

@@ -572,19 +572,10 @@ function toLoginForm() {
 
 // 切换注册
 :deep(.toggle-btns.el-segmented) {
-  --el-segmented-item-selected-disabled-bg-color: var(--el-color-info-light-5);
-  --el-segmented-item-selected-bg-color: var(--el-color-info);
   --el-border-radius-base: 6px;
   height: 2.6rem;
   padding: 0.4rem;
-  font-size: small;
-  .el-segmented__item:hover:not(.is-selected) {
-    background: transparent;
-  }
-
-  .el-segmented__item.is-selected {
-    color: #fff;
-  }
+  font-size: 0.9em;
 }
 
 .dark .active {

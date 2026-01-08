@@ -414,7 +414,7 @@ onActivated(() => {
     <div class="mb-4 flex-row-c-c gap-8">
       <el-segmented
         v-model="searchForm.status"
-        class="segmented w-full border-default-2-hover bg-color"
+        class="segmented shadown-none w-full"
         :options="apiKeyStatusOptions"
         @change="handleSearch"
       />
@@ -706,10 +706,7 @@ onActivated(() => {
 }
 
 :deep(.segmented.el-segmented) {
-  --el-segmented-item-selected-bg-color: var(--el-bg-color);
-  --el-segmented-item-selected-color: var(--el-text-color);
-  --el-segmented-item-hover-bg-color: initial;
-  --at-apply: "p-0.5";
+  --at-apply: "p-1";
 
   .el-segmented__item {
     --at-apply: "flex items-center";

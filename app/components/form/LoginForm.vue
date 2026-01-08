@@ -775,7 +775,7 @@ defineExpose({
       --at-apply: "w-8rem min-w-fit text-theme-primary card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-primary op-100)";
     }
     .code-btn {
-      --at-apply: " h-full flex-row-c-c px-4 transition-200 ";
+      --at-apply: "h-full flex-row-c-c px-4 transition-200 ";
     }
 
     .el-form-item__error {
@@ -799,16 +799,10 @@ defineExpose({
 
 // 切换登录
 :deep(.toggle-login.el-segmented) {
-  --el-segmented-item-selected-bg-color: var(--el-color-primary);
   --el-border-radius-base: 6px;
   height: 2.6rem;
   padding: 0.4rem;
-  .el-segmented__item:hover:not(.is-selected) {
-    background: transparent;
-  }
-  .el-segmented__item.is-selected {
-    color: #fff;
-  }
+  font-size: 0.9em;
 }
 
 .dark .active {
