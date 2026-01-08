@@ -60,7 +60,7 @@ async function onHandelRobot(robot: RobotUserVO) {
           const load = ElLoading.service({
             lock: true,
             text: "添加成功，正在前往对话中...",
-            background: "rgba(0, 0, 0, 0.1)",
+            background: "var(--el-overlay-color, rgba(0, 0, 0, 0.1))",
           });
           setTimeout(() => {
             onHandelRobot(robot);
@@ -107,7 +107,7 @@ onDeactivated(() => {
       :key="p.userId"
       v-loading="isLoadRobot === p.userId"
       class="card-item group"
-      :class="`style-${(index % 4) + 1}`"
+      :class="`card-style-${(index % 6) + 1}`"
       title="开始对话"
       @click.stop="onHandelRobot(p)"
     >
@@ -153,19 +153,6 @@ onDeactivated(() => {
 .card-item {
   --at-apply: "relative overflow-hidden transition-all duration-300 cursor-pointer card-bg-color rounded-xl flex items-center gap-4 p-4 hover:shadow";
 
-  &:hover {
-    .deco-bg {
-      transform: scale(1.1) rotate(5deg);
-    }
-  }
-
-  .deco-bg {
-    --at-apply: "absolute top-0 right-0 z-1 pointer-events-none transition-transform duration-500 ease-out";
-    width: 7.5rem;
-    height: 7.5rem;
-    opacity: 0.6;
-  }
-
   .content {
     --at-apply: "flex-1 z-2 h-full relative min-w-0";
   }
@@ -176,64 +163,6 @@ onDeactivated(() => {
 
   .card-desc {
     --at-apply: "leading-1.4em line-clamp-2 text-mini-50";
-  }
-}
-
-/* 样式变体：仅保留自定义背景，其他用 unocss */
-.style-1 {
-  .deco-bg {
-    background-image: radial-gradient(var(--el-color-primary, #3b82f6) 0.1rem, transparent 0.1rem);
-    background-size: 0.625rem 0.625rem;
-    mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 80%);
-    -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 80%);
-    opacity: 0.15;
-  }
-  .avatar-wrapper {
-    background: linear-gradient(135deg, var(--el-color-primary, #3b82f6), #256fda);
-  }
-}
-
-.style-2 {
-  .deco-bg {
-    background: radial-gradient(circle at 100% 0%, var(--el-color-primary), transparent 70%);
-    opacity: 0.1;
-    filter: blur(1rem);
-  }
-  .avatar-wrapper {
-    background: linear-gradient(135deg, var(--el-color-primary), var(--el-color-primary-dark-2));
-  }
-}
-
-.style-3 {
-  .deco-bg {
-    background-image:
-      linear-gradient(var(--el-color-primary) 0.0625rem, transparent 0.0625rem),
-      linear-gradient(90deg, var(--el-color-primary) 0.0625rem, transparent 0.0625rem);
-    background-size: 1rem 1rem;
-    mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 70%);
-    -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 70%);
-    opacity: 0.1;
-    transform: rotate(-15deg) translate(0.625rem, -0.625rem);
-  }
-  .avatar-wrapper {
-    background: linear-gradient(135deg, var(--el-color-primary), var(--el-color-primary-dark-2));
-  }
-}
-
-.style-4 {
-  .deco-bg {
-    border: 1rem solid var(--el-color-primary);
-    border-radius: 50%;
-    width: 6.875rem;
-    height: 6.875rem;
-    top: -2.5rem;
-    right: -2.5rem;
-    background: transparent;
-    opacity: 0.08;
-    box-shadow: inset 0 0 0 0.5rem rgba(255, 255, 255, 0.2);
-  }
-  .avatar-wrapper {
-    background: linear-gradient(135deg, var(--el-color-primary), var(--el-color-primary-dark-2));
   }
 }
 

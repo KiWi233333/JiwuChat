@@ -1,0 +1,6 @@
+// 动画样式入口文件
+// 导入所有动画模块
+@use "./base-animations" as *;
+@use "./page-transitions" as *;
+@use "./list-animations" as *;
+@use "./component-animations" as *;
