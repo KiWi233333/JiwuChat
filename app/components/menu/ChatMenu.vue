@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { NuxtLink } from "#components";
 
-defineEmits<{
-  (e: "close"): void
-}>();
 // 路由
 const route = useRoute();
 const user = useUserStore();
@@ -137,6 +134,8 @@ export interface MenuItem {
         :index="p.path"
         :element-loading-spinner="defaultLoadingIcon"
         element-loading-custom-class="text-.4em"
+        :prefetch="true"
+        :prefetch-on="{ visibility: true }"
         :class="{
           action: route.path === p.path,
           [`${p.class}`]: p.class,
