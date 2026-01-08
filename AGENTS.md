@@ -50,3 +50,20 @@ PRs should include a clear description, linked issues (if any), and screenshots/
 
 - Keep secrets out of git; use `.env.development.local` / `.env.production.local` for overrides.
 - Avoid changing generated output (`.nuxt/`, `dist/`, `.output/`) in PRs.
+
+## UI Component Standards
+
+Derived from component refactoring (e.g., `RobotList.vue`), follow these standards for UI development:
+
+- **Styling Engine (UnoCSS)**:
+  - **Shortcuts First**: Always use `uno.config.ts` shortcuts (e.g., `card-bg-color`, `border-default`, `text-small-50`) for colors, borders, and common patterns to ensure automatic Dark Mode support and consistency.
+  - **Composition**: Use `@apply` within `<style lang="scss" scoped>` to group utility classes into semantic class names (e.g., `.card-item`) rather than cluttering the HTML template.
+  
+- **Units & Responsiveness**:
+  - **Use `rem`**: Strictly use `rem` for all dimensions (spacing, sizing, font-size, positioning). Avoid `px` to ensure scalability.
+  - **Grid Layouts**: Prefer `grid` with `minmax` for responsive lists instead of fixed flex layouts.
+
+- **Visual Design**:
+  - **Card Metaphor**: Use card-based designs with hover effects (shadow, translate) for interactive list items.
+  - **Decoration**: Implement complex visual decorations (like background patterns) using SCSS/CSS pseudo-elements to keep the DOM clean.
+  - **Theming**: Ensure every color has a dark mode counterpart (handled via UnoCSS shortcuts or `dark:` modifiers).
