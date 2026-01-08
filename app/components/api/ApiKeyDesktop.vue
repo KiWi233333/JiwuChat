@@ -396,7 +396,7 @@ onActivated(() => {
         class="search mr-2 w-10em sm:w-14rem"
         @keydown="handleSearchKeyName"
       />
-      <el-segmented v-model="searchForm.status" class="segmented border-default-2 p-2 !bg-color" :options="apiKeyStatusOptions" @change="handleSearch" />
+      <el-segmented v-model="searchForm.status" class="segmented" :options="apiKeyStatusOptions" @change="handleSearch" />
       <el-button class="ml-3 !border-default-2-hover !bg-color" style="padding: 0 0.6em;font-size: 1rem;" :icon="ElIconSearch" bg text @click="handleSearch" />
       <el-button v-show="searchForm.keyName !== '' || searchForm.status !== undefined" class="!border-default-2-hover !bg-color" style="padding: 0 0.6em;font-size: 1rem;" bg text :icon="ElIconRefresh" @click="handleReset" />
     </div>

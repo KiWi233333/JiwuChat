@@ -1,3 +1,5 @@
+@use "element-plus/theme-chalk/src/mixins/function.scss" as *;
+
 @forward "element-plus/theme-chalk/src/common/var.scss" with (
   //  node_modules/element-plus/theme-chalk/src/common/var.scss"
   $border-radius: ("base": 6px, "small": 12px, "round": 20px, "circle": 100%),
