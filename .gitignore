@@ -28,7 +28,8 @@ report.html
 !.vscode/settings.json
 .vscode
 .claude
-.codex
+.gemini
+.shared
 .codex
 CLAUDE.md
 .cursor
