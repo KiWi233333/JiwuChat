@@ -94,7 +94,7 @@ function exitLogin(ua?: string) {
         <UserSafeDeviceCard
           v-for="(p, index) in deviceList"
           :key="p.id"
-          :class="`card-style-${(index % 4) + 1}`"
+          :class="`card-style-${(index % 6) + 1}`"
           :data="p"
         >
           <div />

@@ -1,6 +1,12 @@
 import rippleDirective from "@/directives/ripple";
+import tiltDirective from "@/directives/tilt";
 
 export default defineNuxtPlugin((nuxtApp) => {
+  /**
+   * 3D Tilt Effect
+   */
+  nuxtApp.vueApp.directive("tilt", tiltDirective);
+
   /**
    * 波纹涟漪效果
    */
