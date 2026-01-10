@@ -384,7 +384,7 @@ onActivated(() => {
 </script>
 
 <template>
-  <div class="min-w-0 w-full flex flex-1 flex-col card-bg-color-2 px-4">
+  <div class="min-w-0 w-full flex flex-1 flex-col bg-color-3 px-4">
     <!-- 页面头部 -->
     <div class="mb-4 mt-6 flex select-none items-center justify-between">
       <div>
@@ -452,7 +452,7 @@ onActivated(() => {
             <div
               v-for="item in tableData"
               :key="item.id"
-              v-ripple="{ color: 'rgba(var(--el-color-info-rgb), 0.05)' }"
+              v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.025)' }"
               class="border border-default-2 rounded-lg bg-color p-4"
             >
               <div class="mb-3 flex items-center gap-3">
@@ -692,7 +692,7 @@ onActivated(() => {
 <style scoped lang="scss">
 :deep(.search.el-input) {
   .el-input__wrapper {
-    --at-apply: "border-default-2 py-0 text-xs";
+    --at-apply: "border-default-2 bg-color py-0 text-xs";
     box-shadow: none;
   }
 }

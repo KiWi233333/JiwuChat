@@ -377,8 +377,15 @@ function toLoginForm() {
     :model="formUser"
     class="form relative"
   >
-    <div my-4 text-5 font-500 tracking-0.2em op-80 sm:mb-6>
-      开启你的专属圈子✨
+    <div class="mb-8 mt-6 flex flex-col items-center gap-2">
+      <div class="text-6 font-bold tracking-0.1em sm:text-8">
+        <span class="from-neutral-600 via-neutral-700 to-neutral-800 bg-gradient-to-r bg-clip-text text-transparent dark:from-neutral-100 dark:via-neutral-300 dark:to-neutral-500">
+          开启你的专属圈子 ✨
+        </span>
+      </div>
+      <div class="text-small tracking-0.1em">
+        加入极物，探索无限可能
+      </div>
     </div>
     <!-- 切换注册 -->
     <el-segmented

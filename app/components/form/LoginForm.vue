@@ -509,7 +509,7 @@ defineExpose({
               style="--anima: blur-in;"
               :src="getShowAvatarUrl"
               :class="{
-                'has-account': findAccountAvatar?.userInfo?.avatar,
+                'has-account mb-2': findAccountAvatar?.userInfo?.avatar,
               }"
               class="avatar"
             />
@@ -522,7 +522,7 @@ defineExpose({
       <!-- 切换登录 -->
       <el-segmented
         v-model="loginType"
-        class="toggle-login grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2"
+        class="toggle-login grid grid-cols-3 mb-4 w-full gap-2"
         :options="options"
       />
       <!-- 邮箱登录 -->
@@ -800,6 +800,8 @@ defineExpose({
 // 切换登录
 :deep(.toggle-login.el-segmented) {
   --el-border-radius-base: 6px;
+  // input__wrapper的背景色
+  --at-apply: "bg-[#fafafa] dark:bg-[#1b1b1b]";
   height: 2.6rem;
   padding: 0.2rem;
   font-size: 0.9em;

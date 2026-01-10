@@ -641,7 +641,7 @@ onActivated(() => {
 <style scoped lang="scss">
 :deep(.search.el-input) {
   .el-input__wrapper {
-    --at-apply: "bg-color-2 py-0 text-xs";
+    --at-apply: "py-0 text-xs bg-color-2";
     box-shadow: none;
   }
 }
@@ -691,7 +691,7 @@ onActivated(() => {
 }
 
 :deep(.segmented.el-segmented) {
-  --at-apply: "p-1";
+  --at-apply: "p-1 bg-color-2";
 
   .el-segmented__item {
     --at-apply: "flex items-center";

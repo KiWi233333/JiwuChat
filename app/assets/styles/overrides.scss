@@ -284,13 +284,13 @@ body .el-message {
 
 // 分段器
 .el-segmented {
-  --at-apply: "p-1 shadow-sm shadow-inset bg-color-2";
+  --at-apply: "p-1 shadow-sm shadow-inset bg-[#fafafa] dark:bg-[#1b1b1b]";
 
   .el-segmented__item {
     font-size: 0.95em; // 选项字体略小
   }
   .el-segmented__item-selected {
-    --at-apply: "shadow-sm hover:shadow bg-color";
+    --at-apply: "shadow-sm hover:shadow bg-white dark:bg-dark-3";
   }
 }
 
