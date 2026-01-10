@@ -801,7 +801,7 @@ defineExpose({
 :deep(.toggle-login.el-segmented) {
   --el-border-radius-base: 6px;
   height: 2.6rem;
-  padding: 0.4rem;
+  padding: 0.2rem;
   font-size: 0.9em;
 }
 
