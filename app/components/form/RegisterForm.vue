@@ -378,7 +378,7 @@ function toLoginForm() {
     class="form relative"
   >
     <div class="mb-8 mt-6 flex flex-col items-center gap-2">
-      <div class="text-6 font-bold tracking-0.1em sm:text-8">
+      <div class="text-6 font-bold tracking-0.1em">
         <span class="from-neutral-600 via-neutral-700 to-neutral-800 bg-gradient-to-r bg-clip-text text-transparent dark:from-neutral-100 dark:via-neutral-300 dark:to-neutral-500">
           开启你的专属圈子 ✨
         </span>
