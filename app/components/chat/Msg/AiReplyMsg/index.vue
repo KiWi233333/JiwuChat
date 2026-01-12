@@ -32,7 +32,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
   >
     <template #body>
       <div
-        class="ai-reply-msg-popper relative min-h-2.5em min-w-2.6em"
+        class="ai-reply-msg-popper relative min-h-2.5em min-w-0 min-w-2.6em"
         :class="{
           'text-op-half': !isContentExpanded,
         }"
