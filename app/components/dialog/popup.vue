@@ -2,6 +2,41 @@
 import type { HTMLAttributes } from "vue";
 import { CustomDialogPopupId } from "@/composables/hooks/useShortcuts";
 
+defineOptions({
+  inheritAttrs: false,
+});
+
+const {
+  overlayerAttrs = {},
+  modelValue = false,
+  title,
+  width = "",
+  showClose = true,
+  teleportTo = "body",
+  closeOnClickModal = true,
+  contentClass = "",
+  disableClass = "disabled-anima",
+  duration = 300,
+  zIndex = 1999,
+  center = false,
+  destroyOnClose = false,
+  minScale = 0.80,
+  escClose = true,
+  animateFromTrigger = true,
+  enterEasing = "cubic-bezier(0.61, 0.225, 0.195, 1)",
+  leaveEasing = "cubic-bezier(0.4, 0, 0.2, 1)", // 平滑退出
+} = defineProps<DialogProps>();
+
+const emit = defineEmits<{
+  (e: "update:modelValue", value: boolean): void
+  (e: "confirm"): void
+  (e: "cancel"): void
+  (e: "open"): void
+  (e: "opened"): void
+  (e: "close"): void
+  (e: "closed"): void
+}>();
+
 interface DialogPosition {
   x: number
   y: number
@@ -41,37 +76,6 @@ interface DialogProps {
   /** 离开动画曲线 */
   leaveEasing?: string
 }
-
-const {
-  overlayerAttrs = {},
-  modelValue = false,
-  title,
-  width = "",
-  showClose = true,
-  teleportTo = "body",
-  closeOnClickModal = true,
-  contentClass = "",
-  disableClass = "disabled-anima",
-  duration = 300,
-  zIndex = 1999,
-  center = false,
-  destroyOnClose = false,
-  minScale = 0.80,
-  escClose = true,
-  animateFromTrigger = true,
-  enterEasing = "cubic-bezier(0.61, 0.225, 0.195, 1)",
-  leaveEasing = "cubic-bezier(0.4, 0, 0.2, 1)", // 平滑退出
-} = defineProps<DialogProps>();
-
-const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean): void
-  (e: "confirm"): void
-  (e: "cancel"): void
-  (e: "open"): void
-  (e: "opened"): void
-  (e: "close"): void
-  (e: "closed"): void
-}>();
 
 // ==================== 状态管理 ====================
 const dialogModelRef = useTemplateRef<HTMLElement>("dialogModelRef");

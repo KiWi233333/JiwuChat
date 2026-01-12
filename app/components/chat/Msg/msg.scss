@@ -22,7 +22,7 @@
   }
   .ai-reply-msg-popper,
   .msg-popper {
-    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full min-w-0 py-2 px-3 leading-1.5em bg-color shadow-md w-fit";
+    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full w-0 py-2 px-3 leading-1.5em bg-color shadow-md w-fit";
     box-shadow:
       rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
       rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
