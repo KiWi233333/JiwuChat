@@ -292,42 +292,52 @@ export function formatFriendlyDate(date: Date | number | string): string {
  * @returns 格式化后的日期字符串
  */
 export function formatContactDate(date: Date | number | string): string {
-  if (typeof date === "string") {
-    date = new Date(date);
+  let d: Date;
+  if (date instanceof Date) {
+    d = date;
   }
-  if (typeof date === "number") {
-    date = new Date(date);
+  else if (typeof date === "number" || typeof date === "string") {
+    d = new Date(date);
+    if (Number.isNaN(d.getTime())) {
+      d = dayjs(date).toDate();
+    }
   }
-  if (!(date instanceof Date)) {
-    date = dayjs(date).toDate();
+  else {
+    d = dayjs(date).toDate();
   }
+
   const now = new Date();
   if (!cachedToday || now.getDate() !== cachedToday.getDate()) {
     cachedToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   }
 
-  const targetDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const diff = Math.floor((cachedToday.getTime() - targetDate.getTime()) / (1000 * 60 * 60 * 24));
+  // 限定对比时间为零点（更快）
+  const targetMS = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  const todayMS = cachedToday.getTime();
+  const diff = Math.floor((todayMS - targetMS) / 86400000);
 
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const h = String(d.getHours()).padStart(2, "0");
+  const m = String(d.getMinutes()).padStart(2, "0");
 
-  if (diff < 1) {
-    return `今天 ${hours}:${minutes}`;
-  }
-  else if (diff === 1) {
-    return `昨天 ${hours}:${minutes}`;
-  }
-  else if (diff === 2) {
-    return `前天 ${hours}:${minutes}`;
+  if (diff < 1)
+    return `今天 ${h}:${m}`;
+  if (diff === 1)
+    return `昨天 ${h}:${m}`;
+  if (diff === 2)
+    return `前天 ${h}:${m}`;
+  // 今年内显示“MM-DD”，否则“YYYY-MM-DD”
+  const year = d.getFullYear();
+  const nowYear = now.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  if (year === nowYear) {
+    return `${month}-${day}`;
   }
   else {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
 }
+
 // 格式化版本更新日期
 export function formatVersionDate(date: Date | string | number): string {
   if (typeof date === "string") {

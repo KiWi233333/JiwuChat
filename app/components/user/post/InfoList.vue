@@ -138,7 +138,7 @@ defineExpose({
   <div v-loading="isLoading">
     <ClientOnly>
       <ListAutoIncre
-        loading-class="mx-a my-0.6em h-1.4rem w-1.4rem animate-[spin_2s_infinite_linear] rounded-6px bg-theme-info"
+        loading-class="mx-a my-0.6em h-1.4rem w-1.4rem animate-[spin_2s_infinite_linear]  rounded bg-theme-info"
         :immediate="immediate"
         :no-more="isNoMore || isNot"
         :auto-stop="isAutoStop"

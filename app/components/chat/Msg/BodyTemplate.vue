@@ -9,7 +9,7 @@ const {
 </script>
 
 <template>
-  <p v-if="data.message.content" class="msg-popper msg-wrap whitespace-pre-wrap break-words" v-bind="$attrs">
+  <p v-if="data.message.content" class="msg-box msg-wrap whitespace-pre-wrap break-words" v-bind="$attrs">
     <MessageContent :msg="data" />
   </p>
 </template>

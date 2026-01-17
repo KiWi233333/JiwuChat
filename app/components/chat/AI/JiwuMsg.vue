@@ -24,12 +24,12 @@ const user = useUserStore();
     <template #body>
       <!-- 内容 -->
       <template v-if="data.fromUser.userId === user.userInfo.id">
-        <p class="msg-popper">
+        <p class="msg-box">
           {{ data.message?.content }}
         </p>
       </template>
       <template v-else>
-        <div class="msg-popper relative text-color sm:max-w-40rem">
+        <div class="msg-box relative text-color sm:max-w-40rem">
           <MdPreview
             language="zh-CN"
             show-code-row-number

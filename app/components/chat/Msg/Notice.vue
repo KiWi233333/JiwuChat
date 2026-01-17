@@ -17,7 +17,7 @@ defineProps<{
     v-bind="$attrs"
   >
     <template #body>
-      <div class="group msg-popper notice text-left text-0.9rem" ctx-name="content">
+      <div class="group msg-box notice text-left text-0.9rem" ctx-name="content">
         <div ctx-name="content" mb-2 border-default-b pb-2 text-left text-small dark:text-gray-300>
           <i ctx-name="content" class="i-carbon:bullhorn mr-1 p-2 text-[--el-color-warning] font-500 group-hover:animate-pulse" /> 群通知
         </div>

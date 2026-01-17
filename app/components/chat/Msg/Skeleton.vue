@@ -27,11 +27,11 @@ const randon = Math.random();
       class="body"
     >
       <!-- 昵称 -->
-      <div class="nickname h-4 w-6em rounded bg-color" />
+      <div class="nickname h-4 w-6em bg-color rounded" />
       <!-- 内容 -->
       <p
         :class="animteClass"
-        class="msg-popper !bg-color !shadow-sm" :style="{ width: `${5 + Math.floor(randon * 10) * 2}em`, height: `${3 * Math.floor(randon * 5)}em` }"
+        class="msg-box !bg-color !shadow-sm" :style="{ width: `${5 + Math.floor(randon * 10) * 2}em`, height: `${3 * Math.floor(randon * 5)}em` }"
       />
     </div>
   </div>

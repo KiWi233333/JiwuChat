@@ -323,7 +323,7 @@ function onInviteMember() {
 
 <style lang="scss" scoped>
 .item {
-  --at-apply: "flex-row-c-c flex-col shadow-sm btn-primary-bg py-4";
+  --at-apply: "flex-row-c-c flex-col btn-primary-bg py-4";
   .g-avatar {
     --at-apply: "border-default z-1 block w-0.6em h-0.6em rounded-full absolute right-0.2em bottom-0.2em";
   }
