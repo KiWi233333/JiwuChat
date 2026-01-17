@@ -138,8 +138,9 @@ export default defineNuxtConfig({
 
   css: [
     "@/assets/styles/base.scss",
-    "@/assets/styles/animate.scss",
+    "@/assets/styles/animate/index.scss",
     "@/assets/styles/overrides.scss",
+    "@/assets/styles/patterns/index.scss",
   ],
   nitro: {
     devProxy: {

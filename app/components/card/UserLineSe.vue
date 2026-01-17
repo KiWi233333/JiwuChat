@@ -23,12 +23,12 @@ const user = useUserStore();
         <div class="grid grid-cols-1 w-full text-center">
           <NuxtLink
             to="/"
-            class="cursor-pointer rounded-6px py-2"
+            class="cursor-pointer py-2 rounded"
           >
             回到主页
           </NuxtLink>
           <span
-            class="cursor-pointer rounded-6px py-2"
+            class="cursor-pointer py-2 rounded"
             @click="user.exitLogin"
           >
             退出登录

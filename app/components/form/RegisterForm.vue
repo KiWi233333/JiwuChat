@@ -377,8 +377,15 @@ function toLoginForm() {
     :model="formUser"
     class="form relative"
   >
-    <div my-4 text-5 font-500 tracking-0.2em op-80 sm:mb-6>
-      开启你的专属圈子✨
+    <div class="mb-8 mt-6 flex flex-col items-center gap-2">
+      <div class="text-6 font-bold tracking-0.1em">
+        <span class="from-neutral-600 via-neutral-700 to-neutral-800 bg-gradient-to-r bg-clip-text text-transparent dark:from-neutral-100 dark:via-neutral-300 dark:to-neutral-500">
+          开启你的专属圈子 ✨
+        </span>
+      </div>
+      <div class="text-small tracking-0.1em">
+        加入极物，探索无限可能
+      </div>
     </div>
     <!-- 切换注册 -->
     <el-segmented
@@ -499,7 +506,7 @@ function toLoginForm() {
       destroy-on-close
       content-class="z-1200"
     >
-      <div class="h-100vh w-100vw flex flex-col bg-color p-4 sm:(h-500px w-400px border-default border-default-2 card-rounded-df shadow-lg)">
+      <div class="h-100vh w-100vw flex flex-col bg-color p-4 sm:(h-500px w-400px border-default border-default-2 shadow-lg card-rounded-df)">
         <h3 :data-tauri-drag-region="setting.isDesktop" class="relative mb-4 select-none text-center text-1.2rem">
           用户协议
           <ElButton text size="small" class="absolute right-0 -top-1" style="width: 2rem;height: 1.4rem;" @click="agreeDetail.showDetail = false">
@@ -572,19 +579,10 @@ function toLoginForm() {
 
 // 切换注册
 :deep(.toggle-btns.el-segmented) {
-  --el-segmented-item-selected-disabled-bg-color: var(--el-color-info-light-5);
-  --el-segmented-item-selected-bg-color: var(--el-color-info);
   --el-border-radius-base: 6px;
   height: 2.6rem;
-  padding: 0.4rem;
-  font-size: small;
-  .el-segmented__item:hover:not(.is-selected) {
-    background: transparent;
-  }
-
-  .el-segmented__item.is-selected {
-    color: #fff;
-  }
+  padding: 0.2rem;
+  font-size: 0.9em;
 }
 
 .dark .active {

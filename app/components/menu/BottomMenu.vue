@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { MenuItem } from "./ChatMenu.vue";
+import { NuxtLink } from "#components";
 import { useOpenExtendWind } from "@/composables/tauri/extension";
 
 defineEmits<{
@@ -139,15 +140,18 @@ const activeMenu = computed({
   <div
     class="relative z-998 grid grid-cols-5 select-none justify-center bg-white shadow-md dark:bg-dark-8"
   >
-    <div
+    <component
+      :is="p.children?.length ? 'div' : NuxtLink"
       v-for="p in menuList"
       :key="p.path"
       v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.1)', duration: 800 }"
+      v-bind="!p.children?.length ? { 'to': p.path, 'prefetch': true, 'prefetch-on': { visibility: true } } : {}"
       :index="p.path"
       class="item"
+      :draggable="false"
       :class="{ active: activeMenu === p.path }"
       @click.stop="() => {
-        if (p.path)
+        if (p.children?.length && p.path)
           activeMenu = p.path
       }"
     >
@@ -217,7 +221,7 @@ const activeMenu = computed({
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-    </div>
+    </component>
   </div>
 </template>
 

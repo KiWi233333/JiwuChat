@@ -102,7 +102,7 @@ function resetPlaySounder() {
     <template #body>
       <div
         ctx-name="sound"
-        class="msg-popper min-w-6em cursor-pointer hover:op-80"
+        class="msg-box min-w-6em cursor-pointer hover:op-80"
         :class="{ 'animate-pulse': chat.playSounder?.url === body?.url && chat.playSounder?.state === 'play' }"
       >
         <p ctx-name="sound" class="flex items-center" @click="playSound(body?.url)">

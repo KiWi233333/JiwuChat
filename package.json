@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@iconify/vue": "5.0.0",
-    "@imengyu/vue3-context-menu": "1.5.2",
+    "@imengyu/vue3-context-menu": "1.5.3",
     "@nuxtjs/color-mode": "4.0.0",
     "@tauri-apps/plugin-autostart": "2.5.1",
     "@tauri-apps/plugin-deep-link": "2.4.5",
@@ -81,8 +81,8 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "6.7.3",
-    "@commitlint/cli": "20.2.0",
-    "@commitlint/config-conventional": "20.2.0",
+    "@commitlint/cli": "20.3.0",
+    "@commitlint/config-conventional": "20.3.0",
     "@element-plus/icons-vue": "2.3.2",
     "@element-plus/nuxt": "1.1.4",
     "@formkit/auto-animate": "0.9.0",
@@ -107,7 +107,7 @@
     "inquirer": "13.1.0",
     "lint-staged": "16.2.7",
     "nuxt": "4.2.2",
-    "sass": "1.97.1",
+    "sass": "1.97.2",
     "typescript": "5.9.3",
     "vue-tsc": "3.1.8"
   },

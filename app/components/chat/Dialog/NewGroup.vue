@@ -228,7 +228,7 @@ defineExpose({
                 />
               </div>
             </template>
-            <el-checkbox-group v-model="form.uidList" class="w-full card-rounded-df bg-color-2 sm:!bg-transparent">
+            <el-checkbox-group v-model="form.uidList" class="w-full bg-color-2 card-rounded-df sm:!bg-transparent">
               <div class="h-0 max-h-40vh min-h-40vh flex flex-col overflow-y-auto p-2 pr-0 sm:(max-h-22rem min-h-22rem p-0)">
                 <ListAutoIncre
                   :immediate="false"
@@ -239,7 +239,7 @@ defineExpose({
                   <el-checkbox v-for="p in filterFriendList" :key="p.userId" class="check-item mb-2" :value="p.userId" :label="p.userId" style="width: 100%;height: fit-content;">
                     <div class="w-full flex items-center gap-2">
                       <div class="avatar-icon">
-                        <CardElImage class="h-full w-full overflow-hidden rounded-6px" :src="BaseUrlImg + p.avatar" fit="cover" />
+                        <CardElImage class="h-full w-full overflow-hidden rounded" :src="BaseUrlImg + p.avatar" fit="cover" />
                       </div>
                       <span class="truncate text-color">{{ p.nickName || "未填写" }}</span>
                     </div>
@@ -285,13 +285,13 @@ defineExpose({
               <div v-for="p in getCheckList" :key="p.userId" class="item" :label="p.userId">
                 <i i-solar:close-circle-bold btn-primary p-2 class="absolute right-2px top-2px z-1" @click="remove(p.userId)" />
                 <div class="avatar-icon">
-                  <CardElImage class="h-full w-full overflow-hidden rounded-6px" :src="BaseUrlImg + p.avatar" fit="cover" />
+                  <CardElImage class="h-full w-full overflow-hidden rounded" :src="BaseUrlImg + p.avatar" fit="cover" />
                 </div>
                 <span class="block max-w-18 truncate">{{ p.nickName || "未填写" }}</span>
               </div>
             </ListTransitionGroup>
             <!-- 空白 -->
-            <div v-show="getCheckList.length <= 0" class="h-200px w-full flex-row-c-c card-rounded-df text-small-50 sm:h-300px">
+            <div v-show="getCheckList.length <= 0" class="h-200px w-full flex-row-c-c text-small-50 card-rounded-df sm:h-300px">
               <i i-solar:user-plus-broken mr-2 p-3 />
               <span text-xs>未选择成员</span>
             </div>
@@ -389,13 +389,13 @@ defineExpose({
   // border-radius: 1rem;
 }
 .avatar-icon {
-  --at-apply: "h-2.4rem card-default  w-2.4rem flex-row-c-c rounded-6px  shadow-sm border-default";
+  --at-apply: "h-2.4rem card-default  w-2.4rem flex-row-c-c  rounded  shadow-sm border-default";
 }
 .item {
-  --at-apply: "flex flex-col relative items-center gap-4 px-2 pt-3.6 page-pointer rounded-6px hover:(bg-color) transition-300";
+  --at-apply: "flex flex-col relative items-center gap-4 px-2 pt-3.6 page-pointer  rounded hover:(bg-color) transition-300";
 }
 .check-item {
-  --at-apply: "flex items-center px-4 gap-2 page-pointer rounded-6px p-2 hover:(bg-color-3 dark:bg-dark-8) transition-300";
+  --at-apply: "flex items-center px-4 gap-2 page-pointer  rounded p-2 hover:(bg-color-3 dark:bg-dark-8) transition-300";
 }
 :deep(.el-checkbox.is-checked) {
   --at-apply: "bg-color dark:bg-dark-8 sm:(bg-color-3 dark:bg-dark-8) shadow-sm";

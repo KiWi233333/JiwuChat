@@ -509,7 +509,7 @@ defineExpose({
               style="--anima: blur-in;"
               :src="getShowAvatarUrl"
               :class="{
-                'has-account': findAccountAvatar?.userInfo?.avatar,
+                'has-account mb-2': findAccountAvatar?.userInfo?.avatar,
               }"
               class="avatar"
             />
@@ -522,7 +522,7 @@ defineExpose({
       <!-- 切换登录 -->
       <el-segmented
         v-model="loginType"
-        class="toggle-login grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2"
+        class="toggle-login grid grid-cols-3 mb-4 w-full gap-2"
         :options="options"
       />
       <!-- 邮箱登录 -->
@@ -775,7 +775,7 @@ defineExpose({
       --at-apply: "w-8rem min-w-fit text-theme-primary card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-primary op-100)";
     }
     .code-btn {
-      --at-apply: " h-full flex-row-c-c px-4 transition-200 ";
+      --at-apply: "h-full flex-row-c-c px-4 transition-200 ";
     }
 
     .el-form-item__error {
@@ -799,16 +799,12 @@ defineExpose({
 
 // 切换登录
 :deep(.toggle-login.el-segmented) {
-  --el-segmented-item-selected-bg-color: var(--el-color-primary);
   --el-border-radius-base: 6px;
+  // input__wrapper的背景色
+  --at-apply: "bg-[#fafafa] dark:bg-[#1b1b1b]";
   height: 2.6rem;
-  padding: 0.4rem;
-  .el-segmented__item:hover:not(.is-selected) {
-    background: transparent;
-  }
-  .el-segmented__item.is-selected {
-    color: #fff;
-  }
+  padding: 0.2rem;
+  font-size: 0.9em;
 }
 
 .dark .active {

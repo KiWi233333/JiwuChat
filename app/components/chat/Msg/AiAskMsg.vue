@@ -26,7 +26,7 @@ const getTitle = robotListLen === 1
   >
     <template #body>
       <!-- 内容 -->
-      <p v-if="data.message?.content?.trim()" ctx-name="content" class="msg-popper">
+      <p v-if="data.message?.content?.trim()" ctx-name="content" class="msg-box">
         {{ data.message.content }}
       </p>
       <!--  询问的AI -->

@@ -13,10 +13,10 @@ const { data } = defineProps<{
   <ChatMsgTemplate :data="data" :prev-msg="prevMsg" :index="index">
     <template #body>
       <!-- 内容 -->
-      <p class="msg-popper msg-wrap">
+      <p class="msg-box msg-wrap">
         {{ data.message.content }}
       </p>
-      <span class="border-default-hover card-default rounded-2rem px-2 py-1 text-xs">
+      <span class="border-default-hover rounded-2rem card-default px-2 py-1 text-xs">
         未适配该消息，请升级客户端查看
       </span>
     </template>

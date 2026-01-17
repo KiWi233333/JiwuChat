@@ -1,10 +1,8 @@
-
 <script lang="ts" setup>
 // 会话store
 const user = useUserStore();
 const store = useUserStore();
 const chat = useChatStore();
-const setting = useSettingStore();
 
 // 机器人列表
 const isReload = ref<boolean>(false);
@@ -62,7 +60,7 @@ async function onHandelRobot(robot: RobotUserVO) {
           const load = ElLoading.service({
             lock: true,
             text: "添加成功，正在前往对话中...",
-            background: "rgba(0, 0, 0, 0.1)",
+            background: "var(--el-overlay-color, rgba(0, 0, 0, 0.1))",
           });
           setTimeout(() => {
             onHandelRobot(robot);
@@ -91,42 +89,54 @@ onDeactivated(() => {
 </script>
 
 <template>
-  <div class="list">
+  <div class="list-container">
     <!-- 骨架屏 -->
     <template v-if="isReload">
-      <div v-for="p in 6" :key="p" class="item">
-        <div class="h-3rem w-3rem flex-row-c-c flex-shrink-0 cursor-pointer rounded-1/2 card-bg-color-2 sm:(h-3.5rem w-3.5rem)" />
-        <div>
-          <div class="h-3 w-8em bg-gray-1 dark:bg-dark-4" />
-          <div class="mt-2 h-3 w-12em rounded bg-gray-1 dark:bg-dark-4" />
+      <div v-for="p in 12" :key="p" class="card-item skeleton-card">
+        <div class="skeleton-avatar" />
+        <div class="skeleton-content">
+          <div class="skeleton-line w-1/2" />
+          <div class="skeleton-line mt-2 w-9/10" />
         </div>
-        <div class="ml-a h-4 w-3em rounded bg-gray-1 dark:bg-dark-4" />
       </div>
     </template>
+
+    <!-- 列表内容 -->
     <div
-      v-for="p in list" :key="p.userId"
-      class="item"
+      v-for="(p, index) in list"
+      :key="p.userId"
+      v-loading="isLoadRobot === p.userId"
+      class="card-item group"
+      :class="`card-style-${(index % 6) + 1}`"
       title="开始对话"
       @click.stop="onHandelRobot(p)"
     >
+      <!-- 装饰背景 -->
+      <div class="deco-bg" />
+
+      <!-- 头像 -->
       <CardElImage
-        v-loading="isLoadRobot === p.userId"
-        class="avatar-icon" :src="BaseUrlImg + p?.avatar"
+        class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full"
+        :src="BaseUrlImg + p?.avatar"
         fit="cover"
         title="点击查看详情"
       />
-      <div>
-        <p truncate text-sm>
-          {{ p?.nickname || "未填写" }}
-        </p>
-        <p class="text-overflow-2 mt-1 max-h-4em text-mini" :title="p.description || ''">
-          {{ p.description || "" }}
+
+      <!-- 内容 -->
+      <div class="content">
+        <div class="card-title">
+          <CommonTextTip class="truncate" :content="p?.nickname || '未填写'" />
+        </div>
+        <p class="card-desc" :title="p.description || ''">
+          {{ p.description || "暂无描述" }}
         </p>
       </div>
     </div>
+
+    <!-- 底部提示 -->
     <div
       v-if="!isReload"
-      class="grid-col-[1/-1] text-center text-mini"
+      class="col-span-full mt-4 text-center text-0.8rem text-small-50"
     >
       {{ list.length ? "没有更多了" : "快去添加你的专属AI吧" }}
     </div>
@@ -134,22 +144,43 @@ onDeactivated(() => {
 </template>
 
 <style lang="scss" scoped>
-.list {
-  --at-apply: "grid cols-1 flex-col gap-3 text-sm";
+/* 使用 unocss 简化布局，只保留必要的自定义 */
+.list-container {
+  --at-apply: "grid gap-3 md:gap-6 pb-8";
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
 }
-@media (min-width: 640px) {
-  .list {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-}
-.item {
-  --at-apply: "card-default flex items-center gap-4 px-2 py-3 cursor-pointer rounded-2 border-(1px solid transparent) hover:(shadow-sm border-default) transition-200";
 
-  .avatar-icon {
-    --at-apply: "border-default shadow-sm cursor-pointer flex-shrink-0 h-2.5rem w-2.5rem card-bg-color-2  rounded-1/2 flex-row-c-c";
+.card-item {
+  --at-apply: "relative overflow-hidden transition-all duration-300 cursor-pointer card-bg-color rounded-xl flex items-center gap-4 p-4 hover:shadow";
+
+  .content {
+    --at-apply: "flex-1 z-2 h-full relative min-w-0";
+  }
+
+  .card-title {
+    --at-apply: "text-sm font-600 mb-1 flex items-center justify-between text-color";
+  }
+
+  .card-desc {
+    --at-apply: "leading-1.4em line-clamp-2 text-mini-50";
   }
 }
+
+/* 骨架屏样式 */
+.skeleton-card {
+  .skeleton-avatar {
+    --at-apply: "relative z-2 w-12 h-12 flex-shrink-0 rounded-xl bg-color-2";
+  }
+  .skeleton-content {
+    --at-apply: "flex-1 z-2 relative min-w-0";
+  }
+  .skeleton-line {
+    --at-apply: "bg-color-2 rounded h-3";
+  }
+}
+
+/* loading-mask 圆角 */
 :deep(.el-loading-mask) {
-  border-radius: 50%;
+  --at-apply: "rounded-xl";
 }
 </style>

@@ -71,7 +71,7 @@ const activeNames = useLocalStorage(`${route.fullPath}_activeNames`, {
 
 <style lang="scss" scoped>
 .avatar-icon {
-  --at-apply: "h-2.4rem  flex-row-c-c rounded-6px w-2.4rem shadow-sm border-default";
+  --at-apply: "h-2.4rem  flex-row-c-c  rounded w-2.4rem shadow-sm border-default";
 }
 .card-item {
   --at-apply: "flex flex-col";
@@ -80,7 +80,7 @@ const activeNames = useLocalStorage(`${route.fullPath}_activeNames`, {
     --at-apply: "mx-0.5em pt-2px h-1.4em w-1.4em text-light";
   }
   .item {
-    --at-apply: "tracking-1px flex items-center gap-4 p-2 cursor-pointer rounded-6px mb-2 hover:(bg-menu-color) ";
+    --at-apply: "tracking-1px flex items-center gap-4 p-2 cursor-pointer  rounded mb-2 hover:(bg-menu-color) ";
     &.focus {
       --at-apply: "!bg-menu-color";
     }
