@@ -85,7 +85,7 @@ const menuList = computed<MenuItem[]>(() => ([
     path: "/user/safe",
     icon: "i-solar:devices-outline",
     activeIcon: "i-solar:devices-bold",
-    class: "absolute bottom-13 diabled-bg",
+    class: "absolute bottom-14 diabled-bg",
   },
   // {
   //   title: "设置",
@@ -129,7 +129,6 @@ export interface MenuItem {
         v-for="p in menuList"
         :key="p.path"
         v-loading="(p as any).loading"
-        v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.2)', duration: 800 }"
         :to="p.path"
         :index="p.path"
         :element-loading-spinner="defaultLoadingIcon"
@@ -183,7 +182,7 @@ export interface MenuItem {
   top: 0;
 }
 .item {
-  --at-apply: "card-rounded-df hover:(bg-gray-3 bg-op-30 dark:(bg-dark-3 bg-op-30) text-color-theme-primary) h-10 w-10 flex-row-c-c cursor-pointer transition-200";
+  --at-apply: "card-rounded-df border-(1px solid transparent) hover:(bg-gray-3 bg-op-30 dark:(bg-dark-3 bg-op-30) text-color-theme-primary) h-10 w-10 flex-row-c-c cursor-pointer transition-200";
 
   .icon {
     --at-apply: "dark:op-80";
@@ -194,7 +193,7 @@ export interface MenuItem {
     }
   }
   &.action {
-    --at-apply: "text-theme-primary bg-gray-4 bg-op-20 dark:(bg-dark-3 bg-op-20)";
+    --at-apply: "text-theme-primary  bg-op-20 bg-color shadow-sm";
     .icon {
       --at-apply: "text-theme-primary op-100 block";
       filter: drop-shadow(0 0 8px var(--el-color-primary));
