@@ -12,15 +12,15 @@ import {
 // @unocss-include
 export default defineConfig({
   shortcuts: [
-    ["card-default", "bg-white dark:bg-dark-5 rounded-1.5"],
+    ["card-default", "bg-white dark:bg-dark-5 rounded"],
     ["card-bg-color", "bg-white dark:bg-dark-5"],
     ["form-bg-color", "bg-white  dark:bg-[#1b1b1b]"],
     ["card-bg-color-2", "bg-[#f2f2f2]  dark:bg-[#1b1b1b]"],
     ["input-bg-color", "bg-[#f2f2f2] dark:bg-dark-8"],
-    ["card-default-br", "bg-[#ffffff93] dark:(bg-dark-5 bg-op-60) rounded-1.5 backdrop-blur-12px backdrop-saturate-180"],
-    ["card-default-br-2", "bg-white bg-op-90 dark:(bg-dark-5 bg-op-90) rounded-1.5 backdrop-blur-8px backdrop-saturate-180"],
-    ["blur-card", "backdrop-blur-4 bg-[#75757528] rounded-1.5"],
-    ["card-rounded-df", " rounded-1.5"],
+    ["card-default-br", "bg-[#ffffff93] dark:(bg-dark-5 bg-op-60) rounded backdrop-blur-12px backdrop-saturate-180"],
+    ["card-default-br-2", "bg-white bg-op-90 dark:(bg-dark-5 bg-op-90) rounded backdrop-blur-8px backdrop-saturate-180"],
+    ["blur-card", "backdrop-blur-4 bg-[#75757528] rounded"],
+    ["card-rounded-df", " rounded"],
     ["btn-default", "border-0 cursor-pointer rounded-4px hover:text-theme-primary transition-200 text-white"],
     ["btn-primary-bg", " cursor-pointer rounded-4px hover:bg-theme-primary  hover:text-white"],
     // 颜色
@@ -84,58 +84,55 @@ export default defineConfig({
     ["absolute-center-center", "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"],
     ["absolute-center-x", "absolute left-1/2 -translate-x-1/2"],
 
-    // element风格按钮
-    ["btn-info", "transition-200 cursor-pointer rounded-4px hover:text-theme-info"],
-    ["btn-success", "transition-200 cursor-pointer rounded-4px hover:text-theme-success"],
-    ["btn-primary", "transition-200 cursor-pointer rounded-4px hover:text-theme-primary"],
-    ["btn-danger", "transition-200 cursor-pointer rounded-4px hover:text-theme-danger"],
-    ["btn-warning", "transition-200 cursor-pointer rounded-4px hover:text-theme-warning"],
-    ["btn-info-border", "transition-200 cursor-pointer rounded-4px hover:(text-theme-info border-theme-info)"],
-    ["btn-success-border", "transition-200 cursor-pointer rounded-4px hover:(text-theme-success border-theme-success)"],
-    ["btn-primary-border", "transition-200 cursor-pointer rounded-4px hover:(text-theme-primary border-theme-primary)"],
-    ["btn-danger-border", "transition-200 cursor-pointer rounded-4px hover:(text-theme-danger border-theme-danger)"],
-    ["btn-warning-border", "transition-200 cursor-pointer rounded-4px hover:(text-theme-warning border-theme-warning)"],
-    ["btn-default-text", "transition-200 cursor-pointer rounded-4px hover:(text-black dark:text-white)"],
-    ["btn-info-text", "transition-200 cursor-pointer rounded-4px hover:text-theme-info"],
-    ["btn-success-text", "transition-200 cursor-pointer rounded-4px hover:text-theme-success"],
-    ["btn-primary-text", "transition-200 cursor-pointer rounded-4px hover:text-theme-primary"],
-    ["btn-danger-text", "transition-200 cursor-pointer rounded-4px hover:text-theme-danger"],
-    ["btn-warning-text", "transition-200 cursor-pointer rounded-4px hover:text-theme-warning"],
-    ["btn-info-bg", "transition-200 cursor-pointer rounded-4px hover:(text-white bg-theme-info)"],
-    ["btn-success-bg", "transition-200 cursor-pointer rounded-4px hover:(text-white bg-theme-success)"],
-    ["btn-primary-bg", "transition-200 cursor-pointer rounded-4px hover:(text-white bg-theme-primary)"],
-    ["btn-danger-bg", "transition-200 cursor-pointer rounded-4px hover:(text-white bg-theme-danger)"],
-    ["btn-warning-bg", "transition-200 cursor-pointer rounded-4px hover:(text-white bg-theme-warning)"],
-    ["group-btn-info", "transition-200 cursor-pointer rounded-4px group-hover:text-theme-info"],
-    ["group-btn-success", "transition-200 cursor-pointer rounded-4px group-hover:text-theme-success"],
-    ["group-btn-primary", "transition-200 cursor-pointer rounded-4px group-hover:text-theme-primary"],
-    ["group-btn-danger", "transition-200 cursor-pointer rounded-4px group-hover:text-theme-danger"],
-    ["group-btn-warning", "transition-200 cursor-pointer rounded-4px group-hover:text-theme-warning"],
-    ["btn-light-bg", "transition-200 cursor-pointer rounded-4px hover:(text-white bg-[var(--el-color-light)])"],
+    // element风格按钮，rounded 规范值采用 rounded, rounded-md, rounded-lg 等
+    ["btn-info", "transition-200 cursor-pointer rounded hover:text-theme-info"],
+    ["btn-success", "transition-200 cursor-pointer rounded hover:text-theme-success"],
+    ["btn-primary", "transition-200 cursor-pointer rounded hover:text-theme-primary"],
+    ["btn-danger", "transition-200 cursor-pointer rounded hover:text-theme-danger"],
+    ["btn-warning", "transition-200 cursor-pointer rounded hover:text-theme-warning"],
+    ["btn-info-border", "transition-200 cursor-pointer rounded hover:(text-theme-info border-theme-info)"],
+    ["btn-success-border", "transition-200 cursor-pointer rounded hover:(text-theme-success border-theme-success)"],
+    ["btn-primary-border", "transition-200 cursor-pointer rounded hover:(text-theme-primary border-theme-primary)"],
+    ["btn-danger-border", "transition-200 cursor-pointer rounded hover:(text-theme-danger border-theme-danger)"],
+    ["btn-warning-border", "transition-200 cursor-pointer rounded hover:(text-theme-warning border-theme-warning)"],
+    ["btn-default-text", "transition-200 cursor-pointer rounded hover:(text-black dark:text-white)"],
+    ["btn-info-text", "transition-200 cursor-pointer rounded hover:text-theme-info"],
+    ["btn-success-text", "transition-200 cursor-pointer rounded hover:text-theme-success"],
+    ["btn-primary-text", "transition-200 cursor-pointer rounded hover:text-theme-primary"],
+    ["btn-danger-text", "transition-200 cursor-pointer rounded hover:text-theme-danger"],
+    ["btn-warning-text", "transition-200 cursor-pointer rounded hover:text-theme-warning"],
+    ["btn-info-bg", "transition-200 cursor-pointer rounded hover:(text-white bg-theme-info)"],
+    ["btn-success-bg", "transition-200 cursor-pointer rounded hover:(text-white bg-theme-success)"],
+    ["btn-primary-bg", "transition-200 cursor-pointer rounded hover:(text-white bg-theme-primary)"],
+    ["btn-danger-bg", "transition-200 cursor-pointer rounded hover:(text-white bg-theme-danger)"],
+    ["btn-warning-bg", "transition-200 cursor-pointer rounded hover:(text-white bg-theme-warning)"],
+    ["group-btn-info", "transition-200 cursor-pointer rounded group-hover:text-theme-info"],
+    ["group-btn-success", "transition-200 cursor-pointer rounded group-hover:text-theme-success"],
+    ["group-btn-primary", "transition-200 cursor-pointer rounded group-hover:text-theme-primary"],
+    ["group-btn-danger", "transition-200 cursor-pointer rounded group-hover:text-theme-danger"],
+    ["group-btn-warning", "transition-200 cursor-pointer rounded group-hover:text-theme-warning"],
+    ["btn-light-bg", "transition-200 cursor-pointer rounded hover:(text-white bg-[var(--el-color-light)])"],
   ],
   rules: [
     // color: info success primary danger warning
     // 文字
     [/^el-color-(\w*)$/, ([_, color]) => ({ color: `var(--el-color-${color})` })],
     [/^el-bg-(\w*)$/, ([_, color]) => ({ "background-color": `var(--el-color-${color})` })],
-    // 文字按钮
-    // [/^btn-(\w*)$/, ([_, color]) => ({
-    //   "--at-apply": `transition-200 cursor-pointer rounded-4px hover:text-[var(--el-color-${color})]`,
-    // })],
-    // [/^btn-(\w*)-text$/, ([_, color]) => ({
-    //   "--at-apply": `transition-200 cursor-pointer rounded-4px hover:text-[var(--el-color-${color})]`,
-    // })],
-    // // 文字背景按钮
-    // [/^btn-(\w*)-bg$/, ([_, color]) => ({
-    //   "--at-apply": `transition-200 cursor-pointer rounded-4px hover:(text-white bg-[var(--el-color-${color})]) `,
-    // })],
-    // // 文字按钮组
-    // [/^group-btn-(\w*)$/, ([_, color]) => ({
-    //   "--at-apply": `transition-200 cursor-pointer rounded-4px group-hover:text-[var(--el-color-${color})]`,
-    // })],
+
+    ...([
+      ["none", "0"],
+      ["xs", "4px"],
+      ["sm", "8px"],
+      ["", "8px"],
+      // ["md", "0.75rem"],
+      // ["lg", "1rem"],
+      // ["xl", "1.25rem"],
+      // ["round", "2rem"],
+      // ["circle", "100%"],
+      // ["full", "9999px"],
+    ] as const).map(([k, v]) => [`rounded${k ? `-${k}` : ""}`, { "border-radius": v }]),
   ],
   theme: {
-    // ...
     colors: {
       theme: {
         primary: "var(--el-color-primary)",

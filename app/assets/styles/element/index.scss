@@ -2,7 +2,7 @@
 
 @forward "element-plus/theme-chalk/src/common/var.scss" with (
   //  node_modules/element-plus/theme-chalk/src/common/var.scss"
-  $border-radius: ("base": 6px, "small": 12px, "round": 20px, "circle": 100%),
+  $border-radius: ("base": 8px, "small": 4px, "round": 32px, "circle": 100%),
   // 阴影
   $box-shadow: (
       "": (
@@ -56,8 +56,8 @@
   ),
   // $drawer
   $drawer: ("padding-primary": 0px),
-  $popover: ("border-radius": 8px, "padding": 6px),
-  $popper: ("border-radius": 8px),
+  $popover: ("border-radius": 10px, "padding": 8px),
+  $popper: ("border-radius": 10px),
   // 轮播图
   $carousel: (
       "arrow-font-size": 20px,
@@ -73,7 +73,7 @@
   // el-card
   $card: (
       "border-color": getCssVar("border-color", "light"),
-      "border-radius": 6px,
+      "border-radius": 10px,
       "padding": 2px,
       "bg-color": getCssVar("fill-color", "blank")
     ),
