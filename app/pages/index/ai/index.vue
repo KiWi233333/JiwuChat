@@ -285,12 +285,12 @@ onDeactivated(() => {
 </script>
 
 <template>
-  <div class="h-full w-full flex flex-1 flex-col sm:(px-4 pb-4)">
+  <div class="h-full w-full flex flex-1 flex-col select-none sm:(px-4 pb-4)">
     <!-- header -->
     <p class="nav-padding-top-6 my-4 pl-4 text-theme-primary font-500 sm:pl-0">
       <i class="i-solar:ghost-bold mr-2 p-3" />
       极物AI
-      <!-- <span float-right mr-3 rounded bg-theme-primary px-2 py-1 text-0.65rem text-light>AI生成内容，仅供参考！</span> -->
+      <span float-right mr-3 bg-theme-primary px-2 py-1 text-0.65rem text-light rounded>重构中，敬请期待！</span>
     </p>
     <!-- 内容 -->
     <el-scrollbar ref="scollRef" wrap-class="shadow-sm shadow-inset" view-class="shadow-sm shadow-inset h-full  p-2 md:p-4" class="relative bg-color-2 sm:card-rounded-df">

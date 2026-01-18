@@ -55,36 +55,36 @@ const menuList = computed<MenuItem[]>(() => [
   {
     title: "聊天",
     path: "/",
-    icon: "i-solar:chat-line-broken",
-    activeIcon: "i-solar:chat-line-bold",
+    icon: "i-ri:message-3-line",
+    activeIcon: "i-ri:message-3-fill",
     tipValue: chat.unReadCount,
     isDot: false,
   },
   {
     title: "好友",
     path: "/friend",
-    icon: "i-solar:users-group-rounded-line-duotone",
-    activeIcon: "i-solar:users-group-rounded-bold",
+    icon: "i-ri:contacts-line !w-5 !h-6",
+    activeIcon: "i-ri:contacts-fill !w-5 !h-6",
     tipValue: applyUnRead.value,
     isDot: false,
   },
   {
     title: "AI",
     path: "/ai",
-    icon: "i-solar:ghost-outline",
-    activeIcon: "i-solar:ghost-bold",
+    icon: "i-ri:sparkling-2-line",
+    activeIcon: "i-ri:sparkling-2-fill",
   },
   {
     title: "个人",
     path: "/user",
-    icon: "i-solar:user-outline",
-    activeIcon: "i-solar:user-bold",
+    icon: "i-ri:user-line !w-5 !h-6",
+    activeIcon: "i-ri:user-fill !w-5 !h-6",
   },
   {
     title: "更多",
     path: "/more",
-    icon: "i-solar-layers-broken ",
-    activeIcon: "i-solar-layers-bold ",
+    icon: " i-ri-apps-2-ai-line",
+    activeIcon: "ri-apps-2-ai-fill",
     tipValue: +setting.appUploader.isUpload,
     children: [
       // ...(setting.selectExtendMenuList || []).map(p => ({
@@ -161,8 +161,9 @@ const activeMenu = computed({
         :hidden="!p?.tipValue"
         :max="99"
         :is-dot="p.isDot"
+        class="text-center"
       >
-        <i class="icon p-3" :class="route.path === p.path ? p.activeIcon : p.icon" />
+        <i class="icon" :class="route.path === p.path ? p.activeIcon : p.icon" />
         <span mt-2 block select-none text-center text-3>{{ p.title }}</span>
       </el-badge>
       <el-dropdown
@@ -184,7 +185,7 @@ const activeMenu = computed({
             }
           }"
         >
-          <i class="p-3" :class="route.path === p.path ? p.activeIcon : p.icon" />
+          <i class="icon" :class="route.path === p.path ? p.activeIcon : p.icon" />
           <span mt-2 block select-none text-center text-3>{{ p.title }}</span>
         </el-badge>
         <template #dropdown>
@@ -246,17 +247,13 @@ const activeMenu = computed({
   }
 
   .icon {
-    --at-apply: "transition-none";
+    --at-apply: "transition-none w-6 h-6 block";
   }
 
   &.active {
     --at-apply: "text-theme-primary";
     filter: drop-shadow(0 0 8px var(--el-color-primary-light-5));
     transition-property: filter, color;
-
-    .icon {
-      --at-apply: "p-3.6";
-    }
   }
 }
 </style>

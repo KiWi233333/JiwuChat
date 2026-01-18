@@ -20,13 +20,13 @@ const setting = useSettingStore();
 const {
   open,
 } = useOpenExtendWind();
-// 扩展菜单列表
+  // 扩展菜单列表 (已全部更换为 remix icon)
 const extendMenuAllList = ref<ExtendItem[]>([
   {
     url: "/extend/shop",
     title: "极物圈商城",
-    icon: "i-solar:shop-line-duotone group-hover:(i-solar:shop-bold-duotone bg-[#5d33f6] transition-200 p-3)",
-    activeIcon: "i-solar:shop-bold-duotone",
+    icon: "i-ri:shopping-bag-3-line group-hover:(i-ri:shopping-bag-3-fill bg-[#5d33f6] transition-200 p-3)",
+    activeIcon: "i-ri:shopping-bag-3-fill",
     loading: false,
     saveTime: undefined,
     disabled: false,
@@ -34,8 +34,8 @@ const extendMenuAllList = ref<ExtendItem[]>([
   {
     url: "/extend/readjoy",
     title: "悦读时光",
-    icon: "i-solar:notebook-square-line-duotone group-hover:(i-solar:notebook-square-bold-duotone transition-200 p-3 color-[#2f7efd])",
-    activeIcon: "i-solar:notebook-square-bold-duotone",
+    icon: "i-ri:book-3-line group-hover:(i-ri:book-3-fill transition-200 p-3 color-[#2f7efd])",
+    activeIcon: "i-ri:book-3-fill",
     loading: false,
     saveTime: undefined,
     disabled: false,
@@ -43,8 +43,8 @@ const extendMenuAllList = ref<ExtendItem[]>([
   {
     url: "/extend/blog",
     title: "博客",
-    icon: "i-solar:chat-square-code-line-duotone p-2.6 group-hover:(i-solar:chat-square-code-bold-duotone transition-200 p-2.8 color-[#add7da])",
-    activeIcon: "i-solar:chat-square-code-bold-duotone",
+    icon: "i-ri:article-line p-2.6 group-hover:(i-ri:article-fill transition-200 p-3 color-[#add7da])",
+    activeIcon: "i-ri:article-fill",
     loading: false,
     saveTime: undefined,
     disabled: false,
@@ -52,8 +52,8 @@ const extendMenuAllList = ref<ExtendItem[]>([
   {
     url: "/extend/doc",
     title: "极物文档",
-    icon: "i-solar:document-add-outline",
-    activeIcon: "i-solar:document-add-bold-duotone",
+    icon: "i-ri:file-list-3-line",
+    activeIcon: "i-ri:file-list-3-fill",
     loading: false,
     saveTime: undefined,
     disabled: true,
@@ -61,7 +61,7 @@ const extendMenuAllList = ref<ExtendItem[]>([
   // 其他
   {
     title: "建设中",
-    icon: "i-carbon:settings-adjust",
+    icon: "i-ri:settings-3-line",
     saveTime: undefined,
     disabled: true,
   },
@@ -144,8 +144,8 @@ function createItem() {
     content-class="w-94vw rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
   >
     <template #title>
-      <h3 :data-tauri-drag-region="setting.isDesktop" mb-4 text-center font-500>
-        <i i-solar:widget-line-duotone mr-2 p-2.5 text-small />
+      <h3 :data-tauri-drag-region="setting.isDesktop" mb-4 flex-row-c-c text-center font-500>
+        <i i-ri-apps-2-ai-line mr-2 p-2.5 text-small />
         扩展菜单
       </h3>
     </template>
@@ -172,12 +172,10 @@ function createItem() {
           }"
           @click.capture="!item.disabled && open(item)"
         >
-          <div mx-a h-1.8em w-1.8em flex-row-c-c>
-            <i
-              class="block h-full w-full"
-              :class="item.icon"
-            />
-          </div>
+          <i
+            class="mx-a block h-6 w-6"
+            :class="item.icon"
+          />
           <div
             class="absolute right-1 top-1 btn-danger-bg group-hover:(op-100) sm:op-0"
             @click.stop.prevent="onRemove(item)"
@@ -209,7 +207,7 @@ function createItem() {
           }"
         >
           <i
-            class="mx-a block h-1.6em w-1.6em" :class="item.icon"
+            class="mx-a block h-6 w-6" :class="item.icon"
             @click.stop="!item.disabled && open(item)"
           />
           <div
@@ -234,7 +232,7 @@ function createItem() {
         @click.stop="createItem()"
       >
         <i
-          class="i-carbon:add mx-a block h-1.6em w-1.6em"
+          class="i-carbon:add mx-a block h-6 w-6"
         />
         <div
           class="mx-a mt-2 text-center text-xs"
@@ -259,8 +257,8 @@ function createItem() {
   </DialogPopup>
 </template>
 
-<style lang="scss" scoped>
-/* 新增拖拽样式 */
+  <style lang="scss" scoped>
+  /* 新增拖拽样式 */
 .ghost {
   --at-apply: "op-50 bg-color-3";
 }
