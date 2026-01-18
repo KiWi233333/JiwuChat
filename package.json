@@ -57,7 +57,7 @@
     "@tauri-apps/plugin-websocket": "2.4.1",
     "@vueuse/core": "14.1.0",
     "dayjs": "1.11.19",
-    "element-plus": "2.11.2",
+    "element-plus": "2.13.1",
     "markdown-it-link-attributes": "4.0.1",
     "md-editor-v3": "5.8.4",
     "ogl": "1.0.11",
