@@ -217,8 +217,8 @@ onUnmounted(() => {
           activeItem?.value && setting.isMobileSize ? '-translate-x-1/2 scale-95 css-will-change' : '',
         ]"
       >
-        <h3 class="flex items-center px-5 pt-5 text-lg font-500 sm:(px-5 pt-8)">
-          <i i-solar:settings-bold mr-2 inline-block p-3 opacity-60 hover:animate-spin />
+        <h3 class="flex items-center px-5 pt-5 text-base font-500 sm:(px-5 pt-10)">
+          <i i-solar:settings-bold-duotone mr-2 inline-block p-2.5 text-secondary hover:animate-spin />
           设置
         </h3>
         <el-segmented
@@ -251,10 +251,10 @@ onUnmounted(() => {
           'translate-x-full css-will-change': !activeMenu,
         }"
       >
-        <h3 v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b pb-3 font-500 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
-          <i i-solar:alt-arrow-left-line-duotone mr-1 p-3 sm:hidden />
+        <div v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b pb-3 font-500 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
+          <i i-solar:alt-arrow-left-line-duotone mr-1 p-2.5 sm:hidden />
           {{ activeItem?.label }}
-        </h3>
+        </div>
         <!-- 内容 -->
         <NuxtPage class="w-full" />
       </el-scrollbar>

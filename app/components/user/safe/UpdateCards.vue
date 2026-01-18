@@ -1,6 +1,10 @@
-<script lang="ts" setup>
+<script lang="ts">
 import type { OAuthPlatformCode, OAuthPlatformVO, UserOAuthVO } from "~/composables/api/user/oauth";
 import type { OAuthCallbackPayload } from "~/composables/hooks/oauth/useDeepLink";
+</script>
+
+<script lang="ts" setup>
+import dayjs from "dayjs";
 import {
   getAuthorizeUrl,
   getBindList,
@@ -9,24 +13,32 @@ import {
 } from "~/composables/api/user/oauth";
 import { useOAuthDeepLink } from "~/composables/hooks/oauth/useDeepLink";
 
+export interface UserSafeUpdateCardsProps {
+  isAnim?: boolean
+}
+
+const {
+  isAnim = true,
+} = defineProps<UserSafeUpdateCardsProps>();
+
 const user = useUserStore();
 const setting = useSettingStore();
-const showMarkPhone = ref(true);
 
-/**
- * 重新加载用户信息
- */
-const isLoading = ref<boolean>(false);
-async function reloadUserInfo() {
-  isLoading.value = true;
-  user.loadUserInfo(user.token).finally(() => isLoading.value = false);
-}
-// 展示表单
+const getCreateTime = computed(() => dayjs(user.userInfo.createTime).format("YYYY-MM-DD") || "未知");
+
+// 表单显示状态
 const form = ref({
   showUpdatePwd: false,
   showUpdatePhone: false,
   showUpdateEmail: false,
 });
+
+// 重新加载用户信息
+const isLoading = ref<boolean>(false);
+async function reloadUserInfo() {
+  isLoading.value = true;
+  user.loadUserInfo(user.token).finally(() => isLoading.value = false);
+}
 
 watch(
   form,
@@ -77,7 +89,7 @@ async function loadOAuthData() {
   }
 }
 
-// 处理绑定回调结果（方案 B：后端直接完成绑定）
+// 处理绑定回调结果
 async function handleBindCallback(data: {
   platform?: string;
   action?: string;
@@ -88,7 +100,6 @@ async function handleBindCallback(data: {
 }) {
   const platform = data.platform as OAuthPlatformCode;
 
-  // 错误码映射
   const errorMessages: Record<string, string> = {
     OAUTH_ACCOUNT_ALREADY_BOUND: `该 ${platform} 账号已被其他用户绑定`,
     OAUTH_PLATFORM_ALREADY_BOUND: `您已绑定过 ${platform}，如需更换请先解绑`,
@@ -97,7 +108,6 @@ async function handleBindCallback(data: {
     USER_NOT_FOUND: "用户不存在",
   };
 
-  // 处理错误
   if (data.error || data.errorCode) {
     const msg = errorMessages[data.errorCode || ""]
       || (data.message ? decodeURIComponent(data.message) : "绑定失败");
@@ -106,7 +116,6 @@ async function handleBindCallback(data: {
     return;
   }
 
-  // 绑定成功（bindSuccess 为 true 或 "true"）
   if (data.bindSuccess === true || data.bindSuccess === "true") {
     ElMessage.success("绑定成功");
     bindingPlatform.value = null;
@@ -115,13 +124,11 @@ async function handleBindCallback(data: {
     return;
   }
 
-  // 兼容处理：后端可能没有显式返回 bindSuccess，尝试刷新绑定列表判断
   if (platform && !data.error && !data.errorCode) {
     const oldBindCount = bindRecords.value.length;
     await loadOAuthData();
     const newBindCount = bindRecords.value.length;
 
-    // 如果绑定记录增加了，说明绑定成功
     if (newBindCount > oldBindCount || getBindStatus(platform)) {
       ElMessage.success("绑定成功");
       bindingPlatform.value = null;
@@ -130,7 +137,6 @@ async function handleBindCallback(data: {
     }
   }
 
-  // 未知情况
   ElMessage.error("绑定失败，请稍后重试");
   bindingPlatform.value = null;
 }
@@ -141,19 +147,16 @@ function buildBindRedirectUri(platform: OAuthPlatformCode): string {
   const isDesktop = setting.isDesktop;
   const isMobile = setting.isMobile;
 
-  // 桌面端和移动端使用深度链接
   if (isDesktop || isMobile) {
     return `jiwuchat://oauth/callback?platform=${platform}&action=bind`;
   }
-  // Web 端回调到当前页面
   return `${baseUrl}/user/safe?platform=${platform}&action=bind`;
 }
 
-// 桌面端深度链接监听
+// 深度链接监听
 useOAuthDeepLink({
   autoListen: setting.isDesktop || setting.isMobile,
   onCallback: async (payload: OAuthCallbackPayload) => {
-    // 只处理绑定动作
     if (payload.action !== "bind")
       return;
 
@@ -173,10 +176,7 @@ async function handleBind(platform: OAuthPlatformCode) {
   bindingPlatform.value = platform;
 
   try {
-    // 构建回调 URI
     const redirectUri = buildBindRedirectUri(platform);
-
-    // 获取授权 URL（传递 action=bind，后端会从 Token 获取 userId）
     const res = await getAuthorizeUrl(platform, redirectUri, "bind");
     if (res.code !== StatusCode.SUCCESS || !res.data) {
       ElMessage.error(res.message || "获取授权地址失败");
@@ -184,14 +184,11 @@ async function handleBind(platform: OAuthPlatformCode) {
       return;
     }
 
-    // 跳转到授权页面
     if (setting.isDesktop || setting.isMobile) {
-      // 桌面端和移动端打开外部浏览器
       const { open } = await import("@tauri-apps/plugin-shell");
       await open(res.data);
     }
     else {
-      // Web 端直接跳转
       window.location.href = res.data;
     }
   }
@@ -231,14 +228,11 @@ async function handleUnbind(platform: OAuthPlatformCode) {
 // Web 端：处理 URL 参数回调
 const route = useRoute();
 onMounted(() => {
-  // 检查是否有绑定回调参数
   const query = route.query;
   if (query.action === "bind" && query.platform) {
-    // 清除 URL 参数（避免刷新时重复处理）
     const cleanUrl = window.location.pathname;
     window.history.replaceState({}, "", cleanUrl);
 
-    // 处理绑定回调
     handleBindCallback({
       platform: query.platform as string,
       action: query.action as string,
@@ -249,7 +243,6 @@ onMounted(() => {
     });
   }
 
-  // 加载 OAuth 数据
   if (user.isLogin) {
     loadOAuthData();
   }
@@ -257,156 +250,182 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <div my-4 block text-sm>
-      <i i-solar:shield-check-broken mr-2 p-2.5 />
-      修改信息
+  <div
+    class="flex flex-col gap-3"
+    style="--anima: blur-in;--anima-duration: 200ms;"
+    :data-fade="isAnim"
+  >
+    <!-- 用户信息卡片 -->
+    <div class="flex items-center gap-3 border-default-2 rounded-xl card-bg-color p-4">
+      <CardAvatar
+        class="h-12 w-12 shrink-0 rounded-full"
+        :src="BaseUrlImg + user.userInfo.avatar"
+      />
+      <div class="flex flex-1 flex-col gap-1">
+        <div class="flex items-center gap-2">
+          <span class="text-base text-color font-500">{{ user.userInfo.username }}</span>
+          <i v-if="user.userInfo.isEmailVerified" i-solar:verified-check-bold text-sm text-theme-primary />
+        </div>
+        <span class="text-small text-xs">
+          注册于 {{ getCreateTime }}
+        </span>
+      </div>
+      <NuxtLink to="/user" prefetch :prefetch-on="{ visibility: true }">
+        <el-button
+          text
+          size="small"
+          class="shrink-0"
+        >
+          编辑资料
+        </el-button>
+      </NuxtLink>
     </div>
-    <!-- 用户信息 -->
-    <div
-      class="group flex flex-col card-default p-4 sm:(bg-transparent p-0)"
-      flex flex-1 flex-col
-    >
-      <div class="flex items-center">
-        <CardAvatar class="h-12 w-12 border-default-2 rounded-1/2 card-default" :src="BaseUrlImg + user.userInfo.avatar" />
-        <p class="ml-3 block font-500">
-          {{ user.userInfo.username }}
-        </p>
-        <i
-          opacity-0
-          transition-300
-          group-hover:opacity-100
-          class="i-solar:refresh-outline ml-a cursor-pointer bg-theme-info px-3 transition-300 hover:rotate-180"
-          @click="reloadUserInfo"
-        />
-      </div>
-      <!-- 密码 -->
-      <div ml-1 mt-6 flex-row-bt-c>
-        <small>
-          密&emsp;码：
-          <small opacity-80>************</small>
-        </small>
-        <small
-          class="cursor-pointer transition-300 hover:text-theme-primary"
-          @click="form.showUpdatePwd = true"
-        >
-          修改密码
-        </small>
-      </div>
-      <!-- 手机号 -->
-      <div ml-1 mt-6 flex-row-bt-c>
-        <small>
-          手机号：
-          <small
-            opacity-80
-            :class="{ 'text-red-5': !user.userInfo.phone }"
+
+    <!-- 两列布局 -->
+    <div class="grid grid-cols-1 gap-3">
+      <!-- 左列：登录与安全 -->
+      <div class="flex flex-col gap-4 border-default-2 rounded-xl card-bg-color p-4">
+        <div class="flex flex-col gap-1">
+          <h4 class="text-sm text-color font-500">
+            登录与安全
+          </h4>
+          <p class="text-small text-xs">
+            管理您的密码和验证方式
+          </p>
+        </div>
+
+        <!-- 密码 -->
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-color">密码</span>
+            <span class="text-small text-xs">············</span>
+          </div>
+          <el-button
+            text
+            size="small"
+            type="primary"
+            @click="form.showUpdatePwd = true"
           >
-            {{ (showMarkPhone ? user.markPhone : user.userInfo.phone) || "还未绑定" }}
-          </small>
-        </small>
-        <small
-          class="cursor-pointer transition-300 hover:text-theme-primary"
-          @click="form.showUpdatePhone = true"
-        >
-          {{ user.userInfo.phone ? "修改手机号" : "绑定" }}
-        </small>
-      </div>
-      <!-- 邮箱 -->
-      <div
-        ml-1 mt-6 flex-row-bt-c
-      >
-        <small>
-          邮&emsp;箱：
-          <small
-            opacity-80
-            :class="{ 'text-red-5': !user.userInfo.email }"
+            修改
+          </el-button>
+        </div>
+
+        <!-- 手机号 -->
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-color">手机号</span>
+            <span
+              class="text-small text-xs"
+              :class="{ 'text-theme-danger': !user.userInfo.phone }"
+            >
+              {{ user.markPhone || "还未绑定" }}
+            </span>
+          </div>
+          <el-button
+            text
+            size="small"
+            type="primary"
+            @click="form.showUpdatePhone = true"
           >
-            {{ user.userInfo.email || "还未绑定" }}
-          </small>
-        </small>
-        <small
-          class="cursor-pointer transition-300 hover:text-theme-primary"
-          @click="form.showUpdateEmail = true"
-        >
-          {{ user.userInfo.email ? "修改邮箱" : "绑定" }}
-        </small>
+            {{ user.userInfo.phone ? "换绑" : "绑定" }}
+          </el-button>
+        </div>
+
+        <!-- 邮箱 -->
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-color">邮箱</span>
+            <span
+              class="text-small text-xs"
+              :class="{ 'text-theme-danger': !user.userInfo.email }"
+            >
+              {{ user.userInfo.email || "还未绑定" }}
+            </span>
+          </div>
+          <el-button
+            text
+            size="small"
+            type="primary"
+            @click="form.showUpdateEmail = true"
+          >
+            {{ user.userInfo.email ? "修改" : "绑定" }}
+          </el-button>
+        </div>
       </div>
-      <!-- 第三方账号 -->
+
+      <!-- 右列：第三方账号 -->
       <div
         v-if="oauthPlatforms.length > 0"
-        class="ml-1 mt-6 flex flex-col gap-6"
+        v-loading="isLoadingOAuth"
+        class="flex flex-col gap-4 border-default-2 rounded-xl card-bg-color p-4"
       >
-        <div flex-row-bt-c>
-          <small>第三方账号：</small>
+        <div class="flex flex-col gap-1">
+          <h4 class="text-sm text-color font-500">
+            第三方账号
+          </h4>
+          <p class="text-small text-xs">
+            绑定第三方账号以便快捷登录
+          </p>
         </div>
+
+        <!-- OAuth 平台列表 -->
         <div
-          v-loading="isLoadingOAuth"
-          class="flex flex-col gap-6"
+          v-for="platform in oauthPlatforms"
+          :key="platform.code"
+          class="flex items-center justify-between gap-3"
         >
-          <div
-            v-for="platform in oauthPlatforms"
-            :key="platform.code"
-            class="flex-row-bt-c"
-          >
-            <div class="flex items-center gap-2">
-              <img
-                :src="getOAuthPlatformIcon(platform.code)"
-                :alt="platform.name"
-                class="h-5 w-5"
-              >
-              <small>{{ platform.name }}</small>
-              <small
+          <div class="flex items-center gap-2">
+            <img
+              :src="getOAuthPlatformIcon(platform.code)"
+              :alt="platform.name"
+              class="h-5 w-5 shrink-0"
+            >
+            <div class="flex flex-col gap-1">
+              <span class="text-xs text-color">{{ platform.name }}</span>
+              <span
                 v-if="getBindStatus(platform.code)"
-                opacity-60
-                class="ml-2"
+                class="text-small text-xs"
               >
                 {{ getBindStatus(platform.code)?.nickname || "已绑定" }}
-              </small>
+              </span>
             </div>
-            <small
-              v-if="getBindStatus(platform.code)"
-              class="cursor-pointer text-red-5 transition-300 hover:text-red-6"
-              @click="handleUnbind(platform.code)"
-            >
-              解绑
-            </small>
-            <small
-              v-else
-              class="cursor-pointer transition-300 hover:text-theme-primary"
-              @click="handleBind(platform.code)"
-            >
-              绑定
-            </small>
           </div>
-        </div>
-      </div>
-      <div
-        mt-a
-        w-full
-      >
-        <!-- 退出 -->
-        <ElDivider class="dark:opacity-20" />
-        <div
-          mb-1 flex-row-bt-c justify-end
-        >
-          <el-text
-            style="margin-left: 1rem"
-            class="cursor-pointer transition-300 hover:text-[var(--el-color-primar)y]"
-            @click.stop="navigateTo('/user')"
-          >
-            编辑资料
-          </el-text>
-          <el-text
-            style="margin-left: 1rem"
-            class="cursor-pointer transition-300 hover:text-[var(--el-color-primar)y]"
+          <el-button
+            v-if="getBindStatus(platform.code)"
+            text
+            size="small"
             type="danger"
-            @click="user.exitLogin"
+            @click="handleUnbind(platform.code)"
           >
-            退出登录
-          </el-text>
+            解绑
+          </el-button>
+          <el-button
+            v-else
+            text
+            size="small"
+            type="primary"
+            :loading="bindingPlatform === platform.code"
+            @click="handleBind(platform.code)"
+          >
+            绑定
+          </el-button>
         </div>
       </div>
     </div>
+
+    <!-- 退出登录 -->
+    <div class="flex justify-end pt-2">
+      <el-button
+        type="danger"
+        class="shadow"
+        @click="user.exitLogin"
+      >
+        <i i-solar:exit-bold-duotone mr-1 text-sm />
+        退出登录
+      </el-button>
+    </div>
+
+    <!-- 对话框 -->
     <Teleport to="body">
       <UserSafeDialog v-model="form" />
     </Teleport>

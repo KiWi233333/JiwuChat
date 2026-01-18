@@ -209,14 +209,14 @@ const deviceIconName = computed(() => {
 
 <style lang="scss" scoped>
 .device-card {
-  --at-apply: "relative overflow-hidden bg-color dark:bg-dark-7 rounded-0.75rem p-0.75rem transition-shadow border-default-2 !border-op-08 hover:shadow-sm";
+  --at-apply: "relative overflow-hidden bg-color dark:bg-dark-7 rounded-xl p-0.75rem transition-shadow border-default-2 !border-op-08 hover:shadow-sm";
 
   .deco-bg {
     --at-apply: "absolute w-16 dark:op-50 op-20 h-16 top-0 right-0 z-1 pointer-events-none transition-transform duration-500 ease-out";
   }
 
   .device-header {
-    --at-apply: "flex items-center gap-0.75rem mb-0.75rem relative z-2";
+    --at-apply: "flex items-center gap-0.75rem mb-3 relative z-2";
 
     .device-icon {
       --at-apply: "flex-shrink-0 w-1.75rem h-1.75rem flex items-center justify-center bg-color-2 rounded-0.375rem text-1rem";
@@ -233,7 +233,7 @@ const deviceIconName = computed(() => {
         }
 
         .os-version {
-          --at-apply: "text-small-color text-0.6875rem";
+          --at-apply: "text-small-color text-0.6rem";
         }
       }
 
@@ -241,11 +241,11 @@ const deviceIconName = computed(() => {
         --at-apply: "flex items-baseline gap-0.25rem";
 
         .browser-name {
-          --at-apply: "text-small-color text-0.6875rem";
+          --at-apply: "text-small-color text-0.6rem";
         }
 
         .browser-version {
-          --at-apply: "text-small-color text-0.6875rem";
+          --at-apply: "text-small-color text-0.6rem";
         }
       }
     }
@@ -263,7 +263,7 @@ const deviceIconName = computed(() => {
     --at-apply: "flex flex-col gap-0.5rem relative z-2 border-default-2-t pt-2";
 
     .info-item {
-      --at-apply: "flex items-center gap-0.25rem text-0.6875rem";
+      --at-apply: "flex items-center gap-0.25rem text-0.6rem";
 
       i {
         --at-apply: "text-0.75rem flex-shrink-0";

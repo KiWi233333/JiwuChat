@@ -349,9 +349,10 @@ onActivated(() => {
     <!-- 页面头部 -->
     <div class="mb-4 mt-10 flex select-none items-end">
       <div>
-        <h2 class="text-xl text-color font-500">
+        <h3 class="flex items-center text-xl text-color font-500">
+          <i i-solar:key-bold-duotone mr-2 inline-block p-2.5 text-secondary hover:animate-spin />
           API Key
-        </h2>
+        </h3>
         <p class="mt-1 text-mini">
           管理你的开放 API 密钥
         </p>
