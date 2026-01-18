@@ -43,22 +43,22 @@ const menuList = computed<MenuItem[]>(() => ([
   {
     title: "聊天",
     path: "/",
-    icon: "i-solar:chat-line-broken",
-    activeIcon: "i-solar:chat-line-bold",
+    icon: "i-ri:message-3-line",
+    activeIcon: "i-ri:message-3-fill",
     tipValue: chat.unReadCount,
   },
   {
     title: "好友",
     path: "/friend",
-    icon: "i-solar:users-group-rounded-line-duotone",
-    activeIcon: "i-solar:users-group-rounded-bold",
+    icon: "i-ri:contacts-line !h-4.5 !w-4.5",
+    activeIcon: "i-ri:contacts-fill !h-4.5 !w-4.5",
     tipValue: chat.applyUnReadCount,
   },
   {
     title: "AI客服",
     path: "/ai",
-    icon: "i-solar:ghost-outline",
-    activeIcon: "i-solar:ghost-bold",
+    icon: "i-ri:sparkling-2-line",
+    activeIcon: "i-ri:sparkling-2-fill",
   },
   ...(setting.selectExtendMenuList || []).map(p => ({
     title: p.title,
@@ -69,8 +69,8 @@ const menuList = computed<MenuItem[]>(() => ([
   }) as MenuItem),
   {
     title: "扩展",
-    icon: " i-solar:widget-line-duotone hover:(i-solar:widget-bold) ",
-    activeIcon: "i-solar:widget-bold",
+    icon: " i-ri-apps-2-ai-line hover:(ri-apps-2-ai-fill) ",
+    activeIcon: "ri-apps-2-ai-fill",
     onClick: () => chat.showExtension = true,
   },
   {
@@ -87,15 +87,6 @@ const menuList = computed<MenuItem[]>(() => ([
     activeIcon: "i-solar:devices-bold",
     class: "absolute bottom-14 diabled-bg",
   },
-  // {
-  //   title: "设置",
-  //   path: "/setting",
-  //   icon: "i-solar:settings-linear hover:animate-spin block",
-  //   activeIcon: "i-solar:settings-bold hover:animate-spin block",
-  //   class: "absolute bottom-2 diabled-bg",
-  //   tipValue: +setting.appUploader.isUpload,
-  //   isDot: true,
-  // },
 ]));
 
 export interface MenuItem {
@@ -151,7 +142,7 @@ export interface MenuItem {
         <el-badge
           :value="p.tipValue" :hidden="!p?.tipValue" :is-dot="!!p?.isDot" :offset="[-2, -2]" :max="99"
         >
-          <i class="icon p-2.6" :class="route.path === p.path ? p.activeIcon : p.icon" />
+          <i class="icon" :class="route.path === p.path ? p.activeIcon : p.icon" />
         </el-badge>
       </component>
       <!-- 设置 -->
@@ -185,7 +176,7 @@ export interface MenuItem {
   --at-apply: "card-rounded-df border-(1px solid transparent) hover:(bg-gray-3 bg-op-30 dark:(bg-dark-3 bg-op-30) text-color-theme-primary) h-10 w-10 flex-row-c-c cursor-pointer transition-200";
 
   .icon {
-    --at-apply: "dark:op-80";
+    --at-apply: "block w-5 h-5 dark:op-80";
   }
   &:hover {
     .icon {

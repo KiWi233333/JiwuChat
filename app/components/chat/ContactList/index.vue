@@ -470,16 +470,16 @@ onDeactivated(() => {
           </el-badge>
           <div class="flex flex-1 flex-col justify-between truncate">
             <div flex truncate>
-              <p class="text truncate text-black dark:text-white">
+              <p class="text truncate text-color">
                 {{ room.name }}
               </p>
               <!-- AI机器人 -->
               <i v-if="RoomTypeTagType[room.type]" i-ri:robot-2-line class="ai-icon" />
-              <span class="text ml-a w-fit flex-shrink-0 text-right text-0.7em text-gray leading-2em">
+              <span class="text ml-a w-fit flex-shrink-0 text-right text-0.7em text-secondary leading-2em">
                 {{ formatContactDate(room.activeTime) }}
               </span>
             </div>
-            <p class="text mt-1 flex text-small">
+            <p class="text mt-1 flex text-small text-secondary">
               <small
                 class="h-1.5em flex-1 truncate"
                 :class="{ 'text-theme-info font-500': room.unreadCount && room.shieldStatus !== isTrue.TRUE }"
@@ -487,7 +487,7 @@ onDeactivated(() => {
                 {{ room.text }}
               </small>
               <small v-if="room.shieldStatus === isTrue.TRUE" class="text i-carbon:notification-off ml-1 flex-shrink-0 overflow-hidden text-3 text-small" />
-              <small v-if="room.pinTime" class="text i-solar:pin-bold-duotone ml-1 flex-shrink-0 overflow-hidden text-3 text-color" />
+              <small v-if="room.pinTime" class="text i-solar:pin-bold-duotone ml-1 flex-shrink-0 overflow-hidden text-3 text-secondary" />
             </p>
           </div>
         </div>
@@ -533,12 +533,6 @@ onDeactivated(() => {
     }
     &.is-checked {
       --at-apply: "!sm:(bg-[var(--el-color-primary-light-9)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) ";
-      .text {
-        --at-apply: "dark:text-white";
-      }
-      // .ai-icon {
-      //   --at-apply: "sm:!text-white";
-      // }
     }
 
     :deep(.el-badge__content) {

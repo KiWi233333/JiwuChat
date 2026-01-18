@@ -74,7 +74,7 @@ async function handleDesktopNavigation(
   // 设置页面处理
   if (toPath === "/setting") {
     const { open } = useOpenSettingWind();
-    open({ url: "/setting" });
+    open({ url: "/desktop/setting" });
     if (getCurrentWindow().label !== SETTING_WINDOW_LABEL) {
       return abortNavigation();
     }

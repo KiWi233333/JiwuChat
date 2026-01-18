@@ -40,6 +40,7 @@ export default defineConfig({
     ["dialog-bg-color", "bg-white dark:bg-dark-9"],
     // 文本颜色
     ["text-color", "text-black dark:text-white"],
+    ["text-secondary", "text-[#717171] dark:text-[#979898]"],
     ["text-default", "text-1em text-black dark:text-white"],
     ["text-mini", "text-dark-50 dark:text-[#979898] text-xs"],
     ["text-mini-50", "text-xs text-[#717171] dark:text-[#979898]"],
