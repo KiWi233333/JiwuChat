@@ -77,13 +77,13 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   .el-autocomplete-suggestion__list li {
     --el-mention-option-hover-background: #958c9b44;
     padding: 0.5em;
-    border-radius: 6px;
+    border-radius: calc(var(--el-border-radius-base) - 2px);
   }
 }
 
 // 选择框 / 提及
 .el-popper.el-mention__popper,
-.el-popper.el-select__popper.global-custom-select {
+.el-popper.el-select__popper {
   --at-apply: "bg-white dark:bg-dark-8 rounded-10px border-default";
   .el-select-dropdown,
   .el-mention-dropdown {
@@ -110,8 +110,8 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   .el-mention-dropdown__item {
     --el-fill-color-light: #958c9b1f;
     --el-mention-option-hover-background: #958c9b1f;
-    padding: 0.5em;
-    border-radius: 6px;
+    padding: 0 1em;
+    border-radius: calc(var(--el-border-radius-base) - 2px);
   }
 }
 
@@ -234,10 +234,10 @@ body .el-message {
   background-color: rgba(0, 0, 0, 0.1);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
-  border-radius: 6px;
+  border-radius: calc(var(--el-border-radius-base) - 2px);
 
   *.is-fullscreen {
-    border-radius: 6px;
+    border-radius: calc(var(--el-border-radius-base) - 2px);
   }
 
   .el-loading-spinner {
@@ -260,7 +260,7 @@ body .el-message {
 
 // 图片预览
 .el-image-viewer__wrapper {
-  border-radius: 6px;
+  border-radius: calc(var(--el-border-radius-base) - 2px);
   overflow: hidden;
   .el-image-viewer__close {
     --at-apply: "!card-default-br";
