@@ -266,7 +266,7 @@ const nodeTypeIcon = computed(() => {
   >
     <slot :node-type-icon="nodeTypeIcon" :on-click="onClick">
       <div data-slot="handle" class="px-1.5">
-        <div class="gap-0.5 border-default rounded bg-color-br p-1 text-xs shadow-sm transition-200 !border-op-50">
+        <div class="gap-0.5 border-default bg-color-br p-1 text-xs shadow-sm transition-200 rounded !border-op-50">
           <!-- <i
             v-if="showNodeType"
             class="p-2 text-theme-primary"
