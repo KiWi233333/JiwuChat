@@ -206,7 +206,7 @@ onUnmounted(() => {
   --el-border-radius-base: 0.6rem;
   --el-segmented-item-selected-bg-color: transparent;
   --el-segmented-item-active-bg-color: ;
-  --at-apply: "bg-transparent w-full p-4 text-color";
+  --at-apply: "bg-transparent w-full p-4 text-color !shadow-none";
 
   .el-segmented__item-selected {
     --at-apply: "bg-color-2 text-color";
