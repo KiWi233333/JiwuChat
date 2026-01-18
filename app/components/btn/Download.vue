@@ -86,7 +86,7 @@ onMounted(() => {
         <!-- 内容 -->
         <el-scrollbar
           ref="scollRef" view-class="p-2 h-40vh md:h-340px"
-          class="relative rounded bg-light shadow shadow-inset dark:bg-dark-9"
+          class="relative bg-light shadow shadow-inset rounded dark:bg-dark-9"
         >
           <div v-if="filterList.length" ref="autoAnimateRef" relative flex flex-col pb-4>
             <!-- 文件 -->
@@ -94,7 +94,7 @@ onMounted(() => {
               v-for="p in filterList"
               :key="p.downloadTime"
               :title="`“${p.fileName}” 打开文件`"
-              class="group mb-2 w-full flex cursor-pointer gap-2 rounded bg-white px-3 py-2 shadow-sm transition-all !items-center dark:bg-dark-7 hover:shadow"
+              class="group mb-2 w-full flex cursor-pointer gap-2 bg-white px-3 py-2 shadow-sm transition-all rounded !items-center dark:bg-dark-7 hover:shadow"
               :class="FileStatusClassMap[p.status]"
               @click="setting.openFileByDefaultApp(p)"
             >

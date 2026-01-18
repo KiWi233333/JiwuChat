@@ -9,7 +9,7 @@ import { appName } from "@/constants/index";
       src="/logo.png"
       class="mr-2 h-7 w-7 shadow-sm"
     /> -->
-    <div class="mr-2 h-7 w-7 card-rounded-df shadow-lg">
+    <div class="mr-2 h-7 w-7 shadow-lg card-rounded-df">
       <OtherMetallicPaint
         image-url="/logo.png"
         class="card-rounded-df"

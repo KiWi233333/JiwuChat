@@ -268,7 +268,7 @@ onMounted(() => {
       flex flex-1 flex-col
     >
       <div class="flex items-center">
-        <CardAvatar class="h-12 w-12 border-default-2 card-default rounded-1/2" :src="BaseUrlImg + user.userInfo.avatar" />
+        <CardAvatar class="h-12 w-12 border-default-2 rounded-1/2 card-default" :src="BaseUrlImg + user.userInfo.avatar" />
         <p class="ml-3 block font-500">
           {{ user.userInfo.username }}
         </p>

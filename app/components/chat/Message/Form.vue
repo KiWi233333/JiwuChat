@@ -695,9 +695,9 @@ defineExpose({
           v-if="isDragDropOver"
           key="drag-over"
           :data-tauri-drag-region="setting.isDesktop"
-          class="fixed left-0 top-0 z-3000 h-full w-full flex select-none items-center justify-center border-default card-rounded-df backdrop-blur"
+          class="fixed left-0 top-0 z-3000 h-full w-full flex select-none items-center justify-center border-default backdrop-blur card-rounded-df"
         >
-          <div class="flex-row-c-c flex-col border-(1px [--el-border-color] dashed) card-default-br rounded-4 p-6 text-small transition-all hover:(border-1px border-[--el-color-primary] border-solid) sm:p-12 !hover:text-color">
+          <div class="flex-row-c-c flex-col border-(1px [--el-border-color] dashed) rounded-4 card-default-br p-6 text-small transition-all hover:(border-1px border-[--el-color-primary] border-solid) sm:p-12 !hover:text-color">
             <i class="i-solar:upload-minimalistic-linear p-4" />
             <p class="mt-4 text-0.8rem sm:text-1rem">
               拖拽文件到此处上传
@@ -914,7 +914,7 @@ defineExpose({
         <div
           v-if="isOverDropZone"
           key="drag-over"
-          class="absolute left-0 top-0 z-999 h-full w-full flex-row-c-c select-none border-default-dashed card-rounded-df text-small backdrop-blur"
+          class="absolute left-0 top-0 z-999 h-full w-full flex-row-c-c select-none border-default-dashed text-small backdrop-blur card-rounded-df"
         >
           <i class="i-solar:upload-minimalistic-linear mr-2 p-2.6" />
           拖拽文件到此处上传
@@ -1028,7 +1028,7 @@ defineExpose({
           </p>
         </div>
         <BtnElButton
-          class="group ml-a overflow-hidden card-rounded-df tracking-0.2em shadow sm:ml-2"
+          class="group ml-a overflow-hidden tracking-0.2em shadow card-rounded-df sm:ml-2"
           type="primary"
           :icon-class="isSending || isNotExistOrNorFriend ? '' : 'i-solar:plain-2-line-duotone mr-1.6'"
           size="small"

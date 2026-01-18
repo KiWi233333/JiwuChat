@@ -494,7 +494,7 @@ defineExpose({
           <i class="i-carbon:close p-3" />
         </div>
         <!-- 工具栏 -->
-        <div class="pointer-events-auto absolute bottom-10 left-1/2 flex transform items-center gap-4 card-default-br rounded-2 p-2.5 p-x-3.75 -translate-x-1/2">
+        <div class="pointer-events-auto absolute bottom-10 left-1/2 flex transform items-center gap-4 rounded-2 card-default-br p-2.5 p-x-3.75 -translate-x-1/2">
           <el-icon-d-arrow-left
             v-if="showPrev"
             class="btn"
@@ -571,7 +571,7 @@ defineExpose({
         <!-- 快捷键提示卡片 -->
         <div
           v-if="showShortcutTips"
-          class="pointer-events-auto absolute left-2 top-2 w-12rem select-none card-rounded-df bg-color-br text-sm shadow-md transition-200 sm:(left-4 top-4)"
+          class="pointer-events-auto absolute left-2 top-2 w-12rem select-none bg-color-br text-sm shadow-md transition-200 card-rounded-df sm:(left-4 top-4)"
           :class="[isShortcutCardCollapsed ? 'transform -translate-x-full !left-0' : '']"
         >
           <div class="mb-2 flex-row-bt-c border-default-2-b px-3 py-2">

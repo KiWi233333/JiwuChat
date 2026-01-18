@@ -472,7 +472,7 @@ onActivated(() => {
               </div>
 
               <!-- API Key 显示 -->
-              <div class="mb-3 border border-default rounded bg-color-2 p-2">
+              <div class="mb-3 border border-default bg-color-2 p-2 rounded">
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-color-3 flex-1 truncate text-xs font-mono">{{ item.apiKeyMasked }}</span>
                   <el-button
@@ -648,7 +648,7 @@ onActivated(() => {
     >
       <div class="w-full space-y-4">
         <!-- 警告信息 -->
-        <div class="rounded bg-color p-2 text-sm text-color leading-relaxed">
+        <div class="bg-color p-2 text-sm text-color leading-relaxed rounded">
           请将此 API key 保存在安全且易于访问的地方。出于<br>
           安全原因，你将无法通过 API keys 管理界面再次查<br>
           看它。如果你丢失了这个 key，将需要重新创建。

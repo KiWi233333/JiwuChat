@@ -229,7 +229,7 @@ function createItem() {
       </template>
       <div
         key="add-item"
-        class="group relative h-6em w-5.5em flex-row-c-c flex-col cursor-pointer border-default-hover rounded bg-color text-center hover:shadow"
+        class="group relative h-6em w-5.5em flex-row-c-c flex-col cursor-pointer border-default-hover bg-color text-center rounded hover:shadow"
         title="添加私人扩展"
         @click.stop="createItem()"
       >

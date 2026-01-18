@@ -60,7 +60,7 @@ const ossFile = (data as any)._ossFile;
       <div
         ctx-name="file"
         :title="fileName"
-        class="file max-w-15rem min-w-12em w-fit flex cursor-pointer gap-2 border-default-hover card-default bg-color p-2 px-2.5 shadow-sm transition-all sm:max-w-16em !items-center hover:shadow-lg"
+        class="file max-w-15rem min-w-12em w-fit flex cursor-pointer gap-2 border-default-hover bg-color card-default p-2 px-2.5 shadow-sm transition-all sm:max-w-16em !items-center hover:shadow-lg"
         @click="onDownloadFile(BaseUrlFile + body.url, fileName)"
       >
         <img ctx-name="file" :src="iconSrc" class="file-icon h-9 w-9 object-contain">

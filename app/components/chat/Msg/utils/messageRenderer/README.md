@@ -303,7 +303,7 @@ export class CodeBlockNode extends MessageNode<CodeBlockToken> {
   render = defineComponent({
     setup(props) {
       return () => (
-        <pre class="rounded bg-gray-100 p-4">
+        <pre class="bg-gray-100 p-4 rounded">
           <code class={`language-${props.token.data.lang}`}>
             {props.token.data.code}
           </code>

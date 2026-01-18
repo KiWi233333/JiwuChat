@@ -224,7 +224,7 @@ const videoSize = computed(() => {
     >
       <div
         ref="dragRef"
-        class="group video-player fixed flex-row-c-c animate-[fade-in_0.4s] select-none border-default-hover card-rounded-df bg-color-2 shadow-lg transition-none"
+        class="group video-player fixed flex-row-c-c animate-[fade-in_0.4s] select-none border-default-hover bg-color-2 shadow-lg transition-none card-rounded-df"
         :style="{
           touchAction: 'none',
           left: `${x}px`,
@@ -267,7 +267,7 @@ const videoSize = computed(() => {
           controls
           preload="auto"
           :muted="!!videoInfo.muted"
-          class="block h-full w-full overflow-hidden card-rounded-df object-contain"
+          class="block h-full w-full overflow-hidden object-contain card-rounded-df"
           @play="onPlay"
           @pause="onPause"
           @ended="onEnded"

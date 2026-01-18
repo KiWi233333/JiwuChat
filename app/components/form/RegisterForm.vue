@@ -506,7 +506,7 @@ function toLoginForm() {
       destroy-on-close
       content-class="z-1200"
     >
-      <div class="h-100vh w-100vw flex flex-col bg-color p-4 sm:(h-500px w-400px border-default border-default-2 card-rounded-df shadow-lg)">
+      <div class="h-100vh w-100vw flex flex-col bg-color p-4 sm:(h-500px w-400px border-default border-default-2 shadow-lg card-rounded-df)">
         <h3 :data-tauri-drag-region="setting.isDesktop" class="relative mb-4 select-none text-center text-1.2rem">
           用户协议
           <ElButton text size="small" class="absolute right-0 -top-1" style="width: 2rem;height: 1.4rem;" @click="agreeDetail.showDetail = false">

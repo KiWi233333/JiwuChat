@@ -403,7 +403,7 @@ onActivated(() => {
 
     <!-- 数据表格 -->
     <div class="min-w-0 w-full flex flex-1 flex-col">
-      <div class="overflow-hidden border-default card-rounded-df bg-color-3">
+      <div class="overflow-hidden border-default bg-color-3 card-rounded-df">
         <el-table
           :data="tableData"
           :border="false"
@@ -443,12 +443,12 @@ onActivated(() => {
               <el-button
                 size="small"
                 :icon="ElIconEdit"
-                class="mr-2 btn-info-border overflow-hidden border-default-3 card-rounded-df bg-color"
+                class="mr-2 btn-info-border overflow-hidden border-default-3 bg-color card-rounded-df"
                 @click="handleEdit(scope.row)"
               />
               <el-dropdown trigger="click" @command="(cmd) => handleCommand(cmd, scope.row)">
                 <el-button
-                  class="mr-2 btn-primary-border overflow-hidden border-default-3 card-rounded-df bg-color"
+                  class="mr-2 btn-primary-border overflow-hidden border-default-3 bg-color card-rounded-df"
                   size="small" :icon="ElIconMore"
                 />
                 <template #dropdown>

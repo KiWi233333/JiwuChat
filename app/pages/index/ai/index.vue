@@ -311,7 +311,7 @@ onDeactivated(() => {
       <div class="form absolute bottom-0 left-0 w-full sm:p-4">
         <el-form
           ref="formRef"
-          class="flex items-end gap-2 border-default-t bg-color-br p-4 sm:(gap-4 border-default card-rounded-df shadow-sm)"
+          class="flex items-end gap-2 border-default-t bg-color-br p-4 sm:(gap-4 border-default shadow-sm card-rounded-df)"
           :model="form"
           @submit.prevent="onSubmit"
         >
