@@ -833,8 +833,9 @@ defineExpose({
               :show-arrow="false"
               class="group ai-select text-1rem text-color"
               :class="{ 'selected-items': chat.askAiRobotList.length > 0 }"
-              popper-class="w-9rem global-custom-select"
+              popper-class="global-custom-select"
               :offset="8"
+              fit-input-width
               :value-on-clear="undefined"
               clearable teleported collapse-tags multiple
               :max-collapse-tags="2"
