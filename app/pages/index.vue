@@ -5,6 +5,10 @@ import { appName } from "~/constants";
 const user = useUserStore();
 const setting = useSettingStore();
 const chat = useChatStore();
+const route = useRoute();
+// 是否显示菜单栏
+const showMenuBar = computed(() => route.path === "/");
+// 是否显示邀请进群弹窗
 const showGroupDialog = computed({
   get() {
     return chat.inviteMemberForm.show;
@@ -113,7 +117,7 @@ onUnmounted(() => {
       v-if="user.isLogin"
       class="h-full flex flex-1 flex-col overflow-hidden"
     >
-      <MenuHeaderMenuBar nav-class="relative z-999 left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 select-none items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-b bg-color">
+      <MenuHeaderMenuBar v-if="showMenuBar" nav-class="relative z-999 left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 select-none items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-b bg-color">
         <template #center="{ appTitle }">
           <!-- 移动端菜单 -->
           <div v-if="setting.isMobile" class="absolute-center-center block tracking-0.1em sm:hidden" :data-tauri-drag-region="setting.isDesktop">

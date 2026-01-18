@@ -58,7 +58,7 @@ Derived from component refactoring (e.g., `RobotList.vue`), follow these standar
 - **Styling Engine (UnoCSS)**:
   - **Shortcuts First**: Always use `uno.config.ts` shortcuts (e.g., `card-bg-color`, `border-default`, `text-small-50`) for colors, borders, and common patterns to ensure automatic Dark Mode support and consistency.
   - **Composition**: Use `@apply` within `<style lang="scss" scoped>` to group utility classes into semantic class names (e.g., `.card-item`) rather than cluttering the HTML template.
-  
+
 - **Units & Responsiveness**:
   - **Use `rem`**: Strictly use `rem` for all dimensions (spacing, sizing, font-size, positioning). Avoid `px` to ensure scalability.
   - **Grid Layouts**: Prefer `grid` with `minmax` for responsive lists instead of fixed flex layouts.

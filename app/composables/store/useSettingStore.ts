@@ -76,9 +76,8 @@ export const useSettingStore = defineStore(
     const isCollapse = useLocalStorage(`${SETTING_STORE_KEY}:isCollapse`, true);
 
     // 非持久化的设备状态
-    const isMobileSize = ref(false);
+    const isMobileSize = ref(document?.documentElement?.clientWidth < 768); // 初始化就判断一次
     const isOpenContactSearch = useLocalStorage(`${SETTING_STORE_KEY}:isOpenContactSearch`, true);
-    // const isUseWebsocket = useLocalStorage(`${SETTING_STORE_KEY}:isUseWebsocket`, true);
 
     const isDesktop = computed(() => ["windows", "linux", "macos"].includes(osType.value));
     const isMobile = computed(() => ["android", "ios"].includes(osType.value));
