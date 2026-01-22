@@ -228,7 +228,7 @@ function onContextMenu(e: MouseEvent, item: ChatContactVO) {
       },
     });
   }
-  else if (item.type === RoomType.SELFT) {
+  else if (item.type === RoomType.SELF) {
     opt.items.splice(1, 0, {
       customClass: "group",
       icon: "i-solar:user-outline group-btn-info group-hover:i-solar:user-bold-duotone",
@@ -299,7 +299,7 @@ watch(() => chat.theRoomId, (newRoomId) => {
 }, { immediate: false });
 
 const RoomTypeTagType: Record<number, "" | "primary" | "info" | any> = {
-  [RoomType.AICHAT]: "warning",
+  [RoomType.AI_CHAT]: "warning",
 };
 
 // @unocss-include

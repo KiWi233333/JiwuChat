@@ -26,9 +26,9 @@ export function createContactsModule(ctx: ContactsContext) {
   const theRoomId = ctx.theRoomId;
   const contactMap = ctx.contactMap;
   const theContact = computed<Partial<ChatContactExtra>>(() => theRoomId.value ? (contactMap.value?.[theRoomId.value] || {}) : {});
-  const isAIRoom = computed(() => theContact.value.type === RoomType.AICHAT);
+  const isAIRoom = computed(() => theContact.value.type === RoomType.AI_CHAT);
   const isGroupRoom = computed(() => theContact.value.type === RoomType.GROUP);
-  const isFriendRoom = computed(() => theContact.value.type === RoomType.SELFT);
+  const isFriendRoom = computed(() => theContact.value.type === RoomType.SELF);
 
   // 排序后的联系人
   const sortedContacts = computed(() => Object.values(contactMap.value).sort((a, b) => {

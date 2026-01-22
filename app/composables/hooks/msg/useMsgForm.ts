@@ -398,9 +398,9 @@ export interface AskAiRobotOption extends AtChatMemberOption {
  * 好友状态
  */
 export const SelfExistTextMap = {
-  [RoomType.SELFT]: "已经不是好友",
+  [RoomType.SELF]: "已经不是好友",
   [RoomType.GROUP]: "已经不是群成员",
-  [RoomType.AICHAT]: "已经被AI拉黑",
+  [RoomType.AI_CHAT]: "已经被AI拉黑",
 };
 
 /**

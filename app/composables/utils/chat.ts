@@ -6,8 +6,8 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 // @unocss-include
 export const contactTypeIconClassMap: Record<RoomType, string> = {
   [RoomType.GROUP]: "i-solar:users-group-rounded-bold-duotone",
-  [RoomType.SELFT]: "i-solar:user-bold-duotone",
-  [RoomType.AICHAT]: "i-ri:robot-2-line",
+  [RoomType.SELF]: "i-solar:user-bold-duotone",
+  [RoomType.AI_CHAT]: "i-ri:robot-2-line",
 };
 export const applyUserSearchInputDomId = "user-search-apply-input";
 

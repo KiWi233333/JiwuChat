@@ -256,7 +256,7 @@ onMounted(() => {
     :data-fade="isAnim"
   >
     <!-- 用户信息卡片 -->
-    <div class="flex items-center gap-3 border-default-2 rounded-xl card-bg-color p-4">
+    <div class="flex items-center gap-3 border-default-2 rounded-xl card-bg-color p-4 shadow-sm">
       <CardAvatar
         class="h-12 w-12 shrink-0 rounded-full"
         :src="BaseUrlImg + user.userInfo.avatar"
@@ -284,7 +284,7 @@ onMounted(() => {
     <!-- 两列布局 -->
     <div class="grid grid-cols-1 gap-3">
       <!-- 左列：登录与安全 -->
-      <div class="flex flex-col gap-4 border-default-2 rounded-xl card-bg-color p-4">
+      <div class="flex flex-col gap-4 border-default-2 rounded-xl card-bg-color p-4 shadow-sm">
         <div class="flex flex-col gap-1">
           <h4 class="text-sm text-color font-500">
             登录与安全
@@ -357,7 +357,7 @@ onMounted(() => {
       <div
         v-if="oauthPlatforms.length > 0"
         v-loading="isLoadingOAuth"
-        class="flex flex-col gap-4 border-default-2 rounded-xl card-bg-color p-4"
+        class="flex flex-col gap-4 border-default-2 rounded-xl card-bg-color p-4 shadow-sm"
       >
         <div class="flex flex-col gap-1">
           <h4 class="text-sm text-color font-500">

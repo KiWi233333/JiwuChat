@@ -40,10 +40,10 @@ async function changShieldStatus() {
 }
 
 // 判断是否为AI好友
-const isAIFriend = computed(() => chat.theContact?.type === RoomType.AICHAT);
+const isAIFriend = computed(() => chat.theContact?.type === RoomType.AI_CHAT);
 
 // 判断是否为好友
-const isFriend = computed(() => chat.theContact?.type === RoomType.SELFT);
+const isFriend = computed(() => chat.theContact?.type === RoomType.SELF);
 
 // 添加好友信息相关数据
 const targetUserInfo = ref<Partial<CommUserVO>>({});
@@ -107,7 +107,7 @@ async function onExitOrDeleteFriend() {
 
 <template>
   <el-scrollbar
-    v-if="chat.isOpenGroupMember && (chat.theContact?.type === RoomType.SELFT || chat.theContact?.type === RoomType.AICHAT)"
+    v-if="chat.isOpenGroupMember && (chat.theContact?.type === RoomType.SELF || chat.theContact?.type === RoomType.AI_CHAT)"
     v-bind="$attrs"
     class="group scroll relative"
     wrap-class="pb-10"

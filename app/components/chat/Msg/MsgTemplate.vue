@@ -4,7 +4,7 @@
  * ctx-name 用于右键菜单
  */
 const { data } = defineProps<{
-  data: ChatMessageVO<TextBodyMsgVO | ImgBodyMsgVO | RtcBodyMsgVO | AiChatBodyMsgVO | GroupNoticeBodyMsgVO | AiChatReplyBodyMsgVO>;
+  data: ChatMessageVO<TextBodyMsgVO | ImgBodyMsgVO | RtcBodyMsgVO | AI_CHATBodyMsgVO | GroupNoticeBodyMsgVO | AI_CHATReplyBodyMsgVO>;
   prevMsg?: Partial<ChatMessageVO<TextBodyMsgVO>>
   index: number
 }>();

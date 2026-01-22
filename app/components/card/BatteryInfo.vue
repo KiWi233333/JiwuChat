@@ -116,9 +116,6 @@ const batteryStatus = computed(() => {
 
 /* 充电状态特效 */
 .is-charging {
-  border-color: color-mix(in srgb, var(--el-color-success), transparent 70%);
-  box-shadow: 0 0 15px color-mix(in srgb, var(--el-color-success), transparent 90%);
-
   .icon-wrapper {
     animation: pulse-glow 2s infinite;
   }

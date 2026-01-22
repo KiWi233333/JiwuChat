@@ -13,8 +13,8 @@ const setting = useSettingStore();
 // 表单
 const isSending = ref(false);
 const isLord = computed(() => chat.theContact.type === RoomType.GROUP && chat.theContact.member?.role === ChatRoomRoleEnum.OWNER); // 群主
-const isSelfRoom = computed(() => chat.theContact.type === RoomType.SELFT); // 私聊
-const isAiRoom = computed(() => chat.theContact.type === RoomType.AICHAT); // 机器人
+const isSelfRoom = computed(() => chat.theContact.type === RoomType.SELF); // 私聊
+const isAiRoom = computed(() => chat.theContact.type === RoomType.AI_CHAT); // 机器人
 const maxContentLen = computed(() => setting.systemConstant.msgInfo[chat.msgForm.msgType]?.maxLength || 0);
 // 状态
 const showGroupNoticeDialog = ref(false);

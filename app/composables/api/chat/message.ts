@@ -220,8 +220,8 @@ export const msgBodyVOBuilderMap = {
       // fileType: body.fileType,
     };
   },
-  [MessageType.AI_CHAT]: (formData: ChatMessageDTO): AiChatBodyMsgVO => { // AI发起消息
-    const body = formData.body as AiChatBodyDTO;
+  [MessageType.AI_CHAT]: (formData: ChatMessageDTO): AI_CHATBodyMsgVO => { // AI发起消息
+    const body = formData.body as AI_CHATBodyDTO;
     const robotList = [];
     return {
       userId: body.businessCode.toString(),
@@ -321,10 +321,10 @@ export interface MessageBodyMap {
   [MessageType.VIDEO]: VideoBodyMsgVO;
   [MessageType.EMOJI]: any; //   暂无
   [MessageType.SYSTEM]: SystemBodyMsgVO;
-  [MessageType.AI_CHAT]: AiChatBodyMsgVO;
+  [MessageType.AI_CHAT]: AI_CHATBodyMsgVO;
   [MessageType.DELETE]: string;
   [MessageType.RTC]: RtcLiteBodyMsgVO;
-  [MessageType.AI_CHAT_REPLY]: AiChatReplyBodyMsgVO;
+  [MessageType.AI_CHAT_REPLY]: AI_CHATReplyBodyMsgVO;
   [MessageType.GROUP_NOTICE]: GroupNoticeBodyMsgVO;
 }
 
@@ -496,7 +496,7 @@ export interface RtcLiteBodyMsgVO {
 /**
  * AI发起人消息
  */
-export interface AiChatBodyMsgVO {
+export interface AI_CHATBodyMsgVO {
   /**
    * 机器人id
    */
@@ -517,7 +517,7 @@ export interface AiChatBodyMsgVO {
 }
 
 /** AI回复消息 */
-export interface AiChatReplyBodyMsgVO {
+export interface AI_CHATReplyBodyMsgVO {
   content?: string;
   urlContentMap?: { [key: string]: UrlInfoDTO };
   // atUidList?: string[];
@@ -606,7 +606,7 @@ interface MessageBodyDTOMap {
   [MessageType.RECALL]: RecallBodyDTO;
   [MessageType.VIDEO]: VideoBodyDTO;
   [MessageType.FILE]: FileBodyDTO;
-  [MessageType.AI_CHAT]: AiChatBodyDTO;
+  [MessageType.AI_CHAT]: AI_CHATBodyDTO;
   [MessageType.GROUP_NOTICE]: GroupNoticeBodyDTO;
 }
 export interface TextBodyDTO {
@@ -655,7 +655,7 @@ export interface VideoBodyDTO {
   thumbHeight?: number;
 }
 
-export interface AiChatBodyDTO {
+export interface AI_CHATBodyDTO {
   userIds: string[];
   businessCode: AiBusinessType;
 }

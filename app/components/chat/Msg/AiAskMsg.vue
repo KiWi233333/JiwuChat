@@ -3,12 +3,12 @@
  * AI问答消息
  */
 const { data, prevMsg, index } = defineProps<{
-  data: ChatMessageVO<AiChatBodyMsgVO>
+  data: ChatMessageVO<AI_CHATBodyMsgVO>
   prevMsg: Partial<ChatMessageVO>
   index: number
 }>();
 // 只计算一次，提升性能
-const body: Partial<AiChatBodyMsgVO> = data.message?.body || {};
+const body: Partial<AI_CHATBodyMsgVO> = data.message?.body || {};
 const robotList = body.robotList || (body.robotInfo ? [body.robotInfo] : []);
 const robotListLen = robotList.length;
 const getTitle = robotListLen === 1

@@ -8,7 +8,7 @@ import "md-editor-v3/lib/preview.css";
 const {
   data,
 } = defineProps<{
-  data: ChatMessageVO<AiChatReplyBodyMsgVO>;
+  data: ChatMessageVO<AI_CHATReplyBodyMsgVO>;
   prevMsg: ChatMessageVO
   index: number
 }>();
@@ -114,7 +114,6 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 
 .markdown-preview {
   --at-apply: "text-0.9rem p-0 bg-color";
-  // line-height: initial !important;
 
   :deep(.md-editor-preview-wrapper) {
     color: inherit;
@@ -193,6 +192,10 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
         code {
           border-radius: 0 0 8px 8px;
         }
+      }
+
+      .md-editor-code-head {
+        z-index: 0;
       }
       .md-editor-code:first-child {
         --at-apply: "my-1";
