@@ -79,7 +79,7 @@ const getAppTitle = computed(() => {
     <slot name="search-contact">
       <i
         v-if=" $route.path === '/' && setting.isMobileSize && chat.isOpenContact"
-        class="i-solar:magnifer-outline ml-a animate-zoom-in animate-duration-200 btn-primary"
+        class="i-solar:magnifer-outline ml-a btn-primary"
         title="搜索会话"
         @click="toggleContactSearch"
       />

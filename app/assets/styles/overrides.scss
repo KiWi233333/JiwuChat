@@ -269,6 +269,29 @@ body .el-message {
   }
 }
 
+// 小尺寸屏幕（默认隐藏滚动条）
+@media screen and (max-width: 640px) {
+  .el-scrollbar {
+    .el-scrollbar__bar {
+      display: none;
+    }
+  }
+
+  // 隐藏滚动条
+  html,
+  body {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
+  }
+}
+
 // 图片预览
 .el-image-viewer__wrapper {
   border-radius: calc(var(--el-border-radius-base) - 2px);

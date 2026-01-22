@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { MenuItem } from "./ChatMenu.vue";
 import { NuxtLink } from "#components";
-import { useOpenExtendWind } from "@/composables/tauri/extension";
 
 defineEmits<{
   (e: "close"): void
@@ -10,7 +9,6 @@ defineEmits<{
 const route = useRoute();
 const user = useUserStore();
 const ws = useWsStore();
-const setting = useSettingStore();
 const chat = useChatStore();
 const applyUnRead = ref(0);
 
@@ -31,7 +29,7 @@ watch(() => route.path, (newVal, oldVal) => {
   }
 });
 
-const unWatchDebounced = watchDebounced(() => ws.wsMsgList.applyMsg.length, (newVal, oldVal) => {
+const unWatchDebounced = watchDebounced(() => ws.wsMsgList.applyMsg.length, () => {
   getApplyCount();
 }, {
   debounce: 300,
@@ -49,7 +47,6 @@ onDeactivated(() => {
 onBeforeUnmount(() => {
   unWatchDebounced();
 });
-const { open: openExtendMenu, openItem } = useOpenExtendWind();
 // @unocss-include
 const menuList = computed<MenuItem[]>(() => [
   {
@@ -75,54 +72,10 @@ const menuList = computed<MenuItem[]>(() => [
     activeIcon: "i-ri:sparkling-2-fill",
   },
   {
-    title: "个人",
+    title: "我",
     path: "/user",
     icon: "i-ri:user-line !w-5 !h-6",
     activeIcon: "i-ri:user-fill !w-5 !h-6",
-  },
-  {
-    title: "更多",
-    path: "/more",
-    icon: " i-ri-apps-2-ai-line",
-    activeIcon: "ri-apps-2-ai-fill",
-    tipValue: +setting.appUploader.isUpload,
-    children: [
-      // ...(setting.selectExtendMenuList || []).map(p => ({
-      //   title: p.title,
-      //   icon: p.icon,
-      //   activeIcon: p.activeIcon,
-      //   loading: p.loading,
-      //   onClick: () => openExtendMenu(p),
-      // }) as MenuItem),
-      // {
-      //   title: "扩展",
-      //   icon: " i-solar:widget-line-duotone hover:(i-solar:widget-bold-duotone ) ",
-      //   activeIcon: "i-solar:widget-bold-duotone",
-      //   onClick: () => chat.showExtension = true,
-      // },
-      {
-        title: "账 号",
-        path: "/user/safe",
-        icon: "i-solar:devices-outline",
-        activeIcon: "i-solar:devices-bold",
-        isDot: true,
-      },
-      {
-        title: "API Key",
-        path: "/api/key",
-        icon: "i-solar:code-square-outline",
-        activeIcon: "i-solar:code-square-bold",
-      },
-      {
-        title: "设 置",
-        path: "/setting",
-        icon: "i-solar:settings-linear hover:animate-spin",
-        activeIcon: "i-solar:settings-bold hover:animate-spin",
-        tipValue: +setting.appUploader.isUpload,
-        isDot: true,
-      },
-
-    ],
   },
 ]);
 
@@ -138,7 +91,7 @@ const activeMenu = computed({
 
 <template>
   <div
-    class="relative z-998 grid grid-cols-5 select-none justify-center bg-white shadow-md dark:bg-dark-8"
+    class="relative z-998 grid grid-cols-4 select-none justify-center bg-white shadow-md dark:bg-dark-8"
   >
     <component
       :is="p.children?.length ? 'div' : NuxtLink"
