@@ -95,7 +95,7 @@ const activeNames = useLocalStorage(`${route.fullPath}_activeNames`, {
   --at-apply: "border-default-t";
 
   .el-collapse-item__header {
-    --at-apply: "h-3em";
+    --at-apply: "h-3em bg-transparent";
   }
   .el-collapse-item__header:not(.is-active) {
     --at-apply: "border-default-b";
@@ -104,7 +104,7 @@ const activeNames = useLocalStorage(`${route.fullPath}_activeNames`, {
     padding: 0;
   }
   .el-collapse-item__wrap {
-    --at-apply: "border-default-b";
+    --at-apply: "border-default-b bg-transparent";
   }
 }
 </style>

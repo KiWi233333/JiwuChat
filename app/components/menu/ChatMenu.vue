@@ -184,7 +184,7 @@ export interface MenuItem {
     }
   }
   &.action {
-    --at-apply: "text-theme-primary  bg-op-20 bg-color shadow-sm";
+    --at-apply: "text-theme-primary  bg-op-20 bg-color-2";
     .icon {
       --at-apply: "text-theme-primary op-100 block";
       filter: drop-shadow(0 0 8px var(--el-color-primary));

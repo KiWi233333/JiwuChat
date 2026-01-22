@@ -111,6 +111,8 @@ const menuList = reactive([
   <MenuPopper
     placement="right-end"
     :menu-list="menuList"
+    :auto-close="true"
+    :auto-close-delay="400"
     trigger="click"
     v-bind="$attrs"
     :offset="16"

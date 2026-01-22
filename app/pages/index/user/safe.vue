@@ -26,7 +26,7 @@ watch(activeName, () => {
 </script>
 
 <template>
-  <main class="w-full flex flex-1 flex-col card-bg-color-2 p-4 pt-6 sm:(bg-color p-6 pt-10)">
+  <main class="w-full flex flex-1 flex-col card-bg-color p-4 pt-6 sm:(bg-color p-6 pt-10)">
     <h3 flex items-center text-base font-500>
       <i i-solar:lock-keyhole-bold-duotone mr-2 inline-block p-2.5 text-secondary hover:animate-spin />
       账户与安全

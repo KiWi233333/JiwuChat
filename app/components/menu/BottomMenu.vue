@@ -170,6 +170,7 @@ const activeMenu = computed({
         v-else
         placement="top"
         :offset="25"
+        :show-arrow="false"
       >
         <el-badge
           :value="p.tipValue"

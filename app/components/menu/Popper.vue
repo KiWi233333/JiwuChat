@@ -1,11 +1,17 @@
+<script lang="ts">
+</script>
+
 <script lang="ts" setup>
 import type { ComputedRef } from "vue";
-import { computed, useAttrs } from "vue";
+import { computed, onBeforeUnmount, ref, useAttrs } from "vue";
 
-interface Props {
+export interface MenuPopperProps {
   menuList?: MenuItem[];
+  autoClose?: boolean;
+  autoCloseDelay?: number;
 }
-interface MenuItem {
+
+export interface MenuItem {
   label: string;
   icon?: string;
   component?: any; // 添加自定义组件支持
@@ -19,7 +25,7 @@ interface MenuItem {
   onClick?: () => any;
 }
 
-const { menuList } = defineProps<Props>();
+const { menuList, autoClose = false, autoCloseDelay = 1000 } = defineProps<MenuPopperProps>();
 
 // 使用 defineModel 处理 visible 的双向绑定
 const visibleModel = defineModel<boolean>("visible", { default: false });
@@ -34,6 +40,45 @@ const filteredAttrs = computed(() => {
 
 const list = computed(() => menuList?.filter(p => p.hidden !== true));
 
+// 自动关闭定时器
+const autoCloseTimer = ref<NodeJS.Timeout | null>(null);
+
+// 清除自动关闭定时器
+function clearAutoCloseTimer() {
+  if (autoCloseTimer.value) {
+    clearTimeout(autoCloseTimer.value);
+    autoCloseTimer.value = null;
+  }
+}
+
+// 启动自动关闭定时器（带防抖）
+function startAutoCloseTimer() {
+  if (!autoClose || !visibleModel.value)
+    return;
+
+  // 清除之前的定时器
+  clearAutoCloseTimer();
+
+  // 设置新的定时器
+  autoCloseTimer.value = setTimeout(() => {
+    visibleModel.value = false;
+  }, autoCloseDelay);
+}
+
+// 处理鼠标进入（取消自动关闭）
+function handleMouseEnter() {
+  if (autoClose) {
+    clearAutoCloseTimer();
+  }
+}
+
+// 处理鼠标离开（开始自动关闭）
+function handleMouseLeave() {
+  if (autoClose) {
+    startAutoCloseTimer();
+  }
+}
+
 // 点击菜单项，无论自定义组件还是默认项都支持关闭
 function handleMenuItemClick(p: MenuItem) {
   if (typeof p.onClick === "function") {
@@ -45,7 +90,16 @@ function handleMenuItemClick(p: MenuItem) {
 // 处理 visible 更新
 function handleVisibleUpdate(value: boolean) {
   visibleModel.value = value;
+  // 当 popover 打开时，清除自动关闭定时器
+  if (value) {
+    clearAutoCloseTimer();
+  }
 }
+
+// 组件卸载时清除定时器
+onBeforeUnmount(() => {
+  clearAutoCloseTimer();
+});
 </script>
 
 <template>
@@ -61,12 +115,12 @@ function handleVisibleUpdate(value: boolean) {
     @update:visible="handleVisibleUpdate"
   >
     <template #reference>
-      <span class="select-none">
+      <span class="select-none" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
         <slot name="reference" />
       </span>
     </template>
     <slot name="default" :data="menuList">
-      <div class="menu-list">
+      <div class="menu-list" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
         <template
           v-for="(p, i) in list" :key="i"
         >
