@@ -129,7 +129,7 @@ onUnmounted(() => {
         </template>
       </MenuHeaderMenuBar>
       <!-- 拖拽区域 -->
-      <div v-if="setting.isDesktop" :data-tauri-drag-region="setting.isDesktop" class="fixed left-0 top-0 z-999 block h-8 w-full select-none" />
+      <div v-if="setting.isDesktop" :data-tauri-drag-region="setting.isDesktop" class="fixed left-0 top-0 z-9 block h-8 w-full select-none" />
 
       <div
         class="relative h-1 max-h-full flex flex-1"

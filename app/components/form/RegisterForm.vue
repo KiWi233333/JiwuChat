@@ -378,12 +378,12 @@ function toLoginForm() {
     class="form relative"
   >
     <div class="mb-8 mt-6 flex flex-col items-center gap-2">
-      <div class="text-6 font-bold tracking-0.1em">
+      <div class="text-5 font-bold tracking-0.1em">
         <span class="from-neutral-600 via-neutral-700 to-neutral-800 bg-gradient-to-r bg-clip-text text-transparent dark:from-neutral-100 dark:via-neutral-300 dark:to-neutral-500">
           开启你的专属圈子 ✨
         </span>
       </div>
-      <div class="text-small tracking-0.1em">
+      <div class="text-mini tracking-0.1em">
         加入极物，探索无限可能
       </div>
     </div>
@@ -392,7 +392,7 @@ function toLoginForm() {
       v-model="registerType"
       :size="size"
       style=""
-      class="toggle-btns grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2"
+      class="toggle-btns grid grid-cols-3 mb-4 w-full gap-2"
       :options="options"
     />
     <!-- 验证码注册(客户端 ) -->
@@ -553,9 +553,10 @@ function toLoginForm() {
   display: block;
   overflow: hidden;
   animation-delay: 0.1s;
+
   :deep(.el-input__wrapper) {
-    // padding: 0.3em 1em;
-    --at-apply: "p-[0.5em_1em] sm:p-[0.3em_1em]";
+    height: 3em;
+    padding: 0.2em 1em;
   }
 
   // 报错信息
@@ -565,7 +566,7 @@ function toLoginForm() {
       box-shadow: none !important;
     }
     .el-input-group__append {
-      --at-apply: "w-8rem min-w-fit text-theme-iofo card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-iofo op-100)";
+      --at-apply: "w-8rem !rounded-l-0 min-w-fit text-theme-iofo card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-iofo op-100)";
     }
     .code-btn {
       --at-apply: "h-full flex-row-c-c px-4 transition-200 ";
@@ -579,10 +580,11 @@ function toLoginForm() {
 
 // 切换注册
 :deep(.toggle-btns.el-segmented) {
-  --el-border-radius-base: 6px;
   height: 2.6rem;
-  padding: 0.2rem;
+  padding: 0.3rem;
   font-size: 0.9em;
+  // input__wrapper的背景色
+  --at-apply: "bg-[#fafafa] dark:bg-[#1b1b1b]";
 }
 
 .dark .active {

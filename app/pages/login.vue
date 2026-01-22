@@ -63,9 +63,6 @@ function initWindowAnimate() {
       'show-env-config': user.showLoginPageType === 'env-config',
     }"
   >
-    <!-- 背景层 (点阵与渐变) -->
-    <div class="animated-background" />
-
     <!-- 背景 -->
     <Teleport to="body">
       <div v-if="setting.isWeb && !setting.isMobileSize" class="fixed left-0 top-0 h-full w-full -z-1">
@@ -149,14 +146,14 @@ function initWindowAnimate() {
   </div>
 </template>
 
-<style lang="scss">
-body > .controls {
+  <style lang="scss">
+  body > .controls {
   --at-apply: "sm:(fixed top-0 left-0)";
 }
 </style>
 
-<style lang="scss" scoped>
-@media (max-width: 640px) {
+  <style lang="scss" scoped>
+  @media (max-width: 640px) {
   .main-box:not(.img-none) {
     background-image: url("https://oss.jiwuhub.top/user_bg/login_bg.jpg");
     background-repeat: no-repeat;
@@ -238,66 +235,26 @@ body > .controls {
   }
 }
 
-/* 简约高级背景样式 */
+/* 镜像渐变背景样式 */
 .animated-background {
   display: block;
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-  z-index: 1;
+  z-index: 0;
   pointer-events: none;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: -50%;
-    background:
-      radial-gradient(circle at 20% 30%, rgba(132, 98, 255, 0.1) 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(0, 194, 255, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(173, 216, 230, 0.04) 0%, transparent 50%);
-    filter: blur(80px);
-    animation: gradient-shift 20s ease-in-out infinite;
-  }
-
-  // 右上角 1/4 圆点阵层
-  &::after {
-    content: "";
-    position: absolute;
-    top: -6.25rem;
-    right: -6.25rem;
-    width: 18.75rem;
-    height: 18.75rem;
-    background-image: radial-gradient(rgba(116, 41, 255, 0.15) 1.5px, transparent 1.5px);
-    background-size: 32px 32px;
-    // 1/4 圆蒙版，边缘平滑消失
-    mask-image: radial-gradient(circle at top right, black 30%, transparent 75%);
-    -webkit-mask-image: radial-gradient(circle at top right, black 30%, transparent 75%);
-    animation: flow-bottom-left 20s linear infinite;
-  }
-}
-
-/* 深色模式：右上角点阵 */
-.animated-background {
-  display: none;
-}
-
-@keyframes flow-bottom-left {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: -64px 64px; // 刚好是两个单元格的距离，确保循环无缝
-  }
-}
-
-@keyframes gradient-shift {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(2%, 2%) scale(1.1);
-  }
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(132, 98, 255, 0.3) 0%, rgba(135, 206, 235, 0.1) 25%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(1132, 98, 255, 0.3) 0%, rgba(167, 143, 255, 0.1) 25%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(173, 216, 230, 0.04) 0%, transparent 40%);
+  background-size:
+    120% 120%,
+    140% 140%,
+    160% 160%;
+  animation: gradient-shift 15s ease-in-out infinite;
 }
 
 .is-mobile {
@@ -306,19 +263,38 @@ body > .controls {
   }
 }
 
-.login-bg {
-  // 毛玻璃效果
-  background: rgba(255, 255, 255, 0.4) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+.dark .animated-background {
+  background: transparent;
+  background-image: none;
+  animation: none;
 }
 
-.dark .login-bg {
-  background: rgba(20, 20, 20, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+.login-bg {
+  background-color: #f9f7ff;
+  background-image:
+    radial-gradient(closest-side, #e9e1ff, transparent), radial-gradient(closest-side, #e8e0ff, transparent),
+    radial-gradient(closest-side, #f3e4ff, transparent), radial-gradient(closest-side, #fff6e8, transparent),
+    radial-gradient(closest-side, #f6f3ff, transparent);
+  background-size:
+    130vmax 130vmax,
+    80vmax 80vmax,
+    90vmax 90vmax,
+    110vmax 110vmax,
+    90vmax 90vmax;
+  background-position:
+    -80vmax -80vmax,
+    60vmax -30vmax,
+    10vmax 10vmax,
+    -30vmax -10vmax,
+    50vmax 50vmax;
+  background-repeat: no-repeat;
+  animation: bg-animation 12s linear infinite;
+}
+.dark {
+  .login-bg {
+    background-color: #1f1f1f;
+    background-image: none;
+  }
 }
 
 @keyframes bg-animation {

@@ -760,7 +760,8 @@ defineExpose({
   animation-delay: 0.1s;
 
   :deep(.el-input__wrapper) {
-    padding: 0.3em 1em;
+    height: 3em;
+    padding: 0.2em 1em;
   }
 
   :deep(.el-form-item) {
@@ -772,7 +773,7 @@ defineExpose({
     }
 
     .el-input-group__append {
-      --at-apply: "w-8rem min-w-fit text-theme-primary card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-primary op-100)";
+      --at-apply: "w-8rem !rounded-l-0 min-w-fit text-theme-primary card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-primary op-100)";
     }
     .code-btn {
       --at-apply: "h-full flex-row-c-c px-4 transition-200 ";
@@ -799,11 +800,9 @@ defineExpose({
 
 // 切换登录
 :deep(.toggle-login.el-segmented) {
-  --el-border-radius-base: 6px;
-  // input__wrapper的背景色
   --at-apply: "bg-[#fafafa] dark:bg-[#1b1b1b]";
   height: 2.6rem;
-  padding: 0.2rem;
+  padding: 0.3rem;
   font-size: 0.9em;
 }
 
