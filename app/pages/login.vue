@@ -146,14 +146,14 @@ function initWindowAnimate() {
   </div>
 </template>
 
-<style lang="scss">
-body > .controls {
+  <style lang="scss">
+  body > .controls {
   --at-apply: "sm:(fixed top-0 left-0)";
 }
 </style>
 
-<style lang="scss" scoped>
-@media (max-width: 640px) {
+  <style lang="scss" scoped>
+  @media (max-width: 640px) {
   .main-box:not(.img-none) {
     background-image: url("https://oss.jiwuhub.top/user_bg/login_bg.jpg");
     background-repeat: no-repeat;

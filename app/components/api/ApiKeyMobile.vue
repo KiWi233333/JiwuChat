@@ -384,7 +384,7 @@ onActivated(() => {
 </script>
 
 <template>
-  <div class="min-w-0 w-full flex flex-1 flex-col card-bg-color-2 px-4">
+  <div class="min-w-0 w-full flex flex-1 flex-col bg-color-3 px-4">
     <!-- 页面头部 -->
     <div class="mb-4 mt-6 flex select-none items-center justify-between">
       <div>
@@ -414,7 +414,7 @@ onActivated(() => {
     <div class="mb-4 flex-row-c-c gap-8">
       <el-segmented
         v-model="searchForm.status"
-        class="segmented w-full border-default-2-hover bg-color"
+        class="segmented shadown-none w-full"
         :options="apiKeyStatusOptions"
         @change="handleSearch"
       />
@@ -452,7 +452,7 @@ onActivated(() => {
             <div
               v-for="item in tableData"
               :key="item.id"
-              v-ripple="{ color: 'rgba(var(--el-color-info-rgb), 0.05)' }"
+              v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.025)' }"
               class="border border-default-2 rounded-lg bg-color p-4"
             >
               <div class="mb-3 flex items-center gap-3">
@@ -472,7 +472,7 @@ onActivated(() => {
               </div>
 
               <!-- API Key 显示 -->
-              <div class="mb-3 border border-default rounded bg-color-2 p-2">
+              <div class="mb-3 border border-default bg-color-2 p-2 rounded">
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-color-3 flex-1 truncate text-xs font-mono">{{ item.apiKeyMasked }}</span>
                   <el-button
@@ -648,7 +648,7 @@ onActivated(() => {
     >
       <div class="w-full space-y-4">
         <!-- 警告信息 -->
-        <div class="rounded bg-color p-2 text-sm text-color leading-relaxed">
+        <div class="bg-color p-2 text-sm text-color leading-relaxed rounded">
           请将此 API key 保存在安全且易于访问的地方。出于<br>
           安全原因，你将无法通过 API keys 管理界面再次查<br>
           看它。如果你丢失了这个 key，将需要重新创建。
@@ -692,7 +692,7 @@ onActivated(() => {
 <style scoped lang="scss">
 :deep(.search.el-input) {
   .el-input__wrapper {
-    --at-apply: "border-default-2 py-0 text-xs";
+    --at-apply: "border-default-2 bg-color py-0 text-xs";
     box-shadow: none;
   }
 }
@@ -706,10 +706,7 @@ onActivated(() => {
 }
 
 :deep(.segmented.el-segmented) {
-  --el-segmented-item-selected-bg-color: var(--el-bg-color);
-  --el-segmented-item-selected-color: var(--el-text-color);
-  --el-segmented-item-hover-bg-color: initial;
-  --at-apply: "p-0.5";
+  --at-apply: "p-1";
 
   .el-segmented__item {
     --at-apply: "flex items-center";

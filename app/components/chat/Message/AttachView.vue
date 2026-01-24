@@ -146,7 +146,7 @@ function onContextFileMenu(e: MouseEvent, key?: string, index: number = 0, type:
             <i i-solar:alt-arrow-right-bold ml-1 p-4 />
           </div>
         </div>
-        <div class="mt-1 w-full truncate card-rounded-df bg-color-br pb-2 pl-3 pr-2 backdrop-blur transition-all" :class="video.status !== 'success' ? 'h-8' : 'h-0 !p-0 '">
+        <div class="mt-1 w-full truncate bg-color-br pb-2 pl-3 pr-2 backdrop-blur transition-all card-rounded-df" :class="video.status !== 'success' ? 'h-8' : 'h-0 !p-0 '">
           <el-progress
             striped
             :striped-flow="video.status !== 'success'"
@@ -167,7 +167,7 @@ function onContextFileMenu(e: MouseEvent, key?: string, index: number = 0, type:
     >
       <div
         v-for="(file, i) in fileList"
-        :key="i" class="flex-row-c-c border-default card-default bg-color p-3.2 shadow-sm transition-all sm:p-2.8 hover:shadow"
+        :key="i" class="flex-row-c-c border-default bg-color card-default p-3.2 shadow-sm transition-all sm:p-2.8 hover:shadow"
         @contextmenu="onContextFileMenu($event, file.key, i, OssFileType.FILE)"
       >
         <img :src="file?.file?.type ? (FILE_TYPE_ICON_MAP[file?.file?.type] || FILE_TYPE_ICON_DEFAULT) : FILE_TYPE_ICON_DEFAULT" class="mr-2 h-8 w-8">

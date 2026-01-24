@@ -238,6 +238,28 @@ function showInvitation() {
   }
 }
 
+// 菜单项配置
+const momentMenuItems = [
+  {
+    icon: "i-solar:fire-line-duotone",
+    title: "TA的朋友圈",
+    onClick: () => ElMessage.info("未完善，敬请期待！"),
+  },
+  {
+    icon: "i-solar:gallery-wide-line-duotone",
+    title: "精选图集",
+    onClick: () => ElMessage.info("未完善，敬请期待！"),
+  },
+];
+
+const collectionMenuItems = [
+  {
+    icon: "i-solar:heart-line-duotone",
+    title: "TA的收藏",
+    onClick: () => ElMessage.info("未完善，敬请期待！"),
+  },
+];
+
 // 生命周期
 onMounted(() => {
   // 如果没有初始数据，设置加载状态
@@ -430,17 +452,12 @@ onMounted(() => {
     </p>
   </div>
   <!-- 他的朋友圈 -->
-  <div class="detail-info pb-4">
-    <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
-      <i class="i-solar:fire-line-duotone mr-3 p-2" />
-      TA的朋友圈
-      <i class="i-carbon:chevron-right ml-a p-2" />
-    </div>
-    <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
-      <i class="i-solar:gallery-wide-line-duotone mr-3 p-2" />
-      精选图集
-      <i class="i-carbon:chevron-right ml-a p-2" />
-    </div>
+  <div class="detail-info">
+    <CommonMenuItemList
+      size="small"
+      :items="momentMenuItems"
+      variant="list"
+    />
     <div class="img-list">
       <!-- TODO: 后期添加 -->
       <CardElImage
@@ -457,13 +474,11 @@ onMounted(() => {
         :preview-src-list="[BaseUrlImg + bgUrl]"
       />
     </div>
-    <div>
-      <div class="user-props flex cursor-pointer items-center" @click="ElMessage.info('未完善，敬请期待！')">
-        <i class="i-solar:heart-line-duotone mr-3 inline-block h-4 w-4" />
-        TA的收藏
-        <i class="i-carbon:chevron-right ml-a p-2" />
-      </div>
-    </div>
+    <CommonMenuItemList
+      size="small"
+      :items="collectionMenuItems"
+      variant="list"
+    />
   </div>
 </template>
 

@@ -28,10 +28,10 @@ report.html
 !.vscode/settings.json
 .vscode
 .claude
+.gemini
+.shared
 .codex
-.codex
-CLAUDE.md
 .cursor
 .dev
 .docs
-app/pages/test.vue
+app/pages/test

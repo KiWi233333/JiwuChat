@@ -117,7 +117,7 @@ async function onSend() {
           :error-class="contactTypeIconClassMap[(targetContact as ChatContactVO).type]"
           :default-src="targetContact.avatar"
           fit="cover"
-          class="h-7 w-7 card-rounded-df card-bg-color-2 object-cover"
+          class="h-7 w-7 card-bg-color-2 object-cover card-rounded-df"
         />
         <p class="max-w-14em truncate px-4 text-sm">
           {{ targetContact.name }}
@@ -185,7 +185,7 @@ async function onSend() {
                 <i i-solar:alt-arrow-right-bold ml-1 p-4 />
               </div>
             </div>
-            <div class="mt-1 w-full truncate card-rounded-df bg-color-br pb-2 pl-3 pr-2 backdrop-blur transition-all" :class="video.status !== 'success' ? 'h-8' : 'h-0 !p-0 '">
+            <div class="mt-1 w-full truncate bg-color-br pb-2 pl-3 pr-2 backdrop-blur transition-all card-rounded-df" :class="video.status !== 'success' ? 'h-8' : 'h-0 !p-0 '">
               <el-progress
                 striped
                 :striped-flow="video.status !== 'success'"
@@ -205,7 +205,7 @@ async function onSend() {
         >
           <div
             v-for="(file, i) in fileList"
-            :key="i" class="w-full flex items-center border-default-hover card-rounded-df bg-color p-3 transition-all sm:p-2.8"
+            :key="i" class="w-full flex items-center border-default-hover bg-color p-3 transition-all card-rounded-df sm:p-2.8"
             @contextmenu="onContextFileMenu($event, file.key, i, OssFileType.FILE)"
           >
             <img :src="file?.file?.type ? (FILE_TYPE_ICON_MAP[file?.file?.type] || FILE_TYPE_ICON_DEFAULT) : FILE_TYPE_ICON_DEFAULT" class="mr-2 h-8 w-8">

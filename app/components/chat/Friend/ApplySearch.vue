@@ -203,7 +203,7 @@ onDeactivated(() => {
       />
       <BtnElButton
         type="primary"
-        class="w-5rem text-sm shadow"
+        class="w-5rem pr-4 text-sm shadow"
         style="position: relative; transition: 0.2s; height: 2rem;font-size: 0.8em;"
         :disabled="isLoading"
         icon-class="i-solar:magnifer-outline mr-1"
@@ -243,7 +243,7 @@ onDeactivated(() => {
             closable
             size="small"
             type="primary"
-            class="mb-1 mr-1 inline-block cursor-pointer rounded bg-color-2 px-2 py-1 text-xs shadow-sm hover:shadow"
+            class="mb-1 mr-1 inline-block cursor-pointer bg-color-2 px-2 py-1 text-xs shadow-sm rounded hover:shadow"
             @close="handleClose(p)"
             @click="clickTag(p, i)"
           >
@@ -282,7 +282,7 @@ onDeactivated(() => {
           >
             <template #default="{ item, isActive }">
               <div
-                class="relative mb-2 flex cursor-pointer items-center truncate card-default card-bg-color p-2 transition-300 transition-all hover:(bg-color-2 shadow-sm)"
+                class="relative mb-2 flex cursor-pointer items-center truncate card-bg-color card-default p-2 transition-300 transition-all hover:(bg-color-2 shadow-sm)"
                 :class="{
                   selected: chat.theFriendOpt.type === FriendOptType.User && chat.theFriendOpt.data?.id === item?.id,
                   focused: isActive,
@@ -294,7 +294,7 @@ onDeactivated(() => {
                   :src="BaseUrlImg + item.avatar"
                   fit="cover"
                   error-class="i-solar:user-bold-duotone"
-                  class="mr-2 h-10 w-10 border-default card-default rounded-full object-cover"
+                  class="mr-2 h-10 w-10 border-default rounded-full card-default object-cover"
                 />
                 <small>{{ item.nickname || item.username }}</small>
               </div>

@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { MenuItemConfig } from "~/components/common/MenuItemCard.vue";
 import { appName } from "@/constants";
 
 const store = useUserStore();
 const chat = useChatStore();
+const setting = useSettingStore();
 const route = useRoute();
 
 const user = ref<Partial<UserInfoVO>>();
@@ -12,6 +14,7 @@ const isFriend = ref(false);
 const isSelf = ref(false);
 
 const otherUserId = route.query?.id?.toString() || "";
+const scrollbarRef = useTemplateRef("scrollbarRef");
 
 async function init() {
   if (otherUserId && otherUserId !== store.userInfo?.id) {
@@ -28,6 +31,10 @@ async function init() {
   }
   isLoading.value = false;
 }
+
+onActivated(() => {
+  scrollbarRef.value?.setScrollTop(0);
+});
 
 async function checkFriend(val: string) {
   isFriend.value = false;
@@ -52,6 +59,34 @@ function deleteFriend() {
   });
 }
 
+// 设置菜单项配置
+const settingMenuItems = computed<MenuItemConfig[]>(() => [
+  {
+    icon: "i-solar:devices-outline",
+    title: "账 号",
+    path: "/user/safe",
+    badge: {
+      isDot: true,
+      hidden: false,
+    },
+  },
+  {
+    icon: "i-solar:code-square-outline",
+    title: "API Key",
+    path: "/api/key",
+  },
+  {
+    icon: "i-solar:settings-linear",
+    title: "设 置",
+    path: "/setting",
+    badge: {
+      value: +setting.appUploader.isUpload,
+      isDot: true,
+      hidden: !setting.appUploader.isUpload,
+    },
+  },
+]);
+
 init();
 
 useHead({
@@ -69,7 +104,7 @@ definePageMeta({
 </script>
 
 <template>
-  <el-scrollbar class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color">
+  <el-scrollbar ref="scrollbarRef" class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color">
     <!-- 壁纸 -->
     <UserInfoBgToggle class="fixed left-0 top-0 z-0 w-full" />
     <!-- 用户信息面板 -->
@@ -78,6 +113,15 @@ definePageMeta({
       data-fade
       :is-edit="isSelf"
     />
+
+    <!-- 设置区域 (仅自己可见) -->
+    <div v-if="isSelf" class="bg-color pb-20">
+      <CommonMenuItemList
+        size="small"
+        :items="settingMenuItems"
+        variant="card"
+      />
+    </div>
 
     <!-- 按钮 -->
     <div v-show="!isLoading && otherUserId" class="w-full flex-row-c-c bg-color p-0 py-8 sm:(static max-w-30rem py-4)">

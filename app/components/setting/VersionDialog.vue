@@ -156,7 +156,7 @@ const {
                 code-theme="a11y"
                 no-img-zoom-in
                 style="background-color: transparent;"
-                class="preview mt-2 card-rounded-df op-60 shadow-sm shadow-inset transition-opacity !border-default-hover hover:op-100"
+                class="preview mt-2 op-60 shadow-sm shadow-inset transition-opacity card-rounded-df !border-default-hover hover:op-100"
                 :model-value="item.noticeSummary.substring(0, 400)"
               />
               <!-- <div class="notice-summary">{{ item.noticeSummary }}</div> -->

@@ -92,7 +92,7 @@ async function addMsg() {
         >
           群发
         </el-checkbox>
-        <div v-if="chat.replyMsg?.fromUser" class="ml-2 flex flex-1 items-center card-rounded-df bg-color p-1 shadow-sm">
+        <div v-if="chat.replyMsg?.fromUser" class="ml-2 flex flex-1 items-center bg-color p-1 shadow-sm card-rounded-df">
           <el-tag effect="dark" size="small" class="mr-2 shrink-0">
             回复
           </el-tag>

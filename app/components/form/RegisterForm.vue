@@ -377,15 +377,22 @@ function toLoginForm() {
     :model="formUser"
     class="form relative"
   >
-    <div my-4 text-5 font-500 tracking-0.2em op-80 sm:mb-6>
-      开启你的专属圈子✨
+    <div class="mb-8 mt-6 flex flex-col items-center gap-2">
+      <div class="text-5 font-bold tracking-0.1em">
+        <span class="from-neutral-600 via-neutral-700 to-neutral-800 bg-gradient-to-r bg-clip-text text-transparent dark:from-neutral-100 dark:via-neutral-300 dark:to-neutral-500">
+          开启你的专属圈子 ✨
+        </span>
+      </div>
+      <div class="text-mini tracking-0.1em">
+        加入极物，探索无限可能
+      </div>
     </div>
     <!-- 切换注册 -->
     <el-segmented
       v-model="registerType"
       :size="size"
       style=""
-      class="toggle-btns grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2"
+      class="toggle-btns grid grid-cols-3 mb-4 w-full gap-2"
       :options="options"
     />
     <!-- 验证码注册(客户端 ) -->
@@ -499,7 +506,7 @@ function toLoginForm() {
       destroy-on-close
       content-class="z-1200"
     >
-      <div class="h-100vh w-100vw flex flex-col bg-color p-4 sm:(h-500px w-400px border-default border-default-2 card-rounded-df shadow-lg)">
+      <div class="h-100vh w-100vw flex flex-col bg-color p-4 sm:(h-500px w-400px border-default border-default-2 shadow-lg card-rounded-df)">
         <h3 :data-tauri-drag-region="setting.isDesktop" class="relative mb-4 select-none text-center text-1.2rem">
           用户协议
           <ElButton text size="small" class="absolute right-0 -top-1" style="width: 2rem;height: 1.4rem;" @click="agreeDetail.showDetail = false">
@@ -546,9 +553,10 @@ function toLoginForm() {
   display: block;
   overflow: hidden;
   animation-delay: 0.1s;
+
   :deep(.el-input__wrapper) {
-    // padding: 0.3em 1em;
-    --at-apply: "p-[0.5em_1em] sm:p-[0.3em_1em]";
+    height: 3em;
+    padding: 0.2em 1em;
   }
 
   // 报错信息
@@ -558,7 +566,7 @@ function toLoginForm() {
       box-shadow: none !important;
     }
     .el-input-group__append {
-      --at-apply: "w-8rem min-w-fit text-theme-iofo card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-iofo op-100)";
+      --at-apply: "w-8rem !rounded-l-0 min-w-fit text-theme-iofo card-rounded-df op-80 transition-200 cursor-pointer overflow-hidden bg-color p-0 m-0 tracking-0.1em rounded-l-0 hover:(!text-theme-iofo op-100)";
     }
     .code-btn {
       --at-apply: "h-full flex-row-c-c px-4 transition-200 ";
@@ -572,19 +580,11 @@ function toLoginForm() {
 
 // 切换注册
 :deep(.toggle-btns.el-segmented) {
-  --el-segmented-item-selected-disabled-bg-color: var(--el-color-info-light-5);
-  --el-segmented-item-selected-bg-color: var(--el-color-info);
-  --el-border-radius-base: 6px;
   height: 2.6rem;
-  padding: 0.4rem;
-  font-size: small;
-  .el-segmented__item:hover:not(.is-selected) {
-    background: transparent;
-  }
-
-  .el-segmented__item.is-selected {
-    color: #fff;
-  }
+  padding: 0.3rem;
+  font-size: 0.9em;
+  // input__wrapper的背景色
+  --at-apply: "bg-[#fafafa] dark:bg-[#1b1b1b]";
 }
 
 .dark .active {

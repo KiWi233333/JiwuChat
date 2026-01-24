@@ -1,0 +1,10 @@
+.hide-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // el-scrollbar
+  .el-scrollbar__bar {
+    display: none;
+  }
+}

@@ -30,7 +30,7 @@ const googleIconUrl = "https://www.google.com/s2/favicons?sz=64&domain=";
         :src="data.image || data.icon"
         alt=""
         title="查看大图"
-        class="h-3rem w-3rem shrink-0 card-rounded-df bg-color-2 object-cover shadow-sm"
+        class="h-3rem w-3rem shrink-0 bg-color-2 object-cover shadow-sm card-rounded-df"
         error-root-class="bg-color-2"
         load-class="none"
         @click.stop.prevent.capture="showImage"

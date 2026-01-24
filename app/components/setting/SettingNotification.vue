@@ -44,9 +44,9 @@ const notificationTypeList = computed(() => (setting.isMobile || setting.isWeb)
         消息通知
         <el-segmented
           v-model="setting.settingPage.notificationType"
-          class="inputs border-default"
+          class="inputs !bg-color-2"
           :size="size"
-          style="background-color: transparent;--el-segmented-item-selected-color: #fff;--el-border-radius-base: 2rem;"
+          style="background-color: transparent;--el-border-radius-base: 2rem;"
           :options="notificationTypeList"
         />
       </div>

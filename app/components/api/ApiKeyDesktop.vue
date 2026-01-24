@@ -349,9 +349,10 @@ onActivated(() => {
     <!-- 页面头部 -->
     <div class="mb-4 mt-10 flex select-none items-end">
       <div>
-        <h2 class="text-xl text-color font-500">
+        <h3 class="flex items-center text-xl text-color font-500">
+          <i i-solar:key-bold-duotone mr-2 inline-block p-2.5 text-secondary hover:animate-spin />
           API Key
-        </h2>
+        </h3>
         <p class="mt-1 text-mini">
           管理你的开放 API 密钥
         </p>
@@ -396,14 +397,14 @@ onActivated(() => {
         class="search mr-2 w-10em sm:w-14rem"
         @keydown="handleSearchKeyName"
       />
-      <el-segmented v-model="searchForm.status" class="segmented border-default-2-hover bg-color p-2" :options="apiKeyStatusOptions" @change="handleSearch" />
-      <el-button class="ml-3 bg-color !border-default-2-hover" style="padding: 0 0.6em;font-size: 1rem;" :icon="ElIconSearch" bg text @click="handleSearch" />
-      <el-button v-show="searchForm.keyName !== '' || searchForm.status !== undefined" class="bg-color !border-default-2-hover" style="padding: 0 0.6em;font-size: 1rem;" bg text :icon="ElIconRefresh" @click="handleReset" />
+      <el-segmented v-model="searchForm.status" class="segmented" :options="apiKeyStatusOptions" @change="handleSearch" />
+      <el-button class="ml-3 !border-default-2-hover !bg-color" style="padding: 0 0.6em;font-size: 1rem;" :icon="ElIconSearch" bg text @click="handleSearch" />
+      <el-button v-show="searchForm.keyName !== '' || searchForm.status !== undefined" class="!border-default-2-hover !bg-color" style="padding: 0 0.6em;font-size: 1rem;" bg text :icon="ElIconRefresh" @click="handleReset" />
     </div>
 
     <!-- 数据表格 -->
     <div class="min-w-0 w-full flex flex-1 flex-col">
-      <div class="overflow-hidden border-default card-rounded-df bg-color-3">
+      <div class="overflow-hidden border-default bg-color-3 card-rounded-df">
         <el-table
           :data="tableData"
           :border="false"
@@ -443,12 +444,12 @@ onActivated(() => {
               <el-button
                 size="small"
                 :icon="ElIconEdit"
-                class="mr-2 btn-info-border overflow-hidden border-default-3 card-rounded-df bg-color"
+                class="mr-2 btn-info-border overflow-hidden border-default-3 bg-color card-rounded-df"
                 @click="handleEdit(scope.row)"
               />
               <el-dropdown trigger="click" @command="(cmd) => handleCommand(cmd, scope.row)">
                 <el-button
-                  class="mr-2 btn-primary-border overflow-hidden border-default-3 card-rounded-df bg-color"
+                  class="mr-2 btn-primary-border overflow-hidden border-default-3 bg-color card-rounded-df"
                   size="small" :icon="ElIconMore"
                 />
                 <template #dropdown>
@@ -518,6 +519,7 @@ onActivated(() => {
         <el-form-item key="expireType" label="有效期">
           <el-segmented
             v-model="expireType"
+            class="segmented"
             :options="[
               { label: '永不过期', value: 'never' },
               { label: '到期有效', value: 'expire' },
@@ -640,7 +642,7 @@ onActivated(() => {
 <style scoped lang="scss">
 :deep(.search.el-input) {
   .el-input__wrapper {
-    --at-apply: "border-default-2 py-0 text-xs";
+    --at-apply: "py-0 text-xs bg-color-2";
     box-shadow: none;
   }
 }
@@ -690,7 +692,7 @@ onActivated(() => {
 }
 
 :deep(.segmented.el-segmented) {
-  --at-apply: "p-0.5";
+  --at-apply: "p-1 bg-color-2";
 
   .el-segmented__item {
     --at-apply: "flex items-center";

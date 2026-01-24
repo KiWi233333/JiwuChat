@@ -132,11 +132,11 @@ onBeforeUnmount(() => {
       <div v-for="p in 10" :key="p" class="item">
         <div class="h-2.4rem w-2.4rem flex-shrink-0 rounded-full bg-gray-1 object-cover dark:bg-dark-4" />
         <div class="flex flex-col truncate">
-          <div class="h-3 w-8em rounded bg-gray-1 dark:bg-dark-4" />
-          <div class="mt-2 h-3 w-4em rounded bg-gray-1 dark:bg-dark-4" />
+          <div class="h-3 w-8em bg-gray-1 rounded dark:bg-dark-4" />
+          <div class="mt-2 h-3 w-4em bg-gray-1 rounded dark:bg-dark-4" />
         </div>
         <div class="ml-a flex-row-c-c flex-shrink-0">
-          <div class="h-4 w-3em rounded bg-gray-1 dark:bg-dark-4" />
+          <div class="h-4 w-3em bg-gray-1 rounded dark:bg-dark-4" />
         </div>
       </div>
     </template>
@@ -170,7 +170,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="ml-a flex-row-c-c flex-shrink-0 select-none">
           <template v-if="p.status === ChatApplyStatusType.Load">
-            <el-button-group class="card-rounded-df bg-color-2 transition-200 hover:shadow">
+            <el-button-group class="bg-color-2 transition-200 card-rounded-df hover:shadow">
               <BtnElButton size="small" @click="onArgeeFriend(p.applyId)">
                 同意
               </BtnElButton>
@@ -221,6 +221,6 @@ onBeforeUnmount(() => {
   --at-apply: "h-2.4rem bg-color-2 overflow-hidden rounded-full w-2.4rem flex-row-c-c shadow-sm";
 }
 .item {
-  --at-apply: "card-default flex items-center gap-4 p-4 cursor-pointer rounded-6px hover:!bg-op-60 transition-200 mb-4";
+  --at-apply: "card-default flex items-center gap-4 p-4 cursor-pointer  rounded hover:!bg-op-60 transition-200 mb-4";
 }
 </style>

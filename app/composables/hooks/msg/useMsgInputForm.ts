@@ -693,15 +693,15 @@ export function useMsgInputForm(
           formDataTemp.body = {
             userIds: aiRobitUidList.length > 0 ? aiRobitUidList : undefined,
             businessCode: AiBusinessType.TEXT,
-          } as AiChatBodyDTO;
+          } as AI_CHATBodyDTO;
           formDataTemp.msgType = MessageType.AI_CHAT; // 设置对应消息类型
         }
-        else if (chat.theContact.type === RoomType.AICHAT) { // 私聊机器人
+        else if (chat.theContact.type === RoomType.AI_CHAT) { // 私聊机器人
           formDataTemp.content = replaceText;
           formDataTemp.body = {
             userIds: [chat.theContact.targetUid], // 个人
             businessCode: AiBusinessType.TEXT, // 文本
-          } as AiChatBodyDTO;
+          } as AI_CHATBodyDTO;
           formDataTemp.msgType = MessageType.AI_CHAT; // 设置对应消息类型
         }
       };

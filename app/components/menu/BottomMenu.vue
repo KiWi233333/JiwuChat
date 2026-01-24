@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { MenuItem } from "./ChatMenu.vue";
-import { useOpenExtendWind } from "@/composables/tauri/extension";
+import { NuxtLink } from "#components";
 
 defineEmits<{
   (e: "close"): void
@@ -9,7 +9,6 @@ defineEmits<{
 const route = useRoute();
 const user = useUserStore();
 const ws = useWsStore();
-const setting = useSettingStore();
 const chat = useChatStore();
 const applyUnRead = ref(0);
 
@@ -30,7 +29,7 @@ watch(() => route.path, (newVal, oldVal) => {
   }
 });
 
-const unWatchDebounced = watchDebounced(() => ws.wsMsgList.applyMsg.length, (newVal, oldVal) => {
+const unWatchDebounced = watchDebounced(() => ws.wsMsgList.applyMsg.length, () => {
   getApplyCount();
 }, {
   debounce: 300,
@@ -48,80 +47,35 @@ onDeactivated(() => {
 onBeforeUnmount(() => {
   unWatchDebounced();
 });
-const { open: openExtendMenu, openItem } = useOpenExtendWind();
 // @unocss-include
 const menuList = computed<MenuItem[]>(() => [
   {
     title: "聊天",
     path: "/",
-    icon: "i-solar:chat-line-broken",
-    activeIcon: "i-solar:chat-line-bold",
+    icon: "i-ri:message-3-line",
+    activeIcon: "i-ri:message-3-fill",
     tipValue: chat.unReadCount,
     isDot: false,
   },
   {
     title: "好友",
     path: "/friend",
-    icon: "i-solar:users-group-rounded-line-duotone",
-    activeIcon: "i-solar:users-group-rounded-bold",
+    icon: "i-ri:contacts-line !w-5 !h-6",
+    activeIcon: "i-ri:contacts-fill !w-5 !h-6",
     tipValue: applyUnRead.value,
     isDot: false,
   },
   {
     title: "AI",
     path: "/ai",
-    icon: "i-solar:ghost-outline",
-    activeIcon: "i-solar:ghost-bold",
+    icon: "i-ri:sparkling-2-line",
+    activeIcon: "i-ri:sparkling-2-fill",
   },
   {
-    title: "个人",
+    title: "我",
     path: "/user",
-    icon: "i-solar:user-outline",
-    activeIcon: "i-solar:user-bold",
-  },
-  {
-    title: "更多",
-    path: "/more",
-    icon: "i-solar-layers-broken ",
-    activeIcon: "i-solar-layers-bold ",
-    tipValue: +setting.appUploader.isUpload,
-    children: [
-      // ...(setting.selectExtendMenuList || []).map(p => ({
-      //   title: p.title,
-      //   icon: p.icon,
-      //   activeIcon: p.activeIcon,
-      //   loading: p.loading,
-      //   onClick: () => openExtendMenu(p),
-      // }) as MenuItem),
-      // {
-      //   title: "扩展",
-      //   icon: " i-solar:widget-line-duotone hover:(i-solar:widget-bold-duotone ) ",
-      //   activeIcon: "i-solar:widget-bold-duotone",
-      //   onClick: () => chat.showExtension = true,
-      // },
-      {
-        title: "账 号",
-        path: "/user/safe",
-        icon: "i-solar:devices-outline",
-        activeIcon: "i-solar:devices-bold",
-        isDot: true,
-      },
-      {
-        title: "API Key",
-        path: "/api/key",
-        icon: "i-solar:code-square-outline",
-        activeIcon: "i-solar:code-square-bold",
-      },
-      {
-        title: "设 置",
-        path: "/setting",
-        icon: "i-solar:settings-linear hover:animate-spin",
-        activeIcon: "i-solar:settings-bold hover:animate-spin",
-        tipValue: +setting.appUploader.isUpload,
-        isDot: true,
-      },
-
-    ],
+    icon: "i-ri:user-line !w-5 !h-6",
+    activeIcon: "i-ri:user-fill !w-5 !h-6",
   },
 ]);
 
@@ -137,17 +91,20 @@ const activeMenu = computed({
 
 <template>
   <div
-    class="relative z-998 grid grid-cols-5 select-none justify-center bg-white shadow-md dark:bg-dark-8"
+    class="relative z-998 grid grid-cols-4 select-none justify-center bg-white shadow-md dark:bg-dark-8"
   >
-    <div
+    <component
+      :is="p.children?.length ? 'div' : NuxtLink"
       v-for="p in menuList"
       :key="p.path"
       v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.1)', duration: 800 }"
+      v-bind="!p.children?.length ? { 'to': p.path, 'prefetch': true, 'prefetch-on': { visibility: true } } : {}"
       :index="p.path"
       class="item"
+      :draggable="false"
       :class="{ active: activeMenu === p.path }"
       @click.stop="() => {
-        if (p.path)
+        if (p.children?.length && p.path)
           activeMenu = p.path
       }"
     >
@@ -157,14 +114,16 @@ const activeMenu = computed({
         :hidden="!p?.tipValue"
         :max="99"
         :is-dot="p.isDot"
+        class="text-center"
       >
-        <i class="icon p-3" :class="route.path === p.path ? p.activeIcon : p.icon" />
+        <i class="icon" :class="route.path === p.path ? p.activeIcon : p.icon" />
         <span mt-2 block select-none text-center text-3>{{ p.title }}</span>
       </el-badge>
       <el-dropdown
         v-else
         placement="top"
         :offset="25"
+        :show-arrow="false"
       >
         <el-badge
           :value="p.tipValue"
@@ -180,7 +139,7 @@ const activeMenu = computed({
             }
           }"
         >
-          <i class="p-3" :class="route.path === p.path ? p.activeIcon : p.icon" />
+          <i class="icon" :class="route.path === p.path ? p.activeIcon : p.icon" />
           <span mt-2 block select-none text-center text-3>{{ p.title }}</span>
         </el-badge>
         <template #dropdown>
@@ -217,7 +176,7 @@ const activeMenu = computed({
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-    </div>
+    </component>
   </div>
 </template>
 
@@ -242,17 +201,13 @@ const activeMenu = computed({
   }
 
   .icon {
-    --at-apply: "transition-none";
+    --at-apply: "transition-none w-6 h-6 block";
   }
 
   &.active {
     --at-apply: "text-theme-primary";
     filter: drop-shadow(0 0 8px var(--el-color-primary-light-5));
     transition-property: filter, color;
-
-    .icon {
-      --at-apply: "p-3.6";
-    }
   }
 }
 </style>

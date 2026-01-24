@@ -1,0 +1,293 @@
+/* 卡片背景图案集合 */
+
+/* 装饰背景基础类 */
+.deco-bg {
+  --at-apply: "absolute top-0 right-0 z-1 pointer-events-none transition-transform duration-500 ease-out";
+  width: 7.5rem;
+  height: 7.5rem;
+  opacity: 0.6;
+}
+
+/* 移除通用旋转，改为具体风格定义 */
+
+/* 定义点阵移动动画 */
+@keyframes bg-dots-loop {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -0.625rem 0.625rem;
+  }
+}
+
+/* 呼吸光晕动画 (相对缩放) */
+@keyframes bg-pulse-scale {
+  0% {
+    transform: scale(1);
+    filter: blur(1rem);
+  }
+  100% {
+    transform: scale(1.1);
+    filter: blur(1.5rem);
+  }
+}
+
+/* 网格扫描动画 */
+@keyframes bg-grid-slide {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 1rem 0;
+  }
+}
+
+/* 碎片浮动动画 (仅位移) */
+@keyframes bg-float-breath {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.25rem);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* 光环旋转动画 (仅旋转) */
+@keyframes bg-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 条纹行进动画 */
+@keyframes bg-stripe-move {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 2rem 0;
+  }
+}
+
+/* 装饰背景基础类 */
+.deco-bg {
+  --at-apply: "absolute top-0 right-0 z-1 pointer-events-none transition-transform duration-500 ease-out";
+  width: 7.5rem;
+  height: 7.5rem;
+  opacity: 0.6;
+
+  /* 动画基础设置：默认暂停，Hover播放，叠加模式 */
+  animation-play-state: paused;
+  animation-fill-mode: forwards;
+  animation-composition: add; /* 关键：允许动画与Hover的Scale效果叠加 */
+}
+
+/* 悬停时播放动画 */
+.card-item:hover .deco-bg,
+.item:hover .deco-bg {
+  animation-play-state: running;
+}
+
+/* 卡片风格1：淡点阵放射状 (bg-dots) */
+.card-style-1,
+.bg-dots {
+  .deco-bg {
+    background-image: radial-gradient(var(--el-color-primary) 0.1rem, transparent 0.1rem);
+    background-size: 0.625rem 0.625rem;
+    mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 80%);
+    opacity: 0.15;
+    animation: bg-dots-loop 2s linear infinite paused;
+  }
+
+  /* Hover: 仅位移 (动画控制背景位置，transform控制位移) */
+  &:hover .deco-bg,
+  .card-item:hover & .deco-bg {
+    animation-play-state: running;
+  }
+}
+
+/* 深色：主题色更换为白色变量 */
+.dark .card-style-1 .deco-bg,
+.dark .bg-dots .deco-bg {
+  opacity: 0.25;
+  background-image: radial-gradient(#fff 0.1rem, transparent 0.1rem);
+}
+
+/* 卡片风格2：圆形放射渐变 (bg-glow) */
+.card-style-2,
+.bg-glow {
+  .deco-bg {
+    background: radial-gradient(circle at 100% 0%, var(--el-color-primary), transparent 70%);
+    opacity: 0.1;
+    filter: blur(1rem);
+    transition:
+      transform 0.5s ease-out,
+      filter 0.5s ease-out;
+    animation: bg-pulse-scale 3s infinite alternate ease-in-out paused;
+  }
+
+  /* Hover: 放大 (动画叠加呼吸) */
+  &:hover .deco-bg,
+  .card-item:hover & .deco-bg {
+    animation-play-state: running;
+  }
+}
+
+/* 深色：主题色更换为白色变量 */
+.dark .card-style-2 .deco-bg,
+.dark .bg-glow .deco-bg {
+  opacity: 0.2;
+  background: radial-gradient(circle at 100% 0%, #fff, transparent 70%);
+}
+
+/* 卡片风格3：交错线条 (bg-grid) */
+.card-style-3,
+.bg-grid {
+  .deco-bg {
+    background-image:
+      linear-gradient(var(--el-color-primary) 0.0625rem, transparent 0.0625rem),
+      linear-gradient(90deg, var(--el-color-primary) 0.0625rem, transparent 0.0625rem);
+    background-size: 1rem 1rem;
+    mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 70%);
+    opacity: 0.1;
+    animation: bg-grid-slide 3s linear infinite paused;
+  }
+
+  /* Hover: 放大 (保持原有旋转，动画控制背景移动) */
+  &:hover .deco-bg,
+  .card-item:hover & .deco-bg {
+    animation-play-state: running;
+  }
+}
+
+/* 深色：主题色更换为白色变量 */
+.dark .card-style-3 .deco-bg,
+.dark .bg-grid .deco-bg {
+  opacity: 0.2;
+  background-image:
+    linear-gradient(#fff 0.0625rem, transparent 0.0625rem),
+    linear-gradient(90deg, #fff 0.0625rem, transparent 0.0625rem);
+}
+
+/* 卡片风格4：双重渐变条纹 (bg-shards) */
+.card-style-4,
+.bg-shards {
+  .deco-bg {
+    background-image:
+      linear-gradient(135deg, var(--el-color-primary) 0%, transparent 70%),
+      linear-gradient(-45deg, var(--el-color-primary) 0%, transparent 65%);
+    background-size:
+      100% 100%,
+      100% 100%;
+    background-repeat: no-repeat, no-repeat;
+    background-position:
+      top right,
+      bottom left;
+    opacity: 0.11;
+    filter: blur(0.2rem);
+    border-radius: 1.5rem;
+    mask-image: linear-gradient(120deg, transparent 30%, black 100%);
+    -webkit-mask-image: linear-gradient(120deg, transparent 30%, black 100%);
+    width: 7.25rem;
+    height: 7.25rem;
+    top: -1.5rem;
+    right: -1.5rem;
+    box-shadow: 0 0.25rem 1.25rem 0.1rem rgba(0, 0, 0, 0.08);
+    z-index: 1;
+    transition:
+      opacity 0.4s,
+      transform 0.5s ease-out;
+    animation: bg-float-breath 4s ease-in-out infinite paused;
+  }
+
+  /* Hover: 放大 (动画叠加浮动) */
+  &:hover .deco-bg,
+  .card-item:hover & .deco-bg {
+    animation-play-state: running;
+  }
+}
+
+/* 深色：主题色更换为白色变量 */
+.dark .card-style-4 .deco-bg,
+.dark .bg-shards .deco-bg {
+  opacity: 0.19;
+  background-image:
+    linear-gradient(135deg, #fff 0%, transparent 70%), linear-gradient(-45deg, #fff 0%, transparent 65%);
+  box-shadow: 0 0.25rem 1.25rem 0.1rem rgba(0, 0, 0, 0.14);
+}
+
+/* 卡片风格5：彩虹光环 (bg-halo) */
+.card-style-5,
+.bg-halo {
+  .deco-bg {
+    background: conic-gradient(
+      from 0deg at 60% 40%,
+      var(--el-color-warning),
+      var(--el-color-warning-light-3),
+      var(--el-color-success),
+      var(--el-color-primary),
+      var(--el-color-error-light-3),
+      var(--el-color-warning)
+    );
+    opacity: 0.13;
+    filter: blur(0.4rem);
+    border-radius: 50%;
+    mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at 100% 0%, black 0%, transparent 80%);
+    animation: bg-spin 15s linear infinite paused;
+  }
+
+  /* Hover: 放大 (动画叠加旋转) */
+  &:hover .deco-bg,
+  .card-item:hover & .deco-bg {
+    animation-play-state: running;
+  }
+}
+
+/* 深色：彩虹模式所有色都用白色变量替换 */
+.dark .card-style-5 .deco-bg,
+.dark .bg-halo .deco-bg {
+  opacity: 0.25;
+  background: conic-gradient(from 0deg at 60% 40%, #fff, #fff, #fff, #fff, #fff, #fff);
+}
+
+/* 卡片风格6：斜向条纹 (bg-stripes) */
+.card-style-6,
+.bg-stripes {
+  .deco-bg {
+    background-image: repeating-linear-gradient(
+      135deg,
+      var(--el-color-primary) 0px,
+      var(--el-color-primary) 2px,
+      transparent 3px,
+      transparent 12px
+    );
+    background-size: 2rem 2rem;
+    opacity: 0.09;
+    mask-image: linear-gradient(120deg, transparent 40%, black 100%);
+    -webkit-mask-image: linear-gradient(120deg, transparent 40%, black 100%);
+    transform: skew(-15deg, -10deg) scale(1.05);
+    animation: bg-stripe-move 1.5s linear infinite paused;
+  }
+
+  /* Hover: 放大 (保持Skew, 动画控制条纹移动) */
+  &:hover .deco-bg,
+  .card-item:hover & .deco-bg {
+    animation-play-state: running;
+  }
+}
+
+/* 深色：主题色更换为白色变量 */
+.dark .card-style-6 .deco-bg,
+.dark .bg-stripes .deco-bg {
+  opacity: 0.18;
+  background-image: repeating-linear-gradient(135deg, #fff 0px, #fff 2px, transparent 3px, transparent 12px);
+}

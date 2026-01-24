@@ -28,9 +28,9 @@ export enum RoomType {
   /**
    * 单聊
    */
-  SELFT = 2,
+  SELF = 2,
 
-  AICHAT = 3,
+  AI_CHAT = 3,
 }
 
 /**
@@ -52,7 +52,7 @@ export function getChatContactInfo(roomId: number, token: string, roomType: Room
       },
     );
   }
-  else if (roomType === RoomType.SELFT) {
+  else if (roomType === RoomType.SELF) {
     return useHttp.get<Result<ChatContactDetailVO>>(
       `/chat/contact/self/room/${roomId}`,
       { },
@@ -63,7 +63,7 @@ export function getChatContactInfo(roomId: number, token: string, roomType: Room
       },
     );
   }
-  else if (roomType === RoomType.AICHAT) {
+  else if (roomType === RoomType.AI_CHAT) {
     return useHttp.get<Result<ChatContactDetailVO>>(
       `/chat/contact/self/room/${roomId}`,
       { },
@@ -222,8 +222,8 @@ export interface ChatContactVO {
 
 export const RoomTypeTextMap: Record<RoomType, string> = {
   [RoomType.GROUP]: "群",
-  [RoomType.SELFT]: "个",
-  [RoomType.AICHAT]: "AI",
+  [RoomType.SELF]: "个",
+  [RoomType.AI_CHAT]: "AI",
 };
 
 

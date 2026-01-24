@@ -13,8 +13,8 @@ const setting = useSettingStore();
 // 表单
 const isSending = ref(false);
 const isLord = computed(() => chat.theContact.type === RoomType.GROUP && chat.theContact.member?.role === ChatRoomRoleEnum.OWNER); // 群主
-const isSelfRoom = computed(() => chat.theContact.type === RoomType.SELFT); // 私聊
-const isAiRoom = computed(() => chat.theContact.type === RoomType.AICHAT); // 机器人
+const isSelfRoom = computed(() => chat.theContact.type === RoomType.SELF); // 私聊
+const isAiRoom = computed(() => chat.theContact.type === RoomType.AI_CHAT); // 机器人
 const maxContentLen = computed(() => setting.systemConstant.msgInfo[chat.msgForm.msgType]?.maxLength || 0);
 // 状态
 const showGroupNoticeDialog = ref(false);
@@ -695,9 +695,9 @@ defineExpose({
           v-if="isDragDropOver"
           key="drag-over"
           :data-tauri-drag-region="setting.isDesktop"
-          class="fixed left-0 top-0 z-3000 h-full w-full flex select-none items-center justify-center border-default card-rounded-df backdrop-blur"
+          class="fixed left-0 top-0 z-3000 h-full w-full flex select-none items-center justify-center border-default backdrop-blur card-rounded-df"
         >
-          <div class="flex-row-c-c flex-col border-(1px [--el-border-color] dashed) card-default-br rounded-4 p-6 text-small transition-all hover:(border-1px border-[--el-color-primary] border-solid) sm:p-12 !hover:text-color">
+          <div class="flex-row-c-c flex-col border-(1px [--el-border-color] dashed) rounded-4 card-default-br p-6 text-small transition-all hover:(border-1px border-[--el-color-primary] border-solid) sm:p-12 !hover:text-color">
             <i class="i-solar:upload-minimalistic-linear p-4" />
             <p class="mt-4 text-0.8rem sm:text-1rem">
               拖拽文件到此处上传
@@ -833,8 +833,9 @@ defineExpose({
               :show-arrow="false"
               class="group ai-select text-1rem text-color"
               :class="{ 'selected-items': chat.askAiRobotList.length > 0 }"
-              popper-class="w-9rem global-custom-select"
+              popper-class="global-custom-select"
               :offset="8"
+              fit-input-width
               :value-on-clear="undefined"
               clearable teleported collapse-tags multiple
               :max-collapse-tags="2"
@@ -914,7 +915,7 @@ defineExpose({
         <div
           v-if="isOverDropZone"
           key="drag-over"
-          class="absolute left-0 top-0 z-999 h-full w-full flex-row-c-c select-none border-default-dashed card-rounded-df text-small backdrop-blur"
+          class="absolute left-0 top-0 z-999 h-full w-full flex-row-c-c select-none border-default-dashed text-small backdrop-blur card-rounded-df"
         >
           <i class="i-solar:upload-minimalistic-linear mr-2 p-2.6" />
           拖拽文件到此处上传
@@ -1028,7 +1029,7 @@ defineExpose({
           </p>
         </div>
         <BtnElButton
-          class="group ml-a overflow-hidden card-rounded-df tracking-0.2em shadow sm:ml-2"
+          class="group ml-a overflow-hidden tracking-0.2em shadow card-rounded-df sm:ml-2"
           type="primary"
           :icon-class="isSending || isNotExistOrNorFriend ? '' : 'i-solar:plain-2-line-duotone mr-1.6'"
           size="small"

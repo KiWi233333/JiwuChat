@@ -351,11 +351,11 @@ onMounted(() => {
       </div>
       <div class="setting-item">
         <span class="setting-label">文件统计</span>
-        <div title="总文件数量" class="ml-a flex-row-c-c btn-warning-bg border-default-2 card-default card-rounded-df px-2 py-1" @click="openFileFolder">
+        <div title="总文件数量" class="ml-a flex-row-c-c btn-warning-bg border-default-2 card-default px-2 py-1 card-rounded-df" @click="openFileFolder">
           共{{ downloadDirStats?.file_count || 0 }}个
           <img class="ml-1 h-4 w-4" src="/images/icon/DEFAULT.png" alt="">
         </div>
-        <div title="文件夹数量" class="ml-2 flex-row-c-c btn-info-bg border-default-2 card-default card-rounded-df px-2 py-1" @click="openFileFolder">
+        <div title="文件夹数量" class="ml-2 flex-row-c-c btn-info-bg border-default-2 card-default px-2 py-1 card-rounded-df" @click="openFileFolder">
           共{{ downloadDirStats?.dir_count || 0 }}个
           <img class="ml-1 h-4 w-4" src="/images/icon/OpenedFolder.png" alt="">
         </div>

@@ -354,7 +354,7 @@ const menuList = ref([
 .popup .bottom {
   margin-top: -3.8em;
   padding: 0.8em;
-  border-radius: 6px;
+  border-radius: calc(var(--el-border-radius-base) - 2px);
 
   .title {
     text-align: center;
@@ -373,7 +373,7 @@ const menuList = ref([
   justify-content: center;
   width: 6em;
   height: 6em;
-  border-radius: 6px;
+  border-radius: calc(var(--el-border-radius-base) - 2px);
   cursor: pointer;
   margin: 0.2em;
 }
@@ -383,7 +383,7 @@ const menuList = ref([
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: calc(var(--el-border-radius-base) - 2px);
   cursor: pointer;
   padding: 0.6em;
   transition: $transition-delay;

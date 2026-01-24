@@ -1,12 +1,18 @@
 <script lang="ts" setup>
-import type { Component } from "vue";
-import { SettingAppearance, SettingAudioDevice, SettingFunction, SettingNotification, SettingShortcuts, SettingStorage, SettingSystem, SettingTools } from "#components";
+/*
+ * 设置页模板组件逻辑
+ * - 设置页面头部 meta 信息
+ * - 响应路由变化进行菜单高亮
+ * - 支持移动端和桌面端不同跳转和交互
+ * - 自动处理 hash 定位和焦点动画
+ */
+
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { appKeywords, appName } from "~/constants";
 import { IS_PROD } from "~/init/setting";
 
-
+// 组件外部属性：控制顶部菜单栏显示、主区域和菜单栏自定义样式
 const {
   menuBar = true,
 } = defineProps<{
@@ -14,57 +20,92 @@ const {
   mainClass?: string;
   menuClass?: string;
 }>();
+
+// 设置页面头部信息（title/关键词/描述等）
+// title: 设置 - {appName} | 配置全局参数与偏好设置
 useHead({
-  title: `设置 - ${appName}`,
+  title: `设置 - ${appName} | 配置全局参数与偏好设置`,
   meta: [
-    { name: "description", content: `配置 ${appName} 的环境变量和其他设置` },
-    { name: "keywords", content: appKeywords },
+    { name: "description", content: `调整和管理 ${appName} 的系统参数、环境变量、外观与体验、通知和存储等核心设置。` },
+    { name: "keywords", content: `${appKeywords}, 设置, 偏好, 主题, 通知, 存储, 系统, 更新` },
   ],
 });
+
+// 菜单项结构定义
 interface MenuItem {
-  label: string;
-  value: string;
-  icon: string;
-  activeIcon: string;
-  component: Component
-  hidden?: boolean
-  tip?: string;
+  label: string; // 菜单显示名
+  value: string; // 路由参数
+  icon: string; // 默认图标
+  activeIcon: string; // 高亮图标
+  hidden?: boolean; // 是否隐藏
+  tip?: string; // 悬浮提示
+  domId?: string; // DOM 元素 ID，用于哈希联动
 }
+
+// 获取全局设置和当前路由
 const setting = useSettingStore();
+const route = useRoute();
 
+// 侧边菜单配置（支持动态隐藏菜单项）
 const menuOptions = computed<MenuItem[]>(() => [
-  { label: "通知", tip: "系统通知、自定义铃声", value: "notification", icon: "i-solar:bell-outline", activeIcon: "i-solar:bell-bold light:op-70", domId: "notification", component: SettingNotification },
-  { label: "主题与字体", tip: "自定义主题和字体", value: "appearance", icon: "i-solar:pallete-2-line-duotone", activeIcon: "i-solar:pallete-2-bold", domId: "appearance", component: SettingAppearance },
-  { label: "音频设置", tip: "麦克风设备选择与管理", value: "audio-device", icon: "i-solar:microphone-3-line-duotone", activeIcon: "i-solar:microphone-3-bold", domId: "audio-device", component: SettingAudioDevice },
-  { label: "快捷键", tip: "快捷键自定义", value: "shortcut", hidden: setting.isMobileSize, icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", domId: "shortcut", component: SettingShortcuts },
-  { label: "工具", tip: "翻译等工具", value: "tools", icon: "i-solar:inbox-archive-line-duotone", activeIcon: "i-solar:inbox-archive-bold", domId: "tools", component: SettingTools },
-  { label: "新特性", tip: "自定义动画、窗口阴影", value: "function", icon: "i-solar:telescope-outline", activeIcon: "i-solar:telescope-bold", domId: "function", component: SettingFunction },
-  { label: "数据与存储", tip: "数据与存储情况、文件情况、缓存清理", value: "storage", icon: "i-solar:database-outline", activeIcon: "i-solar:database-bold", domId: "storage", component: SettingStorage },
-  { label: "系统与更新", tip: "开机自启、系统应用更新", value: "system", icon: "i-solar:server-square-update-linear", activeIcon: "i-solar:server-square-update-bold", domId: "system", component: SettingSystem },
+  { label: "通知", tip: "系统通知、自定义铃声", value: "notification", icon: "i-solar:bell-outline", activeIcon: "i-solar:bell-bold light:op-70", domId: "notification" },
+  { label: "主题与字体", tip: "自定义主题和字体", value: "appearance", icon: "i-solar:pallete-2-line-duotone", activeIcon: "i-solar:pallete-2-bold", domId: "appearance" },
+  { label: "音频设置", tip: "麦克风设备选择与管理", value: "audio-device", icon: "i-solar:microphone-3-line-duotone", activeIcon: "i-solar:microphone-3-bold", domId: "audio-device" },
+  { label: "快捷键", tip: "快捷键自定义", value: "shortcut", hidden: setting.isMobileSize, icon: "i-solar:keyboard-line-duotone", activeIcon: "i-solar:keyboard-bold", domId: "shortcut" },
+  { label: "工具", tip: "翻译等工具", value: "tools", icon: "i-solar:inbox-archive-line-duotone", activeIcon: "i-solar:inbox-archive-bold", domId: "tools" },
+  { label: "新特性", tip: "自定义动画、窗口阴影", value: "function", icon: "i-solar:telescope-outline", activeIcon: "i-solar:telescope-bold", domId: "function" },
+  { label: "数据与存储", tip: "数据与存储情况、文件情况、缓存清理", value: "storage", icon: "i-solar:database-outline", activeIcon: "i-solar:database-bold", domId: "storage" },
+  { label: "系统与更新", tip: "开机自启、系统应用更新", value: "system", icon: "i-solar:server-square-update-linear", activeIcon: "i-solar:server-square-update-bold", domId: "system" },
 ].filter(item => !item.hidden));
-const MENU_OPTIONS_LABEL_MAX_LENGTH = 5;
-const activeMenu = ref("");
-const activeItem = computed(() => menuOptions.value.find(item => item.value === activeMenu.value));
 
-const size = computed(() => {
-  if (setting.settingPage?.fontSize?.value < 16) {
-    return "small";
-  }
-  else if (setting.settingPage?.fontSize?.value >= 16 && setting.settingPage?.fontSize?.value <= 20) {
-    return "default";
-  }
-  else if (setting.settingPage?.fontSize?.value > 20) {
-    return "large";
-  }
-  else {
-    return "default";
-  }
+// 菜单文字最大长度，避免布局溢出
+const MENU_OPTIONS_LABEL_MAX_LENGTH = 5;
+
+// 计算当前激活菜单 value，根据路由最后一个 segment
+const activeMenu = computed({
+  get: () => {
+    const path = route.path.split("/").pop();
+    // 判断当前路由 segment 是否为菜单项之一
+    return menuOptions.value.some(item => item.value === path) ? path! : "";
+  },
+  set: (val) => {
+    if (!val) {
+      // 如未传入值，则跳转到父级路径
+      const current = route.path.split("/").pop();
+      if (current && menuOptions.value.some(item => item.value === current)) {
+        const parentPath = route.path.slice(0, -(current.length + 1));
+        navigateTo(parentPath || "/");
+      }
+    }
+    else {
+      // 跳转到新菜单
+      const current = route.path.split("/").pop();
+      if (menuOptions.value.some(item => item.value === current)) {
+        // 当前路径已带有菜单项，替换最后一段
+        const base = route.path.slice(0, -current!.length);
+        navigateTo(base + val);
+      }
+      else {
+        // 普通追加
+        const base = route.path.endsWith("/") ? route.path : `${route.path}/`;
+        navigateTo(base + val);
+      }
+    }
+  },
 });
 
+// 当前激活的菜单项对象
+const activeItem = computed(() => menuOptions.value.find(item => item.value === activeMenu.value));
+
+// 滚动条引用、动画定时器与动画状态
 const scrollbarRef = useTemplateRef("scrollbarRef");
 const timer = shallowRef<NodeJS.Timeout>();
 const showAnima = ref(false);
 
+/**
+ * 响应 url hash 变化，滚动并高亮目标元素
+ * - 用于点击左侧菜单自动定位右侧内容
+ */
 async function onHashHandle() {
   await nextTick();
   if (!document || !document.location.hash)
@@ -73,17 +114,15 @@ async function onHashHandle() {
   if (!dom || showAnima.value)
     return;
   showAnima.value = true;
+  // 计算需要滚动的距离
   let top = 0;
-  // 获取滚动容器高度
   const wrapHeight = scrollbarRef.value?.wrapRef?.clientHeight || 0;
-  // 获取目标元素相对于父容器的偏移量
   const domRect = dom.getBoundingClientRect();
   const wrapRect = scrollbarRef.value?.wrapRef?.getBoundingClientRect();
   const offsetTop = domRect.top - (wrapRect?.top || 0);
-  // 计算滚动位置,使目标元素在容器中间
   top = offsetTop - (wrapHeight / 2) + (domRect.height / 2);
   clearTimeout(timer.value);
-  if (top !== 0) { // 缓动
+  if (top !== 0) {
     scrollbarRef.value?.wrapRef?.scrollTo({
       top,
       behavior: "smooth",
@@ -97,22 +136,42 @@ async function onHashHandle() {
   }, 2000);
 }
 
-watch(() => setting.isMobileSize, (mobileSize: boolean) => {
-  if (activeMenu.value && !setting.isMobileSize) {
-    return;
+/**
+ * 桌面端下：没有选中的情况下自动跳转到第一个菜单（通知）
+ */
+watch(() => setting.isMobileSize, (mobileSize) => {
+  if (!mobileSize && !activeMenu.value) {
+    // 桌面端无选中菜单，默认跳转到通知
+    const path = route.path.endsWith("/") ? route.path : `${route.path}/`;
+    navigateTo(`${path}notification`, { replace: true });
   }
-  activeMenu.value = mobileSize ? "" : "notification";
-}, {
-  immediate: true,
+}, { immediate: false });
+
+/**
+ * 监听路由变化，桌面端进入 /setting 根页面时自动补全
+ */
+watch(() => route.path, () => {
+  if (!setting.isMobileSize && !activeMenu.value) {
+    const path = route.path.endsWith("/") ? route.path : `${route.path}/`;
+    navigateTo(`${path}notification`, { replace: true });
+  }
 });
 
+// 生命周期钩子：激活/挂载时设置页面尺寸与目标滚动，高亮处理
 onActivated(onHashHandle);
 onMounted(() => {
   onHashHandle();
-  if (setting.isDesktop) { // 窗口大小
+  // 桌面端强制 webview 窗口尺寸
+  if (setting.isDesktop) {
     getCurrentWebviewWindow().setSize(new LogicalSize(920, 820));
   }
+  // 桌面端无选中菜单，默认跳转到通知
+  if (!setting.isMobileSize && !activeMenu.value) {
+    const path = route.path.endsWith("/") ? route.path : `${route.path}/`;
+    navigateTo(`${path}notification`, { replace: true });
+  }
 });
+// 取消动画和定时器
 onDeactivated(() => {
   clearTimeout(timer.value);
   showAnima.value = false;
@@ -144,9 +203,7 @@ onUnmounted(() => {
       <template #right>
         <div class="right relative z-1 flex items-center gap-1 sm:gap-2">
           <template v-if="setting.isDesktop || setting.isWeb">
-            <!-- web下载推广菜单 -->
             <BtnAppDownload />
-            <!-- 菜单按钮 -->
             <MenuController v-if="setting.isDesktop && setting.appPlatform !== 'macos'" size="small" />
           </template>
         </div>
@@ -160,8 +217,8 @@ onUnmounted(() => {
           activeItem?.value && setting.isMobileSize ? '-translate-x-1/2 scale-95 css-will-change' : '',
         ]"
       >
-        <h3 flex items-center class="px-7 pt-8 text-lg font-500">
-          <i i-solar:settings-bold mr-2 inline-block p-3 opacity-60 hover:animate-spin />
+        <h3 class="flex items-center px-5 pt-5 text-base font-500 sm:(px-5 pt-10)">
+          <i i-solar:settings-bold-duotone mr-2 inline-block p-2.5 text-secondary hover:animate-spin />
           设置
         </h3>
         <el-segmented
@@ -173,7 +230,11 @@ onUnmounted(() => {
           :size="setting.isMobileSize ? 'large' : 'small'"
         >
           <template #default="{ item }">
-            <div class="flex items-center rounded-2 px-2 py-1" :title="(item as MenuItem).tip">
+            <div
+              v-ripple="{ color: !setting.isMobileSize ? 'transparent' : 'rgba(var(--el-color-primary-rgb), 0.1)' }"
+              class="item flex items-center rounded-2 px-2 py-1"
+              :title="(item as MenuItem).tip"
+            >
               <i :class="activeMenu === (item as MenuItem).value ? (item as MenuItem).activeIcon : (item as MenuItem).icon" mr-2 />
               <div>{{ (item as MenuItem).label }}</div>
               <i i-solar:alt-arrow-right-line-duotone ml-a inline p-2.4 text-small sm:hidden />
@@ -190,12 +251,12 @@ onUnmounted(() => {
           'translate-x-full css-will-change': !activeMenu,
         }"
       >
-        <h3 v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b py-3 font-500 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
-          <i i-solar:alt-arrow-left-line-duotone mr-1 p-3 sm:hidden />
+        <div v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b pb-3 font-500 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
+          <i i-solar:alt-arrow-left-line-duotone mr-1 p-2.5 sm:hidden />
           {{ activeItem?.label }}
-        </h3>
-        <!-- 动态显示对应的设置组件 -->
-        <component :is="activeItem?.component" v-if="activeItem" :key="activeItem.value" :size="size" class="w-full" />
+        </div>
+        <!-- 内容 -->
+        <NuxtPage class="w-full" />
       </el-scrollbar>
     </main>
   </div>
@@ -205,23 +266,32 @@ onUnmounted(() => {
 :deep(.el-segmented.menu) {
   --el-border-radius-base: 0.6rem;
   --el-segmented-item-selected-bg-color: transparent;
-  --el-segmented-item-active-bg-color: ;
-  --at-apply: "bg-transparent w-full p-4 text-color";
+  --at-apply: "bg-transparent w-full p-4 text-color !shadow-none";
 
   .el-segmented__item-selected {
-    --at-apply: "bg-color-2 text-color";
+    --at-apply: "bg-color-2 text-color shadow-none border-none";
   }
   .el-segmented__item:not(.is-disabled):not(.is-selected):active,
   .el-segmented__item:not(.is-disabled):not(.is-selected):hover {
     --at-apply: "bg-color-2 text-color !bg-op-50";
   }
   .el-segmented__item {
+    --at-apply: "shadow-none p-0 border-none";
+
+    .item {
+      --at-apply: "py-2";
+    }
+
     &.is-selected {
       --at-apply: "text-color";
       i {
         --at-apply: "scale-105";
       }
     }
+  }
+
+  .el-segmented__group {
+    --at-apply: "gap-1";
   }
 
   // 小尺寸上
@@ -241,6 +311,10 @@ onUnmounted(() => {
 
     .el-segmented__item {
       --at-apply: " bg-color text-sm";
+
+      .item {
+        --at-apply: "py-3 px-4";
+      }
 
       &.is-selected {
         --at-apply: "bg-color ";

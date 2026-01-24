@@ -96,7 +96,7 @@ async function resolveNewMsg(msg: ChatMessageVO) {
   // 本人问答的AI消息进行滚动
   if (isCurrentRoom) {
     if (msg.message.type === MessageType.AI_CHAT_REPLY) {
-      (msg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === user.userInfo.id && handleAIReplayMsg(); // 处理AI回复消息 多一步滚动
+      (msg as ChatMessageVO<AI_CHATReplyBodyMsgVO>).message.body?.reply?.uid === user.userInfo.id && handleAIReplayMsg(); // 处理AI回复消息 多一步滚动
       const contact = useChatStore().contactMap[msg.message.roomId];
       contact && (contact.text = contact.type === RoomType.GROUP ? `${msg.fromUser.nickName}: 回答中...` : "AI回答中...");
     }
@@ -207,7 +207,7 @@ interface BufferItem {
   charIndex: number
   updateInterval: any
 }
-const bufferMap = new WeakMap<ChatMessageVO<AiChatReplyBodyMsgVO>, BufferItem>();
+const bufferMap = new WeakMap<ChatMessageVO<AI_CHATReplyBodyMsgVO>, BufferItem>();
 
 /**
  * 6. ai推送消息处理
@@ -220,7 +220,7 @@ function resolveAiStream(data: WSAiStreamMsg) {
   if (!contact)
     return;
 
-  const oldMsg = chat.findMsg(data.roomId, data.msgId) as ChatMessageVO<AiChatReplyBodyMsgVO> | undefined;
+  const oldMsg = chat.findMsg(data.roomId, data.msgId) as ChatMessageVO<AI_CHATReplyBodyMsgVO> | undefined;
 
   // 统一状态更新
   if (oldMsg?.message?.body) {
@@ -245,7 +245,7 @@ function resolveAiStream(data: WSAiStreamMsg) {
 function handleProgressUpdate(
   data: WSAiStreamMsg,
   contact: ChatContactDetailVO,
-  oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
+  oldMsg?: ChatMessageVO<AI_CHATReplyBodyMsgVO>,
   count = 1,
   delay = 0,
 ) {
@@ -324,7 +324,7 @@ function handleProgressUpdate(
 
 
 function applyBufferUpdate(
-  oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
+  oldMsg?: ChatMessageVO<AI_CHATReplyBodyMsgVO>,
   buffer?: { content: string; reasoning: string; pendingContent?: string; pendingReasoning?: string; updateInterval?: any },
 ) {
   if (!buffer || !oldMsg)
@@ -344,7 +344,7 @@ function applyBufferUpdate(
 }
 
 function handleStartState(
-  oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
+  oldMsg?: ChatMessageVO<AI_CHATReplyBodyMsgVO>,
 ) {
   // 初始化缓冲区
   if (oldMsg) {
@@ -367,7 +367,7 @@ function handleStartState(
 function handleFinalState(
   data: WSAiStreamMsg,
   contact: ChatContactDetailVO,
-  oldMsg?: ChatMessageVO<AiChatReplyBodyMsgVO>,
+  oldMsg?: ChatMessageVO<AI_CHATReplyBodyMsgVO>,
 ) {
   const finalContent = (data.content || "...").substring(0, 100);
   contact.text = contact.type === RoomType.GROUP ? `${oldMsg?.fromUser.nickName || "机器人"}: ${finalContent}` : finalContent;
@@ -388,9 +388,9 @@ function handleFinalState(
 
     // AI消息完成时，如果应该自动滚动，则在内容更新后滚动到底部
     const chat = useChatStore();
-    if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
+    if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AI_CHATReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
       setTimeout(() => {
-        if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AiChatReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
+        if (chat.shouldAutoScroll && chat.theRoomId === data.roomId && (oldMsg as ChatMessageVO<AI_CHATReplyBodyMsgVO>).message.body?.reply?.uid === useUserStore().userInfo.id) {
           chat.scrollBottom(false);
         }
       }, 100);

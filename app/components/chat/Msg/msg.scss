@@ -20,12 +20,9 @@
       opacity: 0.6;
     }
   }
-  .ai-reply-msg-popper,
-  .msg-popper {
-    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full w-fit py-2 px-3 leading-1.5em bg-color shadow-md";
-    box-shadow:
-      rgba(0, 0, 0, 0.1) 0px 1px 3px 0px,
-      rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+  .ai-reply-msg-box,
+  .msg-box {
+    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full w-0 px-3 py-2 leading-1.5em bg-color shadow-sm transition-shadow hover:shadow w-fit";
     border-radius: 6px 1rem 1rem 1rem;
   }
   .msg-wrap {
@@ -35,7 +32,7 @@
 
   // 回复
   .reply {
-    --at-apply: "text-0.7rem cursor-pointer w-fit card-rounded-df max-w-full truncate pl-1 pr-2  bg-color dark:text-light-900 border-default-hover";
+    --at-apply: "text-0.7rem cursor-pointer w-fit flex-row-c-c line-height-none py-1 rounded-sm max-w-full truncate pl-1 pr-2  bg-color hover:shadow-sm transition-shadow";
   }
   // 翻译
   .translation {
@@ -110,11 +107,11 @@
 // }
 // 回复 - 闪动
 .reply-shaing {
-  --at-apply: "rounded-6px w-full bg-[var(--el-color-primary-light-7)] op-100 transition-120 ";
+  --at-apply: " rounded w-full bg-[var(--el-color-primary-light-7)] op-100 transition-120 ";
 }
 
 .body {
-  --at-apply: "flex flex-col gap-2";
+  --at-apply: "flex flex-col gap-2 flex-1 min-w-0";
 }
 .flex-res {
   display: flex;
@@ -154,7 +151,7 @@
     margin-left: auto;
     flex-direction: row-reverse;
   }
-  .msg-popper,
+  .msg-box,
   .self-child {
     margin-left: auto;
     border-radius: 1rem 4px 1rem 1rem;

@@ -1,11 +1,8 @@
 import ContextMenu from "@imengyu/vue3-context-menu";
+import { COPY_IMAGE_TYPES, RECALL_TIME_OUT } from "./constants";
 import { deleteMsg, refundMsg } from "./messageActions";
 
-
 // @unocss-include
-// 常量定义
-export const RECALL_TIME_OUT = 300000; // 默认5分钟
-export const COPY_IMAGE_TYPES = ["image/png", "image/jpg", "image/svg+xml"];
 
 /**
  * 处理消息上下文菜单事件
@@ -140,7 +137,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         customClass: "group",
         icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
         onClick: () => {
-          const url = String((e?.target as HTMLElement)?.getAttribute?.("url") || "");
+          const url = String((e?.target as HTMLElement)?.getAttribute?.("data-url") || "");
           navigator.clipboard.writeText((url || txt) as string);
           ElMessage.success("复制成功！");
         },
@@ -151,7 +148,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         customClass: "group",
         icon: "i-solar:link-line-duotone group-hover:(scale-110 i-solar:link-bold-duotone) group-btn-info",
         onClick: () => {
-          const url = String((e?.target as HTMLElement)?.getAttribute?.("url") || "");
+          const url = String((e?.target as HTMLElement)?.getAttribute?.("data-url") || "");
           if (!url)
             return;
           useOpenUrl(url);
@@ -311,7 +308,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         label: "TA",
         icon: "i-solar:mention-circle-broken group-hover:(rotate-15 i-solar:mention-circle-bold) group-btn-info",
         customClass: "group",
-        hidden: isSelf || chat.theContact.type === RoomType.SELFT,
+        hidden: isSelf || chat.theContact.type === RoomType.SELF,
         onClick: () => chat.setAtUid(data.fromUser.userId),
       },
     ],
@@ -328,7 +325,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         label: "TA",
         icon: "i-solar:mention-circle-broken group-btn-info",
         customClass: "group",
-        hidden: isSelf || chat.theContact.type === RoomType.SELFT,
+        hidden: isSelf || chat.theContact.type === RoomType.SELF,
         onClick: () => chat.setAtUid(data.fromUser.userId),
       },
     ],

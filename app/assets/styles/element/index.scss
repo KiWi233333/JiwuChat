@@ -1,6 +1,8 @@
+@use "element-plus/theme-chalk/src/mixins/function.scss" as *;
+
 @forward "element-plus/theme-chalk/src/common/var.scss" with (
   //  node_modules/element-plus/theme-chalk/src/common/var.scss"
-  $border-radius: ("base": 6px, "small": 12px, "round": 20px, "circle": 100%),
+  $border-radius: ("base": 8px, "small": 4px, "round": 32px, "circle": 100%),
   // 阴影
   $box-shadow: (
       "": (
@@ -54,8 +56,8 @@
   ),
   // $drawer
   $drawer: ("padding-primary": 0px),
-  $popover: ("border-radius": 8px, "padding": 6px),
-  $popper: ("border-radius": 8px),
+  $popover: ("border-radius": 10px, "padding": 8px),
+  $popper: ("border-radius": 10px),
   // 轮播图
   $carousel: (
       "arrow-font-size": 20px,
@@ -71,7 +73,7 @@
   // el-card
   $card: (
       "border-color": getCssVar("border-color", "light"),
-      "border-radius": 6px,
+      "border-radius": 10px,
       "padding": 2px,
       "bg-color": getCssVar("fill-color", "blank")
     ),
@@ -111,6 +113,17 @@
     // 'base-level-padding': 20px,
     // 'level-padding': 20px,
      // 'icon-width': 24px,
+  ),
+  $segmented: (
+    "color": getCssVar("text-color", "regular"),
+    "bg-color": getCssVar("fill-color", "light"),
+    "padding": 4px,
+    "item-selected-color": getCssVar("text-color", "primary"),
+    "item-selected-bg-color": getCssVar("color-white"),
+    "item-selected-disabled-bg-color": getCssVar("fill-color", "lighter"),
+    "item-hover-color": getCssVar("text-color", "regular"),
+    "item-hover-bg-color": transparent,
+    "item-active-bg-color": transparent
   ),
   $dropdown: ()
 );

@@ -177,14 +177,14 @@ async function changShieldStatus() {
           :disabled="!isLord || editFormField !== 'notice'"
           :rows="8"
           :maxlength="200"
-          class="scroll-bar mt-2 card-rounded-df border-none bg-transparent transition-200"
+          class="scroll-bar mt-2 border-none bg-transparent transition-200 card-rounded-df"
           type="textarea"
           style="resize:none;width: 100%;"
           placeholder="未填写"
           @keydown.enter.stop="submitUpdateRoom('notice', theContactClone?.roomGroup?.detail?.notice)"
           @blur="submitUpdateRoom('notice', theContactClone?.roomGroup?.detail?.notice)"
         />
-        <el-scrollbar v-else max-height="8em" class="scroll-bar card-rounded-df border-none bg-transparent text-small transition-200" @click.stop="isLord && (editFormField = 'notice')">
+        <el-scrollbar v-else max-height="8em" class="scroll-bar border-none bg-transparent text-small transition-200 card-rounded-df" @click.stop="isLord && (editFormField = 'notice')">
           <div class="notice">
             {{ theContactClone?.roomGroup?.detail?.notice || "暂无公告" }}
           </div>

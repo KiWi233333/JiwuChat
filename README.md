@@ -38,6 +38,9 @@
       <a href="https://www.deepseek.com/" target="_blank" style="margin: 2px;">
         <img alt="DeepSeek AI" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/badge.svg?raw=true" />
       </a>
+      <a href="https://deepwiki.com/KiWi233333/JiwuChat" target="_blank" style="margin: 2px;">
+        <img alt="Ask DeepWiki" src="https://deepwiki.com/badge.svg" />
+      </a>
     </div>
 
 官网：[JiwuChat](https://blog.jiwuchat.top/) <br> 语言 : **简体中文** | [English](./.doc/README.en.md) | [Deutsch](./.doc/README.de.md) | [Español](./.doc/README.es.md) | [Français](./.doc/README.fr.md) | [日本語](./.doc/README.ja.md) | [한국어](./.doc/README.ko.md) | [Português](./.doc/README.pt.md) | [Русский](./.doc/README.ru.md)
@@ -153,19 +156,19 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 
 ### 🔧 涉及技术栈 | Tech Stack
 
-| 类别           | 技术/组件    | 版本号     |
-| -------------- | ------------ | ---------- |
-| 框架           | Nuxt         | ^3.14.159+ |
-|                | Tauri        | ^2.1.0     |
-| UI 组件库      | Element Plus | ^2.8.4     |
-| 状态管理       | Pinia        | 2.1.7      |
-| 工具库         | Vueuse       | 10.11.0    |
-| 构建与开发工具 | Nuxi         | lts        |
-|                | Vite         | lts        |
-| 代码质量       | ESLint       | 8.56.0     |
-|                | Prettier     | 3.3.2      |
-| 类型检查       | TypeScript   | 5.3.2      |
-| 样式处理       | Sass         | 1.77.6     |
+| 类别           | 技术/组件    | 版本号                |
+| -------------- | ------------ | --------------------- |
+| 框架           | Nuxt         | 4.2.2+                |
+|                | Tauri        | ^2.9.6                |
+| UI 组件库      | Element Plus | 2.13.1                |
+| 状态管理       | Pinia        | 3.0.4                 |
+| 工具库         | Vueuse       | 14.1.0                |
+| 构建与开发工具 | Nuxi         | 4.2.2                 |
+|                | Vite         | 7.2.11(rolldown-vite) |
+| 代码质量       | ESLint       | 9.39.2                |
+|                | Prettier     | 3.3.2                 |
+| 类型检查       | TypeScript   | 5.9.3                 |
+| 样式处理       | Sass         | 1.97.3                |
 
 ## 📢 推广 | Promotion
 

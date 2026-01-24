@@ -25,8 +25,8 @@ export enum NotificationEnums {
   CLOSE = "close",
 }
 export const DEFAULT_FONT_FAMILY_LIST = [
-  { name: "系统字体", value: "", url: "" },
-  { name: "阿里妈妈方圆体", value: "AlimamaFangYuanTiVF", url: "/font/AlimamaFangYuanTiVF.woff2" },
+  { name: "系统字体", value: "system-ui, -apple-system, sans-serif", url: "" },
+  { name: "阿里妈妈方圆体", value: "AlimamaFangYuanTiVF", url: `${BaseUrlFont}/AlimamaFangYuanTiVF.woff2` },
   { name: "阿里巴巴健康体（盲文）", value: "AlibabaHealthFont2.0Pro", url: `${BaseUrlFont}/AlibabaHealthFont2.0Pro.ttc` },
   { name: "钉钉进步体", value: "DingTalk-JinBuTi", url: `${BaseUrlFont}/DingTalk-JinBuTi.woff2`, baseFontWeight: 300 },
   { name: "0xProtoNerdFont", value: "0xProtoNerdFont", url: `${BaseUrlFont}/0xProtoNerdFont.ttf` },
@@ -76,9 +76,8 @@ export const useSettingStore = defineStore(
     const isCollapse = useLocalStorage(`${SETTING_STORE_KEY}:isCollapse`, true);
 
     // 非持久化的设备状态
-    const isMobileSize = ref(false);
+    const isMobileSize = ref(document?.documentElement?.clientWidth < 768); // 初始化就判断一次
     const isOpenContactSearch = useLocalStorage(`${SETTING_STORE_KEY}:isOpenContactSearch`, true);
-    // const isUseWebsocket = useLocalStorage(`${SETTING_STORE_KEY}:isUseWebsocket`, true);
 
     const isDesktop = computed(() => ["windows", "linux", "macos"].includes(osType.value));
     const isMobile = computed(() => ["android", "ios"].includes(osType.value));
@@ -161,7 +160,7 @@ export const useSettingStore = defineStore(
       return {
         // 字体
         fontFamily: {
-          value: !isMac() ? "AlimamaFangYuanTiVF" : "",
+          value: "",
           list: [] as { name: string; value: string; url?: string; baseFontWeight?: number }[],
         },
         fontSize: {

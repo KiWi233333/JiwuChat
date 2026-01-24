@@ -46,7 +46,7 @@ onMounted(async () => {
       <a
         :href="appBlogHost" target="_blank"
         title="JiwuChat 官网"
-        class="h-2rem w-2rem flex-row-c-c cursor-pointer border-default card-default rounded-full shadow-sm sm:(h-1.8rem w-1.8rem)"
+        class="h-2rem w-2rem flex-row-c-c cursor-pointer border-default rounded-full card-default shadow-sm sm:(h-1.8rem w-1.8rem)"
         v-bind="$attrs"
       >
         <i i-solar:planet-2-bold-duotone p-2.5 text-theme-primary />
@@ -63,7 +63,7 @@ onMounted(async () => {
       <template #reference>
         <div
           title="Github开源仓库 - JiwuChat"
-          class="h-2rem w-2rem flex-row-c-c cursor-pointer border-default card-default rounded-full shadow-sm sm:(h-1.8rem w-1.8rem)"
+          class="h-2rem w-2rem flex-row-c-c cursor-pointer border-default rounded-full card-default shadow-sm sm:(h-1.8rem w-1.8rem)"
           v-bind="$attrs"
           @click="handleRepo(OAuthPlatformCode.GITHUB, false)"
         >
@@ -84,7 +84,7 @@ onMounted(async () => {
           href="https://gitee.com/KiWi233333/JiwuChat"
           target="_blank"
           title="Gitee开源仓库 - JiwuChat"
-          class="h-2rem w-2rem flex-row-c-c cursor-pointer border-default card-default rounded-full shadow-sm sm:(h-1.8rem w-1.8rem)"
+          class="h-2rem w-2rem flex-row-c-c cursor-pointer border-default rounded-full card-default shadow-sm sm:(h-1.8rem w-1.8rem)"
           v-bind="$attrs"
           @click="handleRepo(OAuthPlatformCode.GITEE, false)"
         >
@@ -100,7 +100,7 @@ onMounted(async () => {
         download
         rel="noopener noreferrer"
         v-bind="$attrs"
-        class="h-1.8rem flex-row-c-c btn-info-bg border-default card-default rounded-4rem pl-4 pr-6 text-xs"
+        class="h-1.8rem flex-row-c-c btn-info-bg border-default rounded-4rem card-default pl-4 pr-6 text-xs"
       >
         <i class="i-solar-download-minimalistic-broken mr-2 p-2" />
         APP

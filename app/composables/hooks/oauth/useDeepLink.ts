@@ -50,16 +50,28 @@ export function useOAuthDeepLink(options: UseOAuthDeepLinkOptions = {}) {
     if ((!setting.isDesktop && !setting.isMobile) || isListening.value)
       return;
     try {
+      // 移动端：先尝试获取缓存的回调数据（处理冷启动场景）
+      if (setting.isMobile) {
+        const { invoke } = await import("@tauri-apps/api/core");
+        const pending = await invoke<OAuthCallbackPayload | null>("get_pending_oauth_callback");
+        if (pending) {
+          lastPayload.value = pending;
+          onCallback?.(pending);
+        }
+      }
+
+      // 然后开始监听新的回调事件
       const { listen } = await import("@tauri-apps/api/event");
       unlistenFn = await listen<OAuthCallbackPayload>("oauth-callback", (event) => {
         lastPayload.value = event.payload;
         onCallback?.(event.payload);
       });
       isListening.value = true;
+      console.log("[OAuth DeepLink] 监听器已启动");
     }
     catch (e) {
       // 监听失败时静默处理
-      console.error(e);
+      console.error("[OAuth DeepLink] 启动监听失败:", e);
     }
   }
 

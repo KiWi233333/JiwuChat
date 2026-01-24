@@ -12,7 +12,7 @@ export interface ShortcutConfig {
   disabledEdit?: boolean; // 是否禁用编辑
   description: string;
   eventType: ShortcutEventType;
-  selfTarget?: boolean; // 是否只在当前输入框生效
+  SELFarget?: boolean; // 是否只在当前输入框生效
   macKey?: string; // macOS 专用快捷键
 }
 
@@ -180,7 +180,7 @@ export function useShortcuts() {
       category: "app",
       enabled: true,
       eventType: "minimize-window",
-      selfTarget: true,
+      SELFarget: true,
     },
     {
       key: "Enter",

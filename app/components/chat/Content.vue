@@ -17,7 +17,7 @@ watch(
 </script>
 
 <template>
-  <div id="chat-content" class="content flex-1">
+  <div id="chat-content" class="content min-w-0 flex-1">
     <div class="relative h-full flex flex-1 flex-col transition-200" :class="{ 'scale-94 op-50 transform-origin-lc': chat.isOpenGroupMember && setting.isMobileSize }">
       <!-- 房间信息 -->
       <ChatRoomInfo class="relative z-10 border-default-3-b shadow-sm" />

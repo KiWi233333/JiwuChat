@@ -10,10 +10,10 @@ const getType = computed(() => {
     case RoomType.GROUP:
       msg = "群";
       break;
-    case RoomType.SELFT:
+    case RoomType.SELF:
       msg = "私";
       break;
-    case RoomType.AICHAT:
+    case RoomType.AI_CHAT:
       msg = "AI";
       break;
   }
@@ -23,13 +23,13 @@ const getType = computed(() => {
 // 点击更多
 function onClickMore() {
   switch (chat.theContact.type) {
-    case RoomType.SELFT:
-    case RoomType.AICHAT:
+    case RoomType.SELF:
+    case RoomType.AI_CHAT:
     case RoomType.GROUP:
       chat.isOpenGroupMember = !chat.isOpenGroupMember;
       break;
-      // case RoomType.SELFT:
-      // case RoomType.AICHAT:
+      // case RoomType.SELF:
+      // case RoomType.AI_CHAT:
       // const friendId = chat?.theContact?.targetUid;
       // if (!friendId) {
       //   console.warn("friend userId is null");
@@ -53,8 +53,8 @@ function navigateToDetail(type?: RoomType) {
   if (type === undefined)
     return;
   switch (type) {
-    case RoomType.SELFT:
-    case RoomType.AICHAT:
+    case RoomType.SELF:
+    case RoomType.AI_CHAT:
       chat.theContact?.targetUid && navigateToUserDetail(chat.theContact?.targetUid);
       break;
     case RoomType.GROUP:
@@ -74,7 +74,7 @@ function navigateToDetail(type?: RoomType) {
       >
         <CardElImage
           loading="lazy"
-          :error-class="contactTypeIconClassMap[chat?.theContact?.type || RoomType.SELFT]"
+          :error-class="contactTypeIconClassMap[chat?.theContact?.type || RoomType.SELF]"
           :alt="chat.theContact.name"
           :default-src="chat?.theContact?.avatar"
           class="h-2rem w-2rem flex-shrink-0 border-default-2 card-default object-cover sm:(h-2.2rem w-2.2rem)"
@@ -86,7 +86,7 @@ function navigateToDetail(type?: RoomType) {
           {{ getType }}
         </el-tag>
       </div>
-      <!-- <span v-if="chat.theContact.type === RoomType.AICHAT" class="border-(1px  solid) rounded px-2 py-1 text-0.65rem text-light">AI生成内容，仅供参考！</span> -->
+      <!-- <span v-if="chat.theContact.type === RoomType.AI_CHAT" class="border-(1px  solid) rounded px-2 py-1 text-0.65rem text-light">AI生成内容，仅供参考！</span> -->
       <i
         class="ml-a flex-row-c-c btn-primary grid-gap-2"
         transition="all  op-60 group-hover:op-100 300  cubic-bezier(0.61, 0.225, 0.195, 1.3)"
