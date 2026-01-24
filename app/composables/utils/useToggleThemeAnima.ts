@@ -59,10 +59,12 @@ export function useModeToggle(mode: "system" | "dark" | "light" | string, event?
     document.documentElement.animate(
       {
         clipPath: colorMode.value === "dark" ? clipPath : [...clipPath].reverse(),
+        fill: "both",
       },
       {
         duration: 800,
         easing: "ease-in-out",
+        fill: "both",
         pseudoElement: colorMode.value === "dark" ? "::view-transition-new(root)" : "::view-transition-old(root)",
       },
     );
