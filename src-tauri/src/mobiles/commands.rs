@@ -1,11 +1,19 @@
 // commands.rs
 use std::path::PathBuf;
+use super::deeplink::types::OAuthCallbackPayload;
 
 #[derive(serde::Serialize)]
 pub struct DirStats {
     pub total_size: u64,
     pub file_count: u64,
     pub dir_count: u64,
+}
+
+/// 获取缓存的 OAuth 回调数据
+/// 返回并清除缓存的 deeplink 回调数据
+#[tauri::command]
+pub fn get_pending_oauth_callback() -> Option<OAuthCallbackPayload> {
+    super::deeplink::take_cached_oauth_callback()
 }
 
 /// 扫描目录统计信息

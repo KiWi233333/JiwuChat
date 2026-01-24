@@ -179,9 +179,9 @@ function handleExpired() {
   setStatus("expired", "授权已过期", "OAuth 凭证已过期，请重新授权");
 }
 
-// 桌面端：监听深度链接回调
+// 桌面端和移动端：监听深度链接回调
 useOAuthDeepLink({
-  autoListen: setting.isDesktop,
+  autoListen: setting.isDesktop || setting.isMobile,
   onCallback: (payload: OAuthCallbackPayload) => {
     processCallbackResult({
       action: payload.action || undefined,

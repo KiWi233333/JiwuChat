@@ -184,10 +184,9 @@ export interface MenuItem {
     }
   }
   &.action {
-    --at-apply: "text-theme-primary  bg-op-20 bg-color-2";
+    --at-apply: "text-theme-primary bg-op-20 bg-color";
     .icon {
       --at-apply: "text-theme-primary op-100 block";
-      filter: drop-shadow(0 0 8px var(--el-color-primary));
     }
   }
   :deep(.el-badge) {

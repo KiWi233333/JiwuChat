@@ -1,4 +1,4 @@
-#[derive(Clone, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct OAuthCallbackPayload {
     pub platform: Option<String>,
     pub action: Option<String>,
