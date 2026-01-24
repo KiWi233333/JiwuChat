@@ -93,7 +93,7 @@
     "husky": "9.1.7",
     "inquirer": "13.2.1",
     "lint-staged": "16.2.7",
-    "nuxt": "4.2.2",
+    "nuxt": "4.3.0",
     "sass": "1.97.3",
     "typescript": "5.9.3",
     "vue-tsc": "3.2.3"
