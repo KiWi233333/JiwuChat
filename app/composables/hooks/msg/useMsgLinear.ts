@@ -169,10 +169,6 @@ function resolveDeleteMsg(msg: WSMsgDelete) {
  */
 export function resolvePinContact(data: WSPinContactMsg) {
   const chat = useChatStore();
-  if (data.roomId !== chat.theRoomId!) {
-    chat.reloadContact(data.roomId);
-    return;
-  }
   // 本房间修改状态
   if (chat.contactMap[data.roomId]) {
     chat.contactMap[data.roomId]!.pinTime = data.pinTime;
