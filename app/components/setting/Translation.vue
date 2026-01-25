@@ -79,19 +79,5 @@ const setting = useSettingStore();
     font-size: 0.8rem;
     --at-apply: "!border-default";
   }
-
-  .el-select-dropdown__list {
-    padding: 0.4rem;
-  }
-  .el-popper.el-select__popper {
-    border-radius: 0.5rem;
-    overflow: hidden;
-  }
-  .el-input__inner {
-    padding-left: 2rem;
-  }
-  .el-select-dropdown__item {
-    border-radius: 0.25rem;
-  }
 }
 </style>
