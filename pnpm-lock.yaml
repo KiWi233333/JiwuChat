@@ -148,8 +148,8 @@ importers:
         specifier: 14.1.0
         version: 14.1.0(magicast@0.5.1)(nuxt@4.3.0(@netlify/blobs@9.1.2)(@parcel/watcher@2.5.1)(@types/node@24.1.0)(@vue/compiler-sfc@3.5.27)(cac@6.7.14)(db0@0.3.4)(eslint@9.39.2(jiti@2.6.1))(ioredis@5.9.2)(magicast@0.5.1)(optionator@0.9.4)(rolldown@1.0.0-beta.53)(rollup@4.56.0)(sass@1.97.3)(terser@5.44.1)(typescript@5.9.3)(vite@7.3.1(@types/node@24.1.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(terser@5.44.1)(yaml@2.8.2))(vue-tsc@3.2.3(typescript@5.9.3))(yaml@2.8.2))(vue@3.5.27(typescript@5.9.3))
       code-inspector-plugin:
-        specifier: 1.3.6
-        version: 1.3.6
+        specifier: 1.4.1
+        version: 1.4.1
       eslint:
         specifier: 9.39.2
         version: 9.39.2(jiti@2.6.1)
@@ -406,23 +406,23 @@ packages:
     resolution: {integrity: sha512-SIOD2DxrRRwQ+jgzlXCqoEFiKOFqaPjhnNTGKXSRLvp1HiOvapLaFG2kEr9dYQTYe8rKrd9uvDUzmAITeNyaHQ==}
     engines: {node: '>=18.0.0'}
 
-  '@code-inspector/core@1.3.6':
-    resolution: {integrity: sha512-bSxf/PWDPY6rv9EFf0mJvTnLnz3927PPrpX6BmQcRKQab+Ez95yRqrVZY8IcBUpaqA/k3etA5rZ1qkN0V4ERtw==}
+  '@code-inspector/core@1.4.1':
+    resolution: {integrity: sha512-k5iLYvrBBPBPODcwuzgEcAZnXU4XTnEO1jOmNQBHCehN6nrMO1m5Efjz35KPkSX+8T4IWvXvLoXR5XPfhDlxug==}
 
-  '@code-inspector/esbuild@1.3.6':
-    resolution: {integrity: sha512-s35dseBXI2yqfX6ZK29Ix941jaE/4KPlZZeMk6B5vDahj75FDUfVxQ7ORy4cX2hyz8CmlOycsY/au5mIvFpAFg==}
+  '@code-inspector/esbuild@1.4.1':
+    resolution: {integrity: sha512-0tf73j0wgsu1Rl5CNe5o5L/GB/lGvQQVjuLTbAB/but+Bw//nHRnlrA29lBzNM6cyBDZzwofa71Q+TH8Fu4aZQ==}
 
-  '@code-inspector/mako@1.3.6':
-    resolution: {integrity: sha512-FJvuTElOi3TUCWTIaYTFYk2iTUD6MlO51SC8SYfwmelhuvnOvTMa2TkylInX16OGb4f7sGNLRj2r+7NNx/gqpw==}
+  '@code-inspector/mako@1.4.1':
+    resolution: {integrity: sha512-inpiJbc8J+qaEYcMgzyAFusuyryZ9i0wUQhLJRbWl1WrUdWTE8xNHDjhPeTVaMav42NTGDnVKJhhKD6tNaxyFA==}
 
-  '@code-inspector/turbopack@1.3.6':
-    resolution: {integrity: sha512-pfXgvZCn4/brpTvqy8E0HTe6V/ksVKEPQo697Nt5k22kBnlEM61UT3rI2Art+fDDEMPQTxVOFpdbwCKSLwMnmQ==}
+  '@code-inspector/turbopack@1.4.1':
+    resolution: {integrity: sha512-xVefk907E39U/oywR9YiEqJn1VlNBHIcIsYkjNnFp0U3qBb3A40VqivlCqkWaP9xHAwEH8/UT3Sfh3aoUPC9/Q==}
 
-  '@code-inspector/vite@1.3.6':
-    resolution: {integrity: sha512-vXYvzGc0S1NR4p3BeD1Xx2170OnyecZD0GtebLlTiHw/cetzlrBHVpbkIwIEzzzpTYYshwwDt8ZbuvdjmqhHgw==}
+  '@code-inspector/vite@1.4.1':
+    resolution: {integrity: sha512-ptbGkmtw5mvuFse6Kjmd6bCgm+isHrBq+HumWlAMBH//Qb2frHkEV7kWjO6/AkBXfm/ccNJy+jNwWq0632ChDg==}
 
-  '@code-inspector/webpack@1.3.6':
-    resolution: {integrity: sha512-bi/+vsym9d6NXQQ++Phk74VLMiVoGKjgPHr445j/D43URG8AN8yYa+gRDBEDcZx4B128dihrVMxEO8+OgWGjTw==}
+  '@code-inspector/webpack@1.4.1':
+    resolution: {integrity: sha512-UkqC5MsWRVJT2y10GM7tIZdQmFuGAlArJSfq2hq727eXMDV3otY5d1UCQopYvUIEC90QQNHJDeK4e+UQipF6AQ==}
 
   '@codemirror/autocomplete@6.18.6':
     resolution: {integrity: sha512-PHHBXFomUs5DF+9tCOM/UoW6XQ4R44lLNNhRaW9PKPTU0D7lIjRg3ElxaJnTwsl/oHiR93WSXDBrekhoUGCPtg==}
@@ -3040,8 +3040,8 @@ packages:
     resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
 
-  code-inspector-plugin@1.3.6:
-    resolution: {integrity: sha512-ddTg8embDqLZxKEdSNOm+/0YnVVgWKr10+Bu2qFqQDObj/3twGh0Z23TIz+5/URxfRhTPbp2sUSpWlw78piJbQ==}
+  code-inspector-plugin@1.4.1:
+    resolution: {integrity: sha512-DuOEoOWtkz3Mq6JTogJjSfXkVnXuGy6Gjfi+eBYtgRFlZmQ5sw1/LacsPnTK89O4Oz6gZj+zjxpwNfpWg3htpA==}
 
   codemirror@6.0.2:
     resolution: {integrity: sha512-VhydHotNW5w1UGK0Qj96BwSk/Zqbp9WbnyK2W/eVMv4QyF41INRGpjUhFJY7/uDNuudSc33a/PKr4iDqRduvHw==}
@@ -6744,7 +6744,7 @@ snapshots:
 
   '@cloudflare/kv-asset-handler@0.4.2': {}
 
-  '@code-inspector/core@1.3.6':
+  '@code-inspector/core@1.4.1':
     dependencies:
       '@vue/compiler-dom': 3.5.27
       chalk: 4.1.2
@@ -6754,35 +6754,35 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@code-inspector/esbuild@1.3.6':
+  '@code-inspector/esbuild@1.4.1':
     dependencies:
-      '@code-inspector/core': 1.3.6
+      '@code-inspector/core': 1.4.1
     transitivePeerDependencies:
       - supports-color
 
-  '@code-inspector/mako@1.3.6':
+  '@code-inspector/mako@1.4.1':
     dependencies:
-      '@code-inspector/core': 1.3.6
+      '@code-inspector/core': 1.4.1
     transitivePeerDependencies:
       - supports-color
 
-  '@code-inspector/turbopack@1.3.6':
+  '@code-inspector/turbopack@1.4.1':
     dependencies:
-      '@code-inspector/core': 1.3.6
-      '@code-inspector/webpack': 1.3.6
+      '@code-inspector/core': 1.4.1
+      '@code-inspector/webpack': 1.4.1
     transitivePeerDependencies:
       - supports-color
 
-  '@code-inspector/vite@1.3.6':
+  '@code-inspector/vite@1.4.1':
     dependencies:
-      '@code-inspector/core': 1.3.6
+      '@code-inspector/core': 1.4.1
       chalk: 4.1.1
     transitivePeerDependencies:
       - supports-color
 
-  '@code-inspector/webpack@1.3.6':
+  '@code-inspector/webpack@1.4.1':
     dependencies:
-      '@code-inspector/core': 1.3.6
+      '@code-inspector/core': 1.4.1
     transitivePeerDependencies:
       - supports-color
 
@@ -9848,14 +9848,14 @@ snapshots:
 
   cluster-key-slot@1.1.2: {}
 
-  code-inspector-plugin@1.3.6:
+  code-inspector-plugin@1.4.1:
     dependencies:
-      '@code-inspector/core': 1.3.6
-      '@code-inspector/esbuild': 1.3.6
-      '@code-inspector/mako': 1.3.6
-      '@code-inspector/turbopack': 1.3.6
-      '@code-inspector/vite': 1.3.6
-      '@code-inspector/webpack': 1.3.6
+      '@code-inspector/core': 1.4.1
+      '@code-inspector/esbuild': 1.4.1
+      '@code-inspector/mako': 1.4.1
+      '@code-inspector/turbopack': 1.4.1
+      '@code-inspector/vite': 1.4.1
+      '@code-inspector/webpack': 1.4.1
       chalk: 4.1.1
     transitivePeerDependencies:
       - supports-color
