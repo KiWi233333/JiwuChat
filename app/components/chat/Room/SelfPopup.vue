@@ -115,7 +115,7 @@ async function onExitOrDeleteFriend() {
     <div class="w-full flex-1 select-none text-3.5 leading-1.8em">
       <!-- 头像和基本信息 -->
       <div flex>
-        <CardElImage
+        <CommonElImage
           :src="BaseUrlImg + targetUserInfo.avatar"
           fit="cover"
           :preview-src-list="[BaseUrlImg + targetUserInfo.avatar]"
@@ -130,7 +130,7 @@ async function onExitOrDeleteFriend() {
               {{ targetUserInfo.nickname || chat.theContact?.name || '未设置' }}
             </span>
             <i ml-a flex-shrink-0 p-2 :class="targetUserInfo.gender === Gender.BOY ? 'i-tabler:gender-male text-blue' : targetUserInfo.gender === Gender.GIRL ? 'i-tabler:gender-female text-pink' : 'i-tabler:gender-transgender text-yellow'" />
-            <BtnElButton
+            <CommonElButton
               size="small"
               class="ml-2 flex-shrink-0 text-mini tracking-0.2em hover:shadow"
               text
@@ -139,7 +139,7 @@ async function onExitOrDeleteFriend() {
               @click="chat.theContact.targetUid && navigateToUserDetail(chat.theContact.targetUid)"
             >
               资料
-            </BtnElButton>
+            </CommonElButton>
           </div>
           <p mt-a truncate text-mini>
             邮箱：<BtnCopyText v-if="targetUserInfo.email" icon="i-solar:copy-bold-duotone" :text="targetUserInfo.email" class="inline" />

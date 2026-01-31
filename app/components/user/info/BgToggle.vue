@@ -35,7 +35,7 @@ const bgUrl = useLocalStorage("jiwu_user_bg", "/image/user-bg/kiwi-bg-4.jpg");
       <template #default>
         <ClientOnly>
           <div class="img-list grid grid-cols-3 mt-4 w-90vw gap-4 sm:w-400px">
-            <card-el-image
+            <CommonElImage
               v-for="(p, i) in bgList"
               :key="i"
               loading="lazy"
@@ -49,7 +49,7 @@ const bgUrl = useLocalStorage("jiwu_user_bg", "/image/user-bg/kiwi-bg-4.jpg");
         </ClientOnly>
       </template>
     </el-popover>
-    <card-el-image
+    <CommonElImage
       loading="lazy"
       :src="BaseUrlImg + bgUrl"
       object-cover

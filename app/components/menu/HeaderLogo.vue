@@ -4,13 +4,13 @@ import { appName } from "@/constants/index";
 
 <template>
   <div class="flex select-none items-center tracking-0.1em">
-    <!-- <CardAvatar
+    <!-- <CommonAvatar
       style="--anima: blur-in;"
       src="/logo.png"
       class="mr-2 h-7 w-7 shadow-sm"
     /> -->
     <div class="mr-2 h-7 w-7 shadow-lg card-rounded-df">
-      <OtherMetallicPaint
+      <CommonMetallicPaint
         image-url="/logo.png"
         class="card-rounded-df"
         :params="{

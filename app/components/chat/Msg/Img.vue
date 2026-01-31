@@ -61,7 +61,7 @@ function handleImagePreview() {
         class="max-h-50vh max-w-76vw cursor-pointer border-default-2 card-default shadow-sm transition-shadow md:(max-h-18rem max-w-18rem) hover:shadow"
         @click="handleImagePreview"
       >
-        <CardElImage
+        <CommonElImage
           :src="getUrl"
           load-class="sky-loading block absolute  top-0"
           class="h-full w-full card-rounded-df"

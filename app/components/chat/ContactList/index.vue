@@ -412,7 +412,7 @@ onDeactivated(() => {
       </div>
     </div>
     <!-- 会话列表 -->
-    <ListVirtualScrollList
+    <CommonListVirtualScrollList
       ref="scrollbarRef"
       :overscan="20"
       :items="chat.getContactList"
@@ -461,7 +461,7 @@ onDeactivated(() => {
             :value="room.unreadCount"
             class="badge flex-shrink-0 !h-10 !w-10"
           >
-            <CardElImage
+            <CommonElImage
               :error-class="contactTypeIconClassMap[(room as ChatContactVO).type]"
               :default-src="room.avatar"
               fit="cover"
@@ -499,7 +499,7 @@ onDeactivated(() => {
           <span>快去找人聊天吧！</span>
         </div>
       </template>
-    </ListVirtualScrollList>
+    </CommonListVirtualScrollList>
   </div>
 </template>
 

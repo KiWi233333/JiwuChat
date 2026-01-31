@@ -60,7 +60,7 @@ loadData();
         },
       }" class="flex flex-col"
     >
-      <CardElImage
+      <CommonElImage
         loading="lazy"
         transition-200
         hover:transform-scale-110

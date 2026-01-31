@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from "element-plus";
 import type { Result } from "~/types/result";
-import { CardLoading } from "#components";
+import { CommonLoading } from "#components";
 import { MdPreview } from "md-editor-v3";
 import { DeviceType, getRegisterCode, toLoginByPwd } from "~/composables/api/user";
 import { checkUsernameExists } from "~/composables/api/user/info";
@@ -477,15 +477,15 @@ function toLoginForm() {
       />
     </el-form-item>
     <el-form-item style="margin: 0;">
-      <BtnElButton
+      <CommonElButton
         :loading="isLoading"
-        :loading-icon="CardLoading"
+        :loading-icon="CommonLoading"
         type="info"
         class="submit"
         @click="onRegister(formRef)"
       >
         立即注册
-      </BtnElButton>
+      </CommonElButton>
     </el-form-item>
     <div class="mt-3 flex-row-bt-c text-right">
       <el-checkbox v-model="isAgreeTerm" style="--el-color-primary: var(--el-color-info);padding: 0;font-size: inherit;opacity: 0.8;float: left; height: fit-content;">
@@ -498,7 +498,7 @@ function toLoginForm() {
         返回登录
       </span>
     </div>
-    <DialogPopup
+    <CommonPopup
       v-model="agreeDetail.showDetail"
       :duration="200"
       :min-scale="0.98"
@@ -525,7 +525,7 @@ function toLoginForm() {
           />
         </el-scrollbar>
         <div class="mt-2 mt-4 flex-row-c-c">
-          <BtnElButton
+          <CommonElButton
             :icon="ElIconCheck"
             type="info"
             plain
@@ -535,10 +535,10 @@ function toLoginForm() {
             }"
           >
             我已阅读并同意
-          </BtnElButton>
+          </CommonElButton>
         </div>
       </div>
-    </DialogPopup>
+    </CommonPopup>
   </el-form>
 </template>
 

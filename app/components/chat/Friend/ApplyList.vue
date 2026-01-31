@@ -140,7 +140,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </template>
-    <ListAutoIncre
+    <CommonListAutoIncre
       :immediate="false"
       :auto-stop="true"
       :no-more="pageInfo.isLast"
@@ -150,7 +150,7 @@ onBeforeUnmount(() => {
         v-for="p in list" :key="p.applyId"
         class="item"
       >
-        <CardElImage
+        <CommonElImage
           class="avatar-icon flex-shrink-0 cursor-pointer"
           :src="BaseUrlImg + p.user?.avatar" fit="cover" @click="chat.setTheFriendOpt(FriendOptType.User, {
             id: p.userId,
@@ -159,7 +159,7 @@ onBeforeUnmount(() => {
           <template #empty>
             <i class="i-solar-user-line-duotone p-2.5 op-80" />
           </template>
-        </CardElImage>
+        </CommonElImage>
         <div class="flex flex-col truncate">
           <p truncate text-sm>
             {{ p.user?.nickName || "未填写" }}
@@ -171,10 +171,10 @@ onBeforeUnmount(() => {
         <div class="ml-a flex-row-c-c flex-shrink-0 select-none">
           <template v-if="p.status === ChatApplyStatusType.Load">
             <el-button-group class="bg-color-2 transition-200 card-rounded-df hover:shadow">
-              <BtnElButton size="small" @click="onArgeeFriend(p.applyId)">
+              <CommonElButton size="small" @click="onArgeeFriend(p.applyId)">
                 同意
-              </BtnElButton>
-              <BtnElButton size="small" style="padding: 0 0.3em;" @click.stop="openItemId = openItemId === p.applyId ? undefined : p.applyId">
+              </CommonElButton>
+              <CommonElButton size="small" style="padding: 0 0.3em;" @click.stop="openItemId = openItemId === p.applyId ? undefined : p.applyId">
                 <el-popover
                   :visible="openItemId === p.applyId"
                   popper-class="!border-default !p-1 !min-w-fit"
@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
                     </div>
                   </template>
                 </el-popover>
-              </BtnElButton>
+              </CommonElButton>
             </el-button-group>
           </template>
           <small v-else>{{ applyStatusTextMap[p.status] }}</small>
@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
           {{ list.length ? "没有更多了" : "快去认识其他人" }}
         </div>
       </template>
-    </ListAutoIncre>
+    </CommonListAutoIncre>
   </div>
 </template>
 

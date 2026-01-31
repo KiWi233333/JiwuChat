@@ -87,7 +87,7 @@ function initWindowAnimate() {
           }"
         >
           <!-- 标题 -->
-          <HeadrHeaderLogo v-if="!setting.isMobileSize" class="ml-4" />
+          <MenuHeaderLogo v-if="!setting.isMobileSize" class="ml-4" />
           <!-- 菜单按钮 -->
           <div class="group ml-a flex flex items-center gap-2 p-2 sm:px-3">
             <BtnTheme
@@ -119,14 +119,14 @@ function initWindowAnimate() {
     >
       <div data-fades class="form-main relative mx-a w-full text-center sm:px-4">
         <!-- 登录 -->
-        <FormLoginForm
+        <AuthLoginForm
           v-if="user.showLoginPageType === 'login'"
           key="login-form"
           style="--anima: blur-in;"
           class="login-form"
         />
         <!-- 注册 -->
-        <FormRegisterForm
+        <AuthRegisterForm
           v-else-if="user.showLoginPageType === 'register'"
           key="register-form"
           style="--anima: blur-in;"

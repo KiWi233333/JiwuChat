@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { MenuItem } from "./ChatMenu.vue";
+import type { MenuItem } from "./Chat.vue";
 import { NuxtLink } from "#components";
 
 defineEmits<{

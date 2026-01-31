@@ -39,7 +39,7 @@ function closePhone() {
 
 <template>
   <!-- 密码修改弹窗 -->
-  <DialogPopup
+  <CommonPopup
     :model-value="modelValue.showUpdatePwd"
     :show-close="true"
     :close-on-click-modal="true"
@@ -49,10 +49,10 @@ function closePhone() {
     @cancel="closePwd"
   >
     <UserSafePwdForm @close="closePwd" />
-  </DialogPopup>
+  </CommonPopup>
 
   <!-- 邮箱修改弹窗 -->
-  <DialogPopup
+  <CommonPopup
     :model-value="modelValue.showUpdateEmail"
     :show-close="true"
     :close-on-click-modal="true"
@@ -62,10 +62,10 @@ function closePhone() {
     @cancel="closeEmail"
   >
     <UserSafeEmailForm @close="closeEmail" />
-  </DialogPopup>
+  </CommonPopup>
 
   <!-- 手机号修改弹窗 -->
-  <DialogPopup
+  <CommonPopup
     :model-value="modelValue.showUpdatePhone"
     :show-close="true"
     :close-on-click-modal="true"
@@ -75,7 +75,7 @@ function closePhone() {
     @cancel="closePhone"
   >
     <UserSafePhoneForm @close="closePhone" />
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style scoped lang="scss"></style>

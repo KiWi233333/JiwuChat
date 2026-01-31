@@ -79,14 +79,14 @@ const menuList = reactive([
   >
     <template #reference>
       <slot name="btn">
-        <BtnElButton
+        <CommonElButton
           text
           size="small"
           title="菜单"
           v-bind="$attrs"
         >
           <i class="i-solar:add-circle-outline hover:i-solar:add-circle-bold" />
-        </BtnElButton>
+        </CommonElButton>
       </slot>
     </template>
   </MenuPopper>

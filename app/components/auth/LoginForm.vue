@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { OAuthCallbackVO, OAuthPlatformVO } from "~/composables/api/user/oauth";
 import type { OAuthCallbackPayload } from "~/composables/hooks/oauth/useDeepLink";
-import { CardLoading } from "#components";
+import { CommonLoading } from "#components";
 import {
   DeviceType,
   getLoginCodeByType,
@@ -505,7 +505,7 @@ defineExpose({
       <div class="h-24 flex-row-c-c">
         <transition name="pop-list" mode="out-in">
           <div :key="getShowAvatarUrl" class="header flex-row-c-c">
-            <CardAvatar
+            <CommonAvatar
               style="--anima: blur-in;"
               :src="getShowAvatarUrl"
               :class="{
@@ -649,7 +649,7 @@ defineExpose({
           class="submit w-full tracking-0.2em shadow"
           style="padding: 20px"
           :loading="isLoading || userStore.isOnLogining"
-          :loading-icon="CardLoading"
+          :loading-icon="CommonLoading"
           @keyup.enter="onLogin(formRef)"
           @click="onLogin(formRef)"
         >
@@ -695,7 +695,7 @@ defineExpose({
             :title="`使用 ${platform.name} 登录`"
             @click="handleOAuthLogin(platform.code)"
           >
-            <CardElImage
+            <CommonElImage
               :src="getOAuthPlatformIcon(platform.code)"
               error-root-class="hidden"
               :alt="platform.name"
@@ -706,7 +706,7 @@ defineExpose({
               ]"
             />
             <!-- loading icon -->
-            <CardLoading
+            <CommonLoading
               v-if="authorizeUrlLoadings[platform.code]"
               size="1.2em"
               class="absolute z-1 animate-spin op-50"
@@ -717,7 +717,7 @@ defineExpose({
     </template>
     <template v-else>
       <div class="mt-16 flex-row-c-c flex-col gap-8">
-        <CardAvatar :src="BaseUrlImg + userStore.userInfo.avatar" class="h-6rem w-6rem border-default rounded-full bg-color-2 sm:(h-8rem w-8rem)" />
+        <CommonAvatar :src="BaseUrlImg + userStore.userInfo.avatar" class="h-6rem w-6rem border-default rounded-full bg-color-2 sm:(h-8rem w-8rem)" />
         <div text-center>
           <span>
             {{ userStore.userInfo.username || "未登录" }}
@@ -726,19 +726,19 @@ defineExpose({
           <small op-80 el-color-info>（{{ userStore.userInfo.username ? "已登录" : "请登录" }}）</small>
         </div>
         <div>
-          <BtnElButton
+          <CommonElButton
             style="width: 8em;"
             type="primary"
             transition-icon
             :loading="userStore.isOnLogining"
-            :loading-icon="CardLoading"
+            :loading-icon="CommonLoading"
             icon-class="i-solar-alt-arrow-left-bold"
             mr-2 sm:mr-4
             @click="navigateTo('/')"
           >
             {{ userStore.isOnLogining ? "登录中..." : "前往聊天" }}
-          </BtnElButton>
-          <BtnElButton
+          </CommonElButton>
+          <CommonElButton
             style="width: 8em;"
             type="danger"
             transition-icon plain
@@ -746,7 +746,7 @@ defineExpose({
             @click="userStore.exitLogin"
           >
             退出登录
-          </BtnElButton>
+          </CommonElButton>
         </div>
       </div>
     </template>

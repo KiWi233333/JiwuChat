@@ -59,7 +59,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
 <template>
   <div class="msg" :class="{ self: isSelf }" v-bind="$attrs">
     <!-- 头像 -->
-    <CardElImage
+    <CommonElImage
       ctx-name="avatar"
       error-class="i-solar:user-bold-duotone"
       load-class=" "

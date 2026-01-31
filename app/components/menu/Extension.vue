@@ -137,7 +137,7 @@ function createItem() {
 </script>
 
 <template>
-  <DialogPopup
+  <CommonPopup
     v-model="isShow"
     :duration="200"
     :min-scale="0.98"
@@ -150,7 +150,7 @@ function createItem() {
       </h3>
     </template>
     <!-- 合并后的菜单 -->
-    <ListTransitionGroup
+    <CommonListTransitionGroup
       tag="div"
       name="pop-list"
       class="grid grid-auto-rows-min cols-3 mb-4 mt-2 min-h-14em select-none items-start gap-3 sm:(cols-4 gap-4)"
@@ -240,7 +240,7 @@ function createItem() {
           自定义
         </div>
       </div>
-    </ListTransitionGroup>
+    </CommonListTransitionGroup>
     <template #footer>
       <div class="pb-2 text-right">
         <el-button class="ml-a" size="small" @click="isShow = false">
@@ -254,7 +254,7 @@ function createItem() {
         此为预览功能，正式上线前将调整。
       </div>
     </template>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
   <style lang="scss" scoped>

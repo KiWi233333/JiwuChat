@@ -408,7 +408,7 @@ defineExpose({
       >
         <!-- 远程视频/头像显示 -->
         <div v-if="callType === CallTypeEnum.AUDIO || !maxWindStream?.getVideoTracks()?.[0]?.enabled" class="relative flex-row-c-c flex-col">
-          <CardElImage
+          <CommonElImage
             :draggable="false"
             :src="BaseUrlImg + theContact.avatar"
             class="avatar mx-a h-20 w-20 select-none border-default-hover rounded-full shadow-lg"
@@ -526,7 +526,7 @@ defineExpose({
           class="h-24 w-16 cursor-pointer border-default-hover card-default-br object-cover md:(h-30 w-20)"
           @click="isSelfMinView = !isSelfMinView"
         />
-        <CardElImage
+        <CommonElImage
           v-show="!minWindStream?.getVideoTracks()[0]?.enabled" title="点击切换"
           :src="isSelfMinView ? BaseUrlImg + user.userInfo.avatar : BaseUrlImg + theContact.avatar"
           class="h-24 w-16 cursor-pointer select-none border-default card-default-br object-cover md:(h-30 w-20)"
@@ -546,7 +546,7 @@ defineExpose({
         disablepictureinpicture
         v-bind="maxWindStreamProps" class="absolute left-0 top-0 mx-a h-full w-full"
       />
-      <CardElImage
+      <CommonElImage
         v-show="!maxWindStream?.getVideoTracks()[0]?.enabled"
         :src="!isSelfMinView ? BaseUrlImg + user.userInfo.avatar : BaseUrlImg + theContact.avatar"
         class="absolute left-0 top-0 mx-a h-full w-full select-none filter-blur"

@@ -25,11 +25,11 @@ onMounted(() => {
         @click.self="exitForm"
       >
         <!-- 登录 -->
-        <FormLoginForm v-if="user.showLoginPageType === 'login'" key="login-form" />
+        <AuthLoginForm v-if="user.showLoginPageType === 'login'" key="login-form" />
         <!-- 注册 -->
-        <FormRegisterForm v-else-if="user.showLoginPageType === 'register'" key="register-form" />
+        <AuthRegisterForm v-else-if="user.showLoginPageType === 'register'" key="register-form" />
         <!-- 找回密码 -->
-        <!-- <FormRegisterForm key="form" v-if="user.showUpdatePwd" /> -->
+        <!-- <AuthRegisterForm key="form" v-if="user.showUpdatePwd" /> -->
       </div>
     </transition>
   </div>

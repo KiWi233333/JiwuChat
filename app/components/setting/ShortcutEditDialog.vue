@@ -232,7 +232,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <DialogPopup
+  <CommonPopup
     v-model="dialogVisible"
     :close-on-click-modal="true"
     :show-close="false"
@@ -300,7 +300,7 @@ onUnmounted(() => {
         </el-button>
       </div>
     </template>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style scoped lang="scss">

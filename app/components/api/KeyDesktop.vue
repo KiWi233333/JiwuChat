@@ -21,6 +21,7 @@ import {
 import { useWatchComposition } from "@/composables/hooks/useWatchComposition";
 
 const user = useUserStore();
+const setting = useSettingStore();
 
 // 响应式数据
 const loading = ref(false);
@@ -91,25 +92,6 @@ function getStatusType(status: ApiKeyStatus) {
   }
 }
 
-// 获取头像首字母
-function getAvatarLetter(keyName: string) {
-  return keyName?.charAt(0)?.toUpperCase() || "?";
-}
-
-// 获取头像背景色
-function getAvatarBgColor(keyName: string) {
-  const colors = [
-    "bg-blue-400",
-    "bg-orange-400",
-    "bg-green-400",
-    "bg-purple-400",
-    "bg-pink-400",
-    "bg-indigo-400",
-  ];
-  const index = (keyName?.charCodeAt(0) || 0) % colors.length;
-  return colors[index];
-}
-
 // 重置对话框表单
 function resetDialogForm() {
   Object.assign(dialogForm, {
@@ -123,16 +105,8 @@ function resetDialogForm() {
   });
 }
 
-// 是否没有更多数据
-const noMore = computed(() => {
-  if (pagination.total === 0) {
-    return false;
-  }
-  return tableData.value.length >= pagination.total;
-});
-
 // 加载数据
-async function loadData(isLoadMore = false) {
+async function loadData() {
   try {
     loading.value = true;
     const params = {
@@ -144,14 +118,7 @@ async function loadData(isLoadMore = false) {
     const token = user.token;
     const result = await getApiKeyPage(params, token);
     if (result.data) {
-      if (isLoadMore) {
-        // 追加数据
-        tableData.value.push(...result.data.records);
-      }
-      else {
-        // 替换数据
-        tableData.value = result.data.records;
-      }
+      tableData.value = result.data.records;
       pagination.total = result.data.total;
     }
   }
@@ -160,21 +127,11 @@ async function loadData(isLoadMore = false) {
   }
 }
 
-// 加载更多
-function handleLoadMore() {
-  if (loading.value || noMore.value) {
-    return;
-  }
-  pagination.current += 1;
-  loadData(true);
-}
-
 // 搜索
 function handleSearch() {
   nextTick(() => {
     pagination.current = 1;
-    tableData.value = [];
-    loadData(false);
+    loadData();
   });
 }
 
@@ -188,15 +145,19 @@ function handleReset() {
     pageSize: 10,
   });
   pagination.current = 1;
-  tableData.value = [];
-  loadData(false);
+  loadData();
 }
 
-// 下拉刷新
-async function handleRefresh() {
+// 分页变化
+function handleSizeChange(size: number) {
+  pagination.size = size;
   pagination.current = 1;
-  tableData.value = [];
-  await loadData(false);
+  loadData();
+}
+
+function handleCurrentChange(current: number) {
+  pagination.current = current;
+  loadData();
 }
 
 const searchRef = useTemplateRef<HTMLInputElement>("searchRef");
@@ -315,7 +276,7 @@ async function handleDialogConfirm() {
 }
 
 
-// 复制Key
+// 复制新创建的Key
 async function copyKey(key: string, msg = "API Key已复制到剪贴板！") {
   try {
     useCopyText(key);
@@ -384,20 +345,21 @@ onActivated(() => {
 </script>
 
 <template>
-  <div class="min-w-0 w-full flex flex-1 flex-col bg-color-3 px-4">
+  <div class="min-w-0 w-full flex flex-1 flex-col card-bg-color-2 px-4 sm:bg-color sm:px-6">
     <!-- 页面头部 -->
-    <div class="mb-4 mt-6 flex select-none items-center justify-between">
+    <div class="mb-4 mt-10 flex select-none items-end">
       <div>
-        <h2 class="text-lg text-color font-500">
+        <h3 class="flex items-center text-xl text-color font-500">
+          <i i-solar:key-bold-duotone mr-2 inline-block p-2.5 text-secondary hover:animate-spin />
           API Key
-        </h2>
-        <p class="text-color-3 mt-1 text-xs">
-          管理你的开放接口密钥
+        </h3>
+        <p class="mt-1 text-mini">
+          管理你的开放 API 密钥
         </p>
       </div>
-      <div class="flex items-center gap-2">
-        <!-- GitHub图标 -->
-        <el-tooltip content="安装 Cherry Studio MCP 应用" placement="top">
+      <div class="ml-a flex items-center gap-2 sm:gap-3">
+        <!-- cherry-studio -->
+        <el-tooltip content="安装 Cherry Studio MCP 应用" :offset="20" placement="top">
           <a data-fade class="flex-row-c-c" :href="cherryStudioMCPDeepLink" rel="noreferrer" @click.stop="handleOpen(cherryStudioMCPDeepLink, $event)">
             <ElAvatar
               size="small" class="shadow"
@@ -405,136 +367,125 @@ onActivated(() => {
             />
           </a>
         </el-tooltip>
-        <!-- 添加按钮 -->
-        <i class="i-solar:add-circle-bold block h-7 w-7 cursor-pointer hover:op-80" @click="handleAddKey" />
+        <!-- cursor -->
+        <el-tooltip content="安装 Cursor MCP 应用" :offset="20" placement="top">
+          <a data-fade style="--lv: 2;" class="flex-row-c-c" :href="cursorMCPDeepLink" rel="noreferrer" @click.stop="handleOpen(cursorMCPDeepLink, $event)">
+            <ElAvatar
+              size="small" class="shadow"
+              src="data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjFlbSIgc3R5bGU9ImZsZXg6bm9uZTtsaW5lLWhlaWdodDoxIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIxZW0iIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRpdGxlPkN1cnNvcjwvdGl0bGU+PHBhdGggZD0iTTExLjkyNSAyNGwxMC40MjUtNi0xMC40MjUtNkwxLjUgMThsMTAuNDI1IDZ6IiBmaWxsPSJ1cmwoI2xvYmUtaWNvbnMtY3Vyc29ydW5kZWZpbmVkLWZpbGwtMCkiPjwvcGF0aD48cGF0aCBkPSJNMjIuMzUgMThWNkwxMS45MjUgMHYxMmwxMC40MjUgNnoiIGZpbGw9InVybCgjbG9iZS1pY29ucy1jdXJzb3J1bmRlZmluZWQtZmlsbC0xKSI+PC9wYXRoPjxwYXRoIGQ9Ik0xMS45MjUgMEwxLjUgNnYxMmwxMC40MjUtNlYweiIgZmlsbD0idXJsKCNsb2JlLWljb25zLWN1cnNvcnVuZGVmaW5lZC1maWxsLTIpIj48L3BhdGg+PHBhdGggZD0iTTIyLjM1IDZMMTEuOTI1IDI0VjEyTDIyLjM1IDZ6IiBmaWxsPSIjNTU1Ij48L3BhdGg+PHBhdGggZD0iTTIyLjM1IDZsLTEwLjQyNSA2TDEuNSA2aDIwLjg1eiIgZmlsbD0iIzAwMCI+PC9wYXRoPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImxvYmUtaWNvbnMtY3Vyc29ydW5kZWZpbmVkLWZpbGwtMCIgeDE9IjExLjkyNSIgeDI9IjExLjkyNSIgeTE9IjEyIiB5Mj0iMjQiPjxzdG9wIG9mZnNldD0iLjE2IiBzdG9wLWNvbG9yPSIjMDAwIiBzdG9wLW9wYWNpdHk9Ii4zOSI+PC9zdG9wPjxzdG9wIG9mZnNldD0iLjY1OCIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuOCI+PC9zdG9wPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIiBpZD0ibG9iZS1pY29ucy1jdXJzb3J1bmRlZmluZWQtZmlsbC0xIiB4MT0iMjIuMzUiIHgyPSIxMS45MjUiIHkxPSI2LjAzNyIgeTI9IjEyLjE1Ij48c3RvcCBvZmZzZXQ9Ii4xODIiIHN0b3AtY29sb3I9IiMwMDAiIHN0b3Atb3BhY2l0eT0iLjMxIj48L3N0b3A+PHN0b3Agb2Zmc2V0PSIuNzE1IiBzdG9wLWNvbG9yPSIjMDAwIiBzdG9wLW9wYWNpdHk9IjAiPjwvc3RvcD48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImxvYmUtaWNvbnMtY3Vyc29ydW5kZWZpbmVkLWZpbGwtMiIgeDE9IjExLjkyNSIgeDI9IjEuNSIgeTE9IjAiIHkyPSIxOCI+PHN0b3Agc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuNiI+PC9zdG9wPjxzdG9wIG9mZnNldD0iLjY2NyIgc3RvcC1jb2xvcj0iIzAwMCIgc3RvcC1vcGFjaXR5PSIuMjIiPjwvc3RvcD48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48L3N2Zz4="
+            />
+          </a>
+        </el-tooltip>
+        <!-- 获取mcp应用 -->
+        <el-button bg style="height: 1.8rem;margin: 0;" size="small" @click="handleGetMcpApp">
+          MCP 应用
+        </el-button>
+        <!-- 添加 -->
+        <el-button type="primary" size="small" style="height: 1.8rem;margin: 0;" @click="handleAddKey">
+          创建 API key
+        </el-button>
       </div>
     </div>
-
-    <!-- 标签页 -->
-    <div class="mb-4 flex-row-c-c gap-8">
-      <el-segmented
-        v-model="searchForm.status"
-        class="segmented shadown-none w-full"
-        :options="apiKeyStatusOptions"
-        @change="handleSearch"
-      />
-
-      <!-- 搜索框 -->
+    <div class="flex select-none items-center pb-4">
+      <!-- 搜索表单 -->
       <el-input
         ref="searchRef"
         v-model="searchForm.keyName"
-        placeholder="搜索 Key 名称..."
+        placeholder="搜索 Key 名称"
         clearable
         autocomplete="off"
-        class="search w-full"
+        class="search mr-2 w-10em sm:w-14rem"
         @keydown="handleSearchKeyName"
-      >
-        <template #prefix>
-          <i class="i-solar:magnifer-linear" />
-        </template>
-      </el-input>
+      />
+      <el-segmented v-model="searchForm.status" class="segmented" :options="apiKeyStatusOptions" @change="handleSearch" />
+      <el-button class="ml-3 !border-default-2-hover !bg-color" style="padding: 0 0.6em;font-size: 1rem;" :icon="ElIconSearch" bg text @click="handleSearch" />
+      <el-button v-show="searchForm.keyName !== '' || searchForm.status !== undefined" class="!border-default-2-hover !bg-color" style="padding: 0 0.6em;font-size: 1rem;" bg text :icon="ElIconRefresh" @click="handleReset" />
     </div>
 
-    <!-- API Key 列表 -->
-    <el-scrollbar height="calc(100vh - 16.75rem)" class="flex flex-1 flex-col pb-4">
-      <ListAutoIncre
-        :no-more="noMore"
-        :loading="loading"
-        :immediate="false"
-        :enable-pull-to-refresh="true"
-        :on-refresh="handleRefresh"
-        class="flex flex-1 flex-col gap-3"
-        loading-class="op-0"
-        @load="handleLoadMore"
-      >
-        <template #default>
-          <div data-fades class="flex flex-col gap-4">
-            <div
-              v-for="item in tableData"
-              :key="item.id"
-              v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.025)' }"
-              class="border border-default-2 rounded-lg bg-color p-4"
-            >
-              <div class="mb-3 flex items-center gap-3">
-                <div class="min-w-0 flex flex-1 items-center gap-2">
-                  <div class="truncate text-sm text-color font-500">
-                    {{ item.keyName }}
-                  </div>
-                  <div class="text-color-3 truncate text-xs">
-                    创建于 {{ item.createTime?.split(' ')[0] || '-' }}
-                  </div>
-                </div>
-                <!-- 状态 -->
-                <div class="flex shrink-0 items-center gap-1">
-                  <span class="dot h-2 w-2 rounded-full" :class="getStatusType(item.status)" />
-                  <span class="text-color-3 text-xs">{{ item.statusDesc }}</span>
-                </div>
+    <!-- 数据表格 -->
+    <div class="min-w-0 w-full flex flex-1 flex-col">
+      <div class="overflow-hidden border-default bg-color-3 card-rounded-df">
+        <el-table
+          :data="tableData"
+          :border="false"
+          max-height="100%"
+          header-cell-class-name="!font-400 !bg-color"
+          class="w-full"
+          empty-text="暂无数据"
+        >
+          <el-table-column prop="keyName" label="Key名称" min-width="110" />
+          <el-table-column prop="apiKeyMasked" label="Key" min-width="110" show-overflow-tooltip>
+            <!-- <template #default="scope"> -->
+            <!-- <BtnCopyText :text="scope.row.apiKeyMasked" icon="i-solar:copy-bold-duotone" /> -->
+            <!-- </template> -->
+          </el-table-column>
+          <el-table-column prop="status" align="center" label="状态" width="80">
+            <template #default="scope">
+              <div class="flex-row-c-c gap-2">
+                <span class="dot h-2 w-2 rounded-full" :class="getStatusType(scope.row.status)" />
+                <span text-xs>{{ scope.row.statusDesc }}</span>
               </div>
-
-              <!-- API Key 显示 -->
-              <div class="mb-3 border border-default bg-color-2 p-2 rounded">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="text-color-3 flex-1 truncate text-xs font-mono">{{ item.apiKeyMasked }}</span>
-                  <el-button
-                    size="small"
-                    text
-                    class="flex-shrink-0"
-                    @click="copyKey(item.apiKeyMasked || '', 'Key已复制')"
-                  >
-                    <i class="i-solar:copy-bold-duotone mr-1" />
-                    复制
-                  </el-button>
-                </div>
-              </div>
-
-              <!-- 操作按钮 -->
-              <div class="flex items-center justify-end gap-2">
+            </template>
+          </el-table-column>
+          <el-table-column prop="remark" label="备注" show-overflow-tooltip />
+          <el-table-column prop="expireTime" label="过期时间" width="180">
+            <template #default="scope">
+              {{ scope.row.expireTime || '永不过期' }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="lastUsedTime" label="最近使用" width="180">
+            <template #default="scope">
+              {{ scope.row.lastUsedTime || '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="createTime" label="创建时间" width="180" />
+          <el-table-column align="center" label="操作" width="120" fixed="right">
+            <template #default="scope">
+              <el-button
+                size="small"
+                :icon="ElIconEdit"
+                class="mr-2 btn-info-border overflow-hidden border-default-3 bg-color card-rounded-df"
+                @click="handleEdit(scope.row)"
+              />
+              <el-dropdown trigger="click" @command="(cmd) => handleCommand(cmd, scope.row)">
                 <el-button
-                  size="small"
-                  text
-                  bg
-                  @click="handleEdit(item)"
-                >
-                  <i class="i-solar:edit-bold-duotone mr-1" />
-                  编辑
-                </el-button>
-                <el-dropdown trigger="click" @command="(cmd) => handleCommand(cmd, item)">
-                  <el-button
-                    size="small"
-                    text
-                    bg
-                  >
-                    <i class="i-solar:menu-dots-bold" />
-                  </el-button>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item
-                        :command="`toggle-${item.status === ApiKeyStatus.ENABLE ? ApiKeyStatus.DISABLE : ApiKeyStatus.ENABLE}`"
-                      >
-                        {{ item.status === ApiKeyStatus.ENABLE ? '停用' : '启用' }}
-                      </el-dropdown-item>
-                      <el-dropdown-item command="delete" divided>
-                        删除
-                      </el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </div>
-            </div>
+                  class="mr-2 btn-primary-border overflow-hidden border-default-3 bg-color card-rounded-df"
+                  size="small" :icon="ElIconMore"
+                />
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item
+                      :command="`toggle-${scope.row.status === ApiKeyStatus.ENABLE ? ApiKeyStatus.DISABLE : ApiKeyStatus.ENABLE}`"
+                    >
+                      {{ scope.row.status === ApiKeyStatus.ENABLE ? '停用' : '启用' }}
+                    </el-dropdown-item>
+                    <el-dropdown-item command="delete" divided>
+                      删除
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
 
-            <!-- 空状态 -->
-            <div v-if="!loading && tableData.length === 0" key="empty" class="flex flex-col items-center justify-center py-12 op-50">
-              <i class="text-color-3 i-solar:key-line-duotone mb-2 text-4xl" />
-              <p class="text-color-3 text-sm">
-                暂无数据
-              </p>
-            </div>
-          </div>
-        </template>
-      </ListAutoIncre>
-    </el-scrollbar>
+      <!-- 分页 -->
+      <div class="mt-a flex shrink-0 justify-end py-4">
+        <el-pagination
+          v-model:current-page="pagination.current"
+          v-model:page-size="pagination.size"
+          :total="pagination.total"
+          background
+          size="small"
+          layout="total, prev, pager, next"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
+    </div>
 
-    <!-- 添加/编辑对话框 -->
+    <!-- 添加/编辑对话框，使用 dialog-popup 组件 -->
     <dialog-popup
       v-model="dialogVisible"
       :duration="300"
@@ -543,7 +494,7 @@ onActivated(() => {
       :overlayer-attrs="{
         class: 'transition-all',
       }"
-      content-class="rounded-3 p-4 shadow-lg w-[90vw] max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-fit border-default-2 dialog-bg-color"
       @close="handleDialogClose"
     >
       <template #title>
@@ -553,7 +504,7 @@ onActivated(() => {
       </template>
       <el-form
         ref="dialogFormRef"
-        class="api-key-dialog"
+        class="api-key-dialog max-w-90vw w-360px"
         :model="dialogForm"
         :rules="dialogRules"
         label-position="top"
@@ -568,6 +519,7 @@ onActivated(() => {
         <el-form-item key="expireType" label="有效期">
           <el-segmented
             v-model="expireType"
+            class="segmented"
             :options="[
               { label: '永不过期', value: 'never' },
               { label: '到期有效', value: 'expire' },
@@ -606,11 +558,11 @@ onActivated(() => {
         </el-form-item>
       </el-form>
       <template #footer>
-        <div class="flex justify-end gap-2">
-          <el-button class="flex-1" @click="dialogVisible = false">
+        <div class="flex justify-end">
+          <el-button class="mr-4 w-5rem" @click="dialogVisible = false">
             取消
           </el-button>
-          <el-button class="flex-1" type="primary" :loading="dialogLoading" @click="handleDialogConfirm">
+          <el-button class="w-5rem" type="primary" :loading="dialogLoading" @click="handleDialogConfirm">
             确定
           </el-button>
         </div>
@@ -621,10 +573,10 @@ onActivated(() => {
     <dialog-popup
       v-model="mcpAppDialogVisible"
       title="MCP应用"
-      content-class="rounded-3 p-4 shadow-lg w-[90vw] max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-fit border-default-2 dialog-bg-color"
       width="fit-content"
     >
-      <div class="w-full">
+      <div class="max-w-90vw w-400px">
         <MdPreview
           language="zh-CN"
           style="font-size: 0.8rem;background-color: transparent;"
@@ -638,17 +590,17 @@ onActivated(() => {
     </dialog-popup>
 
     <!-- 新密钥展示对话框 -->
-    <DialogPopup
+    <CommonPopup
       v-model="keyResultDialogVisible"
       title="创建 API key"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       width="fit-content"
-      content-class="rounded-3 p-4 shadow-lg w-[90vw] max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-fit border-default-2 dialog-bg-color"
     >
-      <div class="w-full space-y-4">
+      <div class="max-w-90vw w-fit space-y-4">
         <!-- 警告信息 -->
-        <div class="bg-color p-2 text-sm text-color leading-relaxed rounded">
+        <div class="text-sm text-color leading-relaxed">
           请将此 API key 保存在安全且易于访问的地方。出于<br>
           安全原因，你将无法通过 API keys 管理界面再次查<br>
           看它。如果你丢失了这个 key，将需要重新创建。
@@ -664,12 +616,11 @@ onActivated(() => {
         </div>
 
         <!-- 操作按钮 -->
-        <div class="flex justify-end gap-2 pt-2">
+        <div class="flex justify-end pt-2 space-x-3">
           <el-button
             size="default"
             text
             bg
-            class="flex-1"
             @click="keyResultDialogVisible = false"
           >
             关闭
@@ -678,25 +629,51 @@ onActivated(() => {
             bg
             type="primary"
             size="default"
-            class="flex-1"
             @click="copyApiKey"
           >
             复制
           </el-button>
         </div>
       </div>
-    </DialogPopup>
+    </CommonPopup>
   </div>
 </template>
 
 <style scoped lang="scss">
 :deep(.search.el-input) {
   .el-input__wrapper {
-    --at-apply: "border-default-2 bg-color py-0 text-xs";
+    --at-apply: "py-0 text-xs bg-color-2";
     box-shadow: none;
   }
 }
 
+:deep(.el-table) {
+  // 清除所有border
+  .el-table__body-wrapper {
+    border: none;
+  }
+  .el-table__header-wrapper {
+    border: none;
+  }
+
+  .el-table__inner-wrapper {
+    &::before {
+      display: none;
+    }
+  }
+
+  .el-table__body {
+    tbody {
+      .el-table__row {
+        &:last-child {
+          td {
+            border: 0 !important;
+          }
+        }
+      }
+    }
+  }
+}
 :deep(.api-key-dialog) {
   .el-form {
     .el-form-item {
@@ -704,29 +681,23 @@ onActivated(() => {
     }
   }
 }
+</style>
 
-:deep(.segmented.el-segmented) {
-  --at-apply: "p-1";
-
-  .el-segmented__item {
-    --at-apply: "flex items-center";
-  }
-}
+<style scoped lang="scss">
 .mcp-app-markdown {
   background-color: transparent !important;
   :deep(.md-editor-code) {
     margin: 0 !important;
   }
 }
-.api-key-mobile-enter-active,
-.api-key-mobile-leave-active {
-  transition: all 0.2s $animate-cubic;
-  overflow: hidden;
-}
-.api-key-mobile-enter-from,
-.api-key-mobile-leave-to {
-  opacity: 0;
-  transform: translateY(4px);
+
+:deep(.segmented.el-segmented) {
+  --at-apply: "p-1 bg-color-2";
+
+  .el-segmented__item {
+    --at-apply: "flex items-center";
+  }
 }
 </style>
+
 

@@ -1,6 +1,6 @@
-import type { ViewerOptions } from "~/components/image/ImageViewer.vue";
+import type { ViewerOptions } from "~/components/common/ImageViewer.vue";
 import { createApp, h } from "vue";
-import ImageViewer from "~/components/image/ImageViewer.vue";
+import ImageViewer from "~/components/common/ImageViewer.vue";
 
 
 // 单例实例

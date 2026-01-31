@@ -134,7 +134,7 @@ onUnmounted(() => {
       <div
         class="relative h-1 max-h-full flex flex-1"
       >
-        <MenuChatMenu v-if="!setting.isMobileSize" class="w-fit shrink-0 !hidden !sm:flex" />
+        <MenuChat v-if="!setting.isMobileSize" class="w-fit shrink-0 !hidden !sm:flex" />
         <!-- 缓存 页面内容 -->
         <NuxtPage
           keepalive
@@ -149,12 +149,12 @@ onUnmounted(() => {
       :form="chat.inviteMemberForm"
     />
     <!-- 视频播放器 -->
-    <LazyUtilVideoPlayerDialog
+    <LazyCommonVideoPlayerDialog
       v-model="chat.showVideoDialog"
       hydrate-on-idle
     />
     <!-- 扩展菜单 -->
-    <LazyMenuExtensionMenu
+    <LazyMenuExtension
       v-model:show="chat.showExtension"
       hydrate-on-idle
     />
@@ -165,7 +165,7 @@ onUnmounted(() => {
       hydrate-on-idle
     />
     <!-- 移动端菜单 - 小屏幕才加载 -->
-    <LazyMenuBottomMenu
+    <LazyMenuBottom
       v-if="setting.isMobileSize && user.isLogin && chat.isOpenContact"
       hydrate-on-media-query="(max-width: 768px)"
       class="grid sm:hidden"

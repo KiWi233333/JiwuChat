@@ -198,7 +198,7 @@ function importThemeConfig(file: File) {
 
 <template>
   <!-- 主题配置弹窗 -->
-  <DialogPopup
+  <CommonPopup
     v-model="_show"
     title="主题定制"
     :center="true"
@@ -290,31 +290,31 @@ function importThemeConfig(file: File) {
     <!-- 操作按钮区域 -->
     <div class="actions-footer p-1">
       <div class="left-actions">
-        <BtnElButton
+        <CommonElButton
           icon-class="i-solar:import-bold-duotone mr-1"
           text
           size="small"
           @click="openFileDialog()"
         >
           导入
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
           icon-class="i-solar:export-bold-duotone mr-1"
           text
           size="small"
           @click="exportThemeConfig()"
         >
           导出
-        </BtnElButton>
+        </CommonElButton>
       </div><div class="right-actions">
-        <BtnElButton
+        <CommonElButton
           text
           size="small"
           @click="resetToDefault"
         >
           重置
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
           type="primary"
           icon-class="i-solar:paint-roller-bold-duotone mr-1"
           size="small"
@@ -322,10 +322,10 @@ function importThemeConfig(file: File) {
           @click="applyTheme"
         >
           应用主题
-        </BtnElButton>
+        </CommonElButton>
       </div>
     </div>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style lang="scss" scoped>

@@ -81,7 +81,7 @@ function toEditView() {
       </NuxtLink>
       <!-- 图片集合 -->
       <div class="transition-[all_0.2s] mt-4 flex flex-wrap gap-4">
-        <CardElImage
+        <CommonElImage
           v-for="(img, i) in getImages"
           :key="i"
           fit="cover"
@@ -133,7 +133,7 @@ function toEditView() {
         </div>
         <!-- 编辑 -->
         <div v-if="data.status !== PostStatus.DELETED && data.status !== PostStatus.ADMIN_DELETED" flex transition-200 transition-opacity group-hover:op-100 md:op-0>
-          <BtnElButton
+          <CommonElButton
             type="danger"
             plain
             class="ml-a opacity-100 group-hover:opacity-100 md:opacity-0"
@@ -143,8 +143,8 @@ function toEditView() {
             @click.stop="user.getTokenFn() && toEditView()"
           >
             移入回收站
-          </BtnElButton>
-          <BtnElButton
+          </CommonElButton>
+          <CommonElButton
             type="info"
             plain
             class="group-hover:opacity-100 md:opacity-0"
@@ -154,11 +154,11 @@ function toEditView() {
             @click.stop="user.getTokenFn() && toEditView()"
           >
             编辑
-          </BtnElButton>
+          </CommonElButton>
         </div>
         <!-- 彻底删除 -->
         <div v-else-if="data.status === PostStatus.DELETED">
-          <BtnElButton
+          <CommonElButton
             type="danger"
             plain
             class="ml-a opacity-100 group-hover:opacity-100 md:opacity-0"
@@ -168,7 +168,7 @@ function toEditView() {
             @click.stop="$emit('delete', data.id)"
           >
             彻底删除
-          </BtnElButton>
+          </CommonElButton>
         </div>
       </div>
     </section>

@@ -16,7 +16,7 @@ const _show = computed({
 
 <template>
   <!-- 定制化动画设置弹窗 -->
-  <DialogPopup
+  <CommonPopup
     v-model="_show"
     title="动画配置"
     :center="true"
@@ -142,7 +142,7 @@ const _show = computed({
         </div>
       </div>
     </div>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style lang="scss" scoped>

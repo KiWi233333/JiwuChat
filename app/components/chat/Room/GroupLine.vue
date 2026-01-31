@@ -271,7 +271,7 @@ function onInviteMember() {
             id: p.data.userId,
           })"
         >
-          <CardElImage
+          <CommonElImage
             :default-src="p.data.avatar"
             fit="cover"
             error-class="i-solar-user-line-duotone"

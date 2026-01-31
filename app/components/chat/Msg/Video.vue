@@ -59,7 +59,7 @@ const size = computed(() => getImgSize(props.data.message.body?.thumbWidth || pr
         <template
           v-if="body?.url"
         >
-          <CardElImage
+          <CommonElImage
             loading="lazy"
             :style="{ width: size.width || 100, height: size.height || 100 }"
             ctx-name="video"

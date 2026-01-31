@@ -99,7 +99,7 @@ async function onSend() {
 </script>
 
 <template>
-  <DialogPopup
+  <CommonPopup
     v-model="dialogVisible"
     :min-scale="0.98"
     :duration="20"
@@ -113,7 +113,7 @@ async function onSend() {
         发送给：
       </p>
       <div class="flex items-center border-default-2-b py-4">
-        <CardElImage
+        <CommonElImage
           :error-class="contactTypeIconClassMap[(targetContact as ChatContactVO).type]"
           :default-src="targetContact.avatar"
           fit="cover"
@@ -140,7 +140,7 @@ async function onSend() {
             <div title="撤销图片" class="absolute z-5 h-6 w-6 card-default transition-opacity -right-2 -top-2 !rounded-full group-hover-op-80 hover-op-100 sm:op-0" @click.stop="emit('removeFile', OssFileType.IMAGE, img.key!, i)">
               <i i-carbon:close block h-full w-full />
             </div>
-            <CardElImage
+            <CommonElImage
               preview-teleported
               loading="lazy"
               :preview-src-list="[img.id || BaseUrlImg + img.key]"
@@ -176,7 +176,7 @@ async function onSend() {
               <div title="撤销视频" class="absolute z-5 h-6 w-6 border-default-2 card-default transition-opacity -right-2 -top-2 !rounded-full group-hover-op-80 hover-op-100 sm:op-0" @click.stop="emit('removeFile', OssFileType.VIDEO, video.key!, i)">
                 <i i-carbon:close block h-full w-full />
               </div>
-              <CardElImage
+              <CommonElImage
                 error-class="i-solar:file-smile-line-duotone p-2.8"
                 :src="video?.children?.[0]?.id"
                 class="h-full max-h-16rem max-w-16rem min-h-8rem min-w-8rem w-full flex-row-c-c card-default shadow"
@@ -239,15 +239,15 @@ async function onSend() {
         @keyup.enter.stop.prevent="emit('submit', replyContent.trim())"
       />
       <div class="btn-group mt-4 flex-row-bt-c">
-        <BtnElButton
+        <CommonElButton
           class="w-full"
           bg
           text
           @click="dialogVisible = false"
         >
           取消
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
           class="w-full"
           type="primary"
           bg
@@ -255,10 +255,10 @@ async function onSend() {
           @click="onSend"
         >
           发送
-        </BtnElButton>
+        </CommonElButton>
       </div>
     </div>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style scoped lang="scss">

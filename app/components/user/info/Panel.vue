@@ -295,7 +295,7 @@ onMounted(() => {
         :on-success="updateSucess"
       >
         <div class="group relative flex-row-c-c">
-          <CardAvatar
+          <CommonAvatar
             alt="Design By Kiwi23333"
             :src="BaseUrlImg + avatarUrl"
             class="avatar-mark h-6em w-6em select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
@@ -460,14 +460,14 @@ onMounted(() => {
     />
     <div class="img-list">
       <!-- TODO: 后期添加 -->
-      <CardElImage
+      <CommonElImage
         class="my-2 mr-2 h-18 w-18 rounded-md bg-color-2 object-cover shadow"
         :default-src="user.avatar"
         fit="cover"
         :preview-src-list="[BaseUrlImg + user.avatar]"
       />
       <!-- TODO: 后期添加 -->
-      <CardElImage
+      <CommonElImage
         class="my-2 mr-2 h-18 w-18 rounded-md bg-color-2 object-cover shadow"
         :default-src="bgUrl"
         fit="cover"

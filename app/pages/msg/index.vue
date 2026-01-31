@@ -115,7 +115,7 @@ definePageMeta({
             class="group w-full flex cursor-pointer gap-2 bg-white p-2 shadow-sm transition-all rounded !items-center dark:bg-dark-7 hover:(bg-theme-primary text-light shadow-lg)"
             @click="handleReadMessage(p)"
           >
-            <CardElImage :src="BaseUrlImg + p.avatar" fit="cover" class="h-8 w-8 rounded-1 card-default object-cover" />
+            <CommonElImage :src="BaseUrlImg + p.avatar" fit="cover" class="h-8 w-8 rounded-1 card-default object-cover" />
             <div class="flex flex-1 flex-col justify-between gap-1 truncate px-1">
               <p class="truncate">
                 {{ p.name }}

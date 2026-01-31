@@ -12,7 +12,7 @@ useHead({
 </script>
 
 <template>
-  <PageSettingTemplate :menu-bar="!setting.isMobileSize" class="w-full flex-1" />
+  <SettingTemplate :menu-bar="!setting.isMobileSize" class="w-full flex-1" />
 </template>
 
 <style scoped lang="scss">

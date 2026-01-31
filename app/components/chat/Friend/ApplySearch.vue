@@ -201,7 +201,7 @@ onDeactivated(() => {
         @keydown.arrow-down.stop="handleKeydown('arrow-down')"
         @keydown.arrow-up.stop="handleKeydown('arrow-up')"
       />
-      <BtnElButton
+      <CommonElButton
         type="primary"
         class="w-5rem pr-4 text-sm shadow"
         style="position: relative; transition: 0.2s; height: 2rem;font-size: 0.8em;"
@@ -211,7 +211,7 @@ onDeactivated(() => {
         @click.self="onSearch"
       >
         搜&nbsp;索
-      </BtnElButton>
+      </CommonElButton>
     </div>
     <Transition enter-active-class="animate-(fade-in duration-100)" leave-active-class="animate-(fade-out duration-100)">
       <div v-if="isShowModel" class="absolute left-0 top-8 z-1 w-full bg-color">
@@ -265,7 +265,7 @@ onDeactivated(() => {
         </div>
         <!-- 列表 -->
         <div class="flex-1">
-          <ListVirtualScrollList
+          <CommonListVirtualScrollList
             v-if="isShowResult && searchPage.current && searchPageList.length > 0"
             ref="virtualListRef"
             :items="searchPageList"
@@ -290,7 +290,7 @@ onDeactivated(() => {
                 tabindex="0"
                 @click="emit('submit', item)"
               >
-                <CardElImage
+                <CommonElImage
                   :src="BaseUrlImg + item.avatar"
                   fit="cover"
                   error-class="i-solar:user-bold-duotone"
@@ -311,7 +311,7 @@ onDeactivated(() => {
                 </p>
               </div>
             </template>
-          </ListVirtualScrollList>
+          </CommonListVirtualScrollList>
           <ElEmpty
             v-if="!searchPage.total"
             class="h-[calc(100vh-16.5rem)] sm:h-[calc(100vh-5rem)]"

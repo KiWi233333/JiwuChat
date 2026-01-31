@@ -42,7 +42,7 @@ async function addMsg() {
 </script>
 
 <template>
-  <DialogPopup
+  <CommonPopup
     v-model="isShow"
     :duration="300"
     destroy-on-close
@@ -113,7 +113,7 @@ async function addMsg() {
         </el-button>
       </div>
     </template>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style lang="scss" scoped>

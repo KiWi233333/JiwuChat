@@ -102,7 +102,7 @@ function onContextFileMenu(e: MouseEvent, key?: string, index: number = 0, type:
         <div title="撤销图片" class="absolute right-2 top-2 z-5 h-6 w-6 card-default-br transition-opacity !rounded-full group-hover-op-80 hover-op-100 sm:op-0" @click.stop="emit('removeFile', OssFileType.IMAGE, img.key!, i)">
           <i i-solar:minus-circle-linear block h-full w-full />
         </div>
-        <CardElImage
+        <CommonElImage
           preview-teleported
           loading="lazy"
           :preview-src-list="[img.id || BaseUrlImg + img.key]"

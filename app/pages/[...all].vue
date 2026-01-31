@@ -8,7 +8,7 @@ definePageMeta({
 <template>
   <div>
     <NuxtLayout name="error">
-      <OtherError :msg="$route.query?.errorMsg ? $route.query?.errorMsg.toString() : '404, 找不到页面 !'" />
+      <CommonError :msg="$route.query?.errorMsg ? $route.query?.errorMsg.toString() : '404, 找不到页面 !'" />
     </NuxtLayout>
   </div>
 </template>

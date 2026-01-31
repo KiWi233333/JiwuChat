@@ -72,7 +72,7 @@ function navigateToDetail(type?: RoomType) {
         title="点击查看详情"
         @click="navigateToDetail(chat.theContact.type)"
       >
-        <CardElImage
+        <CommonElImage
           loading="lazy"
           :error-class="contactTypeIconClassMap[chat?.theContact?.type || RoomType.SELF]"
           :alt="chat.theContact.name"

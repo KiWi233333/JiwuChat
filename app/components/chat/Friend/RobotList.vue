@@ -115,7 +115,7 @@ onDeactivated(() => {
       <div class="deco-bg" />
 
       <!-- 头像 -->
-      <CardElImage
+      <CommonElImage
         class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full"
         :src="BaseUrlImg + p?.avatar"
         fit="cover"

@@ -237,7 +237,7 @@ const menuList = ref([
                 flex-row-bt-c
                 pt-4
               >
-                <BtnElButton
+                <CommonElButton
                   size="large"
                   type="danger"
                   transition-icon plain ml-3
@@ -245,18 +245,18 @@ const menuList = ref([
                   @click="user.exitLogin"
                 >
                   退出登录
-                </BtnElButton>
+                </CommonElButton>
                 <NuxtLink
                   to="/user/info"
                   mr-3
                 >
-                  <BtnElButton
+                  <CommonElButton
                     size="large"
                     type="primary" transition-icon
                     icon-class="i-solar:home-2-bold"
                   >
                     个人主页
-                  </BtnElButton>
+                  </CommonElButton>
                 </NuxtLink>
               </div>
             </div>

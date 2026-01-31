@@ -257,7 +257,7 @@ onMounted(() => {
   >
     <!-- 用户信息卡片 -->
     <div class="flex items-center gap-3 border-default-2 rounded-xl card-bg-color p-4">
-      <CardAvatar
+      <CommonAvatar
         class="h-12 w-12 shrink-0 rounded-full"
         :src="BaseUrlImg + user.userInfo.avatar"
       />

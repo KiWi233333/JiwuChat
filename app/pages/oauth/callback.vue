@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { OAuthCallbackVO } from "~/composables/api/user/oauth";
 import type { OAuthCallbackPayload } from "~/composables/hooks/oauth/useDeepLink";
-import AlreadyBound from "~/components/oauth/AlreadyBound.vue";
-import BindOption from "~/components/oauth/BindOption.vue";
-import Error from "~/components/oauth/Error.vue";
-import Loading from "~/components/oauth/Loading.vue";
-import Success from "~/components/oauth/Success.vue";
+import AlreadyBound from "~/components/auth/AlreadyBound.vue";
+import BindOption from "~/components/auth/BindOption.vue";
+import Error from "~/components/auth/Error.vue";
+import Loading from "~/components/auth/Loading.vue";
+import Success from "~/components/auth/Success.vue";
 import { getAuthorizeUrl, OAuthPlatformCode } from "~/composables/api/user/oauth";
 import { useOAuthDeepLink } from "~/composables/hooks/oauth/useDeepLink";
 

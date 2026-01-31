@@ -298,7 +298,7 @@ onMounted(() => {
         <span class="setting-label">缓存和文件</span>
         <div class="flex items-center gap-3">
           <span class="text-theme-warning font-medium">{{ formatSize(storageData.total + (downloadDirStats?.total_size || 0)) }}</span>
-          <BtnElButton
+          <CommonElButton
             size="small"
             text
             class="text-4"
@@ -339,7 +339,7 @@ onMounted(() => {
             </span>
             <span v-else class="opacity-70">未统计</span>
           </div>
-          <BtnElButton
+          <CommonElButton
             size="small"
             text
             class="text-4"
@@ -379,7 +379,7 @@ onMounted(() => {
                 ({{ storageData.localStorage.count }} 项)
               </span>
             </div>
-            <BtnElButton
+            <CommonElButton
               size="small"
               class="btn"
               text bg
@@ -388,7 +388,7 @@ onMounted(() => {
               @click="clearLocalStorage"
             >
               清理
-            </BtnElButton>
+            </CommonElButton>
           </div>
         </div>
 
@@ -405,7 +405,7 @@ onMounted(() => {
                 ({{ storageData.sessionStorage.count }} 项)
               </span>
             </div>
-            <BtnElButton
+            <CommonElButton
               size="small"
               class="btn"
               bg text
@@ -414,7 +414,7 @@ onMounted(() => {
               @click="clearSessionStorage"
             >
               清理
-            </BtnElButton>
+            </CommonElButton>
           </div>
         </div>
 
@@ -428,7 +428,7 @@ onMounted(() => {
             <div class="text-xs opacity-70">
               {{ formatSize(storageData.indexedDB.size) }}
             </div>
-            <BtnElButton
+            <CommonElButton
               size="small"
               class="btn"
               bg text
@@ -437,7 +437,7 @@ onMounted(() => {
               @click="clearIndexedDB"
             >
               清理
-            </BtnElButton>
+            </CommonElButton>
           </div>
         </div>
 
@@ -454,7 +454,7 @@ onMounted(() => {
                 ({{ storageData.cache.count }} 项)
               </span>
             </div>
-            <BtnElButton
+            <CommonElButton
               size="small"
               class="btn"
               bg text
@@ -463,14 +463,14 @@ onMounted(() => {
               @click="clearCache"
             >
               清理
-            </BtnElButton>
+            </CommonElButton>
           </div>
         </div>
       </div>
       <!-- 操作 -->
       <div>
         <div class="flex flex-wrap items-center gap-2">
-          <BtnElButton
+          <CommonElButton
             title="重置并清理缓存"
             class="ml-a px-3 py-2"
             icon-class="i-solar:trash-bin-trash-outline mr-1"
@@ -479,7 +479,7 @@ onMounted(() => {
             @click="setting.reset()"
           >
             重置应用
-          </BtnElButton>
+          </CommonElButton>
         </div>
       </div>
     </div>

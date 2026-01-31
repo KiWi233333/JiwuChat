@@ -125,7 +125,7 @@ definePageMeta({
 
     <!-- 按钮 -->
     <div v-show="!isLoading && otherUserId" class="w-full flex-row-c-c bg-color p-0 py-8 sm:(static max-w-30rem py-4)">
-      <BtnElButton
+      <CommonElButton
         v-if="isFriend"
         key="delete"
         icon-class="i-solar:trash-bin-trash-outline p-2 mr-2"
@@ -135,8 +135,8 @@ definePageMeta({
         @click="deleteFriend"
       >
         删除好友&ensp;
-      </BtnElButton>
-      <BtnElButton
+      </CommonElButton>
+      <CommonElButton
         v-if="isFriend"
         key="send"
         icon-class="i-solar:chat-line-bold p-2 mr-2"
@@ -145,8 +145,8 @@ definePageMeta({
         @click="chat.toContactSendMsg('userId', otherUserId)"
       >
         发送消息&ensp;
-      </BtnElButton>
-      <BtnElButton
+      </CommonElButton>
+      <CommonElButton
         v-else-if="otherUserId !== store.userInfo.id"
         key="add"
         icon-class="i-solar:user-plus-bold p-2 mr-2"
@@ -154,7 +154,7 @@ definePageMeta({
         @click="handleApplyFriend"
       >
         添加好友&ensp;
-      </BtnElButton>
+      </CommonElButton>
     </div>
     <!-- 好友申请 -->
     <ChatFriendApplyDialog v-model:show="isShowApply" :user-id="otherUserId" @submit="chat.setTheFriendOpt(FriendOptType.Empty, {})" />

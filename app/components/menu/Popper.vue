@@ -147,7 +147,7 @@ onBeforeUnmount(() => {
                 [`${p.customClass}`]: p.customClass,
               }"
             />
-            <CardElImage
+            <CommonElImage
               v-else-if="p.icon"
               class="icon mr-2"
               :class="p.customIconClass"

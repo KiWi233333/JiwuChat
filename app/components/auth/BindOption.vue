@@ -277,13 +277,13 @@ onBeforeUnmount(() => {
     <!-- 第三方账号信息 -->
     <div class="header flex-row-c-c flex-col pb-4">
       <div class="relative">
-        <CardAvatar
+        <CommonAvatar
           :src="(oauthInfo?.avatar as string) || ''"
           class="avatar h-16 w-16 border-default border-op-30 rounded-full shadow-sm"
         />
         <div class="absolute bottom-1 right-0 h-5 w-5 flex-row-c-c rounded-full bg-color shadow-sm">
           <!-- 床上 -->
-          <CardElImage
+          <CommonElImage
             :src="getOAuthPlatformIcon(platformCode)"
             alt="icon"
             error-root-class="hidden"

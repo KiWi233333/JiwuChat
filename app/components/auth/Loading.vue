@@ -16,7 +16,7 @@ defineEmits<{
     <div class="status-icon relative mb-8">
       <div class="loading-ring" />
       <div class="loading-ring-active" />
-      <CardElImage error-root-class="hidden" :src="icon" alt="icon" class="relative z-10 h-20 w-20 flex-row-c-c rounded-full bg-color shadow-sm filter-drop-shadow" />
+      <CommonElImage error-root-class="hidden" :src="icon" alt="icon" class="relative z-10 h-20 w-20 flex-row-c-c rounded-full bg-color shadow-sm filter-drop-shadow" />
     </div>
 
     <!-- 文字信息 -->

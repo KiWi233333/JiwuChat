@@ -126,7 +126,7 @@ async function changShieldStatus() {
     <div class="w-full flex-1 select-none text-3.5 leading-1.8em">
       <div relative>
         群头像
-        <InputOssFileUpload
+        <CommonOssFileUpload
           ref="inputOssFileUploadRef"
           :is-animate="false"
           :show-edit="false"
@@ -236,7 +236,7 @@ async function changShieldStatus() {
     </div>
 
     <!-- 群成员虚拟列表 -->
-    <ListVirtualScrollList
+    <CommonListVirtualScrollList
       :items="memberList"
       item-height="2.75rem"
       height="15rem"
@@ -261,7 +261,7 @@ async function changShieldStatus() {
           @contextmenu="onMemberContextMenu($event, member)"
         >
           <div class="relative flex-row-c-c" :title="member.nickName || '未知'">
-            <CardElImage
+            <CommonElImage
               :default-src="member.avatar"
               fit="cover"
               load-class="none"
@@ -304,7 +304,7 @@ async function changShieldStatus() {
           &nbsp;加载中...
         </div>
       </template>
-    </ListVirtualScrollList>
+    </CommonListVirtualScrollList>
 
     <div class="label-item mt-3 select-none border-default-2-t pt-3 text-3.5">
       会话设置

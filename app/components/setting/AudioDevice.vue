@@ -150,7 +150,7 @@ function handleAutoDetectChange(value: boolean) {
         麦克风测试
         <div class="ml-a flex items-center gap-2">
           <!-- 音轨显示 -->
-          <OtherAudioWaveform
+          <CommonAudioWaveform
             v-if="microphoneTest.isTesting.value"
             :audio-data="microphoneTest.audioLevel.value"
             :width="60"

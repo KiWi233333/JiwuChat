@@ -35,7 +35,7 @@ function onBack(rollback?: string) {
       </h3>
       <div class="mx-a flex-row-c-c opacity-90">
         <slot name="footer">
-          <BtnElButton
+          <CommonElButton
             type="danger"
             transition-icon
             plain
@@ -43,15 +43,15 @@ function onBack(rollback?: string) {
             @click="onBack($route.query?.rollback ? String($route.query?.rollback) : '')"
           >
             返回
-          </BtnElButton>
-          <BtnElButton
+          </CommonElButton>
+          <CommonElButton
             type="danger"
             transition-icon
             icon-class="i-solar:refresh-line-duotone mr-2"
             @click="onRefresh"
           >
             刷新
-          </BtnElButton>
+          </CommonElButton>
         </slot>
       </div>
     </div>

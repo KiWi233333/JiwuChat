@@ -137,7 +137,7 @@ defineExpose({
 <template>
   <div v-loading="isLoading">
     <ClientOnly>
-      <ListAutoIncre
+      <CommonListAutoIncre
         loading-class="mx-a my-0.6em h-1.4rem w-1.4rem animate-[spin_2s_infinite_linear]  rounded bg-theme-info"
         :immediate="immediate"
         :no-more="isNoMore || isNot"
@@ -171,7 +171,7 @@ defineExpose({
             {{ isNoMore ? "暂无更多帖子" : "暂无帖子" }}
           </p>
         </template>
-      </ListAutoIncre>
+      </CommonListAutoIncre>
     </ClientOnly>
   </div>
 </template>

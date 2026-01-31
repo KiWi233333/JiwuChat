@@ -593,7 +593,7 @@ defineExpose({
         class="pre-group flex flex-shrink-0 overflow-hidden backdrop-blur-12px"
         :class="preImageClass"
       >
-        <CardElImage
+        <CommonElImage
           loading="lazy"
           :alt="p.id"
           fit="cover"
