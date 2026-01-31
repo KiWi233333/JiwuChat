@@ -192,6 +192,17 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   .el-message-box__title {
     font-size: 1rem;
   }
+
+  // 移动端适配
+  @media screen and (max-width: 640px) {
+    --at-apply: "w-88vw shadow-sm";
+    .el-message-box__header {
+      --at-apply: "text-2em";
+    }
+    .el-message-box__content {
+      --at-apply: "px-3";
+    }
+  }
 }
 
 .el-overlay.is-message-box {
@@ -204,7 +215,7 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 
 // 消息提示
 body .el-message {
-  --at-apply: "text-3.8 pr-4 px-2 py-1 items-center sm:(px-2 py-1) rounded-2rem shadow-md";
+  --at-apply: "text-5 w-90vw max-w-90vw px-4 py-3 shadow-sm items-center sm:(w-fit max-w-20em px-2 text-3.8  pr-4 py-1.5 rounded-2rem shadow-sm)";
   .el-message__content {
     --at-apply: "truncate text-3.4";
   }
