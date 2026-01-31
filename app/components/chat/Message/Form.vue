@@ -841,9 +841,11 @@ defineExpose({
               :max-collapse-tags="2"
             >
               <template #footer>
-                <el-button text bg size="small" class="w-full" :disabled="!chat.askAiRobotList.length" @click="chat.askAiRobotList = []">
-                  清除选择{{ chat.askAiRobotList.length > 0 ? `（已选${chat.askAiRobotList.length}）` : '' }}
-                </el-button>
+                <div class="p-1.5 pt-0">
+                  <el-button text bg size="small" class="w-full" :disabled="!chat.askAiRobotList.length" @click="chat.askAiRobotList = []">
+                    清除选择{{ chat.askAiRobotList.length > 0 ? `（已选${chat.askAiRobotList.length}）` : '' }}
+                  </el-button>
+                </div>
               </template>
               <template #prefix>
                 <i class="robot-select-icon" />

@@ -88,7 +88,7 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   .el-select-dropdown,
   .el-mention-dropdown {
     .el-select-dropdown__footer {
-      --at-apply: "p-0 pt-2 mt-2";
+      --at-apply: "p-0 pt-1.5 mt-1.5";
     }
     .el-scrollbar {
       padding: 0.5em;
@@ -191,17 +191,6 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 
   .el-message-box__title {
     font-size: 1rem;
-  }
-
-  // 移动端适配
-  @media screen and (max-width: 640px) {
-    --at-apply: "w-88vw shadow-sm";
-    .el-message-box__header {
-      --at-apply: "text-2em";
-    }
-    .el-message-box__content {
-      --at-apply: "px-3";
-    }
   }
 }
 
