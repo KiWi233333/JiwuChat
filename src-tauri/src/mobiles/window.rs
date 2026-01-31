@@ -6,6 +6,7 @@ pub fn setup_mobile_window(app: &AppHandle, port: u16) -> tauri::Result<()> {
     #[cfg(dev)]
     let webview_url = {
         use tauri::{ipc::CapabilityBuilder, Url};
+        use tauri::Manager;
         // 使用 dev server 地址
         let dev_url: Url = "http://127.0.0.1:3000".parse().unwrap();
 

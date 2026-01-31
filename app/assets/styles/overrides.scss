@@ -204,13 +204,9 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 
 // 消息提示
 body .el-message {
-  width: max-content;
-  max-width: 94%;
-  padding: 0.4rem 0.6rem;
-  transform: translate(-50%, -18%) !important;
-  --at-apply: "text-14px rounded-2rem shadow-md";
+  --at-apply: "text-3.8 pr-4 px-2 py-1 items-center sm:(px-2 py-1) rounded-2rem shadow-md";
   .el-message__content {
-    --at-apply: "truncate text-12px mt-1px";
+    --at-apply: "truncate text-3.4";
   }
 }
 
