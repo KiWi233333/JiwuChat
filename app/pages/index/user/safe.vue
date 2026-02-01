@@ -23,6 +23,21 @@ onActivated(() => {
 watch(activeName, () => {
   isAnim.value = true;
 });
+
+// 滑动切换逻辑，不能超过边界，到两边停止
+function handleSwipeNext() {
+  const currentIndex = segmentOptions.findIndex(option => option.value === activeName.value);
+  if (currentIndex < segmentOptions.length - 1) {
+    activeName.value = segmentOptions[currentIndex + 1]?.value ?? "";
+  }
+}
+
+function handleSwipePrev() {
+  const currentIndex = segmentOptions.findIndex(option => option.value === activeName.value);
+  if (currentIndex > 0) {
+    activeName.value = segmentOptions[currentIndex - 1]?.value ?? "";
+  }
+}
 </script>
 
 <template>
@@ -38,7 +53,15 @@ watch(activeName, () => {
     </div>
 
     <!-- 内容区域 -->
-    <el-scrollbar class="hide-scrollbar mt-4 flex flex-1 flex-col overflow-hidden">
+    <el-scrollbar
+      v-swipe="{
+        sensitivity: 2,
+        onlyHorizontal: true,
+        onSwipeLeft: handleSwipeNext,
+        onSwipeRight: handleSwipePrev,
+      }"
+      class="hide-scrollbar mt-4 flex flex-1 flex-col overflow-hidden"
+    >
       <!-- 账号 Tab -->
       <UserSafeUpdateCards v-show="activeName === 'security'" :is-anim="isAnim" />
 
