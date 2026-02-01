@@ -91,7 +91,7 @@ const activeMenu = computed({
 
 <template>
   <div
-    class="relative z-998 grid grid-cols-4 select-none justify-center bg-white shadow-md dark:bg-dark-8"
+    class="relative grid grid-cols-4 select-none justify-center bg-white shadow-md dark:bg-dark-8"
   >
     <component
       :is="p.children?.length ? 'div' : NuxtLink"

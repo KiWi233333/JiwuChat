@@ -9,8 +9,8 @@
 }
 
 // 页面动画
-$ios-transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1); // 模拟 iOS 动画曲线
-$page-transition-duration: 0.4s;
+$ios-transition-timing-function: cubic-bezier(0.25, 0.75, 0.1, 1); // 更缓启动的仿 iOS 动画曲线
+$page-transition-duration: 0.5s;
 
 // Push 动画 (进入下一级)
 // 新页面从右侧进入覆盖，旧页面稍向左移动并变暗
@@ -20,7 +20,6 @@ $page-transition-duration: 0.4s;
   width: 100%;
   height: 100%; // 确保高度充满
   z-index: 10; // 确保在上面
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1); // 左侧阴影
   transition: transform $page-transition-duration $ios-transition-timing-function;
 }
 
@@ -63,8 +62,9 @@ $page-transition-duration: 0.4s;
   width: 100%;
   height: 100%; // 确保高度充满
   z-index: 10; // 确保在上面
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-  transition: transform $page-transition-duration $ios-transition-timing-function;
+  transition:
+    transform $page-transition-duration $ios-transition-timing-function,
+    opacity $page-transition-duration ease;
 }
 
 .page-slide-right-enter-from {

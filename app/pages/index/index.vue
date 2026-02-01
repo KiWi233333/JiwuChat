@@ -9,15 +9,15 @@ const setting = useSettingStore();
     <ChatContactList
       class="transition-anima absolute left-0 top-0 h-full w-full flex-1 scale-100 sm:(relative left-auto top-auto flex-none transform-none) !sm:w-320px"
       :class="{
-        '-translate-x-1/2 css-will-change': !chat.isOpenContact,
+        'contact-list-hidden': !chat.isOpenContact,
       }"
     />
     <!-- 聊天框 移动端动画 -->
     <ChatContent
       v-if="chat.theRoomId"
-      class="transition-anima absolute left-0 top-0 z-99 h-full flex-1 border-default-3-l sm:(relative left-auto top-auto w-1/4 transform-none)"
+      class="transition-anima absolute left-0 top-0 z-99 h-100dvh flex-1 border-default-3-l sm:(relative left-auto top-auto w-1/4 transform-none)"
       :class="{
-        'translate-x-full css-will-change': chat.isOpenContact,
+        'translate-x-full': chat.isOpenContact,
       }"
     />
     <!-- 空白 -->
@@ -32,10 +32,20 @@ const setting = useSettingStore();
 .main-box {
   --at-apply: "relative py-4 flex-1  w-full  flex overflow-hidden !p-0 bg-color";
 }
+
+$ios-transition-timing-function: cubic-bezier(0.33, 0.4, 0.06, 1); // 更平滑自然的仿 iOS 动画曲线
+$page-transition-duration: 0.46s;
+
 .transition-anima {
-  transition: transform 0.3s ease-in-out;
+  transition:
+    transform $page-transition-duration $ios-transition-timing-function,
+    opacity $page-transition-duration ease;
 }
-.css-will-change {
-  will-change: transform;
+
+@media (max-width: 640px) {
+  .contact-list-hidden {
+    transform: translateX(-30%);
+    opacity: 0.8;
+  }
 }
 </style>
