@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "people",
-      "name": "Smileys & People",
+      "name": "人物 & 笑脸",
       "emojis": [
         "grinning",
         "grin",
@@ -455,7 +455,7 @@
     },
     {
       "id": "nature",
-      "name": "Animals & Nature",
+      "name": "动物 & 自然",
       "emojis": [
         "monkey_face",
         "monkey",
@@ -574,7 +574,7 @@
     },
     {
       "id": "foods",
-      "name": "Food & Drink",
+      "name": "食物 & 饮料",
       "emojis": [
         "grapes",
         "melon",
@@ -682,7 +682,7 @@
     },
     {
       "id": "activity",
-      "name": "Activities",
+      "name": "活动",
       "emojis": [
         "jack_o_lantern",
         "christmas_tree",
@@ -748,7 +748,7 @@
     },
     {
       "id": "places",
-      "name": "Travel & Places",
+      "name": "旅行 & 地点",
       "emojis": [
         "earth_africa",
         "earth_americas",
@@ -961,7 +961,7 @@
     },
     {
       "id": "objects",
-      "name": "Objects",
+      "name": "物品",
       "emojis": [
         "mute",
         "speaker",
@@ -1129,7 +1129,7 @@
     },
     {
       "id": "symbols",
-      "name": "Symbols",
+      "name": "符号",
       "emojis": [
         "atm",
         "put_litter_in_its_place",
@@ -1338,7 +1338,7 @@
     },
     {
       "id": "flags",
-      "name": "Flags",
+      "name": "旗帜",
       "emojis": [
         "checkered_flag",
         "cn",

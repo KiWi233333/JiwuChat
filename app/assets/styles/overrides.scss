@@ -88,7 +88,7 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   .el-select-dropdown,
   .el-mention-dropdown {
     .el-select-dropdown__footer {
-      --at-apply: "p-0 pt-1.5 mt-1.5";
+      --at-apply: "p-0 pt-1.5 border-default-2-t";
     }
     .el-scrollbar {
       padding: 0.5em;

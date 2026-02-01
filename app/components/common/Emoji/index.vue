@@ -24,14 +24,14 @@ const emit = defineEmits<{
 
 // @unocss-include
 const CATEGORY_ICON_MAP: Record<string, string> = {
-  "Smileys & People": "i-ri-emotion-happy-line",
-  "Animals & Nature": "i-ri-bear-smile-line",
-  "Food & Drink": "i-ri-restaurant-line",
-  "Travel & Places": "i-ri-map-pin-line",
-  "Activities": "i-ri-football-line",
-  "Objects": "i-ri-lightbulb-line",
-  "Symbols": "i-ri-asterisk",
-  "Flags": "i-ri-flag-line",
+  "人物 & 笑脸": "i-ri-emotion-happy-line",
+  "动物 & 自然": "i-ri-leaf-line",
+  "食物 & 饮料": "i-ri-restaurant-line",
+  "旅行 & 地点": "i-ri-map-pin-line",
+  "活动": "i-ri-football-line",
+  "物品": "i-ri-lightbulb-line",
+  "符号": "i-ri-asterisk",
+  "旗帜": "i-ri-flag-line",
 };
 
 interface EmojiItem {
