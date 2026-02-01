@@ -119,19 +119,11 @@ export default defineConfig({
     // 文字
     [/^el-color-(\w*)$/, ([_, color]) => ({ color: `var(--el-color-${color})` })],
     [/^el-bg-(\w*)$/, ([_, color]) => ({ "background-color": `var(--el-color-${color})` })],
-
-    ...([
-      ["none", "0"],
-      ["xs", "4px"],
-      ["sm", "8px"],
-      ["", "8px"],
-      // ["md", "0.75rem"],
-      // ["lg", "1rem"],
-      // ["xl", "1.25rem"],
-      // ["round", "2rem"],
-      // ["circle", "100%"],
-      // ["full", "9999px"],
-    ] as const).map(([k, v]) => [`rounded${k ? `-${k}` : ""}`, { "border-radius": v }]),
+    // 将 rounded 系列改为数组形式
+    ["rounded", { "border-radius": "8px" }],
+    ["rounded-none", { "border-radius": "0" }],
+    ["rounded-xs", { "border-radius": "4px" }],
+    ["rounded-sm", { "border-radius": "8px" }],
   ],
   theme: {
     colors: {
