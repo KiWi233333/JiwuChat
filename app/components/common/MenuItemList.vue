@@ -1,19 +1,6 @@
-<script lang="ts">
-export interface MenuItemConfig {
-  icon?: string
-  title: string
-  path?: string
-  badge?: {
-    value?: number | string
-    isDot?: boolean
-    hidden?: boolean
-  }
-  onClick?: (e?: MouseEvent) => void
-  disabled?: boolean
-}
-</script>
-
 <script setup lang="ts">
+import type { MenuItemConfig } from "~/components/common/MenuItemCard.vue";
+
 const { items, variant = "card", showArrow = true, size = "medium" } = defineProps<{
   items: MenuItemConfig[]
   variant?: "card" | "list"

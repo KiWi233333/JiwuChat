@@ -60,9 +60,10 @@ function deleteFriend() {
 }
 
 // 设置菜单项配置
+// @unocss-include
 const settingMenuItems = computed<MenuItemConfig[]>(() => [
   {
-    icon: "i-solar:user-id-bold",
+    icon: "i-solar:user-id-bold-duotone text-mini op-50",
     title: "账号管理",
     path: "/user/safe",
     badge: {
@@ -115,7 +116,7 @@ definePageMeta({
     />
 
     <!-- 设置区域 (仅自己可见) -->
-    <div v-if="isSelf && setting.isMobileSize" class="mx-3 border-default-2 border-op-08 rounded-xl bg-color px-4 sm:mx-4">
+    <div v-if="isSelf && setting.isMobileSize" class="mx-3 border-default-2 border-op-08 rounded-xl bg-color px-4 shadow-sm sm:mx-4">
       <CommonMenuItemList
         size="medium"
         :items="settingMenuItems"
@@ -124,14 +125,18 @@ definePageMeta({
     </div>
 
     <!-- 按钮 -->
-    <div v-show="!isLoading && otherUserId" class="w-full flex-row-c-c bg-color p-0 py-8 sm:(static max-w-30rem py-4)">
+    <div
+      v-show="!isLoading && otherUserId"
+      class="absolute bottom-0 left-0 w-full flex rounded-t-xl bg-color bg-op-90 p-4 backdrop-blur-8 sm:(static justify-center)"
+    >
       <CommonElButton
         v-if="isFriend"
         key="delete"
         icon-class="i-solar:trash-bin-trash-outline p-2 mr-2"
-        style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-danger);"
+        style="transition: .2s;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-danger);"
         plain
-        class="mr-4 bg-color-2"
+        size="large"
+        class="flex-1 bg-color-2 sm:(w-8rem flex-none)"
         @click="deleteFriend"
       >
         删除好友&ensp;
@@ -140,8 +145,10 @@ definePageMeta({
         v-if="isFriend"
         key="send"
         icon-class="i-solar:chat-line-bold p-2 mr-2"
-        style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;"
+        style="transition: .2s;text-align: center;letter-spacing: 1px;"
         type="primary"
+        size="large"
+        class="flex-1 sm:(w-8rem flex-none)"
         @click="chat.toContactSendMsg('userId', otherUserId)"
       >
         发送消息&ensp;
@@ -151,6 +158,8 @@ definePageMeta({
         key="add"
         icon-class="i-solar:user-plus-bold p-2 mr-2"
         type="primary"
+        size="large"
+        class="flex-1 sm:(w-8rem flex-none)"
         @click="handleApplyFriend"
       >
         添加好友&ensp;

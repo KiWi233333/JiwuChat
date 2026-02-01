@@ -272,11 +272,21 @@ function showInvitation() {
 }
 
 // 菜单项配置
+// @unocss-include
 const collectionMenuItems = [
   {
     icon: "i-solar:heart-bold-duotone text-pink-500",
     title: "TA的收藏",
     onClick: () => ElMessage.info("未完善，敬请期待！"),
+  },
+];
+
+// @unocss-include
+const personalMenuItems = [
+  {
+    icon: "i-solar:clock-circle-bold-duotone text-mini op-50",
+    title: "上一次登录时间",
+    append: user?.lastLoginTime,
   },
 ];
 
@@ -429,9 +439,9 @@ onMounted(() => {
         </div>
 
         <!-- 签名卡片 -->
-        <div class="group relative mt-5 rounded-lg bg-color-second p-3 shadow-sm shadow-inset transition-colors">
+        <div class="group relative mt-5 rounded-lg bg-color-second p-2 shadow-sm shadow-inset transition-colors sm:p-3">
           <div class="flex items-start gap-2">
-            <i class="Ï i-ri:double-quotes-l flex-shrink-0 text-mini" />
+            <i class="Ï i-ri:double-quotes-l flex-shrink-0 text-mini op-50" />
             <div class="group relative min-w-0 flex-1">
               <el-input
                 ref="sloganInputRef"
@@ -450,7 +460,7 @@ onMounted(() => {
                 :bg="false"
                 text
                 size="small"
-                class="absolute right-2 top-2 op-0 transition-opacity group-hover:op-100"
+                class="absolute right-2 top-2 transition-opacity group-hover:op-100 sm:op-0"
                 @click="onFocusSlogan"
               >
                 <i class="i-solar:pen-new-square-outline" />
@@ -459,6 +469,15 @@ onMounted(() => {
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- 个人卡片 -->
+    <div class="info-card mt-3">
+      <CommonMenuItemList
+        size="medium"
+        :items="personalMenuItems"
+        variant="list"
+      />
     </div>
 
     <!-- 收藏卡片 -->
@@ -478,7 +497,7 @@ onMounted(() => {
 }
 
 .main-card {
-  --at-apply: "p-4 bg-op-60 backdrop-blur-6";
+  --at-apply: "p-4 bg-op-60 backdrop-blur-12";
 }
 
 .avatar-wrapper {
