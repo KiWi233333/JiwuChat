@@ -366,6 +366,9 @@ onDeactivated(() => {
   <div
     class="group main main-bg-color"
   >
+    <!-- 移动端头部菜单 -->
+    <LazyMenuHeaderMenuBarMobile v-if="setting.isMobileSize" />
+
     <!-- 搜索群聊 -->
     <div
       class="nav-padding-top-6 header"

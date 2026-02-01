@@ -112,7 +112,7 @@ onUnmounted(() => {
 });
 
 // 是否显示移动端菜单栏
-const showMobileMenuBar = computed(() => setting.isMobileSize && user.isLogin && !!MAIN_ROUTES[route.path]);
+const showMobileMenuBar = computed(() => !!MAIN_ROUTES[route.path] && chat.isOpenContact);
 </script>
 
 <template>
@@ -128,7 +128,11 @@ const showMobileMenuBar = computed(() => setting.isMobileSize && user.isLogin &&
       class="h-full flex flex-1 flex-col overflow-hidden"
     >
       <!-- 头部 -->
-      <MenuHeaderMenuBar v-show="showMenuBar" nav-class="relative z-999 left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 select-none items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-b bg-color" :data-tauri-drag-region="setting.isDesktop">
+      <MenuHeaderMenuBarDesktop
+        v-if="!setting.isMobileSize && showMenuBar"
+        nav-class="relative z-999 left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 select-none items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-b bg-color"
+        :data-tauri-drag-region="setting.isDesktop"
+      >
         <template #center="{ appTitle }">
           <!-- 移动端菜单 -->
           <div v-if="setting.isMobile" class="absolute-center-center block tracking-0.1em">
@@ -137,7 +141,7 @@ const showMobileMenuBar = computed(() => setting.isMobileSize && user.isLogin &&
           <!-- 连接状态 -->
           <!-- <BtnWsStatusBtns v-if="showWsStatusBtns" class="offline" /> -->
         </template>
-      </MenuHeaderMenuBar>
+      </MenuHeaderMenuBarDesktop>
       <!-- 拖拽区域 -->
       <div v-if="setting.isDesktop" :data-tauri-drag-region="setting.isDesktop" class="fixed left-0 top-0 z-9 block h-8 w-full select-none" />
 
@@ -176,7 +180,8 @@ const showMobileMenuBar = computed(() => setting.isMobileSize && user.isLogin &&
     />
     <!-- 移动端菜单 - 小屏幕才加载 -->
     <LazyMenuBottom
-      v-if="showMobileMenuBar"
+      v-if="setting.isMobileSize"
+      v-show="showMobileMenuBar"
       hydrate-on-media-query="(max-width: 768px)"
       class="grid sm:hidden"
     />

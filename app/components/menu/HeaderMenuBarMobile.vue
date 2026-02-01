@@ -2,14 +2,15 @@
 import { appName } from "@/constants/index";
 
 const {
-  navClass = "z-999 h-3.5rem sm:h-3rem relative left-0 top-0 flex-row-bt-c select-none gap-4 rounded-b-0 px-3 border-default-b bg-color sm:(pl-4 pr-2 border-default-b)",
+  navClass = "z-999 h-3.5rem relative left-0 top-0 flex-row-bt-c select-none gap-4 rounded-b-0 px-3 border-default-b bg-color",
 } = defineProps<{
   navClass?: string
 }>();
 
 const setting = useSettingStore();
 const chat = useChatStore();
-// @unocss-include
+const route = useRoute();
+
 async function toggleContactSearch() {
   setting.isOpenContactSearch = !setting.isOpenContactSearch;
   if (!setting.isOpenContactSearch)
@@ -20,7 +21,6 @@ async function toggleContactSearch() {
     el?.focus();
 }
 
-const route = useRoute();
 const hiddenCountTip = computed(() => chat.isOpenContact || !chat.unReadCount);
 
 async function toggleContactOpen() {
@@ -37,6 +37,7 @@ async function toggleContactOpen() {
     return false;
   }
 }
+
 const getAppTitle = computed(() => {
   if (route.path === "/")
     return appName;
@@ -54,15 +55,13 @@ const getAppTitle = computed(() => {
 </script>
 
 <template>
-  <menu
-    class="group min-h-6"
-    :class="navClass"
-  >
+  <menu class="group min-h-6" :class="navClass">
     <!-- 菜单栏 -->
     <slot name="left">
       <div
         class="relative z-1000 mr-a btn-primary"
-        :class="!chat.isOpenContact ? 'flex-row-c-c animate-zoom-in animate-duration-200 sm:hidden' : 'hidden '" @click="toggleContactOpen"
+        :class="!chat.isOpenContact ? 'flex-row-c-c animate-zoom-in animate-duration-200' : 'hidden '"
+        @click="toggleContactOpen"
       >
         <i i-solar-alt-arrow-left-line-duotone p-3 />
         <small v-show="!hiddenCountTip" class="unread-count-badge font-500">
@@ -78,7 +77,7 @@ const getAppTitle = computed(() => {
     <!-- 会话搜索框 -->
     <slot name="search-contact">
       <i
-        v-if=" $route.path === '/' && setting.isMobileSize && chat.isOpenContact"
+        v-if="$route.path === '/' && chat.isOpenContact"
         class="i-solar:magnifer-outline ml-a btn-primary"
         title="搜索会话"
         @click="toggleContactSearch"
@@ -86,48 +85,22 @@ const getAppTitle = computed(() => {
     </slot>
     <!-- 菜单栏右侧 -->
     <slot name="right">
-      <div class="right relative z-1 flex items-center gap-1 sm:gap-2 sm:pr-4">
-        <!-- 桌面更新菜单 -->
-        <SettingUpdator v-if="!setting.isMobileSize && $route.path !== '/setting'" />
+      <div class="right relative z-1 flex items-center gap-1">
         <!-- 下载（部分端） -->
         <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1 w-5 h-5" />
         <!-- 折叠菜单 -->
-        <MenuDots v-if="setting.isMobileSize || $route.path.startsWith('/extend')">
+        <MenuDots>
           <template #btn>
             <div
               text
-              class="mx-1 w-2em flex-row-c-c btn-primary sm:w-2.2em"
+              class="mx-1 w-2em flex-row-c-c btn-primary"
               size="small"
               title="菜单"
             >
-              <i class="i-solar:add-circle-linear p-2.6 sm:i-solar:hamburger-menu-outline" />
+              <i class="i-solar:add-circle-linear p-2.6" />
             </div>
           </template>
         </MenuDots>
-        <template v-if="setting.isDesktop || setting.isWeb">
-          <!-- web下载推广菜单 -->
-          <BtnAppDownload />
-          <!-- 菜单按钮 -->
-          <template v-if="setting.isDesktop && setting.appPlatform !== 'macos'">
-            <MenuController size="small">
-              <template #start="{ data }">
-                <ElButton
-                  text
-                  size="small"
-                  :style="data.btnStyle"
-                  @click="data.handleWindow('alwaysOnTop')"
-                >
-                  <i
-                    :title="data.isAlwaysOnTopVal ? '取消置顶' : '置顶'"
-                    class="i-solar:pin-broken cursor-pointer text-0.8em transition-200"
-                    :class="data.isAlwaysOnTopVal ? ' mb-1 color-theme-warning -rotate-45' : 'mb-0 btn-primary'"
-                  />
-                </ElButton>
-                <div class="mx-1 h-1.2em border-default-l" />
-              </template>
-            </MenuController>
-          </template>
-        </template>
       </div>
     </slot>
   </menu>
@@ -136,10 +109,6 @@ const getAppTitle = computed(() => {
 <style lang="scss" scoped>
 .unread-count-badge {
   --at-apply: "bg-color-2 shadow-sm !text-gray  shadow-inset text-0.7rem h-fit py-0.2em rounded-2em px-2";
-}
-.dark .nav {
-  backdrop-filter: blur(1rem);
-  background-size: 3px 3px;
 }
 @media screen and (max-width: 768px) {
   .menus {

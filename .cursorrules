@@ -1,0 +1,5 @@
+# Git Safety Rules
+
+- NEVER automatically commit changes.
+- ONLY commit changes when explicitly requested by the user.
+- ALWAYS wait for user confirmation before running `git commit`.

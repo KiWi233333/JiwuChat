@@ -9,6 +9,8 @@
 
 import { LogicalSize } from "@tauri-apps/api/dpi";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import MenuHeaderMenuBarDesktop from "~/components/menu/HeaderMenuBarDesktop.vue";
+import MenuHeaderMenuBarMobile from "~/components/menu/HeaderMenuBarMobile.vue";
 import { appKeywords, appName } from "~/constants";
 import { IS_PROD } from "~/init/setting";
 
@@ -193,7 +195,11 @@ onUnmounted(() => {
     }"
     class="h-full flex flex-col bg-color-2 sm:bg-color"
   >
-    <MenuHeaderMenuBar v-if="menuBar" nav-class="relative h-fit z-1001 shadow left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute shadow-none right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-2-b bg-color">
+    <component
+      :is="setting.isMobileSize ? MenuHeaderMenuBarMobile : MenuHeaderMenuBarDesktop"
+      v-if="menuBar"
+      nav-class="relative h-fit z-1001 shadow left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute shadow-none right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-2-b bg-color"
+    >
       <template #center="{ appTitle }">
         <!-- 移动端菜单 -->
         <div v-if="setting.isMobile" class="absolute-center-center block tracking-0.1em sm:hidden" :data-tauri-drag-region="setting.isDesktop">
@@ -208,7 +214,7 @@ onUnmounted(() => {
           </template>
         </div>
       </template>
-    </MenuHeaderMenuBar>
+    </component>
     <main :class="mainClass" class="relative h-full flex-1 sm:flex">
       <menu
         class="h-full w-full transition-360 sm:(max-w-14rem min-w-fit border-default-2-r shadow-lg)"
