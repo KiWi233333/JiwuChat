@@ -535,7 +535,7 @@ onActivated(() => {
     </el-scrollbar>
 
     <!-- 添加/编辑对话框 -->
-    <dialog-popup
+    <CommonPopup
       v-model="dialogVisible"
       :duration="300"
       destroy-on-close
@@ -615,10 +615,10 @@ onActivated(() => {
           </el-button>
         </div>
       </template>
-    </dialog-popup>
+    </CommonPopup>
 
     <!-- MCP应用对话框 -->
-    <dialog-popup
+    <CommonPopup
       v-model="mcpAppDialogVisible"
       title="MCP应用"
       content-class="rounded-3 p-4 shadow-lg w-[90vw] max-w-400px border-default-2 dialog-bg-color"
@@ -635,7 +635,7 @@ onActivated(() => {
           :model-value="mcpDetail"
         />
       </div>
-    </dialog-popup>
+    </CommonPopup>
 
     <!-- 新密钥展示对话框 -->
     <CommonPopup

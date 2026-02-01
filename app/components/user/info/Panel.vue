@@ -1,21 +1,29 @@
 <script lang="ts" setup>
-import type { UploadFile, UploadFiles, UploadProps } from "element-plus/es/components/upload";
+import type { UploadProps } from "element-plus/es/components/upload";
 import type { UpdateInfo } from "@/composables/api/user/info";
 import { updateInfoByDTO } from "@/composables/api/user/info";
 import { compareObjects } from "@/composables/utils";
 
-const { data, isEdit } = defineProps<{
+export interface UserInfoPanelProps {
   data?: Partial<UserInfoVO>
   isEdit?: boolean
-}>();
+}
+
+interface GenderConfig {
+  icon: string
+  color: string
+  bg: string
+}
+
+const { data, isEdit = false } = defineProps<UserInfoPanelProps>();
 
 // 响应式状态管理
 const store = useUserStore();
 const formData = new FormData();
 
 // 加载状态
-const isLoading = ref<boolean>(false);
-const isDataLoading = ref<boolean>(true);
+const isLoading = ref(false);
+const isDataLoading = ref(true);
 
 // 用户数据状态
 const user = reactive<Partial<UserInfoVO>>({});
@@ -27,13 +35,13 @@ const userCopy = reactive<Partial<UserInfoVO>>({
 });
 
 // 编辑状态
-const isEditSlogan = ref<boolean>(false);
-const isEditNickname = ref<boolean>(false);
+const isEditSlogan = ref(false);
+const isEditNickname = ref(false);
 
 // 表单引用
-const avatatRef = ref();
+const avatarRef = ref();
 const nicknameInputRef = useTemplateRef("nicknameInputRef");
-
+const sloganInputRef = useTemplateRef("sloganInputRef");
 // 计算属性
 const avatarUrl = computed({
   get() {
@@ -44,14 +52,22 @@ const avatarUrl = computed({
   },
 });
 
-const bgUrl = computed(() => localStorage.getItem("jiwu_user_bg") || "/image/user-bg/kiwi-bg-4.jpg");
 const getAgeText = computed(() => calculateAge(user?.birthday));
 const getConstellation = computed(() => computeConstellation(user?.birthday));
 const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
 
+// 性别配置映射
+const genderConfig = computed<GenderConfig>(() => {
+  const configs: Record<string, GenderConfig> = {
+    [Gender.BOY]: { icon: "i-solar:men-bold", color: "text-blue-500", bg: "bg-blue-100" },
+    [Gender.GIRL]: { icon: "i-solar:women-bold", color: "text-pink-500", bg: "bg-pink-100" },
+  };
+  return configs[user.gender || ""] || { icon: "i-solar:user-bold", color: "text-small-color", bg: "bg-color-2" };
+});
+
 // 常量
-const imageTypeList = ref<string[]>(["image/png", "image/jpg", "image/jpeg", "image/svg"]);
-const genderList = ref<string[]>(["男", "女", "保密"]);
+const imageTypeList = ["image/png", "image/jpg", "image/jpeg", "image/svg"];
+const genderList = ["男", "女", "保密"];
 
 // 监听 props.data 变化，处理异步加载
 watch(
@@ -85,7 +101,7 @@ function initializeUserData(userData: Partial<UserInfoVO>) {
 const beforeUpload: UploadProps["beforeUpload"] = (rawFile: File) => {
   isLoading.value = true;
 
-  if (!imageTypeList.value.includes(rawFile.type)) {
+  if (!imageTypeList.includes(rawFile.type)) {
     isLoading.value = false;
     ElMessage.error("文件格式不是图片格式!");
     return false;
@@ -101,9 +117,9 @@ const beforeUpload: UploadProps["beforeUpload"] = (rawFile: File) => {
   return true;
 };
 
-const updateSucess: UploadProps["onSuccess"] = async (data: Result<string>, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+const updateSuccess: UploadProps["onSuccess"] = async (data: Result<string>) => {
   isLoading.value = false;
-  avatatRef.value?.clearFiles();
+  avatarRef.value?.clearFiles();
 
   if (data.code === StatusCode.SUCCESS) {
     user.avatar = data.data;
@@ -111,6 +127,23 @@ const updateSucess: UploadProps["onSuccess"] = async (data: Result<string>, uplo
     ElMessage.success("更换头像成功！");
   }
 };
+
+// 聚焦个性签名
+function onFocusSlogan() {
+  if (!isEdit)
+    return;
+  isEditSlogan.value = true;
+  nextTick(() => {
+    sloganInputRef.value?.focus();
+  });
+}
+function onBlurSlogan() {
+  setTimeout(() => {
+    if (!isEditSlogan.value)
+      return;
+    submitUpdateUser("slogan");
+  }, 100);
+}
 
 // 用户信息更新方法
 async function submitUpdateUser(key: string) {
@@ -129,7 +162,7 @@ async function submitUpdateUser(key: string) {
   try {
     isLoading.value = true;
 
-    const { code, message } = await updateInfoByDTO(
+    const { code } = await updateInfoByDTO(
       compareObjects({
         nickname: user?.nickname,
         slogan: user?.slogan,
@@ -176,10 +209,24 @@ function closeEditMode() {
 
 // 昵称编辑相关方法
 function onFocusNickname() {
+  if (!isEdit)
+    return;
   isEditNickname.value = true;
   nextTick(() => {
     nicknameInputRef.value?.focus();
   });
+}
+
+// 确认更新的通用方法
+function confirmUpdate(field: keyof UpdateInfo, message: string) {
+  return ElMessageBox.confirm(`是否确认修改${message}？`, "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+    center: true,
+  })
+    .then(() => submitUpdateUser(field))
+    .catch(() => resetUserCopy());
 }
 
 function onBlur() {
@@ -189,27 +236,13 @@ function onBlur() {
 
     // 检查昵称是否修改
     if (userCopy.nickname !== user?.nickname) {
-      ElMessageBox.confirm("是否确认修改昵称？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        center: true,
-      })
-        .then(() => submitUpdateUser("nickname"))
-        .catch(() => resetUserCopy());
+      confirmUpdate("nickname", "昵称");
       return;
     }
 
     // 检查个性签名是否修改
     if (userCopy.slogan !== user?.slogan) {
-      ElMessageBox.confirm("是否确认修改个性签名？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        center: true,
-      })
-        .then(() => submitUpdateUser("slogan"))
-        .catch(() => resetUserCopy());
+      confirmUpdate("slogan", "个性签名");
       return;
     }
 
@@ -239,22 +272,9 @@ function showInvitation() {
 }
 
 // 菜单项配置
-const momentMenuItems = [
-  {
-    icon: "i-solar:fire-line-duotone",
-    title: "TA的朋友圈",
-    onClick: () => ElMessage.info("未完善，敬请期待！"),
-  },
-  {
-    icon: "i-solar:gallery-wide-line-duotone",
-    title: "精选图集",
-    onClick: () => ElMessage.info("未完善，敬请期待！"),
-  },
-];
-
 const collectionMenuItems = [
   {
-    icon: "i-solar:heart-line-duotone",
+    icon: "i-solar:heart-bold-duotone text-pink-500",
     title: "TA的收藏",
     onClick: () => ElMessage.info("未完善，敬请期待！"),
   },
@@ -270,322 +290,256 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="top">
-    <div
-      v-loading="isLoading"
-      class="avatar"
-    >
-      <!-- 上传 -->
-      <el-upload
-        ref="avatatRef"
-        :disabled="!isEdit"
-        class="avatar-uploader"
-        :class="{ 'is-disabled': !isEdit }"
-        drag
-        :action="`${BaseUrlRef}/user/info/avatar`"
-        :headers="{ Authorization: store.token }"
-        method="PUT"
-        :limit="1"
-        accept="image/*"
-        :multiple="false"
-        auto-upload
-        :show-file-list="false"
-        list-type="picture"
-        :before-upload="beforeUpload"
-        :on-success="updateSucess"
-      >
-        <div class="group relative flex-row-c-c">
-          <CommonAvatar
-            alt="Design By Kiwi23333"
-            :src="BaseUrlImg + avatarUrl"
-            class="avatar-mark h-6em w-6em select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 transition-300 group-hover:filter-blur-4"
-          />
+  <div class="user-panel-container">
+    <!-- 主信息卡片 -->
+    <div class="info-card main-card">
+      <!-- 头像部分 -->
+      <div class="avatar-wrapper">
+        <el-upload
+          ref="avatarRef"
+          :disabled="!isEdit"
+          class="avatar-uploader"
+          :class="{ 'is-disabled': !isEdit }"
+          :action="`${BaseUrlRef}/user/info/avatar`"
+          :headers="{ Authorization: store.token }"
+          method="PUT"
+          :limit="1"
+          accept="image/*"
+          :multiple="false"
+          auto-upload
+          :show-file-list="false"
+          list-type="picture"
+          :before-upload="beforeUpload"
+          :on-success="updateSuccess"
+        >
+          <div class="avatar-inner group">
+            <CommonAvatar
+              :src="BaseUrlImg + avatarUrl"
+              class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
 
-          <ElIconPlus
-            v-if="isEdit"
-            class="absolute-center-center z-99 h-1/2 w-1/2 select-none overflow-hidden overflow-hidden rounded-1/2 object-cover p-0 text-light op-0 filter-drop-shadow transition-300 group-hover-op-80"
-          />
+            <!-- 性别图标 -->
+            <!-- <div class="gender-badge" :class="genderConfig.bg">
+              <i :class="[genderConfig.icon, genderConfig.color]" class="text-xs" />
+            </div> -->
+
+            <div
+              v-if="isEdit"
+              class="upload-overlay"
+            >
+              <i class="i-solar:camera-add-bold text-xl text-white" />
+            </div>
+          </div>
+        </el-upload>
+      </div>
+
+      <!-- 用户基本信息 -->
+      <div class="px-1 pt-8">
+        <!-- 昵称和状态 -->
+        <div class="mb-4 flex items-center gap-2">
+          <div v-if="!isEditNickname" class="max-w-[70%] flex items-center gap-2">
+            <h2 class="truncate text-xl text-color font-bold" @click="onFocusNickname">
+              {{ user.nickname }}
+            </h2>
+          </div>
+
+          <!-- 昵称编辑框 -->
+          <div v-else-if="isEditNickname">
+            <el-input
+              ref="nicknameInputRef"
+              v-model.lazy="userCopy.nickname"
+              class="nickname-input"
+              placeholder="修改昵称"
+              @blur="onBlur"
+              @keyup.enter="submitUpdateUser('nickname')"
+            />
+
+            <CommonElButton
+              type="primary"
+              size="small"
+              @click="submitUpdateUser('nickname')"
+            >
+              <i class="i-solar:check-circle-bold" />
+            </CommonElButton>
+          </div>
+
+          <!-- 编辑按钮 -->
+          <CommonElButton
+            v-if="!isEditNickname"
+            :bg="false"
+            text
+            size="small"
+            @click="onFocusNickname"
+          >
+            <i class="i-solar:pen-new-square-outline" />
+          </CommonElButton>
         </div>
-      </el-upload>
-    </div>
-    <div class="px-2">
-      <!-- 原 -->
-      <h2
-        v-show="!isEditNickname"
-        key="nickname1"
-        font-500
-        class="group h-2rem flex-row-bt-c flex-1"
-      >
-        <span flex-1 truncate title="点击编辑" @click="onFocusNickname()">{{ user.nickname }}</span>
-        <i i-solar:share-bold ml-a btn-info text-4 @click="showInvitation" />
-      </h2>
-      <!-- 昵称 -->
-      <div
-        v-show="isEditNickname"
-        v-if="isEdit"
-        key="nickname-input"
-        class="h-2rem flex-row-c-c"
-      >
-        <el-input
-          ref="nicknameInputRef"
-          v-model.lazy="userCopy.nickname"
-          class="edit-nickname mr-2"
-          style="font-size: 1.4em; font-weight: 500;"
-          placeholder="修改用户昵称"
-          @focus="isEditNickname = true"
-          @blur="onBlur()"
-          @keyup.enter="submitUpdateUser('nickname')"
-        />
-        <el-button
-          style="padding: 0 1.5em"
-          type="primary"
-          @click="submitUpdateUser('nickname')"
-        >
-          修改
-        </el-button>
+
+        <!-- ID 徽章 -->
+        <div class="mb-4 flex items-center">
+          <div class="group flex cursor-pointer items-center gap-1 rounded-1 bg-color-2 px-3 py-1 text-mini font-medium font-mono op-80 transition-colors hover:bg-color-3" @click="showInvitation">
+            <span>ID: {{ user?.id }}</span>
+            <i v-copying.toast="user?.id" class="i-solar:copy-linear text-mini opacity-50 transition-opacity group-hover:opacity-100" />
+          </div>
+        </div>
+
+        <!-- 标签行 -->
+        <div class="mb-2 flex flex-wrap gap-2">
+          <!-- 年龄 -->
+          <div v-if="getAgeText" class="tag-item">
+            <i class="i-ri:cake-2-line text-orange-400" />
+            <span>{{ getAgeText }}</span>
+          </div>
+
+          <!-- 星座 -->
+          <div v-if="getConstellation" class="tag-item">
+            <i class="i-solar:stars-minimalistic-bold-duotone text-purple-400" />
+            <span>{{ getConstellation }}</span>
+          </div>
+
+          <!-- 生日 -->
+          <div v-if="user.birthday" class="tag-item group relative">
+            <i class="i-solar:calendar-date-bold-duotone text-blue-400" />
+            <span>{{ user.birthday }}</span>
+            <!-- 生日编辑 (仅在编辑模式下通过点击触发，这里简化为展示) -->
+            <el-date-picker
+              v-model="userCopy.birthday"
+              type="date"
+              :clearable="false"
+              :disabled="!isEdit"
+              class="inset-0 left-0 z-99 h-full max-w-24 cursor-pointer op-0 !absolute"
+              @change="submitUpdateUser('birthday')"
+            />
+          </div>
+
+          <!-- 性别选择 (作为标签) -->
+          <div v-if="isEdit" class="tag-item relative flex items-center">
+            <i :class="genderConfig.icon" :style="{ color: genderConfig.color.replace('text-', '') }" />
+            <el-select
+              v-model="userCopy.gender"
+              class="absolute inset-0 opacity-0 !h-5 !w-0"
+              size="small"
+              placement="bottom"
+              @change="submitUpdateUser('gender')"
+            >
+              <el-option v-for="item in genderList" :key="item" :label="item" :value="item" />
+            </el-select>
+            <span>{{ user.gender }}</span>
+          </div>
+        </div>
+
+        <!-- 签名卡片 -->
+        <div class="group relative mt-5 rounded-lg bg-color-second p-3 shadow-sm shadow-inset transition-colors">
+          <div class="flex items-start gap-2">
+            <i class="Ï i-ri:double-quotes-l flex-shrink-0 text-mini" />
+            <div class="group relative min-w-0 flex-1">
+              <el-input
+                ref="sloganInputRef"
+                v-model.lazy="userCopy.slogan"
+                type="textarea"
+                :rows="2"
+                resize="none"
+                class="w-full"
+                placeholder="填写个性签名"
+                @blur="onBlurSlogan"
+                @keyup.enter="submitUpdateUser('slogan')"
+              />
+              <!-- 编辑图标右上角 -->
+              <CommonElButton
+                v-if="isEdit"
+                :bg="false"
+                text
+                size="small"
+                class="absolute right-2 top-2 op-0 transition-opacity group-hover:op-100"
+                @click="onFocusSlogan"
+              >
+                <i class="i-solar:pen-new-square-outline" />
+              </CommonElButton>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- id -->
-      <div class="group mt-2 block text-small">
-        ID：{{ user?.id }}
-        <el-tooltip
-          v-if="user?.id"
-          content="复制 ID"
-          placement="bottom"
-          popper-class="el-popper-init"
-        >
-          <span
-            v-copying.toast="user?.id"
-            class="i-solar:copy-broken mx-2 cursor-pointer bg-blueGray p-2 transition-300 hover:bg-theme-success"
-          />
-        </el-tooltip>
-      </div>
     </div>
-  </div>
-  <!-- 详情 -->
-  <div class="detail-info">
-    <p class="user-props truncate text-sm">
-      <i mr-3 inline-block h-4 w-4 :class="user.gender === Gender.BOY ? 'i-tabler:gender-male text-blue' : user.gender === Gender.GIRL ? 'i-tabler:gender-female text-pink' : 'i-tabler:gender-transgender text-yellow'" />
-      <span class="mr-2 border-default-r pr-2">
-        {{ user.gender }}
-      </span>
-      <template v-if="user.birthday">
-        <span class="mr-2 border-default-r pr-2">
-          {{ getAgeText }}
-        </span>
-        <span class="mr-2 border-default-r pr-2">
-          {{ user.birthday || ' - ' }}
-        </span>
-        <span>
-          {{ getConstellation }}
-        </span>
-      </template>
-    </p>
-    <p class="user-props">
-      <i class="i-carbon:send mr-3 inline-block h-4 w-4" />
-      签名：
-      <el-input
-        v-if="isEdit"
-        v-model.lazy="userCopy.slogan"
-        class="mr-1"
-        size="small"
-        type="text"
-        style="width: 14em"
-        placeholder="展示你的个性签名吧~ ✨"
-        @keyup.enter="submitUpdateUser('slogan')"
-        @focus="isEditSlogan = true"
-        @blur="onBlur()"
-      />
-      <span
-        v-else
-        class="truncate pl-2 text-xs"
-        :title="userCopy?.slogan"
-      >{{ userCopy?.slogan || "暂无个性签名" }}</span>
-      <el-button
-        v-show="isEditSlogan"
-        key="isEditSlogan-btn"
-        :icon="ElIconSelect"
-        size="small"
-        type="primary"
-        @click="submitUpdateUser('slogan')"
-      />
-    </p>
-    <p class="user-props">
-      <i class="i-tabler:calendar mr-3 inline-block h-4 w-4" />
-      生日：
-      <el-date-picker
-        v-if="isEdit"
-        v-model.lazy="userCopy.birthday"
-        type="date"
-        placeholder="选择生日"
-        size="small"
-        :disabled="!isEdit"
-        @change="submitUpdateUser('birthday')"
-      />
-      <span v-else class="pl-2 text-xs">
-        距离生日还有：{{ getBirthdayCount || ' - ' }}天
-      </span>
-    </p>
-    <!-- 性别 -->
-    <div class="user-props">
-      <i i-solar:adhesive-plaster-linear mr-3 inline-block h-4 w-4 />
-      性别：
-      <el-select
-        v-model="userCopy.gender"
-        placeholder="Select"
-        style="width: 10.5em"
-        size="small"
-        :disabled="!isEdit"
-        @change="submitUpdateUser('gender')"
-      >
-        <el-option
-          v-for="item in genderList"
-          :key="item"
-          :label="item"
-          :value="item"
-        />
-      </el-select>
-    </div>
-    <p class="user-props">
-      <i class="i-carbon:user mr-3 inline-block h-4 w-4" />
-      上次在线：
-      {{ user.lastLoginTime || ' - ' }}
-    </p>
-  </div>
-  <!-- 他的朋友圈 -->
-  <div class="detail-info">
-    <CommonMenuItemList
-      size="small"
-      :items="momentMenuItems"
-      variant="list"
-    />
-    <div class="img-list">
-      <!-- TODO: 后期添加 -->
-      <CommonElImage
-        class="my-2 mr-2 h-18 w-18 rounded-md bg-color-2 object-cover shadow"
-        :default-src="user.avatar"
-        fit="cover"
-        :preview-src-list="[BaseUrlImg + user.avatar]"
-      />
-      <!-- TODO: 后期添加 -->
-      <CommonElImage
-        class="my-2 mr-2 h-18 w-18 rounded-md bg-color-2 object-cover shadow"
-        :default-src="bgUrl"
-        fit="cover"
-        :preview-src-list="[BaseUrlImg + bgUrl]"
+
+    <!-- 收藏卡片 -->
+    <div class="info-card mt-3">
+      <CommonMenuItemList
+        size="medium"
+        :items="collectionMenuItems"
+        variant="list"
       />
     </div>
-    <CommonMenuItemList
-      size="small"
-      :items="collectionMenuItems"
-      variant="list"
-    />
   </div>
 </template>
 
 <style scoped lang="scss">
-:deep(.el-loading-mask) {
-  border-radius: 50%;
-  overflow: hidden !important;
+.info-card {
+  --at-apply: "rounded-xl bg-color px-4 shadow-sm sm:(shadow-none) border-default-2 border-op-08";
 }
-.avatar {
-  // width: 100%;
-  // height: 100%;
-  // border-radius: 50%;
-  // overflow: hidden;
-  --at-apply: "overflow-hidden w-6em h-6em rounded-1/2 flex-shrink-0 shadow-md";
+
+.main-card {
+  --at-apply: "p-4 bg-op-60 backdrop-blur-6";
+}
+
+.avatar-wrapper {
+  --at-apply: "absolute -top-10 left-4 w-20 h-20 rounded-full p-1 bg-color shadow-md z-10";
+}
+
+.avatar-inner {
+  --at-apply: "w-full h-full rounded-full overflow-hidden relative border border-default";
+}
+
+.avatar-uploader {
+  width: 100%;
+  height: 100%;
 
   :deep(.el-upload) {
-    --at-apply: "card-default-br";
-    overflow: hidden;
     width: 100%;
     height: 100%;
     border-radius: 50%;
-
-    .el-upload-dragger {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      width: 6em;
-      height: 6em;
-      border-width: 2px;
-      border-radius: 50%;
-      border-style: solid;
-      border-color: var(--el-border-color);
-      &:hover {
-        border-style: dashed;
-      }
-      transition: $transition-delay;
-    }
-  }
-  .is-disabled {
-    pointer-events: none;
   }
 }
-/* stylelint-disable-next-line selector-class-pattern */
-.edit-nickname {
+
+.nickname-input {
+  --at-apply: "w-fit font-bold";
+  font-size: 1.25rem;
+  font-weight: 700 !important;
+  height: 1.75rem;
   :deep(.el-input__wrapper) {
-    --at-apply: "p-0 m-0 text-6 flex-1 min-w-0";
+    --at-apply: "w-fit max-w-full";
+  }
 
-    input {
-      --at-apply: "text-color font-500";
-    }
+  :deep(.el-input__inner) {
+    --at-apply: "font-700 text-color w-fit max-w-full";
+    flex-grow: 0 !important;
   }
 }
-.small-input {
-  --at-apply: "pb-2 mb-2 flex items-center justify-start";
+
+.upload-overlay {
+  --at-apply: "absolute inset-0 bg-menu-color flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer";
 }
+
+.gender-badge {
+  --at-apply: "absolute bottom-0 right-0 w-5 h-5 rounded-full flex items-center justify-center border-2 border-white dark:border-dark-5";
+}
+
+.tag-item {
+  --at-apply: "flex items-center gap-2 h-7 px-2 bg-color-2 rounded-md text-xs text-small-color font-medium transition-colors hover:bg-color-3";
+  i {
+    --at-apply: "text-3";
+  }
+}
+
 :deep(.el-input__wrapper) {
-  & {
-    box-shadow: none;
-  }
-  &.is-focus {
-    box-shadow: 0 0 0 1px var(--el-input-foucs-border-color) inset;
-  }
-}
-:deep(.el-input.el-date-editor) {
-  .el-input__wrapper {
-    padding: 0;
-  }
-
-  .el-input__prefix {
-    display: none;
-  }
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0;
 }
 
-.el-popper-init {
-  padding: 2px 4px;
-}
-:deep(.el-input) {
-  .el-input__wrapper {
-    background-color: transparent;
-  }
-}
-:deep(.el-select) {
-  .el-select__wrapper {
-    background-color: transparent;
-    box-shadow: none;
-  }
-}
-
-.top {
-  --at-apply: "!bg-op-50 backdrop-blur-20 rounded-t-4 w-full flex items-center gap-2 p-4 pb-8 -mt-16 sm:( px-8 pt-8)";
-  background: linear-gradient(to bottom, #ffffff85, #ffffff);
-}
-.dark {
-  .top {
-    background: linear-gradient(to bottom, #1f1f1f3d, #1f1f1f);
-  }
-}
-
-.detail-info {
-  --at-apply: "w-full px-4 sm:px-8 gap-6 shadow-sm sm:shadow-none bg-color";
-
-  .user-props {
-    --at-apply: "flex items-center py-3 max-w-full sm:w-30rem truncate text-sm";
-  }
-  .user-props:nth-last-child(1) {
-    --at-apply: "mb-0";
-  }
+:deep(.el-textarea__inner) {
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
 }
 </style>

@@ -1,4 +1,10 @@
 <script lang="ts" setup>
+const {
+  isEdit,
+} = defineProps<{
+  isEdit: boolean;
+}>();
+
 const bgList = ref<string[]>([
   "/image/user-bg/kiwi-bg-1.jpg",
   "/image/user-bg/kiwi-bg-2.jpg",
@@ -6,7 +12,9 @@ const bgList = ref<string[]>([
   "/image/user-bg/kiwi-bg-4.jpg",
   "/image/user-bg/kiwi-bg-5.jpg",
 ]);
-const bgUrl = useLocalStorage("jiwu_user_bg", "/image/user-bg/kiwi-bg-4.jpg");
+
+const user = useUserStore();
+const bgUrl = useLocalStorage(`${user.userId}-user-bg`, "/image/user-bg/kiwi-bg-4.jpg");
 </script>
 
 <template>
@@ -16,16 +24,15 @@ const bgUrl = useLocalStorage("jiwu_user_bg", "/image/user-bg/kiwi-bg-4.jpg");
       placement="top"
       :teleported="true"
       trigger="click"
-      title="切换壁纸"
-      class=""
     >
       <template #reference>
         <!-- 切换按钮 -->
         <el-button
-          class="absolute bottom-20 right-4 z-999 opacity-0 group-hover:opacity-100"
-          type="info"
+          v-if="isEdit"
+          class="absolute right-4 top-4 z-999 group-hover:opacity-100 sm:opacity-50"
           plain
-          style="padding: 8px; background-color: rgba(97, 255, 163, 0.1); transition: 0.3s"
+          circle
+          round
         >
           <i
             i-solar:pallete-2-bold h-1.6em w-1.6em
@@ -33,20 +40,21 @@ const bgUrl = useLocalStorage("jiwu_user_bg", "/image/user-bg/kiwi-bg-4.jpg");
         </el-button>
       </template>
       <template #default>
-        <ClientOnly>
-          <div class="img-list grid grid-cols-3 mt-4 w-90vw gap-4 sm:w-400px">
-            <CommonElImage
-              v-for="(p, i) in bgList"
-              :key="i"
-              loading="lazy"
-              alt="Design By Kiwi23333"
-              :src="BaseUrlImg + p"
-              object-cover
-              class="h-5em cursor-pointer border-default rounded-4px object-cover transition-300 hover:scale-105"
-              @click="bgUrl = p"
-            />
-          </div>
-        </ClientOnly>
+        <span class="text-sm">
+          <i class="i-solar:star-bold-duotone mr-1 p-2" />
+          切换壁纸</span>
+        <div class="img-list grid grid-cols-3 mt-2 w-90vw gap-4 sm:w-400px">
+          <CommonElImage
+            v-for="(p, i) in bgList"
+            :key="i"
+            loading="lazy"
+            alt="Design By Kiwi23333"
+            :src="BaseUrlImg + p"
+            object-cover
+            class="h-5em cursor-pointer border-default rounded-4px object-cover transition-300 hover:scale-105"
+            @click="bgUrl = p"
+          />
+        </div>
       </template>
     </el-popover>
     <CommonElImage

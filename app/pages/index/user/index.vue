@@ -62,8 +62,8 @@ function deleteFriend() {
 // 设置菜单项配置
 const settingMenuItems = computed<MenuItemConfig[]>(() => [
   {
-    icon: "i-solar:devices-outline",
-    title: "账 号",
+    icon: "i-solar:user-id-bold",
+    title: "账号管理",
     path: "/user/safe",
     badge: {
       isDot: true,
@@ -71,13 +71,13 @@ const settingMenuItems = computed<MenuItemConfig[]>(() => [
     },
   },
   {
-    icon: "i-solar:code-square-outline",
+    icon: "i-solar:key-minimalistic-square-3-bold text-mini op-50",
     title: "API Key",
     path: "/api/key",
   },
   {
-    icon: "i-solar:settings-linear",
-    title: "设 置",
+    icon: "i-solar:settings-minimalistic-bold text-mini op-50",
+    title: "通用设置",
     path: "/setting",
     badge: {
       value: +setting.appUploader.isUpload,
@@ -106,20 +106,20 @@ definePageMeta({
 <template>
   <el-scrollbar ref="scrollbarRef" class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color">
     <!-- 壁纸 -->
-    <UserInfoBgToggle class="fixed left-0 top-0 z-0 w-full" />
+    <UserInfoBgToggle class="fixed left-0 top-0 z-0 w-full" :is-edit="isSelf" />
     <!-- 用户信息面板 -->
     <UserInfoPanel
       :data="user"
-      data-fade
       :is-edit="isSelf"
+      class="p-3 -mt-12 sm:p-4"
     />
 
     <!-- 设置区域 (仅自己可见) -->
-    <div v-if="isSelf" class="bg-color pb-20">
+    <div v-if="isSelf && setting.isMobileSize" class="mx-3 border-default-2 border-op-08 rounded-xl bg-color px-4 sm:mx-4">
       <CommonMenuItemList
-        size="small"
+        size="medium"
         :items="settingMenuItems"
-        variant="card"
+        variant="list"
       />
     </div>
 
