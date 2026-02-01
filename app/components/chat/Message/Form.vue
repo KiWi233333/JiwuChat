@@ -580,9 +580,11 @@ onMounted(() => {
   // 监听快捷键
   window.addEventListener("keydown", startRecord);
 
-  nextTick(() => {
-    selectionManager.focusAtEnd();
-  });
+  if (!setting.isMobileSize) {
+    nextTick(() => {
+      selectionManager.focusAtEnd();
+    });
+  }
   // At 用户
   mitter.on(MittEventType.CHAT_AT_USER, (e) => {
     if (isReplyAI.value) {
