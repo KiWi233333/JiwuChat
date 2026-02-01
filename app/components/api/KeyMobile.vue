@@ -333,6 +333,23 @@ async function copyApiKey() {
   keyResultDialogVisible.value = false;
 }
 
+// 滑动切换逻辑，不能超过边界，到两边停止
+function handleSwipeNext() {
+  const currentIndex = apiKeyStatusOptions.findIndex(option => option.value === searchForm.status);
+  if (currentIndex < apiKeyStatusOptions.length - 1) {
+    searchForm.status = apiKeyStatusOptions[currentIndex + 1]?.value;
+    handleSearch();
+  }
+}
+
+function handleSwipePrev() {
+  const currentIndex = apiKeyStatusOptions.findIndex(option => option.value === searchForm.status);
+  if (currentIndex > 0) {
+    searchForm.status = apiKeyStatusOptions[currentIndex - 1]?.value;
+    handleSearch();
+  }
+}
+
 // 命令处理
 async function handleCommand(command: string, row: ApiKeyVO) {
   const token = user.token;
@@ -436,7 +453,16 @@ onActivated(() => {
     </div>
 
     <!-- API Key 列表 -->
-    <el-scrollbar height="calc(100vh - 16.75rem)" class="flex flex-1 flex-col pb-4">
+    <el-scrollbar
+      v-swipe="{
+        sensitivity: 2,
+        onlyHorizontal: true,
+        onSwipeLeft: handleSwipeNext,
+        onSwipeRight: handleSwipePrev,
+      }"
+      height="calc(100vh - 16.75rem)"
+      class="flex flex-1 flex-col pb-4"
+    >
       <CommonListAutoIncre
         :no-more="noMore"
         :loading="loading"
