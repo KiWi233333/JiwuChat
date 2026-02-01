@@ -33,8 +33,8 @@ const setting = useSettingStore();
   --at-apply: "relative py-4 flex-1  w-full  flex overflow-hidden !p-0 bg-color";
 }
 
-$ios-transition-timing-function: cubic-bezier(0.33, 0.4, 0.06, 1); // 更平滑自然的仿 iOS 动画曲线
-$page-transition-duration: 0.46s;
+$ios-transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1); // 优化后的 iOS 风格曲线，前后缓冲更自然
+$page-transition-duration: 0.5s;
 
 .transition-anima {
   transition:

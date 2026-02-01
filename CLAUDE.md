@@ -235,6 +235,7 @@ Follow Conventional Commits format with commitlint validation:
 
 ### Rules
 
+- **No Auto-Commits**: Do NOT commit changes automatically. The user strictly prefers to commit manually. Only commit if explicitly asked.
 - Type must be lowercase
 - Header max length: 100 characters
 - No period at end of subject

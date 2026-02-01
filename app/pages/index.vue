@@ -94,6 +94,17 @@ watch(() => user.isLogin, (val) => {
   immediate: true,
 });
 
+// 伪造路由历史记录，防止移动端返回键退出应用
+useHistoryState(
+  toRef(chat, "isOpenContact"),
+  {
+    enabled: computed(() => setting.isMobileSize),
+    stateKey: "chatRoomOpen",
+    activeValue: false,
+    inactiveValue: true,
+  },
+);
+
 // 监听好友申请弹窗事件
 onMounted(() => {
   // 监听好友申请弹窗事件
