@@ -105,7 +105,7 @@ definePageMeta({
 </script>
 
 <template>
-  <el-scrollbar ref="scrollbarRef" class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color">
+  <el-scrollbar ref="scrollbarRef" class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color" wrap-class="pb-20">
     <!-- 壁纸 -->
     <UserInfoBgToggle class="fixed left-0 top-0 z-0 w-full" :is-edit="isSelf" />
     <!-- 用户信息面板 -->

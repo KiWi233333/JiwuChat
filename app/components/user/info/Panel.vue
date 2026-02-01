@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { UploadProps } from "element-plus/es/components/upload";
 import type { UpdateInfo } from "@/composables/api/user/info";
+import dayjs from "dayjs";
 import { updateInfoByDTO } from "@/composables/api/user/info";
 import { compareObjects } from "@/composables/utils";
 
@@ -54,6 +55,11 @@ const avatarUrl = computed({
 
 const getAgeText = computed(() => calculateAge(user?.birthday));
 const getConstellation = computed(() => computeConstellation(user?.birthday));
+const getBirthdayText = computed(() => {
+  if (!user?.birthday)
+    return "未知";
+  return dayjs(user?.birthday).format("YYYY-MM-DD");
+});
 const getBirthdayCount = computed(() => calculateBirthdayCount(user?.birthday));
 
 // 性别配置映射
@@ -410,7 +416,7 @@ onMounted(() => {
           <!-- 生日 -->
           <div v-if="user.birthday" class="tag-item group relative">
             <i class="i-solar:calendar-date-bold-duotone text-blue-400" />
-            <span>{{ user.birthday }}</span>
+            <span>{{ getBirthdayText }}</span>
             <!-- 生日编辑 (仅在编辑模式下通过点击触发，这里简化为展示) -->
             <el-date-picker
               v-model="userCopy.birthday"
@@ -423,7 +429,7 @@ onMounted(() => {
           </div>
 
           <!-- 性别选择 (作为标签) -->
-          <div v-if="isEdit" class="tag-item relative flex items-center">
+          <div v-if="isEdit" class="tag-item relative w-fit flex items-center">
             <i :class="genderConfig.icon" :style="{ color: genderConfig.color.replace('text-', '') }" />
             <el-select
               v-model="userCopy.gender"
@@ -543,7 +549,7 @@ onMounted(() => {
 }
 
 .tag-item {
-  --at-apply: "flex items-center gap-2 h-7 px-2 bg-color-2 rounded-md text-xs text-small-color font-medium transition-colors hover:bg-color-3";
+  --at-apply: "flex items-center gap-2 h-7 pl-2 pr-3 bg-color-2 rounded-md text-xs text-small-color font-medium transition-colors hover:bg-color-3";
   i {
     --at-apply: "text-3";
   }
