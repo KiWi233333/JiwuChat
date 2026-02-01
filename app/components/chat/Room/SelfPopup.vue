@@ -197,7 +197,7 @@ async function onExitOrDeleteFriend() {
         </div>
       </div>
       <!-- 退出/删除按钮 -->
-      <btn-el-button
+      <CommonElButton
         v-show="!chat.contactMap[chat.theRoomId!]?.hotFlag"
         icon-class="i-solar:logout-3-broken mr-2"
         type="danger"
@@ -208,7 +208,7 @@ async function onExitOrDeleteFriend() {
         <span>
           {{ isAIFriend ? '移除 AI 机器人' : '删除好友' }}
         </span>
-      </btn-el-button>
+      </CommonElButton>
       <!-- 渐变色 不可触发点击 鼠标穿越 -->
       <div class="shadow-linear pointer-events-none absolute bottom-0 left-0 z-1 block h-20 w-full w-full select-none text-center" />
     </div>

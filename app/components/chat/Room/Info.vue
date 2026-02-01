@@ -67,6 +67,13 @@ function navigateToDetail(type?: RoomType) {
 <template>
   <div :data-tauri-drag-region="setting.isDesktop" class="nav-padding-top-6 h-16 flex-row-bt-c rounded-0 pl-2 pr-4 sm:(h-20 pl-4)">
     <div :data-tauri-drag-region="setting.isDesktop" w-full flex items-center gap-3>
+      <!-- 移动端显示返回图标 -->
+      <i
+        v-if="setting.isMobileSize"
+        class="i-solar:alt-arrow-left-line-duotone btn-primary-text p-3"
+        title="返回"
+        @click="$router.back()"
+      />
       <div
         class="flex cursor-pointer items-center gap-3"
         title="点击查看详情"
@@ -77,12 +84,12 @@ function navigateToDetail(type?: RoomType) {
           :error-class="contactTypeIconClassMap[chat?.theContact?.type || RoomType.SELF]"
           :alt="chat.theContact.name"
           :default-src="chat?.theContact?.avatar"
-          class="h-2rem w-2rem flex-shrink-0 border-default-2 card-default object-cover sm:(h-2.2rem w-2.2rem)"
+          class="h-7 w-7 flex-shrink-0 border-default-2 card-default object-cover sm:(h-2.2rem w-2.2rem)"
         />
         <span truncate text-sm font-500>
           {{ chat.theContact.name }}
         </span>
-        <el-tag effect="dark" size="small">
+        <el-tag effect="dark" size="small" class="text-0.65rem">
           {{ getType }}
         </el-tag>
       </div>

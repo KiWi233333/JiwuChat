@@ -15,7 +15,7 @@ const setting = useSettingStore();
     <!-- 聊天框 移动端动画 -->
     <ChatContent
       v-if="chat.theRoomId"
-      class="transition-anima absolute left-0 top-0 z-99 h-100dvh flex-1 border-default-3-l sm:(relative left-auto top-auto h-full w-1/4 transform-none)"
+      class="transition-anima absolute left-0 top-0 z-99 h-full flex-1 border-default-3-l sm:(relative left-auto top-auto h-full w-1/4 transform-none)"
       :class="{
         'translate-x-full': chat.isOpenContact,
       }"

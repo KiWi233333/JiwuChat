@@ -18,8 +18,9 @@ const bgUrl = useLocalStorage(`${user.userId}-user-bg`, "/image/user-bg/kiwi-bg-
 </script>
 
 <template>
-  <div class="group top-bg relative select-none shadow-lg shadow-inset">
+  <div class="group top-bg relative select-none p-2 shadow-lg shadow-inset">
     <el-popover
+      v-if="isEdit"
       width="fit-content"
       placement="top"
       :teleported="true"
@@ -28,7 +29,6 @@ const bgUrl = useLocalStorage(`${user.userId}-user-bg`, "/image/user-bg/kiwi-bg-
       <template #reference>
         <!-- 切换按钮 -->
         <el-button
-          v-if="isEdit"
           class="absolute right-4 top-4 z-999 group-hover:opacity-100 sm:opacity-50"
           plain
           circle
@@ -61,7 +61,7 @@ const bgUrl = useLocalStorage(`${user.userId}-user-bg`, "/image/user-bg/kiwi-bg-
       loading="lazy"
       :src="BaseUrlImg + bgUrl"
       object-cover
-      class="h-300px w-1/1 object-cover"
+      class="h-20rem w-full overflow-hidden object-cover shadow-lg shadow-inset rounded !block"
     />
   </div>
 </template>

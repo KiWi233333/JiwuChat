@@ -1,5 +1,5 @@
-import type { Ref } from "vue";
-import { nextTick, onMounted, ref, unref, watch } from "vue";
+import type { Ref, WatchStopHandle } from "vue";
+import { nextTick, onBeforeUnmount, ref, unref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 type MaybeRef<T> = Ref<T> | T;
@@ -39,6 +39,8 @@ interface UseHistoryStateOptions<T> {
  * 3. 路由参数变化 -> 同步状态
  *
  * 解决了 KeepAlive 组件在跳转其他页面时错误重置状态的问题
+ *
+ * 响应式支持 enabled 的副作用移除
  */
 export function useHistoryState<T = boolean>(
   state: Ref<T>,
@@ -61,78 +63,136 @@ export function useHistoryState<T = boolean>(
   // 标记是否正在同步中，防止循环触发
   const isSyncing = ref(false);
 
-  // 1. 监听 State 变化 -> 更新路由
-  watch(state, async (val) => {
-    // 如果未启用、正在同步、或路径不匹配，则忽略
-    if (!toValue(enabled) || isSyncing.value || route.path !== currentPath)
-      return;
+  // 对两个 watch 和 onMounted 的副作用收集
+  let stopStateWatcher: WatchStopHandle | null = null;
+  let stopRouteWatcher: WatchStopHandle | null = null;
 
-    const currentQuery = { ...route.query };
-    const hasKey = Object.prototype.hasOwnProperty.call(currentQuery, stateKey);
+  // 由于 onMounted 不可移除，用 nextTick 控制初始化
+  const initialized = ref(false);
 
-    if (val === activeValue && !hasKey) {
-      // State Active -> 添加 Query (Push)
-      isSyncing.value = true;
-      await router.push({
-        path: currentPath,
-        query: { ...currentQuery, [stateKey]: "1" },
-      });
-      isSyncing.value = false;
+  /**
+   * 为 enabled 响应式提供 watch
+   * enabled 关闭时，移除副作用 watcher，恢复默认状态（inactiveValue），并移除 query 参数
+   */
+  const cleanup = async () => {
+    stopStateWatcher?.();
+    stopRouteWatcher?.();
+    stopStateWatcher = null;
+    stopRouteWatcher = null;
+    isSyncing.value = false;
+    // 只清理 query，且仅在当前路径下
+    if (route.path === currentPath) {
+      const currentQuery = { ...route.query };
+      const hasKey = Object.prototype.hasOwnProperty.call(currentQuery, stateKey);
+      if (hasKey) {
+        // 移除 query 参数，保留其它参数
+        delete currentQuery[stateKey];
+        await router.replace({
+          path: currentPath,
+          query: currentQuery,
+        });
+      }
     }
-    else if (val === inactiveValue && hasKey) {
-      // State Inactive -> 返回 (Back)
-      // 使用 back() 模拟自然返回，消除历史记录
-      isSyncing.value = true;
-      router.back();
-      // back 是异步的且无法 await 确定完成，设置一个短延时重置标志位
-      setTimeout(() => {
-        isSyncing.value = false;
-      }, 100);
-    }
-  });
-
-  // 2. 监听路由变化 -> 同步 State
-  watch(() => route.query, (query) => {
-    // 如果未启用、正在同步、或路径不匹配，则忽略
-    if (!toValue(enabled) || isSyncing.value || route.path !== currentPath)
-      return;
-
-    const hasKey = Object.prototype.hasOwnProperty.call(query, stateKey);
-
-    if (hasKey && state.value !== activeValue) {
-      // 有参数 -> 设置为 Active
-      isSyncing.value = true;
-      state.value = activeValue;
-      nextTick(() => {
-        isSyncing.value = false;
-      });
-    }
-    else if (!hasKey && state.value !== inactiveValue) {
-      // 无参数 -> 设置为 Inactive
-      isSyncing.value = true;
+    // 恢复 state
+    if (state.value !== inactiveValue) {
       state.value = inactiveValue;
-      nextTick(() => {
-        isSyncing.value = false;
-      });
     }
-  });
+  };
 
-  // 初始化检查：如果当前 URL 已有参数，同步状态
-  onMounted(() => {
-    if (!toValue(enabled))
-      return;
+  const setupWatchers = () => {
+    // 1. 监听 State 变化 -> 更新路由
+    stopStateWatcher = watch(state, async (val) => {
+      // 如果未启用、正在同步、或路径不匹配，则忽略
+      if (!toValue(enabled) || isSyncing.value || route.path !== currentPath)
+        return;
 
-    // 再次检查路径，确保匹配
-    if (route.path !== currentPath)
-      return;
+      const currentQuery = { ...route.query };
+      const hasKey = Object.prototype.hasOwnProperty.call(currentQuery, stateKey);
 
-    const hasKey = Object.prototype.hasOwnProperty.call(route.query, stateKey);
-    if (hasKey && state.value !== activeValue) {
-      isSyncing.value = true;
-      state.value = activeValue;
-      nextTick(() => {
+      if (val === activeValue && !hasKey) {
+        // State Active -> 添加 Query (Push)
+        isSyncing.value = true;
+        await router.push({
+          path: currentPath,
+          query: { ...currentQuery, [stateKey]: "1" },
+        });
         isSyncing.value = false;
-      });
-    }
+      }
+      else if (val === inactiveValue && hasKey) {
+        // State Inactive -> 返回 (Back)
+        // 使用 back() 模拟自然返回，消除历史记录
+        isSyncing.value = true;
+        router.back();
+        // back 是异步的且无法 await 确定完成，设置一个短延时重置标志位
+        setTimeout(() => {
+          isSyncing.value = false;
+        }, 100);
+      }
+    });
+
+    // 2. 监听路由变化 -> 同步 State
+    stopRouteWatcher = watch(() => route.query, (query) => {
+      // 如果未启用、正在同步、或路径不匹配，则忽略
+      if (!toValue(enabled) || isSyncing.value || route.path !== currentPath)
+        return;
+
+      const hasKey = Object.prototype.hasOwnProperty.call(query, stateKey);
+
+      if (hasKey && state.value !== activeValue) {
+        // 有参数 -> 设置为 Active
+        isSyncing.value = true;
+        state.value = activeValue;
+        nextTick(() => {
+          isSyncing.value = false;
+        });
+      }
+      else if (!hasKey && state.value !== inactiveValue) {
+        // 无参数 -> 设置为 Inactive
+        isSyncing.value = true;
+        state.value = inactiveValue;
+        nextTick(() => {
+          isSyncing.value = false;
+        });
+      }
+    });
+  };
+
+  // enabled 响应式 watch
+  const stopEnabledWatcher = watch(
+    () => toValue(enabled),
+    async (value) => {
+      if (value) {
+        // enabled 开启，重新建立副作用
+        setupWatchers();
+        // 如果初始未同步，手动同步一次
+        if (!initialized.value) {
+          initialized.value = true;
+          // 初始化检查：如果当前 URL 已有参数，同步状态
+          if (route.path === currentPath) {
+            const hasKey = Object.prototype.hasOwnProperty.call(route.query, stateKey);
+            if (hasKey && state.value !== activeValue) {
+              isSyncing.value = true;
+              state.value = activeValue;
+              await nextTick();
+              isSyncing.value = false;
+            }
+          }
+        }
+      }
+      else {
+        // enabled 关闭，移除副作用、切换回 inactive 状态并清除 url
+        await cleanup();
+      }
+    },
+    { immediate: true },
+  );
+
+  // 当组件卸载时，全部副作用清理
+  onBeforeUnmount(() => {
+    stopStateWatcher?.();
+    stopRouteWatcher?.();
+    stopEnabledWatcher?.();
+    stopStateWatcher = null;
+    stopRouteWatcher = null;
   });
 }

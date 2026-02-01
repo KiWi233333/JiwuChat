@@ -32,9 +32,9 @@ function submit() {
     </div>
     <!-- 签到按钮 -->
     <div class="btn mb-8 mt-4">
-      <btn-el-button type="info" icon-class="i-solar:dollar-bold-duotone mr-1" :transition-icon="true" @click="submit">
+      <CommonElButton type="info" icon-class="i-solar:dollar-bold-duotone mr-1" :transition-icon="true" @click="submit">
         签 到
-      </btn-el-button>
+      </CommonElButton>
       <small
         truncate opacity-80
       >

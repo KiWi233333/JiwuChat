@@ -329,7 +329,7 @@ async function changShieldStatus() {
     </div>
 
     <!-- 退出 -->
-    <btn-el-button
+    <CommonElButton
       v-show="!chat.contactMap[chat.theRoomId!]?.hotFlag" v-memo="[isNotExistOrNorFriend, isTheGroupOwner]" icon-class="i-solar:logout-3-broken mr-2"
       type="danger"
       plain
@@ -339,7 +339,7 @@ async function changShieldStatus() {
       <span>
         {{ isNotExistOrNorFriend ? '不显示聊天' : isTheGroupOwner ? '解散群聊' : '退出群聊' }}
       </span>
-    </btn-el-button>
+    </CommonElButton>
     <!-- 渐变色 -->
     <div class="shadow-linear pointer-events-none absolute bottom-0 left-0 z-1 block h-12 w-full w-full select-none text-center" />
   </el-scrollbar>
