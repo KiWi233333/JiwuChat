@@ -158,7 +158,7 @@ const _show = computed({
   }
   .box {
     border: 1px solid transparent;
-    --at-apply: "text-sm card-rounded-df bg-white dark:bg-dark-6 shadow px-3 sm:px-4 py-2 flex flex-col gap-3";
+    --at-apply: "text-sm card-rounded-df bg-white dark:bg-dark-6 shadow-sm px-3 sm:px-4 py-2 flex flex-col gap-3";
 
     .inputs {
       --at-apply: "w-10rem sm:w-12rem";

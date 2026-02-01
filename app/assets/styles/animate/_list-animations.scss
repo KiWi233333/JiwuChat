@@ -208,7 +208,7 @@
   --delay: 0.1s;
   --start: 0ms;
   --anima: latter-slice-top;
-  animation: var(--anima) 0.5s both;
+  animation: var(--anima) 0.5s backwards;
   animation-delay: calc(var(--start) + var(--lv) * var(--delay));
 }
 
@@ -217,7 +217,7 @@
   [data-fades-blur] > *,
   [data-fade-blur],
   [data-fade] {
-    animation: var(--anima) 0.5s both;
+    animation: var(--anima) 0.5s backwards;
     animation-delay: calc(var(--lv) * var(--delay) + var(--start));
   }
 }

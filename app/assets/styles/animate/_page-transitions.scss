@@ -9,62 +9,78 @@
 }
 
 // 页面动画
-// 向左
-.page-slide-left-move,
-.page-slide-left-enter-active,
-.page-slide-left-leave-active {
-  transition: transform $transition-delay ease-in-out;
+$ios-transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1); // 模拟 iOS 动画曲线
+$page-transition-duration: 0.4s;
+
+// Push 动画 (进入下一级)
+// 新页面从右侧进入覆盖，旧页面稍向左移动并变暗
+.page-slide-left-enter-active {
+  position: absolute !important;
+  top: 0;
+  width: 100%;
+  height: 100%; // 确保高度充满
+  z-index: 10; // 确保在上面
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1); // 左侧阴影
+  transition: transform $page-transition-duration $ios-transition-timing-function;
 }
+
+.page-slide-left-leave-active {
+  position: absolute !important;
+  top: 0;
+  width: 100%;
+  height: 100%; // 确保高度充满
+  z-index: 1; // 确保在下面
+  transition:
+    transform $page-transition-duration $ios-transition-timing-function,
+    opacity $page-transition-duration ease;
+}
+
 .page-slide-left-enter-from {
   transform: translateX(100%);
 }
+
 .page-slide-left-leave-to {
-  transform: translateX(-100%);
+  transform: translateX(-30%); // 视差效果：只移动 30%
+  opacity: 0.8; // 稍微变暗
 }
-.page-slide-left-leave-active {
+
+// Pop 动画 (返回上一级)
+// 旧页面向右侧滑出，新页面从左侧稍偏移处恢复
+.page-slide-right-enter-active {
   position: absolute !important;
+  top: 0;
+  width: 100%;
+  height: 100%; // 确保高度充满
+  z-index: 1; // 确保在下面
+  transition:
+    transform $page-transition-duration $ios-transition-timing-function,
+    opacity $page-transition-duration ease;
 }
 
-// 硬件加速版本的页面动画
-body.hardware-acceleration-enabled {
-  .page-slide-left-move,
-  .page-slide-left-enter-active,
-  .page-slide-left-leave-active {
-    @extend .hardware-accelerated-transition;
-  }
-
-  .page-slide-right-move,
-  .page-slide-right-enter-active,
-  .page-slide-right-leave-active {
-    @extend .hardware-accelerated-transition;
-  }
-
-  .page-fade-in-move,
-  .page-fade-in-enter-active,
-  .page-fade-in-leave-active {
-    @extend .hardware-accelerated-transition;
-  }
-}
-// 向右
-.page-slide-right-move,
-.page-slide-right-enter-active,
 .page-slide-right-leave-active {
-  transition: transform $transition-delay ease-in-out;
+  position: absolute !important;
+  top: 0;
+  width: 100%;
+  height: 100%; // 确保高度充满
+  z-index: 10; // 确保在上面
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+  transition: transform $page-transition-duration $ios-transition-timing-function;
 }
+
 .page-slide-right-enter-from {
-  transform: translateX(-100%);
+  transform: translateX(-30%); // 从视差位置恢复
+  opacity: 0.8;
 }
+
 .page-slide-right-leave-to {
   transform: translateX(100%);
 }
-.page-slide-right-leave-active {
-  position: absolute !important;
-}
+
 // 其他渐变
 .page-fade-in-move,
 .page-fade-in-enter-active,
 .page-fade-in-leave-active {
-  transition: opacity $transition-delay ease-in-out;
+  transition: opacity 0s ease-in-out;
 }
 .page-fade-in-enter-from {
   opacity: 0;
@@ -74,13 +90,27 @@ body.hardware-acceleration-enabled {
 }
 .page-fade-in-leave-active {
   position: absolute !important;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// 无动画 (避免 transition 切换导致的重渲染)
+.page-none-enter-active,
+.page-none-leave-active {
+  transition: none !important;
+  opacity: 1 !important;
+}
+.page-none-enter-from,
+.page-none-leave-to {
+  opacity: 1 !important;
 }
 
 .page-fade-enter-active {
-  animation: 0.4s fade-in-out;
+  animation: 0.2s fade-in-out;
 }
 .page-fade-leave-active {
-  animation: 0.4s fade-in-out reverse;
+  animation: 0.2s fade-in-out reverse;
 }
 @keyframes fade-in-out {
   0% {

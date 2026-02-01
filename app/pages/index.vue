@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { mitter, MittEventType } from "~/composables/utils/useMitt";
 import { appName } from "~/constants";
+import { MAIN_ROUTES } from "~/constants/route";
 
 const user = useUserStore();
 const setting = useSettingStore();
@@ -31,7 +32,13 @@ const showGroupDialog = computed({
 useMsgLinear();
 
 // 页面过渡
-const pageTransition = computed(() => (setting.isMobileSize && !setting.settingPage.isCloseAllTransition) ? (setting.settingPage.animation.pageTransition ? chat.pageTransition : false) : false);
+const pageTransition = computed(() => {
+  const isEnabled = setting.isMobileSize && !setting.settingPage.isCloseAllTransition && setting.settingPage.animation.pageTransition;
+  if (!isEnabled) {
+    return false;
+  }
+  return chat.pageTransition;
+});
 
 // 好友申请弹窗状态
 const isShowApply = ref(false);
@@ -103,6 +110,9 @@ onMounted(() => {
 onUnmounted(() => {
   mitter.off(MittEventType.FRIEND_APPLY_DIALOG);
 });
+
+// 是否显示移动端菜单栏
+const showMobileMenuBar = computed(() => setting.isMobileSize && user.isLogin && !!MAIN_ROUTES[route.path]);
 </script>
 
 <template>
@@ -166,7 +176,7 @@ onUnmounted(() => {
     />
     <!-- 移动端菜单 - 小屏幕才加载 -->
     <LazyMenuBottom
-      v-if="setting.isMobileSize && user.isLogin && chat.isOpenContact"
+      v-if="showMobileMenuBar"
       hydrate-on-media-query="(max-width: 768px)"
       class="grid sm:hidden"
     />
