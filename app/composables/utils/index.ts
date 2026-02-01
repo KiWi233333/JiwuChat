@@ -550,17 +550,33 @@ export interface ImageScaleOptions {
 // 计算年龄的函数
 export function calculateAge(birthday?: string) {
   if (!birthday) {
-    return "未知";
+    return undefined;
   }
-  return `${dayjs().diff(dayjs(birthday), "years")}岁`;
+  const date = dayjs(birthday);
+  if (!date.isValid()) {
+    return undefined;
+  }
+  const now = dayjs();
+  if (date.isAfter(now)) {
+    return undefined;
+  }
+  const age = now.diff(date, "years");
+  // 增加合理的年龄范围校验 (0-200岁)
+  if (age < 0 || age > 200) {
+    return undefined;
+  }
+  return `${age}岁`;
 }
 
 // 计算星座的函数
 export function computeConstellation(birthday?: number | string | Date | null) {
   if (!birthday) {
-    return "未知";
+    return undefined;
   }
   const date = dayjs(birthday);
+  if (!date.isValid()) {
+    return undefined;
+  }
   const month = date.month() + 1;
   const day = date.date();
   const constellationArr = [

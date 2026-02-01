@@ -32,7 +32,6 @@ async function init() {
   isLoading.value = false;
 }
 
-
 async function checkFriend(val: string) {
   isFriend.value = false;
   try {
@@ -63,10 +62,7 @@ const settingMenuItems = computed<MenuItemConfig[]>(() => [
     icon: "i-solar:user-id-bold-duotone text-mini op-50",
     title: "账号管理",
     path: "/user/safe",
-    badge: {
-      isDot: true,
-      hidden: false,
-    },
+    badge: { isDot: true, hidden: false },
   },
   {
     icon: "i-solar:key-minimalistic-square-3-bold text-mini op-50",
@@ -96,75 +92,81 @@ useHead({
     },
   ],
 });
+
 definePageMeta({
   key: route => route.fullPath,
 });
 </script>
 
 <template>
-  <el-scrollbar ref="scrollbarRef" class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color" wrap-class="pb-20">
-    <!-- 壁纸 -->
+  <el-scrollbar ref="scrollbarRef" class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color" wrap-class="pb-30">
+    <!-- 背景图 (固定在顶部) -->
     <UserInfoBgToggle class="fixed left-0 top-0 z-0 w-full" :is-edit="isSelf" />
 
-    <!-- 用户信息面板 -->
-    <UserInfoPanel
-      :data="user"
-      :is-edit="isSelf"
-      class="p-2 -mt-12 sm:p-4"
-    />
-
-    <!-- 设置区域 (仅自己可见) -->
-    <div v-if="isSelf && setting.isMobileSize" class="mx-2 mt-2 rounded-xl bg-color px-4 shadow-sm sm:(mx-4 border-default-2 border-op-04)">
-      <CommonMenuItemList
-        size="medium"
-        :items="settingMenuItems"
-        variant="list"
+    <!-- 内容区域 (相对定位以在背景图上方滚动) -->
+    <div class="relative z-1 px-2 -mt-12 sm:px-4">
+      <!-- 用户主面板 -->
+      <UserInfoPanel
+        :data="user"
+        :is-edit="isSelf"
+        class="mx-auto max-w-4xl"
       />
+
+      <!-- 移动端额外设置 -->
+      <div v-if="isSelf && setting.isMobileSize" class="mt-3 rounded-xl bg-color px-4 shadow-sm sm:(border-default-2 border-op-04)">
+        <CommonMenuItemList
+          size="medium"
+          :items="settingMenuItems"
+          variant="list"
+        />
+      </div>
     </div>
 
-    <!-- 按钮 -->
+    <!-- 底部操作按钮 (仅在查看他人时显示) -->
     <div
-      v-show="!isLoading && otherUserId"
-      class="absolute bottom-0 left-0 w-full flex rounded-t-xl bg-color bg-op-90 p-4 backdrop-blur-8 sm:(static justify-center)"
+      v-if="!isLoading && otherUserId && otherUserId !== store.userInfo?.id"
+      data-fade
+      class="fixed bottom-0 left-0 z-10 w-full flex gap-3 rounded-t-xl bg-color bg-op-90 p-4 shadow-lg backdrop-blur-8 sm:(static mt-6 justify-center bg-transparent shadow-none)"
     >
+      <template v-if="isFriend">
+        <CommonElButton
+          icon-class="i-solar:trash-bin-trash-outline p-2 mr-1"
+          style="--el-color-primary: var(--el-color-danger);"
+          plain
+          size="large"
+          class="flex-1 bg-color-2 sm:(w-36 flex-none)"
+          @click="deleteFriend"
+        >
+          删除好友
+        </CommonElButton>
+        <CommonElButton
+          icon-class="i-solar:chat-line-bold p-2 mr-1"
+          type="primary"
+          size="large"
+          class="flex-1 sm:(w-36 flex-none)"
+          @click="chat.toContactSendMsg('userId', otherUserId)"
+        >
+          发送消息
+        </CommonElButton>
+      </template>
       <CommonElButton
-        v-if="isFriend"
-        key="delete"
-        icon-class="i-solar:trash-bin-trash-outline p-2 mr-2"
-        style="transition: .2s;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-danger);"
-        plain
-        size="large"
-        class="flex-1 bg-color-2 sm:(w-8rem flex-none)"
-        @click="deleteFriend"
-      >
-        删除好友&ensp;
-      </CommonElButton>
-      <CommonElButton
-        v-if="isFriend"
-        key="send"
-        icon-class="i-solar:chat-line-bold p-2 mr-2"
-        style="transition: .2s;text-align: center;letter-spacing: 1px;"
+        v-else
+        icon-class="i-solar:user-plus-bold p-2 mr-1"
         type="primary"
         size="large"
-        class="flex-1 sm:(w-8rem flex-none)"
-        @click="chat.toContactSendMsg('userId', otherUserId)"
-      >
-        发送消息&ensp;
-      </CommonElButton>
-      <CommonElButton
-        v-else-if="otherUserId !== store.userInfo.id"
-        key="add"
-        icon-class="i-solar:user-plus-bold p-2 mr-2"
-        type="primary"
-        size="large"
-        class="flex-1 sm:(w-8rem flex-none)"
+        class="flex-1 sm:(w-36 flex-none)"
         @click="handleApplyFriend"
       >
-        添加好友&ensp;
+        添加好友
       </CommonElButton>
     </div>
-    <!-- 好友申请 -->
-    <ChatFriendApplyDialog v-model:show="isShowApply" :user-id="otherUserId" @submit="chat.setTheFriendOpt(FriendOptType.Empty, {})" />
+
+    <!-- 好友申请弹窗 -->
+    <ChatFriendApplyDialog
+      v-model:show="isShowApply"
+      :user-id="otherUserId"
+      @submit="chat.setTheFriendOpt(FriendOptType.Empty, {})"
+    />
   </el-scrollbar>
 </template>
 

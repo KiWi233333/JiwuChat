@@ -58,7 +58,10 @@ const getConstellation = computed(() => computeConstellation(user?.birthday));
 const getBirthdayText = computed(() => {
   if (!user?.birthday)
     return "未知";
-  return dayjs(user?.birthday).format("YYYY-MM-DD");
+  const date = dayjs(user?.birthday);
+  if (!date.isValid() || date.isAfter(dayjs()))
+    return "不规范";
+  return date.format("YYYY-MM-DD");
 });
 
 // 性别配置映射
