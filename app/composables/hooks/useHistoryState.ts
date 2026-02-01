@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
-import { nextTick, onMounted, onUnmounted, ref, unref, watch } from "vue";
+import { nextTick, onMounted, ref, unref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 type MaybeRef<T> = Ref<T> | T;
 type MaybeRefOrGetter<T> = MaybeRef<T> | (() => T);
@@ -14,28 +15,30 @@ interface UseHistoryStateOptions<T> {
    */
   enabled?: MaybeRefOrGetter<boolean>;
   /**
-   * 历史记录中的唯一标识 Key
-   * 如果不传，默认生成随机 Key
+   * 路由参数中的 Key
+   * 默认为 "modal"
    */
   stateKey?: string;
   /**
-   * 触发入栈的状态值
+   * 对应路由参数存在时的状态值 (Active)
+   * 例如：打开房间对应 isOpenContact = false，则 activeValue 为 false
    * 默认为 true
    */
   activeValue?: T;
   /**
-   * 出栈后的状态值
+   * 对应路由参数不存在时的状态值 (Inactive)
    * 默认为 false
    */
   inactiveValue?: T;
 }
 
 /**
- * 管理浏览器历史记录状态的 Hook
- * 用于在移动端通过路由历史拦截返回键，防止误退出应用
+ * 通过 Vue Router Query 参数管理状态的 Hook
+ * 1. 状态变为 Active -> 添加 Query 参数 (push)
+ * 2. 状态变为 Inactive -> 返回上一页 (back)
+ * 3. 路由参数变化 -> 同步状态
  *
- * @param state 依赖的状态 Ref
- * @param options 配置项
+ * 解决了 KeepAlive 组件在跳转其他页面时错误重置状态的问题
  */
 export function useHistoryState<T = boolean>(
   state: Ref<T>,
@@ -43,58 +46,93 @@ export function useHistoryState<T = boolean>(
 ) {
   const {
     enabled = true,
-    stateKey = `history-state-${Math.random().toString(36).slice(2)}`,
+    stateKey = "modal",
     activeValue = true as unknown as T,
     inactiveValue = false as unknown as T,
   } = options;
 
-  const isNavigatingBack = ref(false);
+  const router = useRouter();
+  const route = useRoute();
 
-  // 监听状态变化
-  watch(state, (val) => {
-    if (!toValue(enabled))
+  // 记录初始化时的路径，仅在当前路径下响应变化
+  // 防止跳转到其他页面（如 /third）时，因 query 丢失导致状态被错误重置
+  const currentPath = route.path;
+
+  // 标记是否正在同步中，防止循环触发
+  const isSyncing = ref(false);
+
+  // 1. 监听 State 变化 -> 更新路由
+  watch(state, async (val) => {
+    // 如果未启用、正在同步、或路径不匹配，则忽略
+    if (!toValue(enabled) || isSyncing.value || route.path !== currentPath)
       return;
 
-    if (val === activeValue) {
-      // 状态激活 -> 入栈
-      history.pushState({ [stateKey]: true }, "");
+    const currentQuery = { ...route.query };
+    const hasKey = Object.prototype.hasOwnProperty.call(currentQuery, stateKey);
+
+    if (val === activeValue && !hasKey) {
+      // State Active -> 添加 Query (Push)
+      isSyncing.value = true;
+      await router.push({
+        path: currentPath,
+        query: { ...currentQuery, [stateKey]: "1" },
+      });
+      isSyncing.value = false;
     }
-    else if (val === inactiveValue) {
-      // 状态非激活 -> 出栈
-      // 如果不是通过浏览器返回键触发的（即点击了UI上的返回按钮），则手动执行 history.back()
-      if (!isNavigatingBack.value && history.state?.[stateKey]) {
-        history.back();
-      }
+    else if (val === inactiveValue && hasKey) {
+      // State Inactive -> 返回 (Back)
+      // 使用 back() 模拟自然返回，消除历史记录
+      isSyncing.value = true;
+      router.back();
+      // back 是异步的且无法 await 确定完成，设置一个短延时重置标志位
+      setTimeout(() => {
+        isSyncing.value = false;
+      }, 100);
     }
   });
 
-  // 监听浏览器返回事件
-  function onPopState(event: PopStateEvent) {
+  // 2. 监听路由变化 -> 同步 State
+  watch(() => route.query, (query) => {
+    // 如果未启用、正在同步、或路径不匹配，则忽略
+    if (!toValue(enabled) || isSyncing.value || route.path !== currentPath)
+      return;
+
+    const hasKey = Object.prototype.hasOwnProperty.call(query, stateKey);
+
+    if (hasKey && state.value !== activeValue) {
+      // 有参数 -> 设置为 Active
+      isSyncing.value = true;
+      state.value = activeValue;
+      nextTick(() => {
+        isSyncing.value = false;
+      });
+    }
+    else if (!hasKey && state.value !== inactiveValue) {
+      // 无参数 -> 设置为 Inactive
+      isSyncing.value = true;
+      state.value = inactiveValue;
+      nextTick(() => {
+        isSyncing.value = false;
+      });
+    }
+  });
+
+  // 初始化检查：如果当前 URL 已有参数，同步状态
+  onMounted(() => {
     if (!toValue(enabled))
       return;
 
-    // 如果当前处于激活状态，且触发了 popstate (点击了返回键)
-    if (state.value === activeValue) {
-      // 标记为正在通过返回键导航，防止 watch 中重复 back
-      isNavigatingBack.value = true;
-      // 恢复状态为非激活
-      state.value = inactiveValue;
+    // 再次检查路径，确保匹配
+    if (route.path !== currentPath)
+      return;
 
-      // 重置标志位
+    const hasKey = Object.prototype.hasOwnProperty.call(route.query, stateKey);
+    if (hasKey && state.value !== activeValue) {
+      isSyncing.value = true;
+      state.value = activeValue;
       nextTick(() => {
-        isNavigatingBack.value = false;
+        isSyncing.value = false;
       });
     }
-  }
-
-  // 仅在客户端执行
-  if (import.meta.client) {
-    onMounted(() => {
-      window.addEventListener("popstate", onPopState);
-    });
-
-    onUnmounted(() => {
-      window.removeEventListener("popstate", onPopState);
-    });
-  }
+  });
 }
