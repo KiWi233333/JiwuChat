@@ -409,9 +409,8 @@ export const SelfExistTextMap = {
  */
 export function navigateToUserInfoPage(userId: string) {
   navigateTo({
-    path: "/user",
+    path: `/user/${userId}`,
     query: {
-      id: userId,
       dis: 1, // 移动尺寸禁止路由拦截
     },
     replace: false,

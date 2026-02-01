@@ -2,6 +2,12 @@
 import type { MenuItemConfig } from "~/components/common/MenuItemCard.vue";
 import { appName } from "@/constants";
 
+const {
+  id: otherUserId,
+} = defineProps<{
+  id?: string;
+}>();
+
 const store = useUserStore();
 const chat = useChatStore();
 const setting = useSettingStore();
@@ -13,8 +19,6 @@ const isShowApply = ref(false);
 const isFriend = ref(false);
 const isSelf = ref(false);
 
-const otherUserId = route.query?.id?.toString() || "";
-const scrollbarRef = useTemplateRef("scrollbarRef");
 
 async function init() {
   if (otherUserId && otherUserId !== store.userInfo?.id) {
@@ -47,6 +51,8 @@ function handleApplyFriend() {
 }
 
 function deleteFriend() {
+  if (!otherUserId)
+    return;
   deleteFriendConfirm(otherUserId, store.getToken, undefined, (done?: isTrue) => {
     if (done === isTrue.TRUE) {
       ElMessage.success("删除好友成功！");
@@ -99,7 +105,7 @@ definePageMeta({
 </script>
 
 <template>
-  <el-scrollbar ref="scrollbarRef" class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color" wrap-class="pb-30">
+  <el-scrollbar class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color" wrap-class="pb-30">
     <!-- 背景图 (固定在顶部) -->
     <UserInfoBgToggle class="fixed left-0 top-0 z-0 w-full" :is-edit="isSelf" />
 
@@ -109,7 +115,7 @@ definePageMeta({
       <UserInfoPanel
         :data="user"
         :is-edit="isSelf"
-        class="mx-auto max-w-4xl"
+        class="mx-auto max-w-2xl"
       />
 
       <!-- 移动端额外设置 -->
@@ -126,14 +132,14 @@ definePageMeta({
     <div
       v-if="!isLoading && otherUserId && otherUserId !== store.userInfo?.id"
       data-fade
-      class="fixed bottom-0 left-0 z-10 w-full flex gap-3 rounded-t-xl bg-color bg-op-90 p-4 shadow-lg backdrop-blur-8 sm:(static mt-6 justify-center bg-transparent shadow-none)"
+      class="fixed bottom-0 left-0 z-10 mx-auto max-w-2xl w-full flex gap-3 rounded-t-xl bg-color bg-op-90 p-4 shadow-lg backdrop-blur-8 sm:(static mt-6 justify-center bg-transparent shadow-none)"
     >
       <template v-if="isFriend">
         <CommonElButton
           icon-class="i-solar:trash-bin-trash-outline p-2 mr-1"
           style="--el-color-primary: var(--el-color-danger);"
           plain
-          size="large"
+          :size="setting.isMobileSize ? 'large' : 'default'"
           class="flex-1 bg-color-2 sm:(w-36 flex-none)"
           @click="deleteFriend"
         >
@@ -142,7 +148,7 @@ definePageMeta({
         <CommonElButton
           icon-class="i-solar:chat-line-bold p-2 mr-1"
           type="primary"
-          size="large"
+          :size="setting.isMobileSize ? 'large' : 'default'"
           class="flex-1 sm:(w-36 flex-none)"
           @click="chat.toContactSendMsg('userId', otherUserId)"
         >
@@ -153,7 +159,7 @@ definePageMeta({
         v-else
         icon-class="i-solar:user-plus-bold p-2 mr-1"
         type="primary"
-        size="large"
+        :size="setting.isMobileSize ? 'large' : 'default'"
         class="flex-1 sm:(w-36 flex-none)"
         @click="handleApplyFriend"
       >

@@ -193,7 +193,7 @@ onUnmounted(() => {
       'user-none': IS_PROD,
       'stop-transition': showAnima,
     }"
-    class="h-full flex flex-col bg-color-2 sm:bg-color"
+    class="h-full flex flex-col select-none bg-color-2 sm:bg-color"
   >
     <component
       :is="setting.isMobileSize ? MenuHeaderMenuBarMobile : MenuHeaderMenuBarDesktop"

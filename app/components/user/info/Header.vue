@@ -404,7 +404,7 @@ function showInvitation() {
       </div>
 
       <!-- 签名卡片 -->
-      <div class="group relative mt-5 rounded-lg bg-color-second p-2 shadow-sm shadow-inset transition-colors sm:p-3">
+      <div class="group relative mt-5 rounded-lg bg-color-2 p-2 shadow-sm shadow-inset transition-colors sm:p-3">
         <div class="flex items-start gap-2">
           <i class="i-ri:double-quotes-l flex-shrink-0 text-mini op-50" />
           <div class="group relative min-w-0 flex-1">
@@ -444,11 +444,11 @@ function showInvitation() {
 
 <style scoped lang="scss">
 .info-card {
-  --at-apply: "rounded-xl bg-color px-4 shadow-sm sm:(shadow-none border-default-2 border-op-04)";
+  --at-apply: "rounded-xl bg-color px-4 shadow-sm sm:( border-default-2 border-op-04)";
 }
 
 .main-card {
-  --at-apply: "p-4 bg-op-60 backdrop-blur-12";
+  --at-apply: "p-4 !bg-op-60 backdrop-blur-12";
 }
 
 .avatar-wrapper {

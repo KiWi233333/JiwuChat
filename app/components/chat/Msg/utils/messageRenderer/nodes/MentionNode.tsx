@@ -70,8 +70,7 @@ export class MentionNode extends MessageNode<MentionToken> {
     setup(props) {
       const handleClick = () => {
         navigateTo({
-          path: "/user",
-          query: { id: props.token.data.uid },
+          path: `/user/${props.token.data.uid}`,
         });
       };
 

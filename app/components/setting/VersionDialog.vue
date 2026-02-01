@@ -71,7 +71,7 @@ const {
     width="fit-content"
   >
     <template #title>
-      <h4 mb-4 text-center text-1.2rem>
+      <h4 mb-4 select-none text-center text-1.2rem>
         &emsp;版本公告 🔔
       </h4>
     </template>
@@ -103,12 +103,12 @@ const {
     :z-index="1099"
   >
     <template #title>
-      <h4 mb-6 text-center text-1.2rem>
+      <h4 mb-6 select-none text-center text-1.2rem>
         更新日志
         <i i-solar:notebook-bold ml-2 p-3 text-theme-warning />
       </h4>
     </template>
-    <el-scrollbar wrap-class="w-86vw pr-2 pl-1 sm:pr-4 animate-[blur-in_.6s] overflow-y-auto max-h-40vh min-h-30vh sm:max-h-60vh md:w-420px sm:w-380px">
+    <el-scrollbar wrap-class="select-none w-86vw pr-2 pl-1 sm:pr-4 animate-[blur-in_.6s] overflow-y-auto max-h-40vh min-h-30vh sm:max-h-60vh md:w-420px sm:w-380px">
       <el-timeline style="max-width: 100%;">
         <CommonListAutoIncre
           :immediate="true"

@@ -60,6 +60,6 @@ const collectionMenuItems = computed<MenuItemConfig[]>(() => [
 
 <style scoped lang="scss">
 .info-card {
-  --at-apply: "rounded-xl bg-color px-4 shadow-sm sm:(shadow-none border-default-2 border-op-04)";
+  --at-apply: "rounded-xl bg-color px-4 shadow-sm sm:(border-default-2 border-op-04)";
 }
 </style>

@@ -45,7 +45,7 @@ const getAppTitle = computed(() => {
     return "联系人";
   else if (route.path === "/ai")
     return "AI";
-  else if (route.path === "/user")
+  else if (route.path.startsWith("/user"))
     return "";
   else if (route.path === "/user/safe")
     return "账号与安全";
