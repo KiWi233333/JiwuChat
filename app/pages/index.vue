@@ -94,17 +94,6 @@ watch(() => user.isLogin, (val) => {
   immediate: true,
 });
 
-// 伪造路由历史记录，防止移动端返回键退出应用
-useHistoryState(
-  toRef(chat, "isOpenContact"),
-  {
-    enabled: computed(() => setting.isMobileSize),
-    stateKey: "chatRoomOpen",
-    activeValue: false,
-    inactiveValue: true,
-  },
-);
-
 // 监听好友申请弹窗事件
 onMounted(() => {
   // 监听好友申请弹窗事件
@@ -124,6 +113,41 @@ onUnmounted(() => {
 
 // 是否显示移动端菜单栏
 const showMobileMenuBar = computed(() => !!MAIN_ROUTES[route.path] && chat.isOpenContact);
+
+
+// 伪造路由历史记录，防止移动端返回键退出应用
+const isMobileSize = computed(() => setting.isMobileSize);
+useHistoryState(
+  toRef(chat, "isOpenContact"),
+  {
+    enabled: isMobileSize,
+    stateKey: "chatRoomOpen",
+    activeValue: false,
+    inactiveValue: true,
+  },
+);
+
+// 使用路由历史状态管理好友面板
+useHistoryState(
+  toRef(chat, "showTheFriendPanel"),
+  {
+    enabled: isMobileSize,
+    stateKey: "friendPanelOpen",
+    activeValue: true,
+    inactiveValue: false,
+  },
+);
+
+// 伪造路由历史记录，防止移动端返回键退出应用
+useHistoryState(
+  toRef(chat, "isOpenGroupMember"),
+  {
+    enabled: isMobileSize,
+    stateKey: "groupMemberOpen",
+    activeValue: true,
+    inactiveValue: false,
+  },
+);
 </script>
 
 <template>

@@ -8,7 +8,6 @@ defineOptions({
 
 const {
   overlayerAttrs = {},
-  modelValue = false,
   title,
   width = "",
   showClose = true,
@@ -24,11 +23,10 @@ const {
   escClose = true,
   animateFromTrigger = true,
   enterEasing = "cubic-bezier(0.61, 0.225, 0.195, 1)",
-  leaveEasing = "cubic-bezier(0.4, 0, 0.2, 1)", // 平滑退出
+  leaveEasing = "cubic-bezier(0.4, 0, 0.2, 1)",
 } = defineProps<DialogProps>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean): void
   (e: "confirm"): void
   (e: "cancel"): void
   (e: "open"): void
@@ -36,6 +34,10 @@ const emit = defineEmits<{
   (e: "close"): void
   (e: "closed"): void
 }>();
+const modelValue = defineModel<boolean>({
+  default: false,
+  required: true,
+});
 
 interface DialogPosition {
   x: number
@@ -46,7 +48,6 @@ interface DialogStyle {
   transformOrigin?: string
   transform?: string
   opacity?: string
-  width?: string
   transition?: string
 }
 
@@ -78,214 +79,207 @@ interface DialogProps {
 }
 
 // ==================== 状态管理 ====================
-const dialogModelRef = useTemplateRef<HTMLElement>("dialogModelRef");
 const dialogRef = useTemplateRef<HTMLElement>("dialogRef");
 
-// 控制内容渲染的状态
-const shouldRenderContent = ref(modelValue);
-// 是否应当销毁内容标记
-const shouldDestroy = ref(false);
-// 动画加载状态
-const loadingAnima = ref(false);
-// 最后点击位置
+// 简化状态:合并显示和历史状态
+const displayModelValue = ref(modelValue.value);
+const shouldRenderContent = ref(modelValue.value);
+const isAnimating = ref(false);
 const lastClickPosition = ref<DialogPosition>({ x: 0, y: 0 });
-// 对话框样式
 const dialogStyle = ref<DialogStyle>({
   transform: "scale(1)",
   opacity: "1",
 });
 
+// 使用路由历史状态管理
+useHistoryState(displayModelValue, {
+  enabled: true,
+  activeValue: true,
+  inactiveValue: false,
+  useBackNavigation: true,
+});
+
 // ==================== 计算属性 ====================
-// 计算对话框的最终宽度
 const dialogWidth = computed(() => {
   if (!width)
     return "";
   return typeof width === "number" ? `${width}px` : width;
 });
 
-// 进入动画过渡
 const enterTransition = computed(() =>
   `transform var(--duration, 0.3s) ${enterEasing}, opacity var(--duration, 0.3s) ${enterEasing}`,
 );
 
-// 离开动画过渡
 const leaveTransition = computed(() =>
   `transform var(--duration, 0.3s) ${leaveEasing}, opacity var(--duration, 0.3s) ${leaveEasing}`,
 );
 
+// 缓存变换原点,避免重复计算
+const transformOrigin = computed(() => {
+  if (!animateFromTrigger || !dialogRef.value)
+    return "center";
+
+  const dialog = dialogRef.value;
+  const originalTransform = dialog.style.transform;
+  dialog.style.transform = "none";
+  const rect = dialog.getBoundingClientRect();
+  dialog.style.transform = originalTransform;
+
+  const clickX = lastClickPosition.value.x || window.innerWidth / 2;
+  const clickY = lastClickPosition.value.y || window.innerHeight / 2;
+
+  return `${clickX - rect.left}px ${clickY - rect.top}px`;
+});
+
 // ==================== 监听器 ====================
-// 监听 modelValue 变化
-watch(() => modelValue, (newVal) => {
+watch(modelValue, (newVal) => {
+  displayModelValue.value = newVal;
   if (newVal) {
-    // 打开时,立即渲染内容
     shouldRenderContent.value = true;
-    shouldDestroy.value = false;
   }
-  else if (destroyOnClose) {
-    // 关闭时,将销毁标记置为true,实际销毁会在动画结束后执行
-    shouldDestroy.value = true;
+});
+
+watch(displayModelValue, (newVal) => {
+  if (newVal !== modelValue.value) {
+    modelValue.value = newVal;
   }
 });
 
 // ==================== 工具函数 ====================
-// 计算点击位置相对于对话框的相对坐标
-function calculateTransformOrigin() {
-  // 如果不从触发点开始动画,直接返回中心点
-  if (!animateFromTrigger)
-    return "center";
-
-  if (!dialogRef.value)
-    return "center";
-
-  const dialog = dialogRef.value;
-  const rect = dialog.getBoundingClientRect();
-
-  // 使用最后的点击位置或窗口中心作为默认值
-  const clickX = lastClickPosition.value.x || window.innerWidth / 2;
-  const clickY = lastClickPosition.value.y || window.innerHeight / 2;
-
-  // 计算点击位置相对于对话框的相对坐标
-  const originX = clickX - rect.left;
-  const originY = clickY - rect.top;
-
-  return `${originX}px ${originY}px`;
+function applyDialogStyle(style: DialogStyle) {
+  dialogStyle.value = style;
 }
 
-// 销毁方法
-function destroy() {
-  // 只有在需要销毁时才执行
-  if (shouldDestroy.value) {
-    // 设置状态以阻止内容渲染
-    shouldRenderContent.value = false;
-    // 重置点击位置
-    lastClickPosition.value = { x: 0, y: 0 };
-  }
+function resetClickPosition() {
+  lastClickPosition.value = { x: 0, y: 0 };
 }
 
 // ==================== 事件处理 ====================
-// 监听鼠标点击事件,记录点击位置
 function trackMousePosition(e: MouseEvent) {
-  if ((!loadingAnima.value && !modelValue) || (!lastClickPosition.value.x && !lastClickPosition.value.y)) {
+  if (!isAnimating.value && !modelValue.value) {
     lastClickPosition.value = { x: e.clientX, y: e.clientY };
   }
 }
 
-// 处理ESC键关闭
 function handleEscClose(e: KeyboardEvent) {
-  // 检查是否启用ESC关闭功能且对话框已打开
-  if (escClose && modelValue && e.key === "Escape") {
-    // 立即阻止事件冒泡和默认行为,防止其他监听器捕获
+  if (escClose && modelValue.value && e.key === "Escape") {
     e.stopImmediatePropagation();
     e.preventDefault();
-    e.stopPropagation();
-    emit("update:modelValue", false);
+    modelValue.value = false;
     emit("cancel");
   }
 }
 
-// 处理关闭对话框
 function handleClose() {
   if (closeOnClickModal) {
-    emit("update:modelValue", false);
+    modelValue.value = false;
     emit("cancel");
   }
 }
 
-// 处理确认按钮点击
 function handleConfirm() {
   emit("confirm");
-  emit("update:modelValue", false);
+  modelValue.value = false;
 }
 
 // ==================== 过渡动画钩子 ====================
 function onBeforeEnter(): void {
   emit("open");
-  loadingAnima.value = true;
-  // 重置样式,准备开始入场动画
-  dialogStyle.value = {
+  isAnimating.value = true;
+  applyDialogStyle({
     transform: `scale(${minScale})`,
     opacity: "0",
     transition: "none",
-  };
+  });
 }
 
 function onEnter(): void {
-  // 在下一个帧应用变换原点和动画
   nextTick(() => {
     if (!dialogRef.value)
       return;
-    const originPoint = calculateTransformOrigin();
-    dialogStyle.value = {
-      transformOrigin: originPoint,
-      transform: "scale(1)",
-      opacity: "1",
-      transition: enterTransition.value,
-    };
+
+    const origin = transformOrigin.value;
+
+    // 立即应用起始状态
+    applyDialogStyle({
+      transformOrigin: origin,
+      transform: `scale(${minScale})`,
+      opacity: "0",
+      transition: "none",
+    });
+
+    // 双帧延迟确保浏览器识别起始状态
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        applyDialogStyle({
+          transformOrigin: origin,
+          transform: "scale(1)",
+          opacity: "1",
+          transition: enterTransition.value,
+        });
+      });
+    });
   });
 }
 
 function onAfterEnter(): void {
   emit("opened");
-  loadingAnima.value = false;
+  isAnimating.value = false;
 }
 
 function onBeforeLeave(): void {
   emit("close");
-  loadingAnima.value = true;
+  isAnimating.value = true;
   if (!dialogRef.value)
     return;
 
-  // 使用与打开相同的变换原点
-  const originPoint = calculateTransformOrigin();
+  const origin = transformOrigin.value;
 
-  // 首先确保有正确的原点,但保持对话框可见
-  dialogStyle.value = {
-    transformOrigin: originPoint,
+  applyDialogStyle({
+    transformOrigin: origin,
     transform: "scale(1)",
     opacity: "1",
-    transition: "none", // 确保立即应用
-  };
+    transition: "none",
+  });
 
-  // 然后在下一帧应用收缩动画
   nextTick(() => {
-    dialogStyle.value = {
-      transformOrigin: originPoint,
+    applyDialogStyle({
+      transformOrigin: origin,
       transform: `scale(${minScale})`,
       opacity: "0",
       transition: leaveTransition.value,
-    };
+    });
   });
 }
 
 function onAfterLeave(): void {
   emit("closed");
-  // 重置样式
-  dialogStyle.value = {
+  applyDialogStyle({
+    transformOrigin: "center",
     transform: "scale(1)",
     opacity: "1",
-  };
-  loadingAnima.value = false;
+  });
+  isAnimating.value = false;
 
-  // 在动画完全结束后,如果标记为应当销毁,则执行销毁操作
-  if (shouldDestroy.value) {
-    destroy();
+  // 动画结束后处理销毁和重置
+  if (destroyOnClose) {
+    shouldRenderContent.value = false;
   }
+  resetClickPosition();
 }
 
 // ==================== 生命周期钩子 ====================
 onMounted(() => {
-  window.addEventListener("mousedown", trackMousePosition);
-  // 添加键盘事件监听器
+  window.addEventListener("mousedown", trackMousePosition, { passive: true });
   if (escClose) {
-    window?.addEventListener("keydown", handleEscClose);
+    window.addEventListener("keydown", handleEscClose);
   }
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("mousedown", trackMousePosition);
-  // 移除键盘事件监听器
   if (escClose) {
-    window?.removeEventListener("keydown", handleEscClose);
+    window.removeEventListener("keydown", handleEscClose);
   }
 });
 
@@ -293,7 +287,6 @@ onBeforeUnmount(() => {
 defineExpose({
   handleClose,
   handleConfirm,
-  destroy,
 });
 </script>
 
@@ -310,9 +303,8 @@ defineExpose({
       @after-leave="onAfterLeave"
     >
       <div
-        v-show="modelValue"
+        v-show="displayModelValue"
         key="dialogModel"
-        ref="dialogModelRef"
         :style="{
           '--duration': `${duration}ms`,
           'zIndex': `${zIndex}`,
@@ -322,9 +314,9 @@ defineExpose({
         @click.self="handleClose"
       >
         <!-- 背景遮罩 -->
-        <Transition name="page-fade">
+        <Transition name="mode-fade">
           <div
-            v-if="modelValue"
+            v-if="displayModelValue"
             class="fixed inset-0 z-0 border-default-2 bg-black/30 transition-opacity duration-300 card-rounded-df dark:bg-black/40"
             :class="modelClass"
             @click.stop.prevent="handleClose"
@@ -337,11 +329,11 @@ defineExpose({
           v-if="shouldRenderContent"
           :id="CustomDialogPopupId"
           ref="dialogRef"
-          :data-model-value="escClose && modelValue"
+          :data-model-value="escClose && displayModelValue"
           :style="[dialogStyle, { width: dialogWidth }]"
           class="relative"
           :class="{
-            [disableClass]: loadingAnima,
+            [disableClass]: isAnimating,
             'max-w-full rounded-2 sm:w-fit p-4 border-default-2 dialog-bg-color shadow': !contentClass,
             [contentClass]: contentClass,
             'text-center': center,
@@ -381,5 +373,13 @@ defineExpose({
   * {
     transition: none !important;
   }
+}
+.mode-fade-enter-active,
+.mode-fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+.mode-fade-enter-from,
+.mode-fade-leave-to {
+  opacity: 0;
 }
 </style>

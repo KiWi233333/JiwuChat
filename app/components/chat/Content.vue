@@ -15,17 +15,6 @@ watch(
   () => chat.theRoomId,
   () => chat.isOpenGroupMember = false,
 );
-
-// 伪造路由历史记录，防止移动端返回键退出应用
-useHistoryState(
-  toRef(chat, "isOpenGroupMember"),
-  {
-    enabled: computed(() => setting.isMobileSize),
-    stateKey: "groupMemberOpen",
-    activeValue: true,
-    inactiveValue: false,
-  },
-);
 </script>
 
 <template>
@@ -78,7 +67,7 @@ useHistoryState(
     .member-panel {
       --at-apply: "ml-a h-full  max-w-full flex flex-1 flex-col gap-2 border-l-0 p-4 shadow-lg sm:(max-w-18rem shadow-none) !sm:border-default-2-l bg-color";
       .header {
-        --at-apply: "mb-2 flex items-center gap-2";
+        --at-apply: "mb-4 flex items-center gap-2";
       }
       .member-panel-content {
         --at-apply: "flex-1";

@@ -66,7 +66,7 @@ function initWindowAnimate() {
     <!-- 背景 -->
     <Teleport to="body">
       <div v-if="setting.isWeb && !setting.isMobileSize" class="fixed left-0 top-0 h-full w-full -z-1">
-        <LazyOtherLoginBg
+        <LazyAuthLoginBg
           :enable-rainbow="false"
           :grid-color="$colorMode.value === 'dark' ? '#7429ff' : '#000000'"
           :ripple-intensity="0.02"

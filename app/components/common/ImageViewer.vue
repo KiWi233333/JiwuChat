@@ -451,7 +451,7 @@ defineExpose({
   <CommonPopup
     v-model="state.visible"
     :duration="300"
-    :min-scale="0.8"
+    :min-scale="0.4"
     :show-close="false"
     :z-index="1200"
     destroy-on-close
