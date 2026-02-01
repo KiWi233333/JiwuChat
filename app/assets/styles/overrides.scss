@@ -88,7 +88,7 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   .el-select-dropdown,
   .el-mention-dropdown {
     .el-select-dropdown__footer {
-      --at-apply: "p-0 pt-2 mt-2";
+      --at-apply: "p-0 pt-1.5 mt-1.5";
     }
     .el-scrollbar {
       padding: 0.5em;
@@ -204,13 +204,9 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 
 // 消息提示
 body .el-message {
-  width: max-content;
-  max-width: 94%;
-  padding: 0.4rem 0.6rem;
-  transform: translate(-50%, -18%) !important;
-  --at-apply: "text-14px rounded-2rem shadow-md";
+  --at-apply: "text-5 w-90vw max-w-90vw px-4 py-3 shadow-sm items-center sm:(w-fit max-w-20em px-2 text-3.8  pr-4 py-1.5 rounded-2rem shadow-sm)";
   .el-message__content {
-    --at-apply: "truncate text-12px mt-1px";
+    --at-apply: "truncate text-3.4";
   }
 }
 
