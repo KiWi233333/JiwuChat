@@ -423,6 +423,7 @@ onDeactivated(() => {
       item-class="contact-item"
       :get-item-key="(room) => room.roomId"
       :selected-index="currentRoomIndex"
+      :pull-distance="180"
       enable-pull-to-refresh
       @refresh="reload"
       @scroll="onScroll"

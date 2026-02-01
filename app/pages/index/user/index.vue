@@ -32,9 +32,6 @@ async function init() {
   isLoading.value = false;
 }
 
-onActivated(() => {
-  scrollbarRef.value?.setScrollTop(0);
-});
 
 async function checkFriend(val: string) {
   isFriend.value = false;
@@ -108,15 +105,16 @@ definePageMeta({
   <el-scrollbar ref="scrollbarRef" class="h-full w-full flex flex-1 flex-col bg-color-2 sm:bg-color" wrap-class="pb-20">
     <!-- 壁纸 -->
     <UserInfoBgToggle class="fixed left-0 top-0 z-0 w-full" :is-edit="isSelf" />
+
     <!-- 用户信息面板 -->
     <UserInfoPanel
       :data="user"
       :is-edit="isSelf"
-      class="p-3 -mt-12 sm:p-4"
+      class="p-2 -mt-12 sm:p-4"
     />
 
     <!-- 设置区域 (仅自己可见) -->
-    <div v-if="isSelf && setting.isMobileSize" class="mx-3 border-default-2 border-op-08 rounded-xl bg-color px-4 shadow-sm sm:mx-4">
+    <div v-if="isSelf && setting.isMobileSize" class="mx-2 mt-2 rounded-xl bg-color px-4 shadow-sm sm:(mx-4 border-default-2 border-op-04)">
       <CommonMenuItemList
         size="medium"
         :items="settingMenuItems"
