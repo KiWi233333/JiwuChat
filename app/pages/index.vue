@@ -215,7 +215,7 @@ useHistoryState(
     />
     <!-- 移动端菜单 - 小屏幕才加载 -->
     <LazyMenuBottom
-      v-if="setting.isMobileSize"
+      v-if="setting.isMobileSize && user.isLogin"
       v-show="showMobileMenuBar"
       hydrate-on-media-query="(max-width: 768px)"
       class="grid sm:hidden"

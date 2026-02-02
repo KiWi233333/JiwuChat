@@ -72,7 +72,7 @@ function navigateToDetail(type?: RoomType) {
         v-if="setting.isMobileSize"
         class="i-solar:alt-arrow-left-line-duotone btn-primary-text p-3"
         title="返回"
-        @click="$router.back()"
+        @click="chat.isOpenContact = true"
       />
       <div
         class="flex cursor-pointer items-center gap-3"

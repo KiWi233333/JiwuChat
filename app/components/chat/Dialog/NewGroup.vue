@@ -196,7 +196,7 @@ defineExpose({
     :duration="300"
     destroy-on-close
     :show-close="false"
-    content-class="max-w-95vw sm:w-fit shadow-lg border-default-2  rounded-2 dialog-bg-color"
+    content-class="sm:w-fit w-full shadow-lg border-default-2  rounded-2 dialog-bg-color"
   >
     <template v-if="setting.isMobileSize" #title>
       <div :data-tauri-drag-region="setting.isDesktop" select-none p-4 pb-0 text-center text-sm>
@@ -211,7 +211,7 @@ defineExpose({
       class="relative overflow-hidden rounded-2"
     >
       <div ref="autoAnimateRef">
-        <div v-show="!imgStep" key="first" class="w-82vw flex flex flex-col md:w-45rem md:flex-row">
+        <div v-show="!imgStep" key="first" class="w-full flex flex flex-col md:w-45rem md:flex-row">
           <!-- 未选列表 -->
           <el-form-item class="left flex-1 p-4 sm:p-6">
             <template #label>
@@ -253,12 +253,13 @@ defineExpose({
             </el-checkbox-group>
             <!-- 第一步 -->
             <div v-if="setting.isMobileSize" key="1" class="mt-4 w-full flex justify-between">
-              <el-button class="w-1/2" @click="show = false">
+              <el-button class="w-1/2" :size="setting.isMobileSize ? 'large' : 'default'" @click="show = false">
                 取消
               </el-button>
               <el-button
                 class="w-1/2"
                 :disabled="form.uidList.length <= 0"
+                :size="setting.isMobileSize ? 'large' : 'default'"
                 :type="form.roomId ? 'info' : 'warning'" @click="next()"
               >
                 {{ form.roomId ? '邀请' : '下一步' }}
@@ -314,7 +315,7 @@ defineExpose({
         <div
           v-if="imgStep"
           key="2"
-          class="mt-4 h-250px min-w-80vw flex-row-c-c flex-col sm:(h-300px min-w-fit w-280px)"
+          class="mt-4 h-250px min-w-full flex-row-c-c flex-col sm:(h-300px min-w-fit w-280px)"
         >
           <!-- 选择头像 -->
           <el-form-item

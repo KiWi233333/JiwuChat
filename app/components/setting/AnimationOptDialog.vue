@@ -24,9 +24,9 @@ const _show = computed({
     :show-close="true"
     :duration="300"
     destroy-on-close
-    content-class="select-none rounded-3 p-4 w-fit border-default-2 bg-color-2"
+    content-class="select-none rounded-3 p-4 sm:w-fit border-default-2 bg-color-2"
   >
-    <div class="max-w-80vw w-20rem text-left">
+    <div class="w-full text-left sm:max-w-80vw">
       <!-- 页面动画设置 -->
       <div class="setting-group">
         <p class="title">

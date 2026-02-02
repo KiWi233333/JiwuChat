@@ -291,7 +291,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .form-box {
-  --at-apply: "block w-95vw overflow-hidden border-default-2 card-default rounded-2 pt-2em pb-1em backdrop-blur-5px sm:w-340px";
+  --at-apply: "block w-full overflow-hidden rounded-2 sm:pt-2em pb-1em backdrop-blur-5px sm:w-340px sm:border-default-2 sm:card-default";
   :deep(.el-input-group__append) {
     .el-button {
       height: 100%;

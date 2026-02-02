@@ -44,7 +44,7 @@ function closePhone() {
     :show-close="true"
     :close-on-click-modal="true"
     :destroy-on-close="true"
-    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
+    content-class="p-4 sm:(!p-0 !border-0 !bg-transparent !shadow-none)"
     @update:model-value="(val) => !val && closePwd()"
     @cancel="closePwd"
   >
@@ -57,7 +57,7 @@ function closePhone() {
     :show-close="true"
     :close-on-click-modal="true"
     :destroy-on-close="true"
-    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
+    content-class="p-4 sm:(!p-0 !border-0 !bg-transparent !shadow-none)"
     @update:model-value="(val) => !val && closeEmail()"
     @cancel="closeEmail"
   >
@@ -69,8 +69,8 @@ function closePhone() {
     :model-value="modelValue.showUpdatePhone"
     :show-close="true"
     :close-on-click-modal="true"
+    content-class="p-4 sm:(!p-0 !border-0 !bg-transparent !shadow-none)"
     :destroy-on-close="true"
-    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
     @update:model-value="(val) => !val && closePhone()"
     @cancel="closePhone"
   >

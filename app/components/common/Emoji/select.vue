@@ -29,7 +29,7 @@ function handleEmojiSubmit(val: string) {
       </slot>
     </template>
     <div
-      class="h-20rem max-w-80vw min-w-18rem p-2"
+      class="h-20rem max-w-full min-w-18rem p-2"
     >
       <Emoji
         model-value-mode="raw"

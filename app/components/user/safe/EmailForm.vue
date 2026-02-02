@@ -100,7 +100,7 @@ async function getEmailCode() {
     hide-required-asterisk
     :rules="rules"
     :model="form"
-    class="block h-fit w-95vw overflow-hidden border-default-2 rounded-2 card-default p-6 backdrop-blur-5px sm:w-360px"
+    class="block h-fit w-full overflow-hidden rounded-2 pt-0 backdrop-blur-5px sm:w-360px sm:border-default-2 sm:card-default sm:p-6"
   >
     <div mb-4 mt-2 text-center text-lg font-bold tracking-0.2em>
       {{ user.userInfo.isEmailVerified ? "更换" : "绑定" }}邮箱

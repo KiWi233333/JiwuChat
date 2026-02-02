@@ -498,7 +498,7 @@ function toLoginForm() {
         返回登录
       </span>
     </div>
-    <CommonPopup
+    <CommonPopupDesktop
       v-model="agreeDetail.showDetail"
       :duration="200"
       :min-scale="0.98"
@@ -538,7 +538,7 @@ function toLoginForm() {
           </CommonElButton>
         </div>
       </div>
-    </CommonPopup>
+    </CommonPopupDesktop>
   </el-form>
 </template>
 

@@ -55,7 +55,7 @@ const getAppTitle = computed(() => {
 </script>
 
 <template>
-  <menu class="group min-h-6" :class="navClass">
+  <menu class="group min-h-6 flex-shrink-0" :class="navClass">
     <!-- 菜单栏 -->
     <slot name="left">
       <div
@@ -89,7 +89,7 @@ const getAppTitle = computed(() => {
         <!-- 下载（部分端） -->
         <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1 w-5 h-5" />
         <!-- 折叠菜单 -->
-        <MenuDots>
+        <MenuDots :show-arrow="false">
           <template #btn>
             <div
               text

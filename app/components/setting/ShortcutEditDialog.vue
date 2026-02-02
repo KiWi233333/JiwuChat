@@ -240,7 +240,7 @@ onUnmounted(() => {
     title="编辑快捷键"
     center
     destroy-on-close
-    content-class="shortcut-edit-dialog select-none rounded-3 p-4 w-fit border-default-2 bg-color-2"
+    content-class="shortcut-edit-dialog select-none rounded-3 p-4 sm:w-fit border-default-2 bg-color-2"
   >
     <div class="dialog-content">
       <div class="shortcut-info">
@@ -305,7 +305,7 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .dialog-content {
-  --at-apply: "w-16rem max-w-90vw";
+  --at-apply: "w-16rem max-w-full sm:max-w-90vw";
 }
 
 .shortcut-info {

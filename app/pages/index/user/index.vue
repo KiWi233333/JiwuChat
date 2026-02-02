@@ -87,6 +87,16 @@ const settingMenuItems = computed<MenuItemConfig[]>(() => [
   },
 ]);
 
+// 扩展菜单
+const personalMenuItems = computed<MenuItemConfig[]>(() => [
+  {
+    title: "扩展程序",
+    onClick: () => chat.showExtension = true,
+    icon: "i-ri-apps-2-ai-line text-mini op-50",
+    activeIcon: "i-ri-apps-2-ai-line text-mini op-50",
+  },
+]);
+
 init();
 
 useHead({
@@ -115,10 +125,31 @@ useHead({
       />
 
       <!-- 移动端额外设置 -->
-      <div v-if="isSelf && setting.isMobileSize" class="mt-3 rounded-xl bg-color px-4 shadow-sm sm:(border-default-2 border-op-04)">
+      <div v-if="isSelf" class="mt-3 rounded-xl bg-color px-4 shadow-sm sm:(border-default-2 border-op-04)">
         <CommonMenuItemList
           size="medium"
           :items="settingMenuItems"
+          variant="list"
+        />
+      </div>
+      <!-- 移动端额外菜单 -->
+      <div v-if="isSelf && setting.isMobileSize" class="rounded-xl bg-color px-4 shadow-sm !mt-3 sm:(border-default-2 border-op-04)">
+        <CommonMenuItemList
+          size="medium"
+          :items="personalMenuItems"
+          variant="list"
+        />
+      </div>
+      <!-- 退出登录 -->
+      <div v-if="isSelf" class="mt-3 rounded-xl bg-color px-4 shadow-sm sm:(border-default-2 border-op-04)">
+        <CommonMenuItemList
+          size="medium"
+          class="op-80 hover:op-100"
+          :items="[{
+            icon: 'i-solar:logout-3-broken',
+            title: '退出登录',
+            onClick: () => store.exitLogin(),
+          }]"
           variant="list"
         />
       </div>

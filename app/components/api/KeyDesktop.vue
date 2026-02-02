@@ -494,7 +494,7 @@ onActivated(() => {
       :overlayer-attrs="{
         class: 'transition-all',
       }"
-      content-class="rounded-3 p-4 shadow-lg w-fit border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg sm:w-fit border-default-2 dialog-bg-color"
       @close="handleDialogClose"
     >
       <template #title>
@@ -504,7 +504,7 @@ onActivated(() => {
       </template>
       <el-form
         ref="dialogFormRef"
-        class="api-key-dialog max-w-90vw w-360px"
+        class="api-key-dialog max-w-full w-360px sm:max-w-90vw"
         :model="dialogForm"
         :rules="dialogRules"
         label-position="top"
@@ -573,10 +573,10 @@ onActivated(() => {
     <CommonPopup
       v-model="mcpAppDialogVisible"
       title="MCP应用"
-      content-class="rounded-3 p-4 shadow-lg w-fit border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg sm:w-fit border-default-2 dialog-bg-color"
       width="fit-content"
     >
-      <div class="max-w-90vw w-400px">
+      <div class="max-w-full w-400px sm:max-w-90vw">
         <MdPreview
           language="zh-CN"
           style="font-size: 0.8rem;background-color: transparent;"
@@ -596,9 +596,9 @@ onActivated(() => {
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       width="fit-content"
-      content-class="rounded-3 p-4 shadow-lg w-fit border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg sm:w-fit border-default-2 dialog-bg-color"
     >
-      <div class="max-w-90vw w-fit space-y-4">
+      <div class="max-w-full w-fit sm:max-w-90vw space-y-4">
         <!-- 警告信息 -->
         <div class="text-sm text-color leading-relaxed">
           请将此 API key 保存在安全且易于访问的地方。出于<br>

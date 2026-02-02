@@ -141,7 +141,7 @@ function createItem() {
     v-model="isShow"
     :duration="200"
     :min-scale="0.98"
-    content-class="w-94vw rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
+    content-class="w-full rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
   >
     <template #title>
       <h3 :data-tauri-drag-region="setting.isDesktop" mb-4 flex-row-c-c text-center font-500>
@@ -153,7 +153,8 @@ function createItem() {
     <CommonListTransitionGroup
       tag="div"
       name="pop-list"
-      class="grid grid-auto-rows-min cols-3 mb-4 mt-2 min-h-14em select-none items-start gap-3 sm:(cols-4 gap-4)"
+      class="auto-fill-grid mb-4 mt-2 min-h-14em select-none items-start gap-3"
+      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));"
     >
       <!-- 固定菜单标题 -->
       <small v-if="extendMenuSaveList.length" key="fix-title" class="col-span-full block text-mini">
@@ -242,11 +243,20 @@ function createItem() {
       </div>
     </CommonListTransitionGroup>
     <template #footer>
-      <div class="pb-2 text-right">
-        <el-button class="ml-a" size="small" @click="isShow = false">
+      <div class="flex justify-center pb-2 sm:justify-end">
+        <el-button
+          class="ml-a w-1/2 sm:w-fit"
+          :size="setting.isMobileSize ? 'large' : 'small'"
+          @click="isShow = false"
+        >
           取消
         </el-button>
-        <el-button type="primary" size="small" @click="saveMenu(extendMenuSaveList)">
+        <el-button
+          type="primary"
+          class="w-1/2 sm:w-fit"
+          :size="setting.isMobileSize ? 'large' : 'small'"
+          @click="saveMenu(extendMenuSaveList)"
+        >
           确定
         </el-button>
       </div>

@@ -196,6 +196,17 @@ const overlayStyle = computed(() => {
   return style;
 });
 
+
+// ==================== 路由历史状态管理 ====================
+// 使用路由历史状态管理弹窗打开/关闭状态
+// 当弹窗打开时会在 URL 添加 query 参数，用户点击返回键可以关闭弹窗
+useHistoryState(modelValue, {
+  enabled: true,
+  activeValue: true,
+  inactiveValue: false,
+  useBackNavigation: true,
+});
+
 // ==================== 背景联动处理 ====================
 let lockTargetElement: HTMLElement | null = null;
 
@@ -507,7 +518,7 @@ defineExpose({
           <!-- 头部 -->
           <div
             v-if="title || $slots.header"
-            class="drawer-header border-default-b p-3 sm:p-4"
+            class="drawer-header mx-3 border-default-3-b py-3 sm:mx-4 sm:py-4"
           >
             <slot name="header">
               <div class="text-lg text-color font-medium">
@@ -517,9 +528,9 @@ defineExpose({
           </div>
 
           <!-- 内容区 -->
-          <div class="drawer-body flex-1 overflow-y-auto p-3 sm:p-4">
+          <el-scrollbar class="drawer-body flex-1 p-3 sm:p-4">
             <slot />
-          </div>
+          </el-scrollbar>
 
           <!-- 底部 -->
           <div

@@ -13,9 +13,9 @@ const isShow = computed({
   get: () => props.show !== undefined && props.show === true,
   set: value => emit("update:show", value),
 });
-
 // 消息群通知
 const chat = useChatStore();
+const setting = useSettingStore();
 const applyFormRef = ref();
 const applyForm = ref<ChatMessageDTO>({
   roomId: chat.theRoomId!,
@@ -46,7 +46,7 @@ async function addMsg() {
     v-model="isShow"
     :duration="300"
     destroy-on-close
-    content-class="rounded-2 p-4 w-fit border-default-2 dialog-bg-color"
+    content-class="rounded-2 p-4 sm:w-fit border-default-2 dialog-bg-color"
   >
     <template #title>
       <div class="flex-row-c-c">
@@ -68,7 +68,7 @@ async function addMsg() {
                    required: true,
                    message: '内容不能为空！',
                  }]"
-        class="max-w-80vw w-20rem"
+        class="w-full sm:max-w-80vw"
       >
         <el-input
           v-model="applyForm.content"
@@ -105,10 +105,18 @@ async function addMsg() {
     </el-form>
     <template #footer>
       <div class="flex-row-c-c">
-        <el-button class="mr-4 w-5rem" @click="isShow = false">
+        <el-button
+          class="mr-4 mt-2 w-1/2"
+          :size="setting.isMobileSize ? 'large' : 'default'"
+          @click="isShow = false"
+        >
           取消
         </el-button>
-        <el-button class="w-5rem" type="primary" @click="addMsg">
+        <el-button
+          class="mt-2 w-1/2"
+          :size="setting.isMobileSize ? 'large' : 'default'"
+          type="primary" @click="addMsg"
+        >
           发送
         </el-button>
       </div>

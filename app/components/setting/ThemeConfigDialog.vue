@@ -194,6 +194,8 @@ function importThemeConfig(file: File) {
   };
   reader.readAsText(file);
 }
+const setting = useSettingStore();
+const btnSize = computed(() => setting.isMobileSize ? "large" : "small");
 </script>
 
 <template>
@@ -207,9 +209,9 @@ function importThemeConfig(file: File) {
     :duration="300"
     :z-index="999"
     destroy-on-close
-    content-class="select-none rounded-3 p-4 w-fit border-default-2 bg-color-2"
+    content-class="select-none rounded-3 p-4 sm:w-fit border-default-2 bg-color-2"
   >
-    <el-scrollbar max-height="60vh" wrap-class="max-w-86vw w-30rem text-left p-1">
+    <el-scrollbar max-height="60vh" wrap-class="w-full sm:max-w-86vw w-30rem text-left p-1">
       <!-- 预设主题区域 -->
       <div class="setting-group">
         <p class="title">
@@ -293,7 +295,7 @@ function importThemeConfig(file: File) {
         <CommonElButton
           icon-class="i-solar:import-bold-duotone mr-1"
           text
-          size="small"
+          :size="btnSize"
           @click="openFileDialog()"
         >
           导入
@@ -301,7 +303,7 @@ function importThemeConfig(file: File) {
         <CommonElButton
           icon-class="i-solar:export-bold-duotone mr-1"
           text
-          size="small"
+          :size="btnSize"
           @click="exportThemeConfig()"
         >
           导出
@@ -309,7 +311,7 @@ function importThemeConfig(file: File) {
       </div><div class="right-actions">
         <CommonElButton
           text
-          size="small"
+          :size="btnSize"
           @click="resetToDefault"
         >
           重置
@@ -317,7 +319,7 @@ function importThemeConfig(file: File) {
         <CommonElButton
           type="primary"
           icon-class="i-solar:paint-roller-bold-duotone mr-1"
-          size="small"
+          :size="btnSize"
           :disabled="!hasUnsavedChanges"
           @click="applyTheme"
         >
@@ -403,7 +405,7 @@ function importThemeConfig(file: File) {
 }
 
 .actions-footer {
-  --at-apply: "pt-4 flex justify-between items-center";
+  --at-apply: "pt-4 flex sticky bottom-0 left-0 justify-between items-center";
 }
 
 .left-actions,

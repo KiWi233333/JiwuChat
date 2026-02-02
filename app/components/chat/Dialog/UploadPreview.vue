@@ -106,7 +106,7 @@ async function onSend() {
     :z-index="999"
     destroy-on-close
     :show-close="false"
-    content-class="w-86vw sm:(w-fit max-w-24rem) shadow-lg border-default-2  rounded-2 dialog-bg-color"
+    content-class="w-full sm:(w-fit max-w-24rem) shadow-lg border-default-2  rounded-2 dialog-bg-color"
   >
     <div class="p-4">
       <p text-sm>

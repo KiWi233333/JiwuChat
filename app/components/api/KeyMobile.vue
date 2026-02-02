@@ -569,7 +569,7 @@ onActivated(() => {
       :overlayer-attrs="{
         class: 'transition-all',
       }"
-      content-class="rounded-3 p-4 shadow-lg w-[90vw] max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-full max-w-400px border-default-2 dialog-bg-color"
       @close="handleDialogClose"
     >
       <template #title>
@@ -647,7 +647,7 @@ onActivated(() => {
     <CommonPopup
       v-model="mcpAppDialogVisible"
       title="MCP应用"
-      content-class="rounded-3 p-4 shadow-lg w-[90vw] max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-full max-w-400px border-default-2 dialog-bg-color"
       width="fit-content"
     >
       <div class="w-full">
@@ -670,7 +670,7 @@ onActivated(() => {
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       width="fit-content"
-      content-class="rounded-3 p-4 shadow-lg w-[90vw] max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-full max-w-400px border-default-2 dialog-bg-color"
     >
       <div class="w-full space-y-4">
         <!-- 警告信息 -->

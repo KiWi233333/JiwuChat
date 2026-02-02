@@ -206,14 +206,30 @@ export function useHistoryState<T = boolean>(
 
   /**
    * 初始化同步
+   * 双向同步：
+   * 1. URL 有参数但 state 不是 activeValue -> 同步 state 为 activeValue
+   * 2. state 是 activeValue 但 URL 没参数 -> 添加 URL 参数
+   * 3. URL 没参数且 state 不是 activeValue -> 同步 state 为 inactiveValue
    */
   const initializeSync = async () => {
     if (initialized.value || route?.path !== initialPath)
       return;
 
     initialized.value = true;
-    if (hasQueryKey() && state.value !== activeValue) {
+
+    const hasKey = hasQueryKey();
+
+    if (hasKey && state.value !== activeValue) {
+      // URL 有参数，同步 state 为 activeValue
       await syncState(activeValue);
+    }
+    else if (!hasKey && state.value === activeValue) {
+      // state 已经是 activeValue 但 URL 没参数，添加参数
+      await addQueryKey();
+    }
+    else if (!hasKey && state.value !== inactiveValue) {
+      // URL 没参数且 state 也不是 inactiveValue，同步为 inactiveValue
+      await syncState(inactiveValue);
     }
   };
 

@@ -63,7 +63,7 @@ const {
     </div>
   </div>
   <!-- 版本公告 -->
-  <CommonPopup
+  <CommonPopupDesktop
     v-model="showNotice"
     destroy-on-close
     :duration="300"
@@ -71,7 +71,7 @@ const {
     width="fit-content"
   >
     <template #title>
-      <h4 mb-4 select-none text-center text-1.2rem>
+      <h4 m-0 select-none p-0 text-center text-1.2rem>
         &emsp;版本公告 🔔
       </h4>
     </template>
@@ -94,9 +94,9 @@ const {
         &emsp;我知道了 🎉
       </el-button>
     </div>
-  </CommonPopup>
+  </CommonPopupDesktop>
   <!-- 版本的时间线 -->
-  <CommonPopup
+  <CommonPopupDesktop
     v-model="showUpateNoticeLine"
     destroy-on-close
     :duration="300"
@@ -191,7 +191,7 @@ const {
         {{ setting.appUploader.isUpdating ? '正在更新' : '检查更新' }}
       </CommonElButton>
     </div>
-  </CommonPopup>
+  </CommonPopupDesktop>
 </template>
 
 <style lang="scss" scoped>
