@@ -43,7 +43,7 @@ async function onUpdatePhone(formEl: FormInstance | undefined) {
         confirmButtonText: "确认修改",
         cancelButtonText: "取消",
         lockScroll: false,
-      }).then((action: string) => {
+      }).then((action) => {
         if (action === "confirm")
           toUpdate();
       });
