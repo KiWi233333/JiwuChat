@@ -8,19 +8,19 @@ useSeoMeta({
 });
 const chat = useChatStore();
 const setting = useSettingStore();
-const theFriendOpt = computed({
-  get: () => chat.theFriendOpt,
-  set: (val) => {
-    chat.theFriendOpt = val;
-  },
+
+// 移动端：用路由模拟页面标签，返回键可关闭右侧面板
+const isMobileSize = computed(() => setting.isMobileSize);
+useHistoryState(toRef(chat, "showTheFriendPanel"), {
+  enabled: isMobileSize,
+  stateKey: "friendPanelOpen",
+  activeValue: true,
+  inactiveValue: false,
 });
-const { history, undo, clear } = useRefHistory(theFriendOpt, {
-  deep: true,
-  capacity: 10,
-});
-async function clearHistory() {
+
+function closePanel() {
   chat.showTheFriendPanel = false;
-  clear?.();
+  chat.setTheFriendOpt(FriendOptType.Empty, {});
 }
 const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Empty);
 </script>
@@ -39,14 +39,9 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
     >
       <template v-if="isEmptyPanel">
         <div
-          class="i-solar:alt-arrow-left-line-duotone absolute right-18 top-6 z-1000 hidden btn-danger p-2.6 sm:right-16 sm:top-11 sm:block"
-          title="关闭"
-          @click="undo()"
-        />
-        <div
           class="i-carbon:close absolute right-6 top-6 z-1000 block scale-110 btn-danger p-2.6 sm:right-6 sm:top-11"
           title="关闭"
-          @click="clearHistory"
+          @click="closePanel"
         />
         <!-- 面板 -->
         <Transition

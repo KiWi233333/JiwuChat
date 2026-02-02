@@ -97,6 +97,7 @@ onDeactivated(() => {
         <div class="skeleton-content">
           <div class="skeleton-line w-1/2" />
           <div class="skeleton-line mt-2 w-9/10" />
+          <div class="skeleton-line mt-1 w-3/10" />
         </div>
       </div>
     </template>
@@ -168,8 +169,10 @@ onDeactivated(() => {
 
 /* 骨架屏样式 */
 .skeleton-card {
+  --at-apply: "h-22";
+
   .skeleton-avatar {
-    --at-apply: "relative z-2 w-12 h-12 flex-shrink-0 rounded-xl bg-color-2";
+    --at-apply: "relative z-2 w-12 h-12 flex-shrink-0 rounded-1/2 bg-color-2";
   }
   .skeleton-content {
     --at-apply: "flex-1 z-2 relative min-w-0";
