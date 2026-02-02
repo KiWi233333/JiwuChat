@@ -421,18 +421,21 @@ export function navigateToUserInfoPage(userId: string) {
  * 跳转到用户详情
  * @param userId 用户id
  */
-export function navigateToUserDetail(userId: string) {
+export async function navigateToUserDetail(userId: string) {
   const chat = useChatStore();
   chat.setTheFriendOpt(FriendOptType.User, {
     id: userId,
   });
-  navigateTo({
+  await navigateTo({
     path: "/friend",
     query: {
       id: userId,
       dis: 1, // 移动尺寸禁止路由拦截
     },
     replace: false,
+  });
+  chat.setTheFriendOpt(FriendOptType.User, {
+    id: userId,
   });
 }
 
