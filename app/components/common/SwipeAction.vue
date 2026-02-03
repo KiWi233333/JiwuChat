@@ -54,10 +54,51 @@ function updateWidths() {
   rightWidth.value = rightRef.value?.offsetWidth || 0;
 }
 
-onMounted(() => {
-  updateWidths();
-  // 监听 resize
-  useResizeObserver(containerRef, updateWidths);
+// 动态管理监听器
+let cleanupResize: (() => void) | undefined;
+let cleanupTouch: (() => void) | undefined;
+let cleanupClick: (() => void) | undefined;
+
+function stopListeners() {
+  cleanupResize?.();
+  cleanupTouch?.();
+  cleanupClick?.();
+  cleanupResize = undefined;
+  cleanupTouch = undefined;
+  cleanupClick = undefined;
+}
+
+function startListeners() {
+  stopListeners();
+
+  // 1. ResizeObserver: 仅在打开状态下监听，以修正 offset
+  const { stop: stopResize } = useResizeObserver(containerRef, () => {
+    updateWidths();
+    if (isOpen.value === "left")
+      offset.value = leftWidth.value;
+    else if (isOpen.value === "right")
+      offset.value = -rightWidth.value;
+  });
+  cleanupResize = stopResize;
+
+  // 2. Click/Touch Outside
+  cleanupTouch = useEventListener(window, "touchstart", handleOutside, { passive: true, capture: true });
+  cleanupClick = useEventListener(window, "click", handleOutside, { passive: true, capture: true });
+}
+
+function handleOutside(e: Event) {
+  if (isOpen.value !== "none" && containerRef.value && !containerRef.value.contains(e.target as Node)) {
+    close();
+  }
+}
+
+watch(isOpen, (val) => {
+  if (val !== "none") {
+    startListeners();
+  }
+  else {
+    stopListeners();
+  }
 });
 
 // 手势处理
@@ -155,17 +196,6 @@ useSwipe(containerRef, {
   },
 });
 
-// 点击/触摸外部关闭
-// 使用 capture 捕获模式，确保在移动端触摸其他区域时能立即响应关闭
-function handleOutside(e: Event) {
-  if (isOpen.value !== "none" && containerRef.value && !containerRef.value.contains(e.target as Node)) {
-    close();
-  }
-}
-
-useEventListener(window, "touchstart", handleOutside, { passive: true, capture: true });
-useEventListener(window, "click", handleOutside, { passive: true, capture: true });
-
 // 公开方法
 function close() {
   offset.value = 0;
@@ -173,6 +203,10 @@ function close() {
   emit("close");
 }
 
+/**
+ * 打开按钮
+ * @param side 按钮方向
+ */
 function open(side: "left" | "right") {
   updateWidths();
   if (side === "left" && props.leftButtons.length) {
@@ -195,7 +229,11 @@ function handleActionClick(btn: SwipeActionButton, e: MouseEvent) {
   }
 }
 
-// 辅助函数
+/**
+ * 获取按钮类名
+ * @param btn 按钮配置
+ * @returns 按钮类名
+ */
 function getBtnClass(btn: SwipeActionButton) {
   const classes = [btn.class || ""];
   if (btn.color) {
@@ -210,6 +248,11 @@ function getBtnClass(btn: SwipeActionButton) {
   return classes.join(" ");
 }
 
+/**
+ * 获取按钮样式
+ * @param btn 按钮配置
+ * @returns 按钮样式
+ */
 function getBtnStyle(btn: SwipeActionButton) {
   const style: any = { ...btn.style };
   if (btn.color) {
@@ -218,6 +261,19 @@ function getBtnStyle(btn: SwipeActionButton) {
   return style;
 }
 
+onMounted(() => {
+  updateWidths();
+});
+onActivated(() => {
+  updateWidths();
+});
+
+onUnmounted(() => {
+  stopListeners();
+});
+onDeactivated(() => {
+  stopListeners();
+});
 // 暴露
 defineExpose({ close, open });
 </script>

@@ -196,7 +196,7 @@ defineExpose({
     :duration="300"
     destroy-on-close
     :show-close="false"
-    content-class="sm:w-fit w-full shadow-lg sm:border-default-2  rounded-2 sm:dialog-bg-color"
+    content-class="sm:w-fit w-full !bg-color dark:!bg-color-2 shadow-lg sm:border-default-2  rounded-2 sm:dialog-bg-color"
   >
     <template v-if="setting.isMobileSize" #title>
       <div :data-tauri-drag-region="setting.isDesktop" select-none class="px-4 text-center">
@@ -229,7 +229,7 @@ defineExpose({
               </div>
             </template>
             <el-checkbox-group v-model="form.uidList" class="w-full bg-color-2 card-rounded-df sm:!bg-transparent">
-              <div class="h-0 max-h-40vh min-h-40vh flex flex-col overflow-y-auto p-2 pr-0 sm:(max-h-22rem min-h-22rem p-0)">
+              <el-scrollbar max-height="40vh" class="h-0 min-h-40vh flex flex-col p-2 pr-0 sm:(max-h-22rem min-h-22rem p-0)">
                 <CommonListAutoIncre
                   :immediate="false"
                   :auto-stop="false"
@@ -249,7 +249,7 @@ defineExpose({
                 <div v-if="notMore" class="h-full w-full flex-row-c-c pb-12 text-xs op-60">
                   没有更多了
                 </div>
-              </div>
+              </el-scrollbar>
             </el-checkbox-group>
             <!-- 第一步 -->
             <div v-if="setting.isMobileSize" key="1" class="mt-4 w-full flex justify-between">

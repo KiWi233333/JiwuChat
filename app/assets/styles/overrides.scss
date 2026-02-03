@@ -286,6 +286,19 @@ body .el-message {
       background-color: transparent;
     }
   }
+  // overflow-y-auto
+  .overflow-y-auto {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  }
 }
 
 // 图片预览
