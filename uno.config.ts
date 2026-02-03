@@ -38,6 +38,7 @@ export default defineConfig({
     ["bg-color-linear-down", "bg-gradient-to-t from-white to-transparent dark:from-dark-5 dark:to-transparent"],
     // dialog颜色
     ["dialog-bg-color", "bg-white dark:bg-dark-9"],
+    ["bg-color-inverse", "bg-dark-500 bg-op-10 transition-colors dark:bg-light-900 dark:bg-op-20"],
     // 文本颜色
     ["text-color", "text-black dark:text-white"],
     ["text-secondary", "text-[#717171] dark:text-coolGray-300"],

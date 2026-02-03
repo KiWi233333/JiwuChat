@@ -507,7 +507,7 @@ defineExpose({
             @touchstart="handleDragStart"
           >
             <div
-              class="drawer-handle-bar rounded-full bg-color transition-colors"
+              class="drawer-handle-bar rounded-full bg-color-inverse transition-colors"
               :class="{
                 'w-16 h-1': isVertical,
                 'w-1 h-16': isHorizontal,
@@ -616,11 +616,12 @@ defineExpose({
   --at-apply: "transition-all";
 
   &.drawer-handle-vertical {
-    padding: 1rem 0;
+    padding-top: 0.75rem;
   }
 
   &.drawer-handle-horizontal {
-    padding: 0 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
     writing-mode: vertical-lr;
   }
 
