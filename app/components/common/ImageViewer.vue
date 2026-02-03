@@ -448,7 +448,7 @@ defineExpose({
 </script>
 
 <template>
-  <CommonPopup
+  <CommonPopupDesktop
     v-model="state.visible"
     :duration="300"
     :min-scale="0.4"
@@ -608,7 +608,7 @@ defineExpose({
         </div>
       </div>
     </template>
-  </CommonPopup>
+  </CommonPopupDesktop>
 </template>
 
 <style lang="scss">

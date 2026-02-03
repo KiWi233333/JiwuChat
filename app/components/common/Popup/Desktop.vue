@@ -322,7 +322,7 @@ defineExpose({
         <Transition name="mode-fade">
           <div
             v-if="displayModelValue"
-            class="fixed inset-0 z-0 border-default-2 bg-black/30 transition-opacity duration-300 card-rounded-df dark:bg-black/40"
+            class="fixed inset-0 z-0 border-default-2 bg-black/30 transition-opacity duration-300 dark:bg-black/40"
             :class="modelClass"
             @click.stop.prevent="handleClose"
           >
