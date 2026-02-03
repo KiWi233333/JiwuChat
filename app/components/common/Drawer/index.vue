@@ -51,6 +51,10 @@ export interface DrawerProps {
   teleportTo?: string | HTMLElement
   /** 背景联动效果配置 */
   bodyLock?: boolean | BodyLockConfig
+  /** 是否支持拖拽放大 */
+  expandable?: boolean
+  /** 放大阈值 */
+  expandThreshold?: number
 }
 
 const {
@@ -69,6 +73,8 @@ const {
   destroyOnClose = false,
   teleportTo = "body",
   bodyLock = true,
+  expandable = true,
+  expandThreshold = 150,
 } = defineProps<DrawerProps>();
 
 const emit = defineEmits<{
@@ -120,6 +126,7 @@ const handleRef = useTemplateRef<HTMLElement>("handleRef");
 const isOpen = computed(() => modelValue.value);
 const shouldRender = ref(modelValue.value);
 const isAnimating = ref(false);
+const isExpanded = ref(false);
 
 // 拖拽相关状态
 const isDragging = ref(false);
@@ -129,6 +136,9 @@ const dragOffset = ref(0);
 const velocity = ref(0);
 const lastMoveTime = ref(0);
 const lastMovePos = ref(0);
+const startSize = ref(0);
+const normalSize = ref(0);
+const isRestoring = ref(false);
 
 // ==================== 计算属性 ====================
 const isVertical = computed(() => direction === "top" || direction === "bottom");
@@ -141,9 +151,12 @@ const drawerSize = computed(() => {
 });
 
 const drawerStyle = computed(() => {
+  const transitionProp = `transform ${duration}ms cubic-bezier(0.32, 0.72, 0, 1), height ${duration}ms cubic-bezier(0.32, 0.72, 0, 1), width ${duration}ms cubic-bezier(0.32, 0.72, 0, 1), border-radius ${duration}ms cubic-bezier(0.32, 0.72, 0, 1)`;
+
   const baseStyle: any = {
     "--drawer-duration": `${duration}ms`,
     "zIndex": currentZIndex.value + 1,
+    "transition": isDragging.value ? "none" : transitionProp,
   };
 
   if (isVertical.value) {
@@ -157,24 +170,179 @@ const drawerStyle = computed(() => {
     }
   }
 
+  // 展开状态样式
+  if (!isRestoring.value && isExpanded.value) {
+    if (isVertical.value) {
+      baseStyle.height = "100%";
+      baseStyle.maxHeight = "none";
+      if (direction === "bottom") {
+        baseStyle.borderTopLeftRadius = 0;
+        baseStyle.borderTopRightRadius = 0;
+      }
+      else if (direction === "top") {
+        baseStyle.borderBottomLeftRadius = 0;
+        baseStyle.borderBottomRightRadius = 0;
+      }
+    }
+    else {
+      baseStyle.width = "100%";
+      baseStyle.maxWidth = "none";
+      if (direction === "left") {
+        baseStyle.borderTopRightRadius = 0;
+        baseStyle.borderBottomRightRadius = 0;
+      }
+      else if (direction === "right") {
+        baseStyle.borderTopLeftRadius = 0;
+        baseStyle.borderBottomLeftRadius = 0;
+      }
+    }
+  }
+
+  // 恢复动画状态样式（使用像素值以确保 transition 生效）
+  if (isRestoring.value) {
+    baseStyle.maxHeight = "none";
+    baseStyle.maxWidth = "none";
+
+    if (isExpanded.value) {
+      // 目标是全屏 -> 使用视口尺寸
+      if (isVertical.value) {
+        baseStyle.height = `${window.innerHeight}px`;
+        // 去除圆角
+        if (direction === "bottom") {
+          baseStyle.borderTopLeftRadius = 0;
+          baseStyle.borderTopRightRadius = 0;
+        }
+        else if (direction === "top") {
+          baseStyle.borderBottomLeftRadius = 0;
+          baseStyle.borderBottomRightRadius = 0;
+        }
+      }
+      else {
+        baseStyle.width = `${window.innerWidth}px`;
+        if (direction === "left") {
+          baseStyle.borderTopRightRadius = 0;
+          baseStyle.borderBottomRightRadius = 0;
+        }
+        else {
+          baseStyle.borderTopLeftRadius = 0;
+          baseStyle.borderBottomLeftRadius = 0;
+        }
+      }
+    }
+    else {
+      // 目标是 Normal -> 使用记录的 normalSize
+      if (normalSize.value > 0) {
+        if (isVertical.value) {
+          baseStyle.height = `${normalSize.value}px`;
+        }
+        else {
+          baseStyle.width = `${normalSize.value}px`;
+        }
+      }
+    }
+  }
+
   // 应用拖拽偏移
   if (isDragging.value || dragOffset.value !== 0) {
-    baseStyle.transition = isDragging.value ? "none" : `transform ${duration}ms cubic-bezier(0.32, 0.72, 0, 1)`;
-
     const offset = dragOffset.value;
-    switch (direction) {
-      case "bottom":
-        baseStyle.transform = `translateY(${Math.max(0, offset)}px)`;
-        break;
-      case "top":
-        baseStyle.transform = `translateY(${Math.min(0, offset)}px)`;
-        break;
-      case "left":
-        baseStyle.transform = `translateX(${Math.min(0, offset)}px)`;
-        break;
-      case "right":
-        baseStyle.transform = `translateX(${Math.max(0, offset)}px)`;
-        break;
+
+    if (expandable) {
+      // 判断是否在进行放大/缩小操作
+      let isExpanding = false;
+      let isShrinking = false;
+
+      if (direction === "bottom") {
+        if (isExpanded.value && offset > 0)
+          isShrinking = true;
+        else if (!isExpanded.value && offset < 0)
+          isExpanding = true;
+      }
+      else if (direction === "top") {
+        if (isExpanded.value && offset < 0)
+          isShrinking = true;
+        else if (!isExpanded.value && offset > 0)
+          isExpanding = true;
+      }
+      else if (direction === "left") {
+        if (isExpanded.value && offset < 0)
+          isShrinking = true;
+        else if (!isExpanded.value && offset > 0)
+          isExpanding = true;
+      }
+      else if (direction === "right") {
+        if (isExpanded.value && offset > 0)
+          isShrinking = true;
+        else if (!isExpanded.value && offset < 0)
+          isExpanding = true;
+      }
+
+      if (isShrinking) {
+        const delta = Math.abs(offset);
+        const size = Math.max(0, startSize.value - delta);
+        if (isVertical.value) {
+          baseStyle.height = `${size}px`;
+          baseStyle.maxHeight = "none";
+        }
+        else {
+          baseStyle.width = `${size}px`;
+          baseStyle.maxWidth = "none";
+        }
+      }
+      else if (isExpanding) {
+        const delta = Math.abs(offset);
+        const size = startSize.value + delta;
+        if (isVertical.value) {
+          baseStyle.height = `${size}px`;
+          baseStyle.maxHeight = "none";
+          // 放大时根据方向去掉对应圆角
+          if (direction === "bottom") {
+            baseStyle.borderTopLeftRadius = 0;
+            baseStyle.borderTopRightRadius = 0;
+          }
+          else {
+            baseStyle.borderBottomLeftRadius = 0;
+            baseStyle.borderBottomRightRadius = 0;
+          }
+        }
+        else {
+          baseStyle.width = `${size}px`;
+          baseStyle.maxWidth = "none";
+          if (direction === "left") {
+            baseStyle.borderTopRightRadius = 0;
+            baseStyle.borderBottomRightRadius = 0;
+          }
+          else {
+            baseStyle.borderTopLeftRadius = 0;
+            baseStyle.borderBottomLeftRadius = 0;
+          }
+        }
+      }
+      else {
+        // 正常的拖拽移动（关闭方向）
+        switch (direction) {
+          case "bottom": baseStyle.transform = `translateY(${Math.max(0, offset)}px)`;
+            break;
+          case "top": baseStyle.transform = `translateY(${Math.min(0, offset)}px)`;
+            break;
+          case "left": baseStyle.transform = `translateX(${Math.min(0, offset)}px)`;
+            break;
+          case "right": baseStyle.transform = `translateX(${Math.max(0, offset)}px)`;
+            break;
+        }
+      }
+    }
+    else {
+      // 不支持放大，原有逻辑
+      switch (direction) {
+        case "bottom": baseStyle.transform = `translateY(${Math.max(0, offset)}px)`;
+          break;
+        case "top": baseStyle.transform = `translateY(${Math.min(0, offset)}px)`;
+          break;
+        case "left": baseStyle.transform = `translateX(${Math.min(0, offset)}px)`;
+          break;
+        case "right": baseStyle.transform = `translateX(${Math.max(0, offset)}px)`;
+          break;
+      }
     }
   }
 
@@ -189,9 +357,39 @@ const overlayStyle = computed(() => {
 
   // 拖拽时动态调整相关变量
   if (isDragging.value) {
-    // 采用更缓的下降速率（平方根方式，拖拽距离越大，透明度下降越慢）
-    const ratio = Math.min(1, Math.abs(dragOffset.value) / closeThreshold);
-    style["--modal-opacity"] = Math.max(0, modalOpacity * (1 - Math.sqrt(ratio)));
+    const offset = dragOffset.value;
+    let isClosing = false;
+
+    if (expandable) {
+      // 只有在 Normal 状态下，向关闭方向拖拽才计算透明度
+      if (!isExpanded.value) {
+        switch (direction) {
+          case "bottom": if (offset > 0)
+            isClosing = true;
+            break;
+          case "top": if (offset < 0)
+            isClosing = true;
+            break;
+          case "left": if (offset < 0)
+            isClosing = true;
+            break;
+          case "right": if (offset > 0)
+            isClosing = true;
+            break;
+        }
+      }
+    }
+    else {
+      isClosing = true;
+    }
+
+    if (isClosing) {
+      // 采用更缓的下降速率（平方根方式，拖拽距离越大，透明度下降越慢）
+      // 如果 closeThreshold 为 0，给予一个默认值防止瞬间消失，例如 150
+      const threshold = closeThreshold > 0 ? closeThreshold : 150;
+      const ratio = Math.min(1, Math.abs(offset) / threshold);
+      style["--modal-opacity"] = Math.max(0, modalOpacity * (1 - Math.sqrt(ratio)));
+    }
   }
   return style;
 });
@@ -276,6 +474,9 @@ watch(modelValue, (newVal) => {
   if (newVal) {
     shouldRender.value = true;
   }
+  else {
+    isExpanded.value = false;
+  }
 });
 
 // ==================== 拖拽处理 ====================
@@ -284,6 +485,17 @@ function handleDragStart(e: MouseEvent | TouchEvent) {
     return;
 
   isDragging.value = true;
+  if (drawerRef.value) {
+    // 记录开始时的尺寸
+    startSize.value = isVertical.value
+      ? drawerRef.value.offsetHeight
+      : drawerRef.value.offsetWidth;
+
+    // 如果不是展开状态，记录 Normal 尺寸用于恢复动画
+    if (!isExpanded.value) {
+      normalSize.value = startSize.value;
+    }
+  }
   const pos = "touches" in e ? e.touches[0] : e;
 
   if (!pos)
@@ -323,23 +535,48 @@ function handleDragMove(e: MouseEvent | TouchEvent) {
   // 计算偏移
   let offset = currentPos - dragStartPos.value;
 
-  // 限制拖拽方向(只能向关闭方向拖)
-  switch (direction) {
-    case "bottom":
-      offset = Math.max(0, offset);
-      break;
-    case "top":
-      offset = Math.min(0, offset);
-      break;
-    case "left":
-      offset = Math.min(0, offset);
-      break;
-    case "right":
-      offset = Math.max(0, offset);
-      break;
+  // 限制拖拽方向
+  // 如果支持扩展，则不做方向限制（在 drawStyle 中处理逻辑）
+  // 如果不支持扩展，则限制只能向关闭方向拖拽
+  if (!expandable) {
+    switch (direction) {
+      case "bottom":
+        offset = Math.max(0, offset);
+        break;
+      case "top":
+        offset = Math.min(0, offset);
+        break;
+      case "left":
+        offset = Math.min(0, offset);
+        break;
+      case "right":
+        offset = Math.max(0, offset);
+        break;
+    }
+  }
+  else if (isExpanded.value) {
+    // 展开状态下，增加阻尼效果防止过度拖拽（如果是继续往展开方向拖）
+    let isOverExpanding = false;
+    switch (direction) {
+      case "bottom": if (offset < 0)
+        isOverExpanding = true;
+        break;
+      case "top": if (offset > 0)
+        isOverExpanding = true;
+        break;
+      case "left": if (offset > 0)
+        isOverExpanding = true;
+        break;
+      case "right": if (offset < 0)
+        isOverExpanding = true;
+        break;
+    }
+    if (isOverExpanding) {
+      offset = offset * 0.2;
+    }
   }
 
-  // 添加阻尼效果
+  // 添加全局阻尼效果
   const damping = 0.7;
   dragOffset.value = offset * damping;
 
@@ -367,19 +604,109 @@ function handleDragEnd() {
   document.removeEventListener("touchmove", handleDragMove);
   document.removeEventListener("touchend", handleDragEnd);
 
-  // 判断是否关闭
-  const shouldClose = Math.abs(dragOffset.value) > closeThreshold
-    || Math.abs(velocity.value) > 0.5;
+  const v = velocity.value;
+  const offset = dragOffset.value;
 
-  if (shouldClose) {
-    modelValue.value = false;
+  // 判断是否应该关闭
+  const shouldClose = Math.abs(offset) > closeThreshold || Math.abs(v) > 0.5;
+
+  if (expandable) {
+    let isClosingDir = false;
+    let isExpandingDir = false;
+
+    // 判断拖拽方向意图
+    switch (direction) {
+      case "bottom":
+        if (offset > 0)
+          isClosingDir = true;
+        else if (offset < 0)
+          isExpandingDir = true;
+        break;
+      case "top":
+        if (offset < 0)
+          isClosingDir = true;
+        else if (offset > 0)
+          isExpandingDir = true;
+        break;
+      case "left":
+        if (offset < 0)
+          isClosingDir = true;
+        else if (offset > 0)
+          isExpandingDir = true;
+        break;
+      case "right":
+        if (offset > 0)
+          isClosingDir = true;
+        else if (offset < 0)
+          isExpandingDir = true;
+        break;
+    }
+
+    if (isExpanded.value) {
+      // 展开状态下
+      if (isClosingDir) {
+        // 向关闭方向拖拽 -> 恢复 Normal 状态
+        // 阈值判断：移动超过阈值，或者速度够快
+        if (Math.abs(offset) > expandThreshold || Math.abs(v) > 0.5) {
+          isExpanded.value = false;
+        }
+      }
+    }
+    else {
+      // Normal 状态下
+      if (isExpandingDir) {
+        // 向展开方向拖拽 -> 切换到 Expanded
+        if (Math.abs(offset) > expandThreshold || Math.abs(v) > 0.5) {
+          isExpanded.value = true;
+        }
+      }
+      else if (shouldClose && isClosingDir) {
+        // 向关闭方向拖拽 -> 关闭抽屉
+        modelValue.value = false;
+      }
+    }
+  }
+  else {
+    // 原有逻辑
+    if (shouldClose) {
+      modelValue.value = false;
+    }
   }
 
   // 重置状态
   dragOffset.value = 0;
   velocity.value = 0;
 
+  // 开启恢复动画状态
+  isRestoring.value = true;
+  setTimeout(() => {
+    isRestoring.value = false;
+  }, duration);
+
   emit("dragEnd");
+}
+
+function handleToggleExpand() {
+  if (!expandable)
+    return;
+
+  // 记录尺寸以便动画
+  if (drawerRef.value) {
+    if (!isExpanded.value) {
+      // 当前是 Normal，即将变为 Expanded，记录 Normal 尺寸
+      normalSize.value = isVertical.value
+        ? drawerRef.value.offsetHeight
+        : drawerRef.value.offsetWidth;
+    }
+  }
+
+  isExpanded.value = !isExpanded.value;
+
+  // 开启恢复动画状态
+  isRestoring.value = true;
+  setTimeout(() => {
+    isRestoring.value = false;
+  }, duration);
 }
 
 // ==================== 事件处理 ====================
@@ -506,6 +833,7 @@ defineExpose({
             }"
             @mousedown="handleDragStart"
             @touchstart="handleDragStart"
+            @dblclick="handleToggleExpand"
           >
             <div
               class="drawer-handle-bar rounded-full bg-color-inverse transition-colors"
