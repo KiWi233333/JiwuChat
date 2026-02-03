@@ -220,13 +220,19 @@ onUnmounted(() => {
         class="h-full w-full transition-360 sm:(max-w-14rem min-w-fit border-default-2-r shadow-lg)"
         :class="[
           menuClass,
-          activeItem?.value && setting.isMobileSize ? '-translate-x-1/2 scale-95 css-will-change' : '',
+          activeItem?.value && setting.isMobileSize ? '-translate-x-1/2 scale-98 css-will-change' : '',
         ]"
       >
-        <h3 class="flex items-center px-5 pt-5 text-base font-500 sm:(px-5 pt-10)">
-          <i i-solar:settings-bold-duotone mr-2 inline-block p-2.5 text-secondary hover:animate-spin />
-          设置
-        </h3>
+        <CommonPageHeader
+          title="设置"
+          icon="i-solar:settings-bold-duotone"
+          :show-back-button="true"
+          :back-target="{
+            path: '/user',
+            replace: true,
+          }"
+          class="px-5 pt-5 sm:(px-5 pt-10)"
+        />
         <el-segmented
           v-model="activeMenu"
           :options="menuOptions"
@@ -254,13 +260,16 @@ onUnmounted(() => {
         wrap-class="h-full w-full pb-4 sm:pb-20 flex flex-1 flex-col px-4"
         :class="{
           'settinlink-animated': showAnima,
-          'translate-x-full css-will-change': !activeMenu,
+          'translate-x-full': !activeMenu,
         }"
       >
-        <div v-if="activeItem" class="flex cursor-pointer items-center border-default-2-b pb-3 font-500 sm:p-4" @click="setting.isMobileSize && (activeMenu = '')">
-          <i i-solar:alt-arrow-left-line-duotone mr-1 p-2.5 sm:hidden />
-          {{ activeItem?.label }}
-        </div>
+        <CommonPageHeader
+          v-if="activeItem"
+          :title="activeItem?.label"
+          :show-back-button="true"
+          class="border-default-2-b pb-3 font-500 sm:p-4"
+          @click="setting.isMobileSize && (activeMenu = '')"
+        />
         <!-- 内容 -->
         <NuxtPage class="w-full" />
       </el-scrollbar>

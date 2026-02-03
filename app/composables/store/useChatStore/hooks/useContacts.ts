@@ -303,6 +303,7 @@ export function createContactsModule(ctx: ContactsContext) {
         contact = (res.data || contactMap.value[id as number]) as ChatContactDetailVO;
       }
     }
+    await nextTick();
     if (contact) {
       await setContact(contact);
     }

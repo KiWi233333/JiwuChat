@@ -53,8 +53,22 @@ defineOptions({
   inheritAttrs: false,
 });
 
-const props = defineProps<PopupProps>();
-
+const props = withDefaults(defineProps<PopupProps>(), {
+  overlayerAttrs: () => ({}),
+  closeOnClickModal: true,
+  mode: "auto",
+  escClose: true,
+  animateFromTrigger: true,
+  enterEasing: "cubic-bezier(0.61, 0.225, 0.195, 1)",
+  leaveEasing: "cubic-bezier(0.4, 0, 0.2, 1)",
+  duration: 300,
+  destroyOnClose: false,
+  center: false,
+  zIndex: 1999,
+  disableClass: "disabled-anima",
+  modelClass: "",
+  minScale: 0.80,
+});
 const emit = defineEmits<{
   (e: "confirm"): void
   (e: "cancel"): void

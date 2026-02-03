@@ -116,12 +116,12 @@ useHead({
     <UserInfoBgToggle class="z-0 w-full rounded-xl" :is-edit="isSelf" />
 
     <!-- 内容区域 (相对定位以在背景图上方滚动) -->
-    <div class="relative z-1 px-2 -mt-12 sm:px-4">
+    <div class="relative z-1 max-w-42rem px-4 -mt-12 md:(w-3/4 px-12) sm:(px-4)">
       <!-- 用户主面板 -->
       <UserInfoPanel
         :data="user"
         :is-edit="isSelf"
-        class="mx-auto max-w-42rem"
+        class="mx-auto"
       />
 
       <!-- 移动端额外设置 -->

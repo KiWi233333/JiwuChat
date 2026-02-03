@@ -195,7 +195,7 @@ function importThemeConfig(file: File) {
   reader.readAsText(file);
 }
 const setting = useSettingStore();
-const btnSize = computed(() => setting.isMobileSize ? "large" : "small");
+const btnSize = computed(() => setting.isMobileSize ? "default" : "small");
 </script>
 
 <template>
@@ -293,7 +293,7 @@ const btnSize = computed(() => setting.isMobileSize ? "large" : "small");
     <div class="actions-footer p-1">
       <div class="left-actions">
         <CommonElButton
-          icon-class="i-solar:import-bold-duotone mr-1"
+          icon-class="i-solar:import-bold-duotone"
           text
           :size="btnSize"
           @click="openFileDialog()"
@@ -301,7 +301,7 @@ const btnSize = computed(() => setting.isMobileSize ? "large" : "small");
           导入
         </CommonElButton>
         <CommonElButton
-          icon-class="i-solar:export-bold-duotone mr-1"
+          icon-class="i-solar:export-bold-duotone"
           text
           :size="btnSize"
           @click="exportThemeConfig()"
@@ -318,7 +318,7 @@ const btnSize = computed(() => setting.isMobileSize ? "large" : "small");
         </CommonElButton>
         <CommonElButton
           type="primary"
-          icon-class="i-solar:paint-roller-bold-duotone mr-1"
+          icon-class="i-solar:paint-roller-bold-duotone"
           :size="btnSize"
           :disabled="!hasUnsavedChanges"
           @click="applyTheme"
@@ -410,7 +410,7 @@ const btnSize = computed(() => setting.isMobileSize ? "large" : "small");
 
 .left-actions,
 .right-actions {
-  --at-apply: "flex items-center gap-2";
+  --at-apply: "flex items-center";
 }
 
 :deep(.el-scrollbar__bar) {

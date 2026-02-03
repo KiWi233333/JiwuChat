@@ -1,4 +1,5 @@
 import type { Ref, WatchStopHandle } from "vue";
+import { useDebounceFn } from "@vueuse/core";
 import { nextTick, onBeforeUnmount, ref, toValue, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -49,8 +50,8 @@ export function useHistoryState<T = boolean>(
   const {
     enabled = true,
     stateKey = `modal_${Math.random().toString(36).substring(2, 15)}`,
-    activeValue = true as unknown as T,
-    inactiveValue = false as unknown as T,
+    activeValue = (options.activeValue !== undefined ? options.activeValue : true) as T,
+    inactiveValue = (options.inactiveValue !== undefined ? options.inactiveValue : false) as T,
     useBackNavigation = true,
   } = options;
 
@@ -116,25 +117,35 @@ export function useHistoryState<T = boolean>(
       return;
 
     isSyncing.value = true;
-    if (useBackNavigation) {
-      router.back();
-      // 监听路由变化来确认 back 完成,带超时保护
-      let unwatch: WatchStopHandle;
-      const timeout = setTimeout(() => {
+
+    // 检查是否使用 back 导航且历史栈不为空
+    if (useBackNavigation && window.history.length > 1) {
+      // 使用 back() 返回上一页
+      let unwatch: WatchStopHandle | undefined;
+      let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+      const cleanup = () => {
+        if (timeoutId)
+          clearTimeout(timeoutId);
+        if (unwatch)
+          unwatch();
         isSyncing.value = false;
-        unwatch?.();
-      }, 300);
+      };
+
+      timeoutId = setTimeout(cleanup, 300);
 
       unwatch = watch(
         () => route.query,
         () => {
-          clearTimeout(timeout);
-          isSyncing.value = false;
+          cleanup();
         },
         { once: true },
       );
+
+      router.back();
     }
     else {
+      // 历史栈为空或配置为 replace，使用 replace 移除参数
       const query = { ...route.query };
       delete query[stateKey];
       await router.replace({
@@ -176,6 +187,14 @@ export function useHistoryState<T = boolean>(
    * 设置监听器
    */
   const setupWatchers = () => {
+    // 防抖处理路由操作，避免快速切换状态时的竞态条件
+    const debouncedRouteOperation = useDebounceFn(async (isActive: boolean) => {
+      if (isActive)
+        await addQueryKey();
+      else
+        await removeQueryKey();
+    }, 50);
+
     // 1. 监听 State 变化 -> 更新路由
     stopStateWatcher = watch(
       state,
@@ -183,10 +202,8 @@ export function useHistoryState<T = boolean>(
         if (!toValue(enabled) || isSyncing.value || route?.path !== initialPath)
           return;
 
-        if (val === activeValue)
-          await addQueryKey();
-        else if (val === inactiveValue)
-          await removeQueryKey();
+        if (val === activeValue || val === inactiveValue)
+          await debouncedRouteOperation(val === activeValue);
       },
       { flush: "post" },
     );
@@ -214,6 +231,9 @@ export function useHistoryState<T = boolean>(
   const initializeSync = async () => {
     if (initialized.value || route?.path !== initialPath)
       return;
+
+    // 等待路由状态稳定
+    await nextTick();
 
     initialized.value = true;
 

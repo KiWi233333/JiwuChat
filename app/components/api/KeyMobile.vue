@@ -403,16 +403,12 @@ onActivated(() => {
 <template>
   <div class="min-w-0 w-full flex flex-1 flex-col bg-color-3 px-4">
     <!-- 页面头部 -->
-    <div class="mb-4 mt-6 flex select-none items-center justify-between">
-      <div>
-        <h2 class="text-lg text-color font-500">
-          API Key
-        </h2>
-        <p class="text-color-3 mt-1 text-xs">
-          管理你的开放接口密钥
-        </p>
-      </div>
-      <div class="flex items-center gap-2">
+    <CommonPageHeader
+      title="API Key"
+      description="管理你的开放接口密钥"
+      class="mb-4 mt-6"
+    >
+      <template #actions>
         <!-- GitHub图标 -->
         <el-tooltip content="安装 Cherry Studio MCP 应用" placement="top">
           <a data-fade class="flex-row-c-c" :href="cherryStudioMCPDeepLink" rel="noreferrer" @click.stop="handleOpen(cherryStudioMCPDeepLink, $event)">
@@ -424,8 +420,8 @@ onActivated(() => {
         </el-tooltip>
         <!-- 添加按钮 -->
         <i class="i-solar:add-circle-bold block h-7 w-7 cursor-pointer hover:op-80" @click="handleAddKey" />
-      </div>
-    </div>
+      </template>
+    </CommonPageHeader>
 
     <!-- 标签页 -->
     <div class="mb-4 flex-row-c-c gap-8">
@@ -569,7 +565,7 @@ onActivated(() => {
       :overlayer-attrs="{
         class: 'transition-all',
       }"
-      content-class="rounded-3 p-4 shadow-lg w-full max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-full sm:max-w-400px border-default-2 dialog-bg-color"
       @close="handleDialogClose"
     >
       <template #title>
@@ -647,7 +643,7 @@ onActivated(() => {
     <CommonPopup
       v-model="mcpAppDialogVisible"
       title="MCP应用"
-      content-class="rounded-3 p-4 shadow-lg w-full max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-full sm:max-w-400px border-default-2 dialog-bg-color"
       width="fit-content"
     >
       <div class="w-full">
@@ -670,7 +666,7 @@ onActivated(() => {
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       width="fit-content"
-      content-class="rounded-3 p-4 shadow-lg w-full max-w-400px border-default-2 dialog-bg-color"
+      content-class="rounded-3 p-4 shadow-lg w-full sm:max-w-400px border-default-2 dialog-bg-color"
     >
       <div class="w-full space-y-4">
         <!-- 警告信息 -->

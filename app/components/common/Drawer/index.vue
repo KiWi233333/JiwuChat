@@ -483,13 +483,14 @@ defineExpose({
         <div
           v-if="shouldRender"
           ref="drawerRef"
-          class="drawer-content fixed flex flex-col bg-color-2"
+          class="drawer-content"
           :class="[
             `drawer-${direction}`,
             customClass,
             { 'drawer-dragging': isDragging },
           ]"
           :style="drawerStyle"
+          @click.stop
         >
           <!-- 拖拽手柄 -->
           <div
@@ -518,7 +519,7 @@ defineExpose({
           <!-- 头部 -->
           <div
             v-if="title || $slots.header"
-            class="drawer-header mx-3 border-default-3-b py-3 sm:mx-4 sm:py-4"
+            class="drawer-header"
           >
             <slot name="header">
               <div class="text-lg text-color font-medium">
@@ -528,14 +529,14 @@ defineExpose({
           </div>
 
           <!-- 内容区 -->
-          <el-scrollbar class="drawer-body flex-1 p-3 sm:p-4">
+          <el-scrollbar class="drawer-body flex-1">
             <slot />
           </el-scrollbar>
 
           <!-- 底部 -->
           <div
             v-if="$slots.footer"
-            class="drawer-footer border-default-t p-3 sm:p-4"
+            class="drawer-footer border-default-t"
           >
             <slot name="footer" />
           </div>
@@ -551,7 +552,7 @@ defineExpose({
 }
 
 .drawer-content {
-  --at-apply: "shadow-xl";
+  --at-apply: "shadow-xl fixed flex flex-col bg-color-2 pt-0";
   transition: transform var(--drawer-duration) cubic-bezier(0.32, 0.72, 0, 1);
 
   &.drawer-dragging {
@@ -570,9 +571,11 @@ defineExpose({
   left: 0;
   right: 0;
   max-height: 80vh;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
-  --at-apply: "border-default-3-t !border-op-90";
+  --at-apply: "border-default-3-t";
 }
 
 .drawer-top {
@@ -580,9 +583,11 @@ defineExpose({
   left: 0;
   right: 0;
   max-height: 80vh;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
-  --at-apply: "border-default-3-b !border-op-90";
+  --at-apply: "border-default-3-b";
 }
 
 .drawer-left {
@@ -591,9 +596,11 @@ defineExpose({
   bottom: 0;
   width: 75%;
   max-width: 24rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
   border-top-right-radius: 1rem;
   border-bottom-right-radius: 1rem;
-  --at-apply: "border-default-3-r !border-op-90";
+  --at-apply: "border-default-3-r";
 }
 
 .drawer-right {
@@ -602,9 +609,11 @@ defineExpose({
   bottom: 0;
   width: 75%;
   max-width: 24rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
-  --at-apply: "border-default-3-l !border-op-90";
+  --at-apply: "border-default-3-l";
 }
 
 // 手柄样式
@@ -616,12 +625,11 @@ defineExpose({
   --at-apply: "transition-all";
 
   &.drawer-handle-vertical {
-    padding-top: 0.75rem;
+    padding: 0.75rem 0;
   }
 
   &.drawer-handle-horizontal {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding: 0 0.5rem;
     writing-mode: vertical-lr;
   }
 

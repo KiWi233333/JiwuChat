@@ -144,7 +144,7 @@ function createItem() {
     content-class="w-full rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
   >
     <template #title>
-      <h3 :data-tauri-drag-region="setting.isDesktop" mb-4 flex-row-c-c text-center font-500>
+      <h3 :data-tauri-drag-region="setting.isDesktop" mb-1 flex-row-c-c text-center font-500>
         <i i-ri-apps-2-ai-line mr-2 p-2.5 text-small />
         扩展菜单
       </h3>
@@ -153,8 +153,8 @@ function createItem() {
     <CommonListTransitionGroup
       tag="div"
       name="pop-list"
-      class="auto-fill-grid mb-4 mt-2 min-h-14em select-none items-start gap-3"
-      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));"
+      class="auto-fill-grid mb-4 mt-1 min-h-14em select-none items-start gap-3 sm:gap-4"
+      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(6em, 1fr)); justify-content: space-between;"
     >
       <!-- 固定菜单标题 -->
       <small v-if="extendMenuSaveList.length" key="fix-title" class="col-span-full block text-mini">
@@ -228,7 +228,7 @@ function createItem() {
       </template>
       <div
         key="add-item"
-        class="group relative h-6em w-5.5em flex-row-c-c flex-col cursor-pointer border-default-hover bg-color text-center rounded hover:shadow"
+        class="group relative aspect-square w-full flex-row-c-c flex-col cursor-pointer border-default-hover bg-color text-center rounded hover:shadow"
         title="添加私人扩展"
         @click.stop="createItem()"
       >
@@ -288,7 +288,7 @@ function createItem() {
   }
 }
 .item {
-  --at-apply: "relative h-6em w-5.5em flex-row-c-c flex-col cursor-pointer card-rounded-df text-center transition-shadow bg-color hover:shadow-sm";
+  --at-apply: "relative aspect-square w-full flex-row-c-c flex-col cursor-pointer card-rounded-df text-center transition-shadow bg-color hover:shadow-sm";
 }
 .add {
   --at-apply: "absolute right-1 top-1 hidden op-0 sm:block btn-primary-bg group-hover:(op-100)";

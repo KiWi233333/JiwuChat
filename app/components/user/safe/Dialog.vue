@@ -44,7 +44,7 @@ function closePhone() {
     :show-close="true"
     :close-on-click-modal="true"
     :destroy-on-close="true"
-    content-class="p-4 sm:(!p-0 !border-0 !bg-transparent !shadow-none)"
+    content-class="block w-full overflow-hidden p-4 sm:rounded-2 sm:(p-6 pt-0) sm:backdrop-blur-5px sm:w-340px sm:border-default-2 sm:card-default"
     @update:model-value="(val) => !val && closePwd()"
     @cancel="closePwd"
   >
@@ -57,7 +57,7 @@ function closePhone() {
     :show-close="true"
     :close-on-click-modal="true"
     :destroy-on-close="true"
-    content-class="p-4 sm:(!p-0 !border-0 !bg-transparent !shadow-none)"
+    content-class="block w-full overflow-hidden p-4 sm:rounded-2 sm:(p-6 pt-0) sm:backdrop-blur-5px sm:w-340px sm:border-default-2 sm:card-default"
     @update:model-value="(val) => !val && closeEmail()"
     @cancel="closeEmail"
   >
@@ -69,7 +69,7 @@ function closePhone() {
     :model-value="modelValue.showUpdatePhone"
     :show-close="true"
     :close-on-click-modal="true"
-    content-class="p-4 sm:(!p-0 !border-0 !bg-transparent !shadow-none)"
+    content-class="block w-full overflow-hidden p-4 sm:rounded-2 sm:(p-6 pt-0) sm:backdrop-blur-5px sm:w-340px sm:border-default-2 sm:card-default"
     :destroy-on-close="true"
     @update:model-value="(val) => !val && closePhone()"
     @cancel="closePhone"
@@ -78,4 +78,5 @@ function closePhone() {
   </CommonPopup>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+</style>
