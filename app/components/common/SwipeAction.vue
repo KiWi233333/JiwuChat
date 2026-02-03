@@ -319,7 +319,7 @@ defineExpose({ close, open });
         @click="handleActionClick(btn, $event)"
       >
         <div v-if="btn.icon" :class="btn.icon" class="mb-1 text-xl" />
-        <span>{{ btn.text }}</span>
+        <span class="text-xs">{{ btn.text }}</span>
       </div>
     </div>
 
