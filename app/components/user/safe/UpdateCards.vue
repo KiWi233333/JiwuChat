@@ -185,8 +185,8 @@ async function handleBind(platform: OAuthPlatformCode) {
     }
 
     if (setting.isDesktop || setting.isMobile) {
-      const { open } = await import("@tauri-apps/plugin-shell");
-      await open(res.data);
+      const { openUrl } = await import("@tauri-apps/plugin-opener");
+      await openUrl(res.data);
     }
     else {
       window.location.href = res.data;

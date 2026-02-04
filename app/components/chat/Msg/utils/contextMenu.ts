@@ -124,7 +124,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
             return ElMessage.error("选择内容为空，无法搜索！");
           }
           const bingUrl = `https://bing.com/search?q=${encodeURIComponent(txt as string)}`;
-          window.open(bingUrl, "_blank");
+          useOpenUrl(bingUrl);
         },
       },
       ...defaultContextMenu,
@@ -435,7 +435,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
             return ElMessage.error("选择内容为空，无法搜索！");
           }
           const bingUrl = `https://bing.com/search?q=${encodeURIComponent(txt as string)}`;
-          window.open(bingUrl, "_blank");
+          useOpenUrl(bingUrl);
         },
       },
       ...defaultContextMenu,
