@@ -18,7 +18,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2.9.2", features = ["macos-private-api",
+tauri = { version = "2", features = ["macos-private-api",
     "tray-icon",
     "image-ico",
     "rustls-tls"
@@ -45,7 +45,7 @@ portpicker = "0.1"
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
 tauri-plugin-autostart = "2"
 tauri-plugin-single-instance = { version = "2.3.0", features = ["deep-link"] }
-tauri-plugin-updater = "2"
+tauri-plugin-updater = "2.9"
 tauri-plugin-deep-link = "2"
 # tauri-plugin-window-state = "2"
     # permission// "window-state:default",
