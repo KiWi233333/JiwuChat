@@ -339,20 +339,24 @@ export function resolveAiReply(
   text: string,
   aiOptions: AskAiRobotOption[],
   selectedOptions: AskAiRobotOption[] = [],
-  configs: AtConfigs = { regExp: /\/(\S+?)(?=\/|\s|$)/g },
+  configs: AtConfigs = { regExp: /(^|\s)(\/([a-z\u4E00-\u9FA5][\w\u4E00-\u9FA5]*))/gi },
 ): { aiRobitUidList: string[]; aiRobotList: AskAiRobotOption[]; replaceText: string } {
-  const { regExp = /\/(\S+?)(?=\/|\s|$)/g } = configs;
+  const { regExp = /(^|\s)(\/([a-z\u4E00-\u9FA5][\w\u4E00-\u9FA5]*))/gi } = configs;
   if (!regExp || !text)
     throw new Error("regExp is required");
   const aiRobotList: AskAiRobotOption[] = [];
 
-  // 匹配所有以/开头的AI名称
+  // 匹配所有以/开头的AI名称（避免匹配URL中的/）
+  // 正则说明：
+  // (^|\s) - 必须在行首或空格后（避免匹配 http:// 中的 /）
+  // \/ - 匹配 / 字符
+  // ([a-zA-Z\u4E00-\u9FA5][\w\u4E00-\u9FA5]*) - AI名称必须以字母或中文开头（避免匹配 // 这种情况）
   const matches = Array.from(text.matchAll(regExp));
 
   // 遍历所有匹配项
   for (const match of matches) {
-    if (match && match[1]) {
-      const aiRobot = aiOptions.find(u => u.nickName === match[1]);
+    if (match && match[3]) {
+      const aiRobot = aiOptions.find(u => u.nickName === match[3]);
       if (aiRobot && !aiRobotList.some(a => a.userId === aiRobot.userId)) {
         aiRobotList.push(aiRobot);
       }
@@ -366,18 +370,22 @@ export function resolveAiReply(
     }
   });
 
-  // 替换所有匹配的AI昵称文本
+  // 只替换真正匹配到AI机器人的昵称文本
   let replaceText = text;
   matches.forEach((match) => {
-    if (match && match[0]) {
-      replaceText = replaceText.replace(match[0], "").trim();
+    if (match && match[2] && match[3]) {
+      const aiRobot = aiOptions.find(u => u.nickName === match[3]);
+      if (aiRobot) {
+        // 只替换 /机器人名称 部分，保留前后空格
+        replaceText = replaceText.replace(match[2], "");
+      }
     }
   });
 
   return {
     aiRobitUidList: aiRobotList.map(p => p.userId),
     aiRobotList: JSON.parse(JSON.stringify(aiRobotList)),
-    replaceText,
+    replaceText: replaceText.trim(),
   };
 }
 
