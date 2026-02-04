@@ -134,6 +134,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
           :key="key"
           ctx-name="urllink"
           :data="urlInfo"
+          :data-url="urlInfo.url"
           class="url-info"
         />
         <div v-if="isMultipleUrl" key="up" class="more flex-row-c-c btn-primary select-none text-center text-mini" @click="showMentionUrls = !showMentionUrls">

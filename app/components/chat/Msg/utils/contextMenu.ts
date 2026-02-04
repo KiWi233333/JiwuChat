@@ -5,6 +5,21 @@ import { deleteMsg, refundMsg } from "./messageActions";
 // @unocss-include
 
 /**
+ * 获取 HTMLElement 的自定义属性（优先取 data-xxx，没有再取 xxx 本身）
+ * @param {HTMLElement} el 元素
+ * @param {string} name 属性名（不带 data- 前缀）
+ * @returns {string} 属性值或空字符串
+ */
+function getElementAttr(el: HTMLElement | null | undefined, name: string): string {
+  if (!el)
+    return "";
+  const dataAttr = el.getAttribute?.(`data-${name}`); // 优先 data-xxx
+  if (dataAttr !== null && dataAttr !== undefined)
+    return dataAttr;
+  return el.getAttribute?.(name) ?? "";
+}
+
+/**
  * 处理消息上下文菜单事件
  * @param {MouseEvent} e - 鼠标事件
  * @param {ChatMessageVO<any>} data - 聊天消息数据
@@ -19,7 +34,8 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
   e.preventDefault();
 
   // 从目标元素获取上下文名称
-  let ctxName = String((e?.target as HTMLElement)?.getAttribute?.("ctx-name") || "");
+  let ctxName = getElementAttr(e?.target as HTMLElement, "ctx-name");
+  ctxName = String(ctxName || "");
   const isAiReplyMsg = data.message.type === MessageType.AI_CHAT_REPLY;
 
   // 如果没有上下文名称且不是AI回复，则返回
@@ -137,7 +153,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         customClass: "group",
         icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
         onClick: () => {
-          const url = String((e?.target as HTMLElement)?.getAttribute?.("data-url") || "");
+          const url = getElementAttr(e?.target as HTMLElement, "url");
           navigator.clipboard.writeText((url || txt) as string);
           ElMessage.success("复制成功！");
         },
@@ -148,7 +164,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         customClass: "group",
         icon: "i-solar:link-line-duotone group-hover:(scale-110 i-solar:link-bold-duotone) group-btn-info",
         onClick: () => {
-          const url = String((e?.target as HTMLElement)?.getAttribute?.("data-url") || "");
+          const url = getElementAttr(e?.target as HTMLElement, "url");
           if (!url)
             return;
           useOpenUrl(url);
