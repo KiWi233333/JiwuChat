@@ -46,7 +46,7 @@ async function addMsg() {
     v-model="isShow"
     :duration="300"
     destroy-on-close
-    content-class="rounded-2 p-4 sm:w-fit border-default-2 dialog-bg-color"
+    content-class="rounded-2 p-4 sm:w-22rem border-default-2 !bg-color sm:!dialog-bg-color"
   >
     <template #title>
       <div class="flex-row-c-c">
