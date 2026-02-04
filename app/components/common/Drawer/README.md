@@ -137,7 +137,7 @@ const rightDrawer = ref(false);
       className: 'my-custom-lock',
       scale: 0.92,
       translateY: 3,
-      borderRadius: 1.5
+      borderRadius: 1.5,
     }"
   >
     <div>自定义背景联动效果</div>
@@ -149,7 +149,7 @@ const rightDrawer = ref(false);
     :body-lock="{
       target: '#app',
       scale: 0.95,
-      translateY: 2
+      translateY: 2,
     }"
   >
     <div>只对 #app 容器应用效果</div>
@@ -159,13 +159,13 @@ const rightDrawer = ref(false);
 
 ### BodyLockConfig 配置项
 
-| 参数 | 说明 | 类型 | 默认值 |
-|------|------|------|--------|
-| target | 目标元素(选择器或元素) | `string \| HTMLElement` | `'.global-drawer-body-locked'` (来自 `DRAWER.BODY_LOCK_CLASS`) |
-| className | 添加的类名 | `string` | `'drawer-body-locked'` |
-| scale | 缩放比例 | `number` | `0.95` |
-| translateY | Y轴偏移距离(rem) | `number` | `2` |
-| borderRadius | 圆角大小(rem) | `number` | `1` |
+| 参数         | 说明                   | 类型                    | 默认值                                                         |
+| ------------ | ---------------------- | ----------------------- | -------------------------------------------------------------- |
+| target       | 目标元素(选择器或元素) | `string \| HTMLElement` | `'.global-drawer-body-locked'` (来自 `DRAWER.BODY_LOCK_CLASS`) |
+| className    | 添加的类名             | `string`                | `'drawer-body-locked'`                                         |
+| scale        | 缩放比例               | `number`                | `0.95`                                                         |
+| translateY   | Y轴偏移距离(rem)       | `number`                | `2`                                                            |
+| borderRadius | 圆角大小(rem)          | `number`                | `1`                                                            |
 
 **注意**: 默认的 `target` 使用了全局常量 `DRAWER.BODY_LOCK_CLASS`(定义在 `@/constants/ui.ts`)，它指向应用根元素的类名 `.global-drawer-body-locked`。这样可以确保背景联动效果应用到整个应用容器上。
 
@@ -178,7 +178,9 @@ const rightDrawer = ref(false);
     <template #header>
       <div class="flex items-center justify-between">
         <h3>自定义头部</h3>
-        <button @click="visible = false">关闭</button>
+        <button @click="visible = false">
+          关闭
+        </button>
       </div>
     </template>
 
@@ -188,8 +190,12 @@ const rightDrawer = ref(false);
     <!-- 自定义底部 -->
     <template #footer>
       <div class="flex gap-2">
-        <button @click="handleConfirm">确认</button>
-        <button @click="visible = false">取消</button>
+        <button @click="handleConfirm">
+          确认
+        </button>
+        <button @click="visible = false">
+          取消
+        </button>
       </div>
     </template>
   </Drawer>
@@ -247,51 +253,51 @@ function onDragEnd() {
 
 ## Props
 
-| 参数 | 说明 | 类型 | 可选值 | 默认值 |
-|------|------|------|--------|--------|
-| model-value / v-model | 控制抽屉显示/隐藏 | `boolean` | - | `false` |
-| direction | 抽屉方向 | `string` | `top` / `bottom` / `left` / `right` | `bottom` |
-| show-handle | 是否显示拖拽手柄 | `boolean` | - | `true` |
-| drag-to-close | 是否可以通过拖拽关闭 | `boolean` | - | `true` |
-| close-threshold | 拖拽关闭的阈值(px) | `number` | - | `100` |
-| close-on-click-modal | 是否点击遮罩层关闭 | `boolean` | - | `true` |
-| close-on-press-escape | 是否按ESC关闭 | `boolean` | - | `true` |
-| title | 抽屉标题 | `string` | - | - |
-| size | 抽屉大小(宽度或高度) | `string \| number` | - | `auto` |
-| custom-class | 自定义类名 | `string` | - | - |
-| z-index | z-index(未设置时自动使用 Element Plus 管理) | `number` | - | `undefined` |
-| modal-opacity | 遮罩层透明度 | `number` | `0-1` | `0.5` |
-| duration | 动画时长(ms) | `number` | - | `500` |
-| destroy-on-close | 关闭后销毁内容 | `boolean` | - | `false` |
-| teleport-to | 传送目标 | `string \| HTMLElement` | - | `body` |
-| body-lock | 背景联动效果配置 | `boolean \| BodyLockConfig` | - | `true` |
+| 参数                  | 说明                                        | 类型                        | 可选值                              | 默认值      |
+| --------------------- | ------------------------------------------- | --------------------------- | ----------------------------------- | ----------- |
+| model-value / v-model | 控制抽屉显示/隐藏                           | `boolean`                   | -                                   | `false`     |
+| direction             | 抽屉方向                                    | `string`                    | `top` / `bottom` / `left` / `right` | `bottom`    |
+| show-handle           | 是否显示拖拽手柄                            | `boolean`                   | -                                   | `true`      |
+| drag-to-close         | 是否可以通过拖拽关闭                        | `boolean`                   | -                                   | `true`      |
+| close-threshold       | 拖拽关闭的阈值(px)                          | `number`                    | -                                   | `100`       |
+| close-on-click-modal  | 是否点击遮罩层关闭                          | `boolean`                   | -                                   | `true`      |
+| close-on-press-escape | 是否按ESC关闭                               | `boolean`                   | -                                   | `true`      |
+| title                 | 抽屉标题                                    | `string`                    | -                                   | -           |
+| size                  | 抽屉大小(宽度或高度)                        | `string \| number`          | -                                   | `auto`      |
+| custom-class          | 自定义类名                                  | `string`                    | -                                   | -           |
+| z-index               | z-index(未设置时自动使用 Element Plus 管理) | `number`                    | -                                   | `undefined` |
+| modal-opacity         | 遮罩层透明度                                | `number`                    | `0-1`                               | `0.5`       |
+| duration              | 动画时长(ms)                                | `number`                    | -                                   | `500`       |
+| destroy-on-close      | 关闭后销毁内容                              | `boolean`                   | -                                   | `false`     |
+| teleport-to           | 传送目标                                    | `string \| HTMLElement`     | -                                   | `body`      |
+| body-lock             | 背景联动效果配置                            | `boolean \| BodyLockConfig` | -                                   | `true`      |
 
 ## Events
 
-| 事件名 | 说明 | 回调参数 |
-|--------|------|----------|
-| open | 抽屉开始打开时触发 | - |
-| opened | 抽屉打开动画结束后触发 | - |
-| close | 抽屉开始关闭时触发 | - |
-| closed | 抽屉关闭动画结束后触发 | - |
-| drag-start | 开始拖拽时触发 | - |
-| drag-move | 拖拽移动时触发 | `offset: number` |
-| drag-end | 拖拽结束时触发 | - |
+| 事件名     | 说明                   | 回调参数         |
+| ---------- | ---------------------- | ---------------- |
+| open       | 抽屉开始打开时触发     | -                |
+| opened     | 抽屉打开动画结束后触发 | -                |
+| close      | 抽屉开始关闭时触发     | -                |
+| closed     | 抽屉关闭动画结束后触发 | -                |
+| drag-start | 开始拖拽时触发         | -                |
+| drag-move  | 拖拽移动时触发         | `offset: number` |
+| drag-end   | 拖拽结束时触发         | -                |
 
 ## Slots
 
-| 插槽名 | 说明 |
-|--------|------|
-| default | 抽屉内容 |
-| header | 自定义头部内容 |
-| footer | 自定义底部内容 |
+| 插槽名  | 说明           |
+| ------- | -------------- |
+| default | 抽屉内容       |
+| header  | 自定义头部内容 |
+| footer  | 自定义底部内容 |
 
 ## 暴露的方法
 
-| 方法名 | 说明 | 参数 |
-|--------|------|------|
-| open | 打开抽屉 | - |
-| close | 关闭抽屉 | - |
+| 方法名 | 说明     | 参数 |
+| ------ | -------- | ---- |
+| open   | 打开抽屉 | -    |
+| close  | 关闭抽屉 | -    |
 
 ## 样式定制
 
@@ -331,6 +337,7 @@ function onDragEnd() {
 ## 完整示例
 
 参考 `DrawerDemo.vue` 查看完整的交互示例,包括:
+
 - 动态数值调整
 - 简单图表展示
 - 底部操作按钮

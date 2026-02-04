@@ -247,16 +247,16 @@ JiwuChat/
 // composables/api/chat/friend.ts - API 调用示例
 export function getFriendList(token: string) {
   return useHttp.get<Result<FriendVO[]>>(
-    '/chat/friend/list',
+    "/chat/friend/list",
     {},
     {
       headers: { Authorization: token }
     }
-  )
+  );
 }
 
 // 页面/组件中直接使用 (自动导入)
-const { data } = await getFriendList(userToken)
+const { data } = await getFriendList(userToken);
 ```
 
 ### 2. 模块化 Store 设计
@@ -265,16 +265,16 @@ const { data } = await getFriendList(userToken)
 
 ```typescript
 // composables/store/useChatStore/index.ts
-export const useChatStore = defineStore('chat', () => {
-  const ui = createUIModule() // UI 状态
-  const compose = createComposeInputModule() // 输入框状态
-  const contacts = createContactsModule() // 联系人管理
-  const messages = createMessagesModule() // 消息管理
-  const members = createMembersModule() // 群成员管理
-  const rtc = createRtcModule() // WebRTC 通话
+export const useChatStore = defineStore("chat", () => {
+  const ui = createUIModule(); // UI 状态
+  const compose = createComposeInputModule(); // 输入框状态
+  const contacts = createContactsModule(); // 联系人管理
+  const messages = createMessagesModule(); // 消息管理
+  const members = createMembersModule(); // 群成员管理
+  const rtc = createRtcModule(); // WebRTC 通话
 
-  return { ...ui, ...compose, ...contacts, ...messages, ...members, ...rtc }
-})
+  return { ...ui, ...compose, ...contacts, ...messages, ...members, ...rtc };
+});
 ```
 
 ### 3. 平台适配层
@@ -360,7 +360,7 @@ export interface MyComponentProps {
 </script>
 
 <script setup lang="ts">
-const { name = 'default', count = 0 } = defineProps<MyComponentProps>()
+const { name = "default", count = 0 } = defineProps<MyComponentProps>();
 </script>
 ```
 
@@ -371,8 +371,8 @@ const { name = 'default', count = 0 } = defineProps<MyComponentProps>()
 ```vue
 <template>
   <!-- 推荐: 使用 UnoCSS shortcuts -->
-  <div class="card-bg-color rounded p-4">
-    <span class="text-color text-small">内容</span>
+  <div class="card-bg-color p-4 rounded">
+    <span class="text-small text-color">内容</span>
   </div>
 </template>
 ```
