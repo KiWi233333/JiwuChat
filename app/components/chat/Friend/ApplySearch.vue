@@ -270,10 +270,10 @@ onDeactivated(() => {
             ref="virtualListRef"
             :items="searchPageList"
             item-height="4rem"
-            :height="setting.isMobileSize ? 'calc(100vh - 16.5rem)' : 'calc(100vh - 7rem)'"
+            height="calc(100dvh - 10rem)"
             :selected-index="currentFocus"
             class="relative flex-1 pt-2"
-            wrap-class="py-2 flex-1 overflow-hidden"
+            wrap-class="py-2 pb-20 flex-1 overflow-hidden"
             enable-pull-to-refresh
             :overscan="20"
             :pull-trigger-distance="30"
@@ -314,7 +314,7 @@ onDeactivated(() => {
           </CommonListVirtualScrollList>
           <ElEmpty
             v-if="!searchPage.total"
-            class="h-[calc(100vh-16.5rem)] sm:h-[calc(100vh-5rem)]"
+            class="h-100dvh min-h-0 flex flex-1 flex-col items-center justify-center"
             :image-size="80"
             :description="searchPageList.length <= 0 && searchPage.current > 0 ? '没有找到好友' : '好友查找'"
           >
