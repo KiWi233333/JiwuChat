@@ -73,7 +73,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
       <!-- 昵称和插槽区域 -->
       <div class="flex-res min-h-5 items-center">
         <small class="nickname truncate text-mini" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
-        <small v-if="roleClass" v-once class="role h-fit w-fit select-none px-1 py-0.5 text-0.7rem leading-[1] rounded" :class="roleClass">{{ roleName }}</small>
+        <small v-if="roleClass" v-once class="role w-fit select-none rounded-4px px-1 py-0.5 text-0.7rem leading-[1]" :class="roleClass">{{ roleName }}</small>
         <slot name="name-after" />
         <!-- 发送状态 + 上传 -->
         <ChatMsgSendStatus v-if="sendStatus" :oss-file="data?._ossFile" :status="sendStatus" :msg-id="data.message.id" />
