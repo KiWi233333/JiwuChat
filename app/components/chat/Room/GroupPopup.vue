@@ -123,7 +123,10 @@ async function changShieldStatus() {
     class="group scroll-root relative"
     wrap-class="pb-8 sm:pb-4"
   >
-    <div class="w-full flex-1 select-none text-3.5 leading-1.8em">
+    <!-- 移动端：分组列表样式（群信息） -->
+    <div
+      class="group-section group-section-info w-full flex-1 select-none text-3.5 leading-1.8em"
+    >
       <div relative>
         群头像
         <CommonOssFileUpload
@@ -192,148 +195,162 @@ async function changShieldStatus() {
       </div>
     </div>
 
-    <div class="label-item mt-2 select-none border-default-2-t pt-3">
-      <div class="flex items-center">
-        <small>群成员</small>
-        <div
-          class="ml-a card-default p-1.6 hover:bg-color-2" @click="handleAddMember"
-        >
-          <i class="i-solar:add-circle-linear block h-4.5 w-4.5 btn-info" />
-        </div>
-        <div
-          class="card-default p-1.6 hover:bg-color-2" @click="() => {
-            showSearch = !showSearch
-            if (showSearch) {
-              searchInputRef?.focus?.()
-            }
-          }"
-        >
-          <i class="i-solar:magnifer-linear block h-4.5 w-4.5 btn-info" />
-        </div>
-      </div>
-    </div>
-    <!-- 搜索群聊 -->
-    <div
-      class="header mt-3 h-10 transition-height"
-      :class="{
-        '!h-0 overflow-y-hidden': !showSearch,
-      }"
-    >
-      <ElInput
-        ref="searchInputRef"
-        v-model.lazy="searchUserWord"
-        style="height: 1.8rem;font-size: 0.8rem;"
-        name="search-content"
-        type="text"
-        clearable
-        autocomplete="off"
-        :prefix-icon="ElIconSearch"
-        minlength="2"
-        maxlength="30"
-        placeholder="搜索群成员"
-        @blur.stop="() => searchUserWord === '' && (showSearch = false)"
-      />
-    </div>
-
-    <!-- 群成员虚拟列表 -->
-    <CommonListVirtualScrollList
-      :items="memberList"
-      item-height="2.75rem"
-      height="15rem"
-      :overscan="20"
-      :get-item-key="item => `${chat.theRoomId!}_${item.userId}`"
-      class-name="min-h-14rem card-rounded-df scroll-2 relative"
-      active-class="active"
-      enable-pull-to-refresh
-      :pull-trigger-distance="30"
-      :pull-distance="60"
-      pull-refresh-text="下拉刷新"
-      pull-release-text="释放刷新"
-      pull-refreshing-text="正在刷新..."
-      @refresh="reload"
-      @end-reached="handleEndReachedMember"
-    >
-      <template #default="{ item: member }">
-        <div
-          :class="member.activeStatus === ChatOfflineType.ONLINE ? 'live' : 'op-60 filter-grayscale filter-grayscale-100'"
-          class="user-card w-full flex-row-c-c gap-2"
-          @dblclick="onMemberContextMenu($event, member)"
-          @contextmenu="onMemberContextMenu($event, member)"
-        >
-          <div class="relative flex-row-c-c" :title="member.nickName || '未知'">
-            <CommonElImage
-              :default-src="member.avatar"
-              fit="cover"
-              load-class="none"
-              error-class="i-solar-user-line-duotone p-2 op-80"
-              class="h-2rem w-2rem flex-shrink-0 overflow-auto border-default rounded-1/2 object-cover"
-            />
-            <span class="g-avatar" />
+    <!-- 移动端：分组列表样式（群成员） -->
+    <div class="group-section group-section-members sm:border-default-2-t">
+      <div class="label-item select-none">
+        <div class="flex items-center">
+          <small>群成员</small>
+          <div
+            class="group-action-btn ml-a min-h-2.5rem min-w-2.5rem flex items-center justify-center rounded-lg transition-colors active:bg-color-3 hover:bg-color-2 active:opacity-80"
+            @click="handleAddMember"
+          >
+            <i class="i-solar:add-circle-linear block h-4.5 w-4.5 btn-info" />
           </div>
-          <small truncate>{{ member.nickName || "未填写" }}</small>
-          <div class="tags ml-a block pl-1">
-            <el-tag
-              v-if="member.userId === user.userInfo.id"
-              class="mr-1"
-              style="font-size: 0.6em;border-radius: 2rem;"
-              size="small"
-              type="warning"
-            >
-              我
-            </el-tag>
-            <small
-              v-if="member.roleType && member.roleType !== ChatRoomRoleEnum.MEMBER"
-              class="role h-fit w-fit rounded-8 px-3 py-0.5 text-0.8rem font-500 leading-0.7rem"
-              :class="chatRoomRoleClassMap[`${member.roleType}-border`]"
-            >{{ chatRoomRoleTextMap[member.roleType] }}</small>
+          <div
+            class="group-action-btn min-h-2.5rem min-w-2.5rem flex items-center justify-center rounded-lg transition-colors active:bg-color-3 hover:bg-color-2 active:opacity-80"
+            @click="() => {
+              showSearch = !showSearch
+              if (showSearch) {
+                searchInputRef?.focus?.()
+              }
+            }"
+          >
+            <i class="i-solar:magnifer-linear block h-4.5 w-4.5 btn-info" />
           </div>
         </div>
-      </template>
-
-      <template #empty>
-        <div v-show="!isReload || !isLoading" class="flex-row-c-c flex-col py-6 text-mini">
-          <i class="i-solar:users-group-two-rounded-line-duotone mb-2 p-3" />
-          <span>暂无群成员</span>
-        </div>
-      </template>
-
-      <template #end>
-        <!-- loading -->
-        <div v-show="isLoading && !isReload" class="flex-row-c-c py-4 text-mini">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 animate-spin select-none" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.020-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" /><path fill="currentColor" d="M12 4.5a7.5 7.5 0 1 0 0 15a7.5 7.5 0 0 0 0-15M1.5 12C1.5 6.201 6.201 1.5 12 1.5S22.5 6.201 22.5 12S17.799 22.5 12 22.5S1.5 17.799 1.5 12" opacity=".1" /><path fill="currentColor" d="M12 4.5a7.46 7.46 0 0 0-5.187 2.083a1.5 1.5 0 0 1-2.075-2.166A10.46 10.46 0 0 1 12 1.5a1.5 1.5 0 0 1 0 3" /></g></svg>
-          &nbsp;加载中...
-        </div>
-      </template>
-    </CommonListVirtualScrollList>
-
-    <div class="label-item mt-3 select-none border-default-2-t pt-3 text-3.5">
-      会话设置
-      <div mt-2 flex-row-bt-c>
-        <small text-0.8rem text-small>设为置顶</small>
-        <el-switch
-          :model-value="isPin"
-          size="small"
-          :loading="isPinLoading"
-          :before-change="changIsPin"
+      </div>
+      <!-- 搜索群聊 -->
+      <div
+        class="header mt-3 h-10 transition-height"
+        :class="{
+          '!h-0 overflow-y-hidden': !showSearch,
+        }"
+      >
+        <ElInput
+          ref="searchInputRef"
+          v-model.lazy="searchUserWord"
+          style="height: 1.8rem;font-size: 0.8rem;"
+          name="search-content"
+          type="text"
+          clearable
+          autocomplete="off"
+          :prefix-icon="ElIconSearch"
+          minlength="2"
+          maxlength="30"
+          placeholder="搜索群成员"
+          @blur.stop="() => searchUserWord === '' && (showSearch = false)"
         />
       </div>
-      <div mt-2 flex-row-bt-c>
-        <small text-0.8rem text-small>消息免打扰</small>
-        <el-switch
-          :model-value="shieldStatus"
-          :loading="shieldStatusLoading"
-          size="small"
-          :before-change="changShieldStatus"
-        />
+
+      <!-- 群成员虚拟列表 -->
+      <CommonListVirtualScrollList
+        :items="memberList"
+        item-height="2.75rem"
+        height="15rem"
+        :overscan="20"
+        :get-item-key="item => `${chat.theRoomId!}_${item.userId}`"
+        class-name="min-h-14rem card-rounded-df scroll-2 relative"
+        active-class="active"
+        enable-pull-to-refresh
+        :pull-trigger-distance="30"
+        :pull-distance="60"
+        pull-refresh-text="下拉刷新"
+        pull-release-text="释放刷新"
+        pull-refreshing-text="正在刷新..."
+        @refresh="reload"
+        @end-reached="handleEndReachedMember"
+      >
+        <template #default="{ item: member }">
+          <div
+            :class="member.activeStatus === ChatOfflineType.ONLINE ? 'live' : 'op-60 filter-grayscale filter-grayscale-100'"
+            class="user-card w-full flex-row-c-c gap-2"
+            @click="handleMemberClick(member, 0)"
+            @dblclick="onMemberContextMenu($event, member)"
+            @contextmenu="onMemberContextMenu($event, member)"
+          >
+            <div class="relative flex-row-c-c" :title="member.nickName || '未知'">
+              <CommonElImage
+                :default-src="member.avatar"
+                fit="cover"
+                load-class="none"
+                error-class="i-solar-user-line-duotone p-2 op-80"
+                class="h-2rem w-2rem flex-shrink-0 overflow-auto border-default rounded-1/2 object-cover"
+              />
+              <span class="g-avatar" />
+            </div>
+            <small truncate>{{ member.nickName || "未填写" }}</small>
+            <div class="tags ml-a block pl-1">
+              <el-tag
+                v-if="member.userId === user.userInfo.id"
+                class="mr-1"
+                style="font-size: 0.6em;border-radius: 2rem;"
+                size="small"
+                type="warning"
+              >
+                我
+              </el-tag>
+              <small
+                v-if="member.roleType && member.roleType !== ChatRoomRoleEnum.MEMBER"
+                class="role h-fit w-fit rounded-8 px-3 py-0.5 text-0.8rem font-500 leading-0.7rem"
+                :class="chatRoomRoleClassMap[`${member.roleType}-border`]"
+              >{{ chatRoomRoleTextMap[member.roleType] }}</small>
+            </div>
+          </div>
+        </template>
+
+        <template #empty>
+          <div v-show="!isReload || !isLoading" class="flex-row-c-c flex-col py-6 text-mini">
+            <i class="i-solar:users-group-two-rounded-line-duotone mb-2 p-3" />
+            <span>暂无群成员</span>
+          </div>
+        </template>
+
+        <template #end>
+          <!-- loading -->
+          <div v-show="isLoading && !isReload" class="flex-row-c-c py-4 text-mini">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 animate-spin select-none" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.020-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" /><path fill="currentColor" d="M12 4.5a7.5 7.5 0 1 0 0 15a7.5 7.5 0 0 0 0-15M1.5 12C1.5 6.201 6.201 1.5 12 1.5S22.5 6.201 22.5 12S17.799 22.5 12 22.5S1.5 17.799 1.5 12" opacity=".1" /><path fill="currentColor" d="M12 4.5a7.46 7.46 0 0 0-5.187 2.083a1.5 1.5 0 0 1-2.075-2.166A10.46 10.46 0 0 1 12 1.5a1.5 1.5 0 0 1 0 3" /></g></svg>
+            &nbsp;加载中...
+          </div>
+        </template>
+      </CommonListVirtualScrollList>
+    </div>
+
+    <!-- 移动端：分组列表样式（会话设置） -->
+    <div class="group-section group-section-settings sm:border-default-2-t">
+      <div class="label-item select-none text-3.5">
+        <div class="title mb-2 text-small">
+          会话设置
+        </div>
+        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:min-h-0 active:bg-color-3 sm:py-0">
+          <small class="text-0.8rem text-small">设为置顶</small>
+          <el-switch
+            :model-value="isPin"
+            :size="setting.isMobileSize ? 'default' : 'small'"
+            :loading="isPinLoading"
+            class="group-switch"
+            :before-change="changIsPin"
+          />
+        </div>
+        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:min-h-0 active:bg-color-3 sm:py-0">
+          <small class="text-0.8rem text-small">消息免打扰</small>
+          <el-switch
+            :model-value="shieldStatus"
+            :loading="shieldStatusLoading"
+            :size="setting.isMobileSize ? 'default' : 'small'"
+            class="group-switch"
+            :before-change="changShieldStatus"
+          />
+        </div>
       </div>
     </div>
 
-    <!-- 退出 -->
+    <!-- 退出（移动端分组样式） -->
     <CommonElButton
-      v-show="!chat.contactMap[chat.theRoomId!]?.hotFlag" v-memo="[isNotExistOrNorFriend, isTheGroupOwner]" icon-class="i-solar:logout-3-broken mr-2"
-      type="danger"
+      v-show="!chat.contactMap[chat.theRoomId!]?.hotFlag"
+      icon-class="i-solar:logout-3-broken mr-2"
+      :size="setting.isMobileSize ? 'large' : 'default'"
       plain
-      class="mt-6 w-full"
+      class="group-exit-btn mt-3 w-full"
       @click="onExitOrClearGroup"
     >
       <span>
@@ -346,11 +363,61 @@ async function changShieldStatus() {
 </template>
 
 <style lang="scss" scoped>
+/* 仅移动端：分组列表卡片（微信/iOS 设置风格） */
+.group-section {
+  --at-apply: "mt-3 rounded-xl bg-color px-4 py-3 shadow-sm";
+  @media (min-width: 640px) {
+    margin-top: 0;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+}
+.group-section-info {
+  @media (min-width: 640px) {
+    padding-top: 0;
+  }
+}
+.group-section-members {
+  @media (min-width: 640px) {
+    padding-top: 0.75rem;
+  }
+}
+.group-section-settings {
+  @media (min-width: 640px) {
+    padding-top: 0.75rem;
+  }
+}
+.group-section-exit {
+  @media (min-width: 640px) {
+    padding-top: 1.5rem;
+  }
+}
+.group-exit-btn {
+  --at-apply: "transition-opacity active:opacity-80";
+  @media (min-width: 640px) {
+    margin-top: 1.5rem;
+  }
+}
+
 .g-avatar {
   --at-apply: "border-default z-1 absolute bottom-0.2em right-0.2em rounded-full block w-2 h-2 ";
 }
 .user-card {
   --at-apply: "h-2.75rem flex-shrink-0 cursor-pointer flex-row-c-c p-1.5 relative gap-2 truncate card-rounded-df filter-grayscale w-full hover:(bg-color-2 op-100)";
+  /* 移动端扩大可点击区域与点击态 */
+  @media (max-width: 639px) {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    transition:
+      background-color 0.15s ease,
+      opacity 0.15s ease;
+    &:active {
+      --at-apply: "bg-color-3";
+      opacity: 0.9;
+    }
+  }
   .tags {
     :deep(.el-tag) {
       transition: none;

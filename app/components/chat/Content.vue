@@ -65,7 +65,7 @@ watch(
       --at-apply: "absolute top-0 h-full w-full";
     }
     .member-panel {
-      --at-apply: "ml-a h-full  max-w-full flex flex-1 flex-col gap-2 border-l-0 p-4 shadow-lg sm:(max-w-18rem shadow-none) !sm:border-default-2-l bg-color";
+      --at-apply: "ml-a h-full  max-w-full flex flex-1 flex-col gap-2 border-l-0 p-4 shadow-lg sm:(max-w-18rem shadow-none) !sm:border-default-2-l bg-color-2 sm:bg-color";
       .header {
         --at-apply: "mb-4 flex items-center gap-2";
       }

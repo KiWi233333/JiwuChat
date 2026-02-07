@@ -109,10 +109,13 @@ async function onExitOrDeleteFriend() {
   <el-scrollbar
     v-if="chat.isOpenGroupMember && (chat.theContact?.type === RoomType.SELF || chat.theContact?.type === RoomType.AI_CHAT)"
     v-bind="$attrs"
-    class="group scroll relative"
-    wrap-class="pb-10"
+    class="group scroll-root relative"
+    wrap-class="pb-8 sm:pb-4"
   >
-    <div class="w-full flex-1 select-none text-3.5 leading-1.8em">
+    <!-- 移动端：分组列表样式（好友信息） -->
+    <div
+      class="group-section group-section-info w-full flex-1 select-none text-3.5 leading-1.8em"
+    >
       <!-- 头像和基本信息 -->
       <div flex>
         <CommonElImage
@@ -136,7 +139,7 @@ async function onExitOrDeleteFriend() {
               text
               bg
               icon-class="i-solar:user-outline mr-1"
-              @click="chat.theContact.targetUid && navigateToUserDetail(chat.theContact.targetUid)"
+              @click="chat.theContact?.targetUid && navigateToUserDetail(chat.theContact.targetUid)"
             >
               资料
             </CommonElButton>
@@ -148,7 +151,7 @@ async function onExitOrDeleteFriend() {
         </div>
       </div>
       <!-- 详细信息 -->
-      <div class="my-5 flex flex-col gap-3 border-default-2 border-x-0 py-5 text-mini">
+      <div class="mt-6 flex flex-col gap-3 text-mini sm:(mt-4 border-default-2-t py-2)">
         <p truncate>
           <template v-if="targetUserInfo.birthday">
             <span class="mr-2 border-default-2-r pr-2">
@@ -175,74 +178,90 @@ async function onExitOrDeleteFriend() {
           上次在线：{{ targetUserInfo.lastLoginTime ? formatContactDate(targetUserInfo.lastLoginTime) : ' - ' }}
         </p>
       </div>
-      <div class="label-item select-none">
-        会话设置
-        <div mt-2 flex-row-bt-c>
-          <small text-0.8rem text-small>设为置顶</small>
+    </div>
+
+    <!-- 移动端：分组列表样式（会话设置） -->
+    <div class="group-section group-section-settings sm:border-default-2-t">
+      <div class="label-item select-none text-3.5">
+        <div class="title mb-2 text-small">
+          会话设置
+        </div>
+        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:min-h-0 active:bg-color-3 sm:py-0">
+          <small class="text-0.8rem text-small">设为置顶</small>
           <el-switch
             :model-value="isPin"
-            size="small"
+            :size="setting.isMobileSize ? 'default' : 'small'"
             :loading="isPinLoading"
+            class="group-switch"
             :before-change="changIsPin"
           />
         </div>
-        <div mt-2 flex-row-bt-c>
-          <small text-0.8rem text-small>消息免打扰</small>
+        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:min-h-0 active:bg-color-3 sm:py-0">
+          <small class="text-0.8rem text-small">消息免打扰</small>
           <el-switch
             :model-value="shieldStatus"
             :loading="shieldStatusLoading"
-            size="small"
+            :size="setting.isMobileSize ? 'default' : 'small'"
+            class="group-switch"
             :before-change="changShieldStatus"
           />
         </div>
       </div>
-      <!-- 退出/删除按钮 -->
-      <CommonElButton
-        v-show="!chat.contactMap[chat.theRoomId!]?.hotFlag"
-        icon-class="i-solar:logout-3-broken mr-2"
-        type="danger"
-        plain
-        class="mt-6 w-full"
-        @click="onExitOrDeleteFriend"
-      >
-        <span>
-          {{ isAIFriend ? '移除 AI 机器人' : '删除好友' }}
-        </span>
-      </CommonElButton>
-      <!-- 渐变色 不可触发点击 鼠标穿越 -->
-      <div class="shadow-linear pointer-events-none absolute bottom-0 left-0 z-1 block h-20 w-full w-full select-none text-center" />
     </div>
+
+    <!-- 退出/删除（移动端分组样式） -->
+    <CommonElButton
+      v-show="!chat.contactMap[chat.theRoomId!]?.hotFlag"
+      icon-class="i-solar:logout-3-broken mr-2"
+      :size="setting.isMobileSize ? 'large' : 'default'"
+      plain
+      class="group-exit-btn mt-3 w-full"
+      @click="onExitOrDeleteFriend"
+    >
+      <span>
+        {{ isAIFriend ? '移除 AI 机器人' : '删除好友' }}
+      </span>
+    </CommonElButton>
+    <!-- 渐变色 -->
+    <div class="shadow-linear pointer-events-none absolute bottom-0 left-0 z-1 block h-12 w-full select-none text-center" />
   </el-scrollbar>
 </template>
 
 <style lang="scss" scoped>
+.group-section {
+  --at-apply: "mt-3 rounded-xl bg-color px-4 py-3 shadow-sm sm:mt-0 sm:rounded-none sm:px-0 sm:py-0 sm:shadow-none sm:bg-transparent";
+}
+.group-section-info {
+  --at-apply: "sm:pt-0";
+}
+.group-section-settings {
+  --at-apply: "sm:pt-3";
+}
+.group-exit-btn {
+  --at-apply: "transition-opacity active:opacity-80 sm:mt-6";
+}
+/* 输入框样式和通用 input 包装 */
 .label-item {
   :deep(.el-input) {
     .el-input__wrapper {
-      background: transparent;
-      box-shadow: none;
-      color: inherit !important;
-      padding: 0;
+      --at-apply: "bg-transparent shadow-none text-inherit p-0";
     }
     .el-input__inner {
-      color: inherit !important;
+      --at-apply: "text-inherit";
       caret-color: var(--el-color-info);
       cursor: pointer;
     }
   }
 }
-
 .shadow-linear {
-  // 渐变色
+  --at-apply: "cursor-default pointer-events-none";
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
 }
 .dark .shadow-linear {
   background: linear-gradient(to bottom, rgba(31, 31, 31, 0) 0%, rgba(31, 31, 31, 1) 100%);
 }
-
-.scroll {
-  :deep(.el-scrollbar__thumb) {
-    display: none;
-  }
+.scroll-root > :deep(.el-scrollbar__bar) {
+  display: none !important;
+  opacity: 0 !important;
 }
 </style>
