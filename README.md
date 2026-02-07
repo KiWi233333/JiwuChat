@@ -192,13 +192,13 @@ macOS 系统下载并安装本项目时，可能会提示“安装包已损坏�
    **安装前执行：**
 
    ```shell
-   sudo xattr -rd com.apple.quarantine 你的安装包路径/下载的安装包名称
+   sudo xattr -rd com.apple.quarantine JiwuChat_1.8.0_aarch64.dmg
    ```
 
    **如果已经安装，则执行：**
 
    ```shell
-   sudo xattr -r -d com.apple.quarantine /Applications/应用名称.app
+   sudo xattr -r -d com.apple.quarantine /Applications/JiwuChat.app
    ```
 
 </details>
