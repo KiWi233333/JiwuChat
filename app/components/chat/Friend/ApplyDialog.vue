@@ -55,6 +55,7 @@ async function addFrendApplyById() {
     v-model="isShowApply"
     title="好友申请"
     center
+    content-class="w-full rounded-2 p-4 border-default-2 !bg-color-2"
     :duration="360"
   >
     <el-form ref="applyFormRef" :model="applyForm">
