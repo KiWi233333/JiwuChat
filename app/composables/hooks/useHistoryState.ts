@@ -34,6 +34,128 @@ interface UseHistoryStateOptions<T> {
 }
 
 /**
+ * 历史状态记录
+ */
+interface HistoryRecord {
+  stateKey: string;
+  path: string;
+  timestamp: number;
+}
+
+/**
+ * 全局历史状态管理器
+ * 用于追踪所有 useHistoryState 实例添加的历史记录
+ */
+class HistoryStateManager {
+  private static instance: HistoryStateManager;
+  private stack: HistoryRecord[] = [];
+  private registeredKeys = new Set<string>();
+
+  static getInstance(): HistoryStateManager {
+    if (!HistoryStateManager.instance) {
+      HistoryStateManager.instance = new HistoryStateManager();
+    }
+    return HistoryStateManager.instance;
+  }
+
+  /**
+   * 检查 key 是否已注册（防止重复注册）
+   */
+  isRegistered(stateKey: string): boolean {
+    return this.registeredKeys.has(stateKey);
+  }
+
+  /**
+   * 注册一个 stateKey
+   */
+  register(stateKey: string): boolean {
+    if (this.registeredKeys.has(stateKey)) {
+      console.warn(`[useHistoryState] stateKey "${stateKey}" is already registered, skipping duplicate registration`);
+      return false;
+    }
+    this.registeredKeys.add(stateKey);
+    return true;
+  }
+
+  /**
+   * 注销一个 stateKey
+   */
+  unregister(stateKey: string): void {
+    this.registeredKeys.delete(stateKey);
+    // 同时清理栈中该 key 的记录
+    this.stack = this.stack.filter(r => r.stateKey !== stateKey);
+  }
+
+  /**
+   * 记录一条历史
+   */
+  push(record: HistoryRecord): void {
+    // 避免重复添加相同的记录
+    const exists = this.stack.some(
+      r => r.stateKey === record.stateKey && r.path === record.path,
+    );
+    if (!exists) {
+      this.stack.push(record);
+    }
+  }
+
+  /**
+   * 移除最后一条指定 key 的记录
+   */
+  pop(stateKey: string): HistoryRecord | undefined {
+    for (let i = this.stack.length - 1; i >= 0; i--) {
+      const record = this.stack[i];
+      if (record && record.stateKey === stateKey) {
+        return this.stack.splice(i, 1)[0];
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * 检查栈顶是否是指定 key 的记录
+   */
+  isTopRecord(stateKey: string): boolean {
+    if (this.stack.length === 0)
+      return false;
+    const topRecord = this.stack[this.stack.length - 1];
+    return topRecord ? topRecord.stateKey === stateKey : false;
+  }
+
+  /**
+   * 检查是否有指定 key 的记录
+   */
+  hasRecord(stateKey: string): boolean {
+    return this.stack.some(r => r.stateKey === stateKey);
+  }
+
+  /**
+   * 获取栈的长度
+   */
+  get length(): number {
+    return this.stack.length;
+  }
+
+  /**
+   * 清理指定 path 相关的所有记录（用于路由跳转时）
+   */
+  clearPath(path: string): void {
+    this.stack = this.stack.filter(r => r.path !== path);
+  }
+
+  /**
+   * 调试：打印当前栈状态
+   */
+  debug(): void {
+    console.log("[HistoryStateManager] Stack:", JSON.stringify(this.stack, null, 2));
+    console.log("[HistoryStateManager] Registered keys:", Array.from(this.registeredKeys));
+  }
+}
+
+// 导出管理器实例供外部使用（调试）
+export const historyStateManager = HistoryStateManager.getInstance();
+
+/**
  * 通过 Vue Router Query 参数管理状态的 Hook
  * 1. 状态变为 Active -> 添加 Query 参数 (push)
  * 2. 状态变为 Inactive -> 返回上一页 (back) 或移除参数 (replace)
@@ -41,7 +163,10 @@ interface UseHistoryStateOptions<T> {
  *
  * 解决了 KeepAlive 组件在跳转其他页面时错误重置状态的问题
  *
- * 响应式支持 enabled 的副作用移除
+ * v2.0 改进：
+ * - 引入全局管理器，追踪所有实例的历史记录
+ * - 防止重复注册相同的 stateKey
+ * - 更安全的 back() 逻辑，只在确认是自己添加的记录时才使用 back()
  */
 export function useHistoryState<T = boolean>(
   state: Ref<T>,
@@ -54,6 +179,16 @@ export function useHistoryState<T = boolean>(
     inactiveValue = (options.inactiveValue !== undefined ? options.inactiveValue : false) as T,
     useBackNavigation = true,
   } = options;
+
+  const manager = HistoryStateManager.getInstance();
+
+  // 检查是否重复注册
+  if (manager.isRegistered(stateKey)) {
+    console.warn(`[useHistoryState] Duplicate registration detected for stateKey "${stateKey}". This instance will be inactive.`);
+    return {
+      cleanup: () => {},
+    };
+  }
 
   // 尝试获取 router 和 route，如果不可用则优雅降级
   let router: ReturnType<typeof useRouter> | undefined;
@@ -79,6 +214,9 @@ export function useHistoryState<T = boolean>(
     };
   }
 
+  // 注册 stateKey
+  manager.register(stateKey);
+
   // 记录初始化时的路径,仅在当前路径下响应变化
   const initialPath = route.path;
 
@@ -88,6 +226,7 @@ export function useHistoryState<T = boolean>(
   // 副作用清理函数
   let stopStateWatcher: WatchStopHandle | null = null;
   let stopRouteWatcher: WatchStopHandle | null = null;
+  let stopPathWatcher: WatchStopHandle | null = null;
 
   // 标记是否已初始化
   const initialized = ref(false);
@@ -111,6 +250,7 @@ export function useHistoryState<T = boolean>(
 
   /**
    * 移除路由参数
+   * v2.0 改进：只有当确认是自己添加的记录时才使用 back()
    */
   const removeQueryKey = async () => {
     if (route?.path !== initialPath || !hasQueryKey())
@@ -118,8 +258,18 @@ export function useHistoryState<T = boolean>(
 
     isSyncing.value = true;
 
-    // 检查是否使用 back 导航且历史栈不为空
-    if (useBackNavigation && window.history.length > 1) {
+    // 检查管理器中是否有我们自己的记录
+    const hasOurRecord = manager.hasRecord(stateKey);
+    // 检查是否应该使用 back()：
+    // 1. 配置允许 useBackNavigation
+    // 2. 我们有自己添加的记录
+    // 3. history.length > 1
+    const shouldUseBack = useBackNavigation && hasOurRecord && window.history.length > 1;
+
+    if (shouldUseBack) {
+      // 从管理器移除记录
+      manager.pop(stateKey);
+
       // 使用 back() 返回上一页
       let unwatch: WatchStopHandle | undefined;
       let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -145,9 +295,13 @@ export function useHistoryState<T = boolean>(
       router.back();
     }
     else {
-      // 历史栈为空或配置为 replace，使用 replace 移除参数
+      // 使用 replace 移除参数（更安全的方式）
       const query = { ...route.query };
       delete query[stateKey];
+
+      // 从管理器移除记录（如果有的话）
+      manager.pop(stateKey);
+
       await router.replace({
         path: initialPath,
         query,
@@ -164,6 +318,14 @@ export function useHistoryState<T = boolean>(
       return;
 
     isSyncing.value = true;
+
+    // 记录到管理器
+    manager.push({
+      stateKey,
+      path: initialPath,
+      timestamp: Date.now(),
+    });
+
     await router.push({
       path: initialPath,
       query: { ...route.query, [stateKey]: "1" },
@@ -177,7 +339,8 @@ export function useHistoryState<T = boolean>(
   const cleanup = async () => {
     stopStateWatcher?.();
     stopRouteWatcher?.();
-    stopStateWatcher = stopRouteWatcher = null;
+    stopPathWatcher?.();
+    stopStateWatcher = stopRouteWatcher = stopPathWatcher = null;
 
     await removeQueryKey();
     await syncState(inactiveValue);
@@ -219,6 +382,21 @@ export function useHistoryState<T = boolean>(
       },
       { flush: "post" },
     );
+
+    // 3. 监听路径变化 -> 当离开当前页面时，清理管理器中的记录
+    stopPathWatcher = watch(
+      () => route.path,
+      (newPath) => {
+        if (newPath !== initialPath) {
+          // 离开页面时，如果状态是 active，需要从管理器中移除记录
+          // 但不触发路由操作（因为已经在其他页面了）
+          if (manager.hasRecord(stateKey)) {
+            manager.pop(stateKey);
+          }
+        }
+      },
+      { flush: "post" },
+    );
   };
 
   /**
@@ -241,6 +419,12 @@ export function useHistoryState<T = boolean>(
 
     if (hasKey && state.value !== activeValue) {
       // URL 有参数，同步 state 为 activeValue
+      // 同时记录到管理器（因为这是恢复场景）
+      manager.push({
+        stateKey,
+        path: initialPath,
+        timestamp: Date.now(),
+      });
       await syncState(activeValue);
     }
     else if (!hasKey && state.value === activeValue) {
@@ -271,7 +455,10 @@ export function useHistoryState<T = boolean>(
   onBeforeUnmount(() => {
     stopStateWatcher?.();
     stopRouteWatcher?.();
+    stopPathWatcher?.();
     stopEnabledWatcher();
+    // 注销 stateKey
+    manager.unregister(stateKey);
   });
 
   return {
