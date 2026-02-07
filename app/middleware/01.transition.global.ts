@@ -14,7 +14,7 @@ function setPageTransition(
 ): void {
   const chat = useChatStore();
 
-  // 主页路径需要特殊处理，若主页 chat.isOpenContactXxx 为 true 视为 '/contact'
+  // 主页路径需要特殊处理，若主页 chat.isOpenContact 为 true 视为 '/contact'
   const toPath = normalizeMainPath(to.path, chat);
   const fromPath = normalizeMainPath(from.path, chat);
 
@@ -54,8 +54,8 @@ function setPageTransition(
  * 特殊处理主页：如果路径为 `/` 并且打开了联系人侧边栏，则拼上 `/contact` 用于区别
  */
 function normalizeMainPath(path: string, chat: ReturnType<typeof useChatStore>): string {
-  if (path === "/") {
-    return chat.isOpenContact ? "/contact" : "/";
+  if (["/friend", "/ai"].includes(path)) {
+    return !chat.isOpenContact ? "/contact" : "/";
   }
   return path;
 }

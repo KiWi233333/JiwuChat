@@ -371,7 +371,7 @@ function showInvitation() {
         </div>
 
         <!-- 生日 -->
-        <div v-if="user.birthday" class="tag-item group relative">
+        <div v-if="user.birthday" class="tag-item group relative flex-row-c-c">
           <i class="i-solar:calendar-date-bold-duotone text-blue-400" />
           <span>{{ getBirthdayText }}</span>
           <!-- 生日编辑 -->
@@ -387,7 +387,7 @@ function showInvitation() {
         </div>
 
         <!-- 性别选择 -->
-        <div class="tag-item relative w-fit flex items-center">
+        <div class="tag-item relative w-18 flex items-center">
           <i :class="genderConfig.icon" :style="{ color: genderConfig.color.replace('text-', '') }" />
           <el-select
             v-if="isEdit"

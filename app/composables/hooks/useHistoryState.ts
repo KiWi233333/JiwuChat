@@ -461,6 +461,15 @@ export function useHistoryState<T = boolean>(
     manager.unregister(stateKey);
   });
 
+  onDeactivated(() => {
+    stopStateWatcher?.();
+    stopRouteWatcher?.();
+    stopPathWatcher?.();
+    stopEnabledWatcher();
+    // 注销 stateKey
+    manager.unregister(stateKey);
+  });
+
   return {
     cleanup,
   };
