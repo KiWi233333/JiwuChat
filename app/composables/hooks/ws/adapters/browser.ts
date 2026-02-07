@@ -1,13 +1,13 @@
-import type { ErrorHandler, IWebSocketAdapter, MessageHandler, StatusHandler } from "./types";
+import type { IWebSocketAdapter, WSAdapterErrorHandler, WSAdapterMessageHandler, WSAdapterStatusHandler } from "./types";
 import type { WsSendMsgDTO } from "~/types/chat/WsType";
 import { WsStatusEnum } from "~/types/chat/WsType";
 
 export class BrowserWSAdapter implements IWebSocketAdapter {
   private ws: WebSocket | null = null;
   private status: WsStatusEnum = WsStatusEnum.CLOSE;
-  private messageHandler: MessageHandler | null = null;
-  private statusHandler: StatusHandler | null = null;
-  private errorHandler: ErrorHandler | null = null;
+  private messageHandler: WSAdapterMessageHandler | null = null;
+  private statusHandler: WSAdapterStatusHandler | null = null;
+  private errorHandler: WSAdapterErrorHandler | null = null;
 
   async connect(url: string): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -59,15 +59,15 @@ export class BrowserWSAdapter implements IWebSocketAdapter {
     }
   }
 
-  onMessage(handler: MessageHandler): void {
+  onMessage(handler: WSAdapterMessageHandler): void {
     this.messageHandler = handler;
   }
 
-  onStatusChange(handler: StatusHandler): void {
+  onStatusChange(handler: WSAdapterStatusHandler): void {
     this.statusHandler = handler;
   }
 
-  onError(handler: ErrorHandler): void {
+  onError(handler: WSAdapterErrorHandler): void {
     this.errorHandler = handler;
   }
 

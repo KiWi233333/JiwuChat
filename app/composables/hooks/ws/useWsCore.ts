@@ -1,82 +1,43 @@
-import type { WSUpdateContactInfoMsg } from "~/types/chat/WsType";
-import { WsMsgBodyType, WsStatusEnum } from "~/types/chat/WsType";
+import { WsStatusEnum } from "~/types/chat/WsType";
+import { processMessage } from "./messageConfig";
+import { WsMsgKey } from "./messageKeys";
+import { messageConfig } from "./messages";
 
-/**
- * WebSocket消息类型映射接口
- */
-export interface WsMsgItemMap {
-  newMsg: ChatMessageVO[];
-  onlineNotice: WSOnlineOfflineNotify[];
-  recallMsg: WSMsgRecall[];
-  deleteMsg: WSMsgDelete[];
-  applyMsg: WSFriendApply[];
-  memberMsg: WSMemberChange[];
-  tokenMsg: object[];
-  rtcMsg: WSRtcCallMsg[];
-  pinContactMsg: WSPinContactMsg[];
-  aiStreamMsg: WSAiStreamMsg[];
-  updateContactInfoMsg: WSUpdateContactInfoMsg[];
-  other: object[];
-}
+export type { MessageContext, MessageHandler } from "./messageConfig";
+export { WsMsgKey } from "./messageKeys";
+export type { WsMsgItemMap } from "./messages";
 
 /**
  * WebSocket消息处理Hook
  */
 export function useWsMessage() {
-  // 消息类型映射
-  const wsMsgMap: Record<WsMsgBodyType, keyof WsMsgItemMap> = {
-    [WsMsgBodyType.MESSAGE]: "newMsg",
-    [WsMsgBodyType.ONLINE_OFFLINE_NOTIFY]: "onlineNotice",
-    [WsMsgBodyType.RECALL]: "recallMsg",
-    [WsMsgBodyType.DELETE]: "deleteMsg",
-    [WsMsgBodyType.APPLY]: "applyMsg",
-    [WsMsgBodyType.MEMBER_CHANGE]: "memberMsg",
-    [WsMsgBodyType.TOKEN_EXPIRED_ERR]: "tokenMsg",
-    [WsMsgBodyType.RTC_CALL]: "rtcMsg",
-    [WsMsgBodyType.PIN_CONTACT]: "pinContactMsg",
-    [WsMsgBodyType.AI_STREAM]: "aiStreamMsg",
-    [WsMsgBodyType.UPDATE_CONTACT_INFO]: "updateContactInfoMsg",
-  };
-
   // 创建空消息列表
   const emptyMsgList = (): WsMsgItemMap => ({
-    newMsg: [],
-    onlineNotice: [],
-    recallMsg: [],
-    deleteMsg: [],
-    applyMsg: [],
-    memberMsg: [],
-    tokenMsg: [],
-    rtcMsg: [],
-    pinContactMsg: [],
-    aiStreamMsg: [],
-    updateContactInfoMsg: [],
-    other: [],
+    [WsMsgKey.NEW_MSG]: [],
+    [WsMsgKey.ONLINE_NOTICE]: [],
+    [WsMsgKey.RECALL_MSG]: [],
+    [WsMsgKey.DELETE_MSG]: [],
+    [WsMsgKey.APPLY_MSG]: [],
+    [WsMsgKey.MEMBER_MSG]: [],
+    [WsMsgKey.TOKEN_MSG]: [],
+    [WsMsgKey.RTC_MSG]: [],
+    [WsMsgKey.PIN_CONTACT_MSG]: [],
+    [WsMsgKey.AI_STREAM_MSG]: [],
+    [WsMsgKey.UPDATE_CONTACT_INFO_MSG]: [],
+    [WsMsgKey.OTHER]: [],
   });
 
   // 消息列表
   const wsMsgList = ref<WsMsgItemMap>(emptyMsgList());
 
   // 是否有新消息
-  const isNewMsg = computed(() => wsMsgList.value.newMsg.length > 0);
+  const isNewMsg = computed(() => (wsMsgList.value.newMsg?.length ?? 0) > 0);
 
-  const { handleNotification } = useWsNotification();
   /**
    * 处理接收到的WebSocket消息
    */
   function processWsMessage(msgData: Result<WsMsgBodyVO>) {
-    if (!msgData)
-      return;
-
-    const wsMsg = msgData.data;
-    const body = wsMsg.data;
-
-    // 如果消息类型在映射中存在，则处理该消息
-    if (wsMsgMap[wsMsg.type] !== undefined) {
-      wsMsgList.value[wsMsgMap[wsMsg.type]].push(body as any);
-      mitter.emit(resolteChatPath(wsMsg.type), body);
-    }
-    handleNotification(wsMsg);
+    processMessage(messageConfig, msgData, wsMsgList);
   }
 
   /**
@@ -87,7 +48,6 @@ export function useWsMessage() {
   }
 
   return {
-    wsMsgMap,
     wsMsgList,
     isNewMsg,
     processWsMessage,
