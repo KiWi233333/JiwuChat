@@ -1,3 +1,4 @@
+use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
 use super::deeplink::handlers::{handle_startup_urls, handle_runtime_url};
 
@@ -61,13 +62,17 @@ pub fn setup_desktop() {
         ])
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
-        .run(|app_handle, event| match event {
-            tauri::RunEvent::Reopen { has_visible_windows, .. } => {
-                // 当点击 macOS 程序坞图标时，显示并聚焦主窗口
-                if !has_visible_windows {
-                    let _ = super::window::show_window(&app_handle);
+        .run(|app_handle, event| {
+            // Tauri 2.10+ 已移除 RunEvent::Reopen，用 Resumed 替代：macOS 点击程序坞恢复应用时若无可见窗口则显示主窗口
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Resumed = event {
+                let has_visible = app_handle
+                    .webview_windows()
+                    .values()
+                    .any(|w| w.is_visible().unwrap_or(false));
+                if !has_visible {
+                    let _ = super::window::show_window(app_handle);
                 }
             }
-            _ => {}
         });
 }
