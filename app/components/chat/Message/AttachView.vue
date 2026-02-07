@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import ContextMenu from "@imengyu/vue3-context-menu";
 import { FILE_TYPE_ICON_DEFAULT, FILE_TYPE_ICON_MAP, formatFileSize } from "~/composables/api/res/file";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { getImgSize } from "../Msg";
 
 const {
@@ -107,7 +108,7 @@ function onContextFileMenu(e: MouseEvent, key?: string, index: number = 0, type:
           loading="lazy"
           :preview-src-list="[img.id || BaseUrlImg + img.key]"
           :src="img.id || BaseUrlImg + img.key"
-          ctx-name="img"
+          :ctx-name="MSG_CTX_NAMES.IMG"
           load-class="sky-loading block absolute top-0"
           class="card-default shadow-sm transition-shadow hover:shadow"
           :style="getImgSize(img.width, img.height)"

@@ -2,6 +2,7 @@ import type { PropType } from "vue";
 import type { BaseToken } from "./core/types";
 import type { ChatMessageVO } from "~/composables/api/chat/message";
 import { computed, defineComponent, h } from "vue";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { MessageNodeRegistry } from "./core/registry";
 import { MentionNode, TextNode, UrlNode } from "./nodes";
 
@@ -75,7 +76,7 @@ export const MessageContent = defineComponent({
     });
 
     return () => (
-      <span ctx-name="content">
+      <span ctx-name={MSG_CTX_NAMES.CONTENT}>
         {tokens.value.map((token, index) => (
           <TokenRenderer
             key={`${token.type}-${token.start}-${index}`}

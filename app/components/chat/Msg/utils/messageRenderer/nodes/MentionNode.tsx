@@ -2,6 +2,7 @@ import type { PropType } from "vue";
 import type { BaseToken, ParseContext, ParseMatch } from "../core/types";
 import type { MentionInfo, TextBodyMsgVO } from "~/composables/api/chat/message";
 import { defineComponent } from "vue";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { MessageNode } from "../core/types";
 
 /**
@@ -80,7 +81,7 @@ export class MentionNode extends MessageNode<MentionToken> {
           title={`前往 ${props.token.data?.displayName} 的主页`}
           data-display-name={props.token.data?.displayName}
           data-user-id={props.token.data?.uid}
-          ctx-name="content"
+          ctx-name={MSG_CTX_NAMES.CONTENT}
           onClick={handleClick}
         >
           {props.token.content}

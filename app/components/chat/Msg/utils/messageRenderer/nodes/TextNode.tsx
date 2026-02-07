@@ -1,6 +1,7 @@
 import type { PropType } from "vue";
 import type { BaseToken, ParseContext, ParseMatch } from "../core/types";
 import { defineComponent } from "vue";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { MessageNode } from "../core/types";
 
 /**
@@ -40,7 +41,7 @@ export class TextNode extends MessageNode<TextToken> {
       },
     },
     setup(props) {
-      return () => <span ctx-name="content">{props.token.content}</span>;
+      return () => <span ctx-name={MSG_CTX_NAMES.CONTENT}>{props.token.content}</span>;
     },
   });
 }

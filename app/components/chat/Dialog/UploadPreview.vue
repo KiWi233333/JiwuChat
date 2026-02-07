@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import ContextMenuGlobal from "@imengyu/vue3-context-menu";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { getImgSize } from "../Msg";
 
 interface Props {
@@ -145,7 +146,7 @@ async function onSend() {
               loading="lazy"
               :preview-src-list="[img.id || BaseUrlImg + img.key]"
               :src="img.id || BaseUrlImg + img.key"
-              ctx-name="img"
+              :ctx-name="MSG_CTX_NAMES.IMG"
               load-class="sky-loading block absolute top-0"
               class="border-default-2 card-default transition-shadow !h-6rem !w-6rem hover:shadow !sm:h-8rem !sm:w-8rem"
               :style="getImgSize(img.width, img.height)"

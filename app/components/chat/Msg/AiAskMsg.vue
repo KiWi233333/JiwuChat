@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
+
 /**
  * AI问答消息
  */
@@ -26,7 +28,7 @@ const getTitle = robotListLen === 1
   >
     <template #body>
       <!-- 内容 -->
-      <p v-if="data.message?.content?.trim()" ctx-name="content" class="msg-box">
+      <p v-if="data.message?.content?.trim()" :ctx-name="MSG_CTX_NAMES.CONTENT" class="msg-box">
         {{ data.message.content }}
       </p>
       <!--  询问的AI -->

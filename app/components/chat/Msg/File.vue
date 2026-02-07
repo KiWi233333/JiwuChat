@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { FileBodyMsgVO } from "~/composables/api/chat/message";
 import { DownFileStatusIconMap, downloadFile, FILE_TYPE_ICON_DEFAULT, FILE_TYPE_ICON_MAP, formatFileSize } from "~/composables/api/res/file";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 
 /**
  * 文件消息
@@ -43,7 +44,7 @@ defineExpose({
 });
 
 const fileItem = computed(() => setting.fileDownloadMap[BaseUrlFile + body.url]);
-// ctx-name="file"
+// ctx-name=MSG_CTX_NAMES.FILE
 const iconSrc = body.mimeType ? (FILE_TYPE_ICON_MAP[body.mimeType] || FILE_TYPE_ICON_DEFAULT) : FILE_TYPE_ICON_DEFAULT;
 const ossFile = (data as any)._ossFile;
 </script>
@@ -58,20 +59,20 @@ const ossFile = (data as any)._ossFile;
     <template #body-pre>
       <!-- 文件 -->
       <div
-        ctx-name="file"
+        :ctx-name="MSG_CTX_NAMES.FILE"
         :title="fileName"
         class="file max-w-15rem min-w-12em w-fit flex cursor-pointer gap-2 border-default-hover bg-color card-default p-2 px-2.5 shadow-sm transition-all sm:max-w-16em !items-center hover:shadow-lg"
         @click="onDownloadFile(BaseUrlFile + body.url, fileName)"
       >
-        <img ctx-name="file" :src="iconSrc" class="file-icon h-9 w-9 object-contain">
-        <div ctx-name="file" class="flex-1">
-          <p ctx-name="file" class="text-overflow-2 min-h-1.5em min-w-full text-sm leading-5">
+        <img :ctx-name="MSG_CTX_NAMES.FILE" :src="iconSrc" class="file-icon h-9 w-9 object-contain">
+        <div :ctx-name="MSG_CTX_NAMES.FILE" class="flex-1">
+          <p :ctx-name="MSG_CTX_NAMES.FILE" class="text-overflow-2 min-h-1.5em min-w-full text-sm leading-5">
             {{ fileName }}
           </p>
-          <small v-if="body?.url && setting.fileDownloadMap[BaseUrlFile + body.url]?.status !== undefined" ctx-name="file" class="float-left mr-2 mt-2 text-xs op-60">
+          <small v-if="body?.url && setting.fileDownloadMap[BaseUrlFile + body.url]?.status !== undefined" :ctx-name="MSG_CTX_NAMES.FILE" class="float-left mr-2 mt-2 text-xs op-60">
             <i :class="fileItem?.status !== undefined ? DownFileStatusIconMap[fileItem?.status] : ''" p-2 />&nbsp;{{ fileItem ? DownFileTextMap[fileItem?.status] : "" }}
           </small>
-          <small ctx-name="file" class="float-right mt-2 text-xs op-60">
+          <small :ctx-name="MSG_CTX_NAMES.FILE" class="float-right mt-2 text-xs op-60">
             {{ formatFileSize(body.size || 0) }}
           </small>
           <el-progress
