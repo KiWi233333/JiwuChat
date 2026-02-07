@@ -1,19 +1,22 @@
 import type { RouteLocationNormalized } from "vue-router";
-
 import { MAIN_ROUTES } from "~/constants/route";
 
 export default defineNuxtRouteMiddleware((
   to: RouteLocationNormalized,
   from: RouteLocationNormalized,
 ) => {
-  setPageTransition(to.path, from.path);
+  setPageTransition(to, from);
 });
 
 function setPageTransition(
-  toPath: string,
-  fromPath: string,
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
 ): void {
   const chat = useChatStore();
+
+  // 主页路径需要特殊处理，若主页 chat.isOpenContactXxx 为 true 视为 '/contact'
+  const toPath = normalizeMainPath(to.path, chat);
+  const fromPath = normalizeMainPath(from.path, chat);
 
   const toMainIndex = MAIN_ROUTES[toPath];
   const fromMainIndex = MAIN_ROUTES[fromPath];
@@ -26,33 +29,33 @@ function setPageTransition(
 
   // 计算路由层级
   const getDepth = (path: string, isMain: boolean) => {
-    // 一级页面层级为1
     if (isMain) {
       return 1;
     }
-
-    // 二级及以上页面，基于路径段数计算
-    // 例如:
-    // / (main) -> depth 1
-    // /msg (not main) -> depth 2 (1 + 1)
-    // /user/safe (not main) -> depth 3 (1 + 2)
     const segments = path.split("/").filter(Boolean).length;
-    return 1 + (segments || 1); // 至少为2 (1+1)，防止非Main的根路径被算作1
+    return 1 + (segments || 1);
   };
 
   const toDepth = getDepth(toPath, toMainIndex !== undefined);
   const fromDepth = getDepth(fromPath, fromMainIndex !== undefined);
 
   if (toDepth > fromDepth) {
-    // 进入更深层级 (类似 push)
     chat.pageTransition.name = "page-slide-left";
   }
   else if (toDepth < fromDepth) {
-    // 返回上一级 (类似 pop)
     chat.pageTransition.name = "page-slide-right";
   }
   else {
-    // 同级切换
     chat.pageTransition.name = "page-fade-in";
   }
+}
+
+/**
+ * 特殊处理主页：如果路径为 `/` 并且打开了联系人侧边栏，则拼上 `/contact` 用于区别
+ */
+function normalizeMainPath(path: string, chat: ReturnType<typeof useChatStore>): string {
+  if (path === "/") {
+    return chat.isOpenContact ? "/contact" : "/";
+  }
+  return path;
 }
