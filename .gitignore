@@ -31,7 +31,11 @@ report.html
 .gemini
 .shared
 .codex
-.cursor
+# .cursor 下只保留 commands/release-app.md（父目录被忽略时，必须先逐级取消忽略）
+.cursor/*
+!.cursor/commands/
+.cursor/commands/*
+!.cursor/commands/release-app.md
 .dev
 .docs
 app/pages/test
