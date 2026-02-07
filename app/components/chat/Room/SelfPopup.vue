@@ -214,8 +214,9 @@ async function onExitOrDeleteFriend() {
       v-show="!chat.contactMap[chat.theRoomId!]?.hotFlag"
       icon-class="i-solar:logout-3-broken mr-2"
       :size="setting.isMobileSize ? 'large' : 'default'"
+      type="danger"
       plain
-      class="group-exit-btn mt-3 w-full"
+      class="group-exit-btn mt-3 w-full border-none bg-color"
       @click="onExitOrDeleteFriend"
     >
       <span>

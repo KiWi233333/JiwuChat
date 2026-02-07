@@ -350,7 +350,8 @@ async function changShieldStatus() {
       icon-class="i-solar:logout-3-broken mr-2"
       :size="setting.isMobileSize ? 'large' : 'default'"
       plain
-      class="group-exit-btn mt-3 w-full"
+      type="danger"
+      class="group-exit-btn mt-3 w-full border-none bg-color"
       @click="onExitOrClearGroup"
     >
       <span>

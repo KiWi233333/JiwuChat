@@ -28,6 +28,7 @@ interface Props<T = any> {
   itemHeight?: number | string
   height?: string
   maxHeight?: string
+  viewClass?: any
   wrapClass?: any
   className?: any
   itemClass?: any
@@ -60,6 +61,7 @@ interface Emits<T = any> {
 const {
   itemHeight = "",
   maxHeight = "",
+  viewClass = "",
   wrapClass = "",
   className = "",
   itemClass = "",
@@ -512,8 +514,9 @@ const [DefineVirtualListContent, ReuseVirtualListContent] = createReusableTempla
     :max-height="maxHeight"
     :height="height"
     :wrap-class="wrapClass"
-    v-bind="$attrs"
+    :view-class="viewClass"
     :class="className || $attrs.class"
+    v-bind="$attrs"
     @scroll="onScroll"
     @end-reached="(direction) => emit('endReached', direction)"
   >

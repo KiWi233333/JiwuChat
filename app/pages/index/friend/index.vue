@@ -11,12 +11,6 @@ const setting = useSettingStore();
 
 // 移动端：用路由模拟页面标签，返回键可关闭右侧面板
 const isMobileSize = computed(() => setting.isMobileSize);
-useHistoryState(toRef(chat, "showTheFriendPanel"), {
-  enabled: isMobileSize,
-  stateKey: "friendPanelOpen",
-  activeValue: true,
-  inactiveValue: false,
-});
 
 // 移动端：右侧面板使用与路由一致的滑入/滑出动画（受设置项控制）
 const friendPanelTransitionName = computed(() => {
