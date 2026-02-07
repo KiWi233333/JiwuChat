@@ -325,7 +325,7 @@ defineExpose({ close, open });
 
     <!-- 内容 -->
     <div
-      class="relative z-10 h-full w-full transform-gpu bg-[var(--el-bg-color)]"
+      class="relative z-10 h-full w-full transform-gpu"
       :class="{ 'transition-transform duration-300 ease-[cubic-bezier(0.18,0.89,0.32,1)]': !isDragging }"
       :style="{ transform: `translateX(${offset}px)` }"
       @click="isOpen !== 'none' ? close() : emit('click', $event)"
