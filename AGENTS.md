@@ -38,6 +38,12 @@ There is no dedicated JS test runner configured in `package.json` today.
 
 ## Commits & Pull Requests
 
+**IMPORTANT: Agent Behavior**
+
+- **NEVER** automatically commit changes.
+- **ALWAYS** wait for explicit user confirmation or request before running `git commit`.
+- The user prefers to handle commits manually.
+
 Commits are enforced by commitlint/husky (Conventional Commits).
 
 - Format: `type(scope): subject` (e.g. `feat(chat): add reply preview`).

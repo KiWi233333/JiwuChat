@@ -34,7 +34,7 @@ export function useOpenExtendWind() {
       }
     }
     else {
-      window.open(item.url, "_blank");
+      useOpenUrl(item.url);
       return;
     }
     item.loading = true;

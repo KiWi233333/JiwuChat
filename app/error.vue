@@ -9,7 +9,7 @@ definePageMeta({
 <template>
   <div>
     <NuxtLayout name="error">
-      <OtherError :msg="error?.message || '500，服务端错误！'" />
+      <CommonError :msg="error?.message || '500，服务端错误！'" />
     </NuxtLayout>
   </div>
 </template>

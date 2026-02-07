@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
+
 /**
  * RTC消息
  */
@@ -19,8 +21,8 @@ const chat = useChatStore();
     v-bind="$attrs"
   >
     <template #body>
-      <div ctx-name="rtc" class="msg-box msg-wrap min-w-6em flex cursor-pointer items-center leading-1em hover:op-80" @click="data.message.body?.type && chat.rollbackCall(data.message.roomId, data.message.body?.type, data)">
-        <i ctx-name="rtc" class="icon p-2.4" :class="data.message.body?.type === CallTypeEnum.AUDIO ? 'i-solar:end-call-outline' : 'i-solar:videocamera-record-outline'" />
+      <div :ctx-name="MSG_CTX_NAMES.RTC" class="msg-box msg-wrap min-w-6em flex cursor-pointer items-center leading-1em hover:op-80" @click="data.message.body?.type && chat.rollbackCall(data.message.roomId, data.message.body?.type, data)">
+        <i :ctx-name="MSG_CTX_NAMES.RTC" class="icon p-2.4" :class="data.message.body?.type === CallTypeEnum.AUDIO ? 'i-solar:end-call-outline' : 'i-solar:videocamera-record-outline'" />
         {{ data.message.content }}
       </div>
     </template>

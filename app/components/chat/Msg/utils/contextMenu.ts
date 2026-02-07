@@ -1,8 +1,25 @@
+import type { MessageCtxNameWithMenu } from "~/constants/msgContext";
 import ContextMenu from "@imengyu/vue3-context-menu";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { COPY_IMAGE_TYPES, RECALL_TIME_OUT } from "./constants";
 import { deleteMsg, refundMsg } from "./messageActions";
 
 // @unocss-include
+
+/**
+ * 获取 HTMLElement 的自定义属性（优先取 data-xxx，没有再取 xxx 本身）
+ * @param {HTMLElement} el 元素
+ * @param {string} name 属性名（不带 data- 前缀）
+ * @returns {string} 属性值或空字符串
+ */
+function getElementAttr(el: HTMLElement | null | undefined, name: string): string {
+  if (!el)
+    return "";
+  const dataAttr = el.getAttribute?.(`data-${name}`); // 优先 data-xxx
+  if (dataAttr !== null && dataAttr !== undefined)
+    return dataAttr;
+  return el.getAttribute?.(name) ?? "";
+}
 
 /**
  * 处理消息上下文菜单事件
@@ -19,7 +36,8 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
   e.preventDefault();
 
   // 从目标元素获取上下文名称
-  let ctxName = String((e?.target as HTMLElement)?.getAttribute?.("ctx-name") || "");
+  let ctxName = getElementAttr(e?.target as HTMLElement, "ctx-name");
+  ctxName = String(ctxName || "");
   const isAiReplyMsg = data.message.type === MessageType.AI_CHAT_REPLY;
 
   // 如果没有上下文名称且不是AI回复，则返回
@@ -34,7 +52,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
 
   // 为AI回复设置上下文名称
   if (!ctxName && isAiReplyMsg) {
-    ctxName = "aiReply";
+    ctxName = MSG_CTX_NAMES.AI_REPLY;
   }
 
   // 权限检查
@@ -48,7 +66,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
   const txt = window.getSelection()?.toString() || data.message.content;
 
   // 处理移动端@提及
-  if (setting.isMobileSize && ctxName === "avatar" && chat.theContact?.type === RoomType.GROUP) {
+  if (setting.isMobileSize && ctxName === MSG_CTX_NAMES.AVATAR && chat.theContact?.type === RoomType.GROUP) {
     chat.setAtUid(data.fromUser.userId);
     return;
   }
@@ -81,9 +99,9 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
   ];
 
   // 不同消息类型的上下文菜单配置
-  const contextMenuType: Record<string, any> = {
+  const contextMenuType: Partial<Record<MessageCtxNameWithMenu, any[]>> = {
     // 文本内容
-    content: [
+    [MSG_CTX_NAMES.CONTENT]: [
       {
         label: "复制",
         hidden: !txt,
@@ -124,20 +142,20 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
             return ElMessage.error("选择内容为空，无法搜索！");
           }
           const bingUrl = `https://bing.com/search?q=${encodeURIComponent(txt as string)}`;
-          window.open(bingUrl, "_blank");
+          useOpenUrl(bingUrl);
         },
       },
       ...defaultContextMenu,
     ],
 
     // 链接内容
-    urllink: [
+    [MSG_CTX_NAMES.URL_LINK]: [
       {
         label: "复制链接",
         customClass: "group",
         icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
         onClick: () => {
-          const url = String((e?.target as HTMLElement)?.getAttribute?.("data-url") || "");
+          const url = getElementAttr(e?.target as HTMLElement, "url");
           navigator.clipboard.writeText((url || txt) as string);
           ElMessage.success("复制成功！");
         },
@@ -148,7 +166,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         customClass: "group",
         icon: "i-solar:link-line-duotone group-hover:(scale-110 i-solar:link-bold-duotone) group-btn-info",
         onClick: () => {
-          const url = String((e?.target as HTMLElement)?.getAttribute?.("data-url") || "");
+          const url = getElementAttr(e?.target as HTMLElement, "url");
           if (!url)
             return;
           useOpenUrl(url);
@@ -157,7 +175,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // 翻译
-    translation: [
+    [MSG_CTX_NAMES.TRANSLATION]: [
       {
         label: "复制",
         hidden: !txt || !translation,
@@ -199,7 +217,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // 图片内容
-    img: [
+    [MSG_CTX_NAMES.IMG]: [
       {
         label: "复制",
         customClass: "group",
@@ -252,7 +270,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // 文件内容
-    file: [
+    [MSG_CTX_NAMES.FILE]: [
       {
         label: setting.fileDownloadMap?.[BaseUrlFile + data.message.body.url] ? "打开文件" : "下载文件",
         hidden: setting.isWeb || data.message.type !== MessageType.FILE,
@@ -274,7 +292,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // 语音内容
-    sound: [
+    [MSG_CTX_NAMES.SOUND]: [
       {
         label: showTranslation.value ? "折叠转文字" : "转文字",
         hidden: data.message.type !== MessageType.SOUND || !translation,
@@ -286,7 +304,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // 昵称内容
-    nickname: [
+    [MSG_CTX_NAMES.NICKNAME]: [
       {
         label: "复制",
         hidden: !data.fromUser.nickName,
@@ -314,7 +332,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // 头像内容
-    avatar: [
+    [MSG_CTX_NAMES.AVATAR]: [
       {
         label: isSelf ? "查看自己" : "个人资料",
         icon: "i-solar:user-broken group-btn-info",
@@ -331,7 +349,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // RTC通话内容
-    rtc: [
+    [MSG_CTX_NAMES.RTC]: [
       {
         label: "重新拨打",
         icon: "i-solar:call-dropped-bold p-2.6 group-btn-warning",
@@ -346,7 +364,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // 视频内容
-    video: [
+    [MSG_CTX_NAMES.VIDEO]: [
       {
         label: "静音播放",
         icon: "i-solar:volume-cross-line-duotone group-hover:(scale-110 i-solar:volume-cross-bold-duotone) group-btn-warning",
@@ -383,7 +401,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     ],
 
     // AI回复内容
-    aiReply: [
+    [MSG_CTX_NAMES.AI_REPLY]: [
       {
         label: "分享图片",
         icon: "i-solar:share-line-duotone group-hover:(scale-110 i-solar:share-bold-duotone) group-btn-war",
@@ -435,7 +453,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
             return ElMessage.error("选择内容为空，无法搜索！");
           }
           const bingUrl = `https://bing.com/search?q=${encodeURIComponent(txt as string)}`;
-          window.open(bingUrl, "_blank");
+          useOpenUrl(bingUrl);
         },
       },
       ...defaultContextMenu,
@@ -443,7 +461,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
   };
 
   // 获取适当的上下文菜单项
-  const items = contextMenuType[ctxName] || [];
+  const items = contextMenuType[ctxName as MessageCtxNameWithMenu] || [];
   if (items.length === 0) {
     return;
   }

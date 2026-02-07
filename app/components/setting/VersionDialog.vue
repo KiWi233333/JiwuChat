@@ -63,7 +63,7 @@ const {
     </div>
   </div>
   <!-- 版本公告 -->
-  <DialogPopup
+  <CommonPopupDesktop
     v-model="showNotice"
     destroy-on-close
     :duration="300"
@@ -71,7 +71,7 @@ const {
     width="fit-content"
   >
     <template #title>
-      <h4 mb-4 text-center text-1.2rem>
+      <h4 m-0 select-none p-0 text-center text-1.2rem>
         &emsp;版本公告 🔔
       </h4>
     </template>
@@ -94,23 +94,23 @@ const {
         &emsp;我知道了 🎉
       </el-button>
     </div>
-  </DialogPopup>
+  </CommonPopupDesktop>
   <!-- 版本的时间线 -->
-  <DialogPopup
+  <CommonPopupDesktop
     v-model="showUpateNoticeLine"
     destroy-on-close
     :duration="300"
     :z-index="1099"
   >
     <template #title>
-      <h4 mb-6 text-center text-1.2rem>
+      <h4 mb-6 select-none text-center text-1.2rem>
         更新日志
         <i i-solar:notebook-bold ml-2 p-3 text-theme-warning />
       </h4>
     </template>
-    <el-scrollbar wrap-class="w-86vw pr-2 pl-1 sm:pr-4 animate-[blur-in_.6s] overflow-y-auto max-h-40vh min-h-30vh sm:max-h-60vh md:w-420px sm:w-380px">
+    <el-scrollbar wrap-class="select-none w-86vw pr-2 pl-1 sm:pr-4 animate-[blur-in_.6s] overflow-y-auto max-h-40vh min-h-30vh sm:max-h-60vh md:w-420px sm:w-380px">
       <el-timeline style="max-width: 100%;">
-        <ListAutoIncre
+        <CommonListAutoIncre
           :immediate="true"
           :auto-stop="true"
           :no-more="isNoMore"
@@ -174,14 +174,14 @@ const {
               {{ versionList.length ? "没有更多了" : "快去认识其他人" }}
             </div>
           </template>
-        </ListAutoIncre>
+        </CommonListAutoIncre>
       </el-timeline>
     </el-scrollbar>
     <div class="mt-2 mt-4 flex-row-c-c">
-      <BtnElButton class="w-6rem" @click="showUpateNoticeLine = false">
+      <CommonElButton class="w-6rem" @click="showUpateNoticeLine = false">
         关&nbsp;闭
-      </BtnElButton>
-      <BtnElButton
+      </CommonElButton>
+      <CommonElButton
         v-if="setting.isDesktop"
         class="w-6rem"
         type="primary"
@@ -189,9 +189,9 @@ const {
         @click="handleCheckUpadate"
       >
         {{ setting.appUploader.isUpdating ? '正在更新' : '检查更新' }}
-      </BtnElButton>
+      </CommonElButton>
     </div>
-  </DialogPopup>
+  </CommonPopupDesktop>
 </template>
 
 <style lang="scss" scoped>

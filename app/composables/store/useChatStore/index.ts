@@ -1,4 +1,4 @@
-import { acceptHMRUpdate, defineStore } from "pinia";
+import { defineStore } from "pinia";
 import { useMessageQueue } from "../../hooks/msg/useMessageQueue";
 import { createComposeInputModule, createContactListsModule, createContactsModule, createMessagesModule, createRtcModule, createUIModule } from "./hooks";
 
@@ -194,7 +194,6 @@ export const useChatStore = defineStore(
       showExtension: ui.showExtension,
       pageTransition: ui.pageTransition,
       showVideoDialog: ui.showVideoDialog,
-      notDialogShow: ui.notDialogShow,
       shouldAutoScroll: ui.shouldAutoScroll,
       isScrollBottom: ui.isScrollBottom,
       scrollReplyMsg: ui.scrollReplyMsg,
@@ -220,7 +219,3 @@ export const useChatStore = defineStore(
   },
   {},
 );
-if (import.meta.hot)
-  import.meta.hot.accept(acceptHMRUpdate(useChatStore, import.meta.hot));
-
-

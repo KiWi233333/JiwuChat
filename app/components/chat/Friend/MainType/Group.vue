@@ -82,7 +82,7 @@ const getRoleText = computed(() => room.value.role !== undefined ? chatRoomRoleT
     <template v-else>
       <!-- 顶部信息 -->
       <div flex gap-4 border-default-b pb-6 sm:gap-6>
-        <CardElImage
+        <CommonElImage
           error-class="i-solar:users-group-rounded-bold-duotone p-5"
           :src="BaseUrlImg + data.data.avatar" fit="cover"
           :preview-src-list="[BaseUrlImg + data.data.avatar]"
@@ -146,7 +146,7 @@ const getRoleText = computed(() => room.value.role !== undefined ? chatRoomRoleT
       </div>
       <!-- 按钮操作 -->
       <div class="mx-a">
-        <BtnElButton
+        <CommonElButton
           key="delete"
           icon-class="i-solar:trash-bin-trash-outline p-2 mr-2"
           style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-danger);"
@@ -158,8 +158,8 @@ const getRoleText = computed(() => room.value.role !== undefined ? chatRoomRoleT
           })"
         >
           {{ isGroupOwner ? "解散群聊" : "退出群聊" }}&ensp;
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
           key="send"
           icon-class="i-solar:chat-line-bold p-2 mr-2"
           style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;"
@@ -167,7 +167,7 @@ const getRoleText = computed(() => room.value.role !== undefined ? chatRoomRoleT
           @click="chat.toContactSendMsg('roomId', roomId)"
         >
           发送消息&ensp;
-        </BtnElButton>
+        </CommonElButton>
       </div>
     </template>
   </div>

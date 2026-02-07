@@ -1,7 +1,6 @@
-<script lang="ts">
-</script>
-
 <script setup lang="ts">
+import type { VueElement } from "vue";
+import type { JSX } from "vue/jsx-runtime";
 import { NuxtLink } from "#components";
 
 export interface MenuItemConfig {
@@ -13,6 +12,7 @@ export interface MenuItemConfig {
     isDot?: boolean
     hidden?: boolean
   }
+  append?: string | (() => VueElement | string | JSX.Element)
   onClick?: (e?: MouseEvent) => void
   disabled?: boolean
 }
@@ -63,7 +63,16 @@ function handleClick(e?: MouseEvent) {
 
     <span class="menu-item-card__title">{{ item.title }}</span>
 
-    <i v-if="showArrow" class="menu-item-card__arrow i-ri:arrow-right-s-line" />
+    <template v-if="item.append">
+      <template v-if="typeof item.append === 'string'">
+        <span class="menu-item-card__append">{{ item.append }}</span>
+      </template>
+      <template v-else>
+        <component :is="item.append" />
+      </template>
+    </template>
+
+    <i v-if="showArrow && (item.onClick || item.path)" class="menu-item-card__arrow i-ri:arrow-right-s-line" />
   </component>
 </template>
 
@@ -109,6 +118,10 @@ function handleClick(e?: MouseEvent) {
     .menu-item-card__arrow {
       --at-apply: "h-4 w-4";
     }
+
+    .menu-item-card__append {
+      --at-apply: "text-mini";
+    }
   }
 
   &--medium {
@@ -123,7 +136,7 @@ function handleClick(e?: MouseEvent) {
     }
 
     .menu-item-card__icon {
-      --at-apply: "h-6 w-6";
+      --at-apply: "h-5 w-5";
     }
 
     .menu-item-card__title {
@@ -132,6 +145,10 @@ function handleClick(e?: MouseEvent) {
 
     .menu-item-card__arrow {
       --at-apply: "h-4 w-4";
+    }
+
+    .menu-item-card__append {
+      --at-apply: "text-mini";
     }
   }
 
@@ -156,6 +173,10 @@ function handleClick(e?: MouseEvent) {
 
     .menu-item-card__arrow {
       --at-apply: "h-5 w-5";
+    }
+
+    .menu-item-card__append {
+      --at-apply: "text-small";
     }
   }
 

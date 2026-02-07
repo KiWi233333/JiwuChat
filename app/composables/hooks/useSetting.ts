@@ -227,9 +227,11 @@ export function useSettingBell() {
       inputErrorMessage: "请输入正确的铃声地址",
       inputPlaceholder: "请输入铃声网络地址",
       lockScroll: true,
-    }).then(({ value, action }) => {
-      const val = value?.trim();
-      if (action === "confirm") {
+    }).then((result) => {
+      if (typeof result === "string")
+        return;
+      const val = result.value?.trim();
+      if (result.action === "confirm") {
         if (!val) {
           ElNotification.warning("已关闭铃声！");
           setting.settingPage.rtcCallBellUrl = "";

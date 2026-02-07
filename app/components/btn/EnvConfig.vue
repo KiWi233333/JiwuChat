@@ -17,7 +17,7 @@ const btnStyle = computed(() => ({
 </script>
 
 <template>
-  <BtnElButton
+  <CommonElButton
     :class="buttonClass"
     :size="size"
     :style="btnStyle"

@@ -71,7 +71,7 @@ async function toSend(roomId: number) {
   >
     <!-- 顶部 -->
     <div absolute left-0 top-0 h-4.2rem w-full flex items-center gap-2 px-5>
-      <CardElImage
+      <CommonElImage
         :src="BaseUrlImg + data.data.avatar" fit="cover"
         class="h-2em w-2em flex-shrink-0 overflow-auto border-default card-default object-cover shadow-sm"
       />
@@ -83,7 +83,7 @@ async function toSend(roomId: number) {
     <div class="mx-a my-6 w-4/5 border-default-b sm:(my-10 w-3/5)" />
     <!-- 按钮 -->
     <div flex-row-c-c gap-4>
-      <BtnElButton
+      <CommonElButton
         key="delete"
         icon-class="i-solar:trash-bin-trash-outline p-2 mr-2"
         style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-danger);"
@@ -95,8 +95,8 @@ async function toSend(roomId: number) {
         })"
       >
         {{ isGroupOwner ? "解散群聊" : "退出群聊" }}&ensp;
-      </BtnElButton>
-      <BtnElButton
+      </CommonElButton>
+      <CommonElButton
         key="send"
         icon-class="i-solar:chat-line-bold p-2 mr-2"
         style="transition: .2s; max-width: 9em;text-align: center;letter-spacing: 1px;"
@@ -104,7 +104,7 @@ async function toSend(roomId: number) {
         @click="toSend(roomId)"
       >
         发送消息&ensp;
-      </BtnElButton>
+      </CommonElButton>
     </div>
   </div>
 </template>

@@ -38,6 +38,7 @@ export default defineConfig({
     ["bg-color-linear-down", "bg-gradient-to-t from-white to-transparent dark:from-dark-5 dark:to-transparent"],
     // dialog颜色
     ["dialog-bg-color", "bg-white dark:bg-dark-9"],
+    ["bg-color-inverse", "bg-dark-500 bg-op-10 transition-colors dark:bg-light-900 dark:bg-op-20"],
     // 文本颜色
     ["text-color", "text-black dark:text-white"],
     ["text-secondary", "text-[#717171] dark:text-coolGray-300"],
@@ -119,19 +120,11 @@ export default defineConfig({
     // 文字
     [/^el-color-(\w*)$/, ([_, color]) => ({ color: `var(--el-color-${color})` })],
     [/^el-bg-(\w*)$/, ([_, color]) => ({ "background-color": `var(--el-color-${color})` })],
-
-    ...([
-      ["none", "0"],
-      ["xs", "4px"],
-      ["sm", "8px"],
-      ["", "8px"],
-      // ["md", "0.75rem"],
-      // ["lg", "1rem"],
-      // ["xl", "1.25rem"],
-      // ["round", "2rem"],
-      // ["circle", "100%"],
-      // ["full", "9999px"],
-    ] as const).map(([k, v]) => [`rounded${k ? `-${k}` : ""}`, { "border-radius": v }]),
+    // 将 rounded 系列改为数组形式
+    ["rounded", { "border-radius": "8px" }],
+    ["rounded-none", { "border-radius": "0" }],
+    ["rounded-xs", { "border-radius": "4px" }],
+    ["rounded-sm", { "border-radius": "8px" }],
   ],
   theme: {
     colors: {

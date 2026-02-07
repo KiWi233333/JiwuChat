@@ -26,7 +26,7 @@ const googleIconUrl = "https://www.google.com/s2/favicons?sz=64&domain=";
       <small :ctx-name="ctxName" :url="data.url" class="text-overflow-3 mr-3 h-3rem flex-1 text-mini" :title="data.description">
         {{ data.description || "暂无网站具体描述..." }}
       </small>
-      <CardElImage
+      <CommonElImage
         :src="data.image || data.icon"
         alt=""
         title="查看大图"
@@ -37,7 +37,7 @@ const googleIconUrl = "https://www.google.com/s2/favicons?sz=64&domain=";
       />
     </div>
     <div v-if="footer" :ctx-name="ctxName" title="" :url="data.url" class="url-footer flex items-center border-default-2-t pt-1.5 text-mini">
-      <CardElImage
+      <CommonElImage
         :src="data.icon"
         error-root-class="bg-color-2"
         error-class="!hidden"
@@ -45,7 +45,7 @@ const googleIconUrl = "https://www.google.com/s2/favicons?sz=64&domain=";
         load-class="none"
       >
         <template #error>
-          <CardElImage
+          <CommonElImage
             :src="googleIconUrl + data.url"
             error-root-class="bg-color-2"
             error-class="!hidden"
@@ -53,7 +53,7 @@ const googleIconUrl = "https://www.google.com/s2/favicons?sz=64&domain=";
             load-class="none"
           />
         </template>
-      </CardElImage>
+      </CommonElImage>
       <span truncate :title="footer">{{ footer }}</span>
     </div>
   </a>

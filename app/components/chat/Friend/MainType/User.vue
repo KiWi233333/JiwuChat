@@ -102,7 +102,7 @@ watch(userId, (val: string) => {
     <template v-else>
       <!-- 信息 -->
       <div flex gap-4 border-default-b pb-6 sm:gap-6>
-        <CardElImage
+        <CommonElImage
           :src="BaseUrlImg + targetUserInfo.avatar" fit="cover"
           :preview-src-list="[BaseUrlImg + targetUserInfo.avatar]"
           preview-teleported
@@ -115,7 +115,7 @@ watch(userId, (val: string) => {
             <div class="flex-1 truncate text-1.2rem">
               {{ targetUserInfo.nickname }}
             </div>
-            <BtnElButton
+            <CommonElButton
               size="small"
               class="ml-a flex-shrink-0 text-mini tracking-0.2em hover:shadow"
               text
@@ -124,7 +124,7 @@ watch(userId, (val: string) => {
               @click="navigateToUserInfoPage(userId)"
             >
               资料
-            </BtnElButton>
+            </CommonElButton>
           </div>
           <p mt-a truncate text-mini :title="userId">
             ID：{{ userId }}
@@ -172,7 +172,7 @@ watch(userId, (val: string) => {
       </div>
       <!-- 按钮 -->
       <div class="mx-a">
-        <BtnElButton
+        <CommonElButton
           v-if="isFriend"
           key="delete"
           icon-class="i-solar:trash-bin-trash-outline p-2 mr-2"
@@ -182,8 +182,8 @@ watch(userId, (val: string) => {
           @click="deleteFriend(userId)"
         >
           删除好友&ensp;
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
           v-if="isFriend"
           key="send"
           icon-class="i-solar:chat-line-bold p-2 mr-2"
@@ -192,8 +192,8 @@ watch(userId, (val: string) => {
           @click="chat.toContactSendMsg('userId', userId)"
         >
           发送消息&ensp;
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
           v-else-if="userId !== userStore.userInfo.id"
           key="add"
           icon-class="i-solar:user-plus-bold p-2 mr-2"
@@ -201,7 +201,7 @@ watch(userId, (val: string) => {
           @click="handleApplyFriend(userId)"
         >
           添加好友&ensp;
-        </BtnElButton>
+        </CommonElButton>
       </div>
     </template>
 

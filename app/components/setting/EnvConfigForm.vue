@@ -167,12 +167,12 @@ onMounted(() => {
       </div>
       <!-- 操作按钮 -->
       <div class="flex pt-4">
-        <BtnElButton class="w-full tracking-0.1em" text bg :size="size" @click="resetConfig">
+        <CommonElButton class="w-full tracking-0.1em" text bg :size="size" @click="resetConfig">
           恢复默认
-        </BtnElButton>
-        <BtnElButton class="w-full tracking-0.1em" type="primary" :size="size" @click="saveConfig">
+        </CommonElButton>
+        <CommonElButton class="w-full tracking-0.1em" type="primary" :size="size" @click="saveConfig">
           保存配置
-        </BtnElButton>
+        </CommonElButton>
       </div>
     </el-form>
   </div>

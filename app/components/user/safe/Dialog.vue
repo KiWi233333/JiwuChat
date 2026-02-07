@@ -39,43 +39,44 @@ function closePhone() {
 
 <template>
   <!-- 密码修改弹窗 -->
-  <DialogPopup
+  <CommonPopup
     :model-value="modelValue.showUpdatePwd"
     :show-close="true"
     :close-on-click-modal="true"
     :destroy-on-close="true"
-    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
+    content-class="block w-full overflow-hidden p-4 sm:rounded-2 sm:(p-6 pt-0) sm:backdrop-blur-5px sm:w-340px sm:border-default-2 sm:card-default"
     @update:model-value="(val) => !val && closePwd()"
     @cancel="closePwd"
   >
     <UserSafePwdForm @close="closePwd" />
-  </DialogPopup>
+  </CommonPopup>
 
   <!-- 邮箱修改弹窗 -->
-  <DialogPopup
+  <CommonPopup
     :model-value="modelValue.showUpdateEmail"
     :show-close="true"
     :close-on-click-modal="true"
     :destroy-on-close="true"
-    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
+    content-class="block w-full overflow-hidden p-4 sm:rounded-2 sm:(p-6 pt-0) sm:backdrop-blur-5px sm:w-340px sm:border-default-2 sm:card-default"
     @update:model-value="(val) => !val && closeEmail()"
     @cancel="closeEmail"
   >
     <UserSafeEmailForm @close="closeEmail" />
-  </DialogPopup>
+  </CommonPopup>
 
   <!-- 手机号修改弹窗 -->
-  <DialogPopup
+  <CommonPopup
     :model-value="modelValue.showUpdatePhone"
     :show-close="true"
     :close-on-click-modal="true"
+    content-class="block w-full overflow-hidden p-4 sm:rounded-2 sm:(p-6 pt-0) sm:backdrop-blur-5px sm:w-340px sm:border-default-2 sm:card-default"
     :destroy-on-close="true"
-    content-class="!p-0 !border-0 !bg-transparent !shadow-none"
     @update:model-value="(val) => !val && closePhone()"
     @cancel="closePhone"
   >
     <UserSafePhoneForm @close="closePhone" />
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+</style>

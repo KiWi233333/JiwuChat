@@ -7,61 +7,113 @@ useSeoMeta({
   keywords: appKeywords,
 });
 const chat = useChatStore();
-const theFriendOpt = computed({
-  get: () => chat.theFriendOpt,
-  set: (val) => {
-    chat.theFriendOpt = val;
-  },
+const setting = useSettingStore();
+
+// 移动端：用路由模拟页面标签，返回键可关闭右侧面板
+const isMobileSize = computed(() => setting.isMobileSize);
+
+// 移动端：右侧面板使用与路由一致的滑入/滑出动画（受设置项控制）
+const friendPanelTransitionName = computed(() => {
+  const enabled = setting.isMobileSize && !setting.settingPage.isCloseAllTransition && setting.settingPage.animation.pageTransition;
+  return enabled ? "friend-panel-slide" : "friend-panel-fade";
 });
-const { history, undo, clear } = useRefHistory(theFriendOpt, {
-  deep: true,
-  capacity: 10,
-});
-async function clearHistory() {
-  chat.showTheFriendPanel = false;
-  clear?.();
+
+// 离开动画进行中，避免外层立即 hidden 导致滑出动画被裁掉（含浏览器返回关闭）
+const isPanelLeaving = ref(false);
+watch(() => chat.showTheFriendPanel, (visible) => {
+  if (!visible) {
+    isPanelLeaving.value = true;
+  }
+}, { flush: "sync" });
+function onPanelAfterLeave() {
+  isPanelLeaving.value = false;
 }
+
+/**
+ * 关闭面板
+ */
+function closePanel() {
+  if (setting.isMobileSize && friendPanelTransitionName.value === "friend-panel-slide") {
+    isPanelLeaving.value = true;
+  }
+  chat.showTheFriendPanel = false;
+  chat.setTheFriendOpt(FriendOptType.Empty, {});
+}
+
+/**
+ * 是否为空面板
+ */
 const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Empty);
+
+/**
+ * 右侧面板是否可见
+ */
+const isRightColumnVisible = computed(() => chat.showTheFriendPanel || isPanelLeaving.value);
+
+/**
+ * 左侧面板样式类
+ */
+const leftColumnClass = computed(() => [
+  isMobileSize.value ? (chat.showTheFriendPanel ? "-translate-x-30" : "") : "",
+  "w-full transition-all",
+  "sm:(relative mx-auto w-320px shrink-0 border-default-r p-0)",
+]);
+
+/**
+ * 右侧面板样式类
+ */
+const rightColumnClass = computed(() => {
+  const isVisible = isMobileSize.value ? isRightColumnVisible.value : chat.showTheFriendPanel;
+  return [
+    "right-column-outer z-1 h-full min-w-0 flex-1 flex-col fixed top-0 left-0 sm:(card-bg-color-2 static)",
+    isVisible ? "flex absolute sm:(p-0 relative) left-0 w-full" : "hidden sm:flex",
+  ];
+});
 </script>
 
 <template>
   <div class="h-full w-full flex flex-1">
-    <div
-      class="w-full transition-all sm:(relative mx-auto w-320px shrink-0 border-default-r p-0)"
-    >
-      <!-- 菜单面板 -->
+    <!-- 左侧列表面板 -->
+    <div :class="leftColumnClass">
       <ChatFriendTabs class="nav-padding-top-6 relative mx-a h-full flex-shrink-0 p-4 pb-0" />
     </div>
-    <div
-      class="bg z-1 h-full min-w-0 flex-1 flex-col bg-color-2 sm:card-bg-color-2"
-      :class="chat.showTheFriendPanel ? 'flex absolute sm:(p-0 relative) left-0 w-full' : 'hidden sm:flex'"
-    >
-      <template v-if="isEmptyPanel">
+
+    <!-- 右侧详情面板 -->
+    <div :class="rightColumnClass">
+      <Transition
+        :name="friendPanelTransitionName"
+        mode="out-in"
+        @after-leave="onPanelAfterLeave"
+      >
         <div
-          class="i-solar:alt-arrow-left-line-duotone absolute right-18 top-6 z-1000 hidden btn-danger p-2.6 sm:right-16 sm:top-11 sm:block"
-          title="关闭"
-          @click="undo()"
-        />
-        <div
-          class="i-carbon:close absolute right-6 top-6 z-1000 block scale-110 btn-danger p-2.6 sm:right-6 sm:top-11"
-          title="关闭"
-          @click="clearHistory"
-        />
-        <!-- 面板 -->
-        <Transition
-          name="main-panel-fade"
-          mode="out-in"
-          :duration="120"
+          v-if="chat.showTheFriendPanel"
+          key="friend-panel"
+          class="bg right-column-inner h-full min-w-0 w-full flex-1 flex-col bg-color-2 sm:card-bg-color-2"
         >
-          <ChatFriendMainType
-            :key="`${chat.theFriendOpt?.type}_${chat.theFriendOpt?.data?.id || Date.now()}`"
-            :data="chat.theFriendOpt"
-            class="nav-padding-top-6 relative z-999 mx-a h-full w-full flex-1 flex-shrink-0 sm:!bg-transparent"
-          />
-        </Transition>
-      </template>
+          <template v-if="isEmptyPanel">
+            <!-- 关闭按钮 (Mobile Only) -->
+            <div
+              class="i-carbon:close absolute right-6 top-6 z-1000 block scale-110 btn-danger p-2.6 sm:right-6 sm:top-11"
+              title="关闭"
+              @click="closePanel"
+            />
+            <!-- 内容区 -->
+            <Transition
+              name="main-panel-fade"
+            >
+              <ChatFriendMainType
+                :key="`${chat.theFriendOpt?.type}_${chat.theFriendOpt?.data?.id || Date.now()}`"
+                :data="chat.theFriendOpt"
+                class="nav-padding-top-6 relative z-999 mx-a h-full w-full flex-1 flex-shrink-0 bg-color sm:!bg-transparent"
+              />
+            </Transition>
+          </template>
+        </div>
+      </Transition>
+
+      <!-- 空状态 -->
       <div
-        v-else
+        v-if="!chat.showTheFriendPanel && !setting.isMobileSize"
         key="chat-friend-empty"
         class="flex-row-c-c flex-1 flex-shrink-0 select-none bg-color-2"
       >
@@ -75,6 +127,9 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
 </template>
 
 <style scoped lang="scss">
+$ios-transition-timing: cubic-bezier(0.25, 0.75, 0.1, 1);
+$page-transition-duration: 0.4s;
+
 .main {
   height: 100%;
   width: 100%;
@@ -106,6 +161,37 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
   );
 }
 
+/* 移动端：右侧面板滑入/滑出（类似路由 push/pop） */
+.right-column-inner {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.friend-panel-slide-enter-active,
+.friend-panel-slide-leave-active {
+  transition: transform $page-transition-duration $ios-transition-timing;
+}
+.friend-panel-slide-enter-from {
+  transform: translateX(100%);
+}
+.friend-panel-slide-leave-to {
+  transform: translateX(100%);
+}
+
+/* 非移动端或关闭动画时使用短渐变 */
+.friend-panel-fade-enter-active,
+.friend-panel-fade-leave-active {
+  transition: opacity 0.2s ease-out;
+}
+.friend-panel-fade-enter-from,
+.friend-panel-fade-leave-to {
+  opacity: 0;
+}
+.friend-panel-fade-enter-to,
+.friend-panel-fade-leave-from {
+  opacity: 1;
+}
+
 .main-panel-fade-enter-active,
 .main-panel-fade-leave-active {
   transition: all 0.2s ease-out;
@@ -115,7 +201,6 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
 .main-panel-fade-leave-to {
   opacity: 0;
   filter: blur(4px);
-  // transform: scale(0.99) translateY(-0.2rem);
 }
 .main-panel-fade-enter-to,
 .main-panel-fade-leave-from {

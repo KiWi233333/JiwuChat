@@ -1,5 +1,7 @@
 
 <script lang="ts" setup>
+import MenuHeaderMenuBarDesktop from "~/components/menu/HeaderMenuBarDesktop.vue";
+import MenuHeaderMenuBarMobile from "~/components/menu/HeaderMenuBarMobile.vue";
 import { removeRootClass, STOP_TRANSITION_KEY } from "~/init/setting";
 
 // 模板页面
@@ -27,18 +29,20 @@ const { message } = useRouteAnnouncer({
       v-if="user.isLogin"
       class="relative h-full flex flex-col overflow-hidden"
     >
-      <MenuHeaderMenuBar>
+      <component
+        :is="setting.isMobileSize ? MenuHeaderMenuBarMobile : MenuHeaderMenuBarDesktop"
+      >
         <template #left>
           <!-- logo -->
           <div v-if="setting.osType !== 'macos'" class="left relative z-1000 flex-row-c-c gap-3 tracking-0.2em">
             <span class="hidden flex-row-c-c sm:flex">
-              <CardElImage src="/logo.png" class="h-6 w-6" />
+              <CommonElImage src="/logo.png" class="h-6 w-6" />
             </span>
             <strong hidden sm:block>{{ message }}</strong>
           </div>
           <div v-else class="left relative z-1000 flex-row-c-c gap-3 tracking-0.2em" />
         </template>
-      </MenuHeaderMenuBar>
+      </component>
       <div
         class="main-box relative"
         v-bind="$attrs"

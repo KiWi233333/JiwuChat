@@ -1,4 +1,5 @@
 import type { BaseToken, MessageNodeConfig, ParseContext } from "./types";
+import { MessageNode } from "./types";
 
 /**
  * 替换项（内部使用）
@@ -25,10 +26,13 @@ export class MessageNodeRegistry {
   }
 
   /**
-   * 批量注册节点
+   * 批量注册节点（可传单个节点或节点数组）
+   * 自动从节点对象读取配置（即如果传入节点实例，自动提取其 config 属性）
    */
-  registerAll(configs: MessageNodeConfig[]): this {
-    for (const config of configs) {
+  registerAll(nodes: Array<MessageNodeConfig | MessageNode>): this {
+    for (const item of nodes) {
+      // 支持节点实例（有 config 属性）或直接为 config 对象
+      const config = item instanceof MessageNode ? item.getConfig() : item;
       this.register(config);
     }
     return this;

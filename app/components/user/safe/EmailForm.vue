@@ -43,7 +43,7 @@ async function onUpdatePhone(formEl: FormInstance | undefined) {
         confirmButtonText: "确认修改",
         cancelButtonText: "取消",
         lockScroll: false,
-      }).then((action: string) => {
+      }).then((action) => {
         if (action === "confirm")
           toUpdate();
       });
@@ -100,7 +100,6 @@ async function getEmailCode() {
     hide-required-asterisk
     :rules="rules"
     :model="form"
-    class="block h-fit w-95vw overflow-hidden border-default-2 rounded-2 card-default p-6 backdrop-blur-5px sm:w-360px"
   >
     <div mb-4 mt-2 text-center text-lg font-bold tracking-0.2em>
       {{ user.userInfo.isEmailVerified ? "更换" : "绑定" }}邮箱

@@ -316,7 +316,7 @@ onDeactivated(() => {
           @submit.prevent="onSubmit"
         >
           <div class="group relative h-2rem w-2rem shrink-0">
-            <CardAvatar
+            <CommonAvatar
               :src="user.userInfo.avatar ? BaseUrlImg + user.userInfo.avatar : ''"
               class="h-full w-full cursor-pointer rounded-1/2 shadow"
             />
@@ -352,7 +352,7 @@ onDeactivated(() => {
               @keydown.enter.prevent="onSubmit"
             />
           </el-form-item>
-          <BtnElButton
+          <CommonElButton
             class="group ml-a"
             style="height: 2rem !important;"
             :class="isChat ? 'animate-pulse' : ''"
@@ -361,7 +361,7 @@ onDeactivated(() => {
             @click="isChat ? onStop() : onSubmit()"
           >
             {{ isChat ? "结束" : "发送" }}
-          </BtnElButton>
+          </CommonElButton>
         </el-form>
       </div>
     </el-scrollbar>

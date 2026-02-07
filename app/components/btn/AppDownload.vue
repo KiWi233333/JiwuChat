@@ -67,7 +67,7 @@ onMounted(async () => {
           v-bind="$attrs"
           @click="handleRepo(OAuthPlatformCode.GITHUB, false)"
         >
-          <CardElImage error-root-class="hidden" src="/images/brand/github.svg" alt="GitHub" class="h-5/6 w-5/6 object-contain dark:invert" />
+          <CommonElImage error-root-class="hidden" src="/images/brand/github.svg" alt="GitHub" class="h-5/6 w-5/6 object-contain dark:invert" />
         </div>
       </template>
     </el-popconfirm>
@@ -88,7 +88,7 @@ onMounted(async () => {
           v-bind="$attrs"
           @click="handleRepo(OAuthPlatformCode.GITEE, false)"
         >
-          <CardElImage src="/images/brand/gitee.svg" alt="Gitee" class="h-5/6 w-5/6 object-contain" />
+          <CommonElImage src="/images/brand/gitee.svg" alt="Gitee" class="h-5/6 w-5/6 object-contain" />
         </div>
       </template>
     </el-popconfirm>

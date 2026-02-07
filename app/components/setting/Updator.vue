@@ -84,7 +84,7 @@ const ignoreUpdate = computed({
         <div class="w-20rem p-1">
           <!-- 版本信息 -->
           <div class="top flex">
-            <CardElImage title="去【官网】查看完整更新公告" src="/logo.png" class="mr-3 h-10 w-10" @click="useOpenUrl(`${appBlogHost}versions/v${latestVersionInfo?.version}`)" />
+            <CommonElImage title="去【官网】查看完整更新公告" src="/logo.png" class="mr-3 h-10 w-10" @click="useOpenUrl(`${appBlogHost}versions/v${latestVersionInfo?.version}`)" />
             <div class="flex flex-1 flex-col justify-around text-xs">
               <strong>
                 {{ appEnName }}
@@ -116,9 +116,9 @@ const ignoreUpdate = computed({
             <el-checkbox v-model="ignoreUpdate" size="small">
               忽略更新
             </el-checkbox>
-            <BtnElButton :loading="setting.appUploader.isUpdating" size="small" type="primary" @click="setting.handleAppUpdate()">
+            <CommonElButton :loading="setting.appUploader.isUpdating" size="small" type="primary" @click="setting.handleAppUpdate()">
               立即更新
-            </BtnElButton>
+            </CommonElButton>
           </div>
           <div v-else class="flex-row-bt-c">
             <span text-mini>操作</span>

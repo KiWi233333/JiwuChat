@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { getImgSize } from ".";
 
 /**
@@ -40,7 +41,7 @@ function handleImagePreview() {
   useImageViewer.open({
     urlList: imgsUrl,
     index: imgsUrl.indexOf(currentImgUrl),
-    ctxName: "img",
+    ctxName: MSG_CTX_NAMES.IMG,
   });
 }
 </script>
@@ -56,18 +57,18 @@ function handleImagePreview() {
       <!-- 内容 -->
       <div
         v-if="body?.url"
-        ctx-name="img"
+        :ctx-name="MSG_CTX_NAMES.IMG"
         :style="{ width, height }"
         class="max-h-50vh max-w-76vw cursor-pointer border-default-2 card-default shadow-sm transition-shadow md:(max-h-18rem max-w-18rem) hover:shadow"
         @click="handleImagePreview"
       >
-        <CardElImage
+        <CommonElImage
           :src="getUrl"
           load-class="sky-loading block absolute  top-0"
           class="h-full w-full card-rounded-df"
           :alt="body?.url"
           fit="cover"
-          ctx-name="img"
+          :ctx-name="MSG_CTX_NAMES.IMG"
           :preview="false"
         />
       </div>

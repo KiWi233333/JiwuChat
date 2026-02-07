@@ -43,7 +43,7 @@ function exitLogin(ua?: string) {
     confirmButtonText: "确认下线",
     confirmButtonClass: "el-button--danger",
   })
-    .then(async (action: string) => {
+    .then(async (action) => {
       if (action === "confirm") {
         const arr = ua ? [ua] : (deviceList.value?.map(p => p.userAgentString) as string[]);
         const { code, message } = await toUserOffline(arr, user.getToken);

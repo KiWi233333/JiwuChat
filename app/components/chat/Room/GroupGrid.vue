@@ -273,7 +273,7 @@ function onInviteMember() {
       height="45vh"
       wrap-class="shadow-in"
     >
-      <ListAutoIncre
+      <CommonListAutoIncre
         :immediate="true"
         :auto-stop="true"
         :no-more="!isLoading && chat.roomGroupPageInfo.isLast"
@@ -293,7 +293,7 @@ function onInviteMember() {
             })"
           >
             <div relative h-3.2em w-3.2em flex-row-c-c>
-              <CardElImage
+              <CommonElImage
                 v-if="p.avatar"
                 :src="BaseUrlImg + p.avatar" fit="cover"
                 class="h-2.4rem w-2.4rem flex-shrink-0 overflow-auto border-default card-default object-cover"
@@ -306,9 +306,9 @@ function onInviteMember() {
             <small mx-a mt-2 w-5em truncate text-center>{{ p.nickName }}</small>
           </div>
         </div>
-      </ListAutoIncre>
+      </CommonListAutoIncre>
     </el-scrollbar>
-    <BtnElButton
+    <CommonElButton
       class="op-0 group-hover:op-100" icon-class="i-solar:logout-3-broken mr-2" type="danger" round plain
       @click="chat.exitGroupConfirm(data.roomId, isTheGroupOwner, () => {
         chat.removeContact(data.roomId);
@@ -317,7 +317,7 @@ function onInviteMember() {
       <span hidden sm:block>
         {{ getTheRoleType === ChatRoomRoleEnum.OWNER ? '解散群聊' : '退出群聊' }}
       </span>
-    </BtnElButton>
+    </CommonElButton>
   </div>
 </template>
 

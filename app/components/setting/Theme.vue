@@ -18,7 +18,7 @@ const showThemeConfig = ref(false);
 <template>
   <div v-bind="$attrs" class="group h-8 flex-row-bt-c">
     主题定制
-    <BtnElButton
+    <CommonElButton
       class="ml-a mr-2 h-7 !border-default-hover"
       text
       bg

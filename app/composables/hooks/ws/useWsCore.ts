@@ -1,82 +1,43 @@
-import type { WSUpdateContactInfoMsg } from "~/types/chat/WsType";
-import { WsMsgBodyType, WsStatusEnum } from "~/types/chat/WsType";
+import { WsStatusEnum } from "~/types/chat/WsType";
+import { processMessage } from "./messageConfig";
+import { WsMsgKey } from "./messageKeys";
+import { messageConfig } from "./messages";
 
-/**
- * WebSocket消息类型映射接口
- */
-export interface WsMsgItemMap {
-  newMsg: ChatMessageVO[];
-  onlineNotice: WSOnlineOfflineNotify[];
-  recallMsg: WSMsgRecall[];
-  deleteMsg: WSMsgDelete[];
-  applyMsg: WSFriendApply[];
-  memberMsg: WSMemberChange[];
-  tokenMsg: object[];
-  rtcMsg: WSRtcCallMsg[];
-  pinContactMsg: WSPinContactMsg[];
-  aiStreamMsg: WSAiStreamMsg[];
-  updateContactInfoMsg: WSUpdateContactInfoMsg[]
-  other: object[];
-}
+export type { MessageContext, MessageHandler } from "./messageConfig";
+export { WsMsgKey } from "./messageKeys";
+export type { WsMsgItemMap } from "./messages";
 
 /**
  * WebSocket消息处理Hook
  */
 export function useWsMessage() {
-  // 消息类型映射
-  const wsMsgMap: Record<WsMsgBodyType, keyof WsMsgItemMap> = {
-    [WsMsgBodyType.MESSAGE]: "newMsg",
-    [WsMsgBodyType.ONLINE_OFFLINE_NOTIFY]: "onlineNotice",
-    [WsMsgBodyType.RECALL]: "recallMsg",
-    [WsMsgBodyType.DELETE]: "deleteMsg",
-    [WsMsgBodyType.APPLY]: "applyMsg",
-    [WsMsgBodyType.MEMBER_CHANGE]: "memberMsg",
-    [WsMsgBodyType.TOKEN_EXPIRED_ERR]: "tokenMsg",
-    [WsMsgBodyType.RTC_CALL]: "rtcMsg",
-    [WsMsgBodyType.PIN_CONTACT]: "pinContactMsg",
-    [WsMsgBodyType.AI_STREAM]: "aiStreamMsg",
-    [WsMsgBodyType.UPDATE_CONTACT_INFO]: "updateContactInfoMsg",
-  };
-
   // 创建空消息列表
   const emptyMsgList = (): WsMsgItemMap => ({
-    newMsg: [],
-    onlineNotice: [],
-    recallMsg: [],
-    deleteMsg: [],
-    applyMsg: [],
-    memberMsg: [],
-    tokenMsg: [],
-    rtcMsg: [],
-    pinContactMsg: [],
-    aiStreamMsg: [],
-    updateContactInfoMsg: [],
-    other: [],
+    [WsMsgKey.NEW_MSG]: [],
+    [WsMsgKey.ONLINE_NOTICE]: [],
+    [WsMsgKey.RECALL_MSG]: [],
+    [WsMsgKey.DELETE_MSG]: [],
+    [WsMsgKey.APPLY_MSG]: [],
+    [WsMsgKey.MEMBER_MSG]: [],
+    [WsMsgKey.TOKEN_MSG]: [],
+    [WsMsgKey.RTC_MSG]: [],
+    [WsMsgKey.PIN_CONTACT_MSG]: [],
+    [WsMsgKey.AI_STREAM_MSG]: [],
+    [WsMsgKey.UPDATE_CONTACT_INFO_MSG]: [],
+    [WsMsgKey.OTHER]: [],
   });
 
   // 消息列表
   const wsMsgList = ref<WsMsgItemMap>(emptyMsgList());
 
   // 是否有新消息
-  const isNewMsg = computed(() => wsMsgList.value.newMsg.length > 0);
+  const isNewMsg = computed(() => (wsMsgList.value.newMsg?.length ?? 0) > 0);
 
-  const { handleNotification } = useWsNotification();
   /**
    * 处理接收到的WebSocket消息
    */
   function processWsMessage(msgData: Result<WsMsgBodyVO>) {
-    if (!msgData)
-      return;
-
-    const wsMsg = msgData.data;
-    const body = wsMsg.data;
-
-    // 如果消息类型在映射中存在，则处理该消息
-    if (wsMsgMap[wsMsg.type] !== undefined) {
-      wsMsgList.value[wsMsgMap[wsMsg.type]].push(body as any);
-      mitter.emit(resolteChatPath(wsMsg.type), body);
-    }
-    handleNotification(wsMsg);
+    processMessage(messageConfig, msgData, wsMsgList);
   }
 
   /**
@@ -87,13 +48,19 @@ export function useWsMessage() {
   }
 
   return {
-    wsMsgMap,
     wsMsgList,
     isNewMsg,
     processWsMessage,
     resetMsgList,
     emptyMsgList,
   };
+}
+
+/** 页面是否处于可见/聚焦状态（用于断联重连节流） */
+function isPageVisible(): boolean {
+  if (typeof document === "undefined")
+    return true;
+  return document.visibilityState === "visible";
 }
 
 /**
@@ -157,20 +124,28 @@ export function useWsWorker() {
     if (!worker.value)
       return;
 
-    // Web Worker 消息处理
+    // Web Worker 消息处理（仅在页面可见时重连，避免后台标签页频繁重连）
     worker.value.onmessage = (e) => {
-      if (e.data.type === "reload")
-        reload();
+      if (e.data.type === "reload") {
+        if (isPageVisible())
+          reload();
+        return;
+      }
       if (e.data.type === "heart") {
-        if (ws.status !== WsStatusEnum.OPEN)
-          return reload();
+        if (ws.status !== WsStatusEnum.OPEN) {
+          if (isPageVisible())
+            reload();
+          return;
+        }
         try {
           ws.sendHeart();
         }
         catch (error) {
           console.error(error);
-          reload();
+          if (isPageVisible())
+            reload();
         }
+        return;
       }
       if (e.data.type === "log")
         console.log(e.data.data);
@@ -197,7 +172,7 @@ export function useWsWorker() {
   }
 
   /**
-   * 发送状态到Worker
+   * 发送状态到Worker（含页面可见性，供 Worker 决定是否请求重连）
    */
   function sendStatusToWorker() {
     if (!worker.value)
@@ -207,7 +182,15 @@ export function useWsWorker() {
     worker.value.postMessage({
       status: ws.status,
       noticeType,
+      visible: isPageVisible(),
     });
+  }
+
+  /** 仅向 Worker 同步可见性（如 visibilitychange 时） */
+  function sendVisibilityToWorker() {
+    if (!worker.value)
+      return;
+    worker.value.postMessage({ type: "visibility", visible: isPageVisible() });
   }
 
   /**
@@ -224,24 +207,26 @@ export function useWsWorker() {
     initWorker,
     reload,
     cleanupWorker,
+    sendVisibilityToWorker,
   };
 }
 
 /**
- * 初始化WebSocket
+ * 初始化WebSocket（结合聚焦/可见性：仅在前台时断联重连）
  */
 export async function useWsInit() {
   const ws = useWsStore();
   const user = useUserStore();
 
-  // 使用Worker管理hooks
-  const { reload: reloadWorker, cleanupWorker } = useWsWorker();
+  const { reload: reloadWorker, cleanupWorker, sendVisibilityToWorker } = useWsWorker();
 
-  // 自动重连
   const validStatus = [WsStatusEnum.OPEN, WsStatusEnum.CONNECTION];
+
+  // 自动重连：仅当页面可见时执行，避免后台标签页频繁重连
   watchDebounced(() => !validStatus.includes(ws.status) && user.isLogin, (bool) => {
     if (bool) {
-      reloadWorker();
+      if (isPageVisible())
+        reloadWorker();
     }
     else if (!user.isLogin) {
       cleanupWorker();
@@ -252,12 +237,20 @@ export async function useWsInit() {
     deep: true,
   });
 
-  // 初始状态检查
-  if (!validStatus.includes(ws.status) && user.isLogin) {
+  // 初始状态检查（仅可见时重连）
+  if (!validStatus.includes(ws.status) && user.isLogin && isPageVisible()) {
     reloadWorker();
   }
 
-  // 暴露给外部调用，用于刷新Web Worker状态
+  // 页面从隐藏变为可见时：同步可见性到 Worker，并触发一次断联重连检查
+  if (typeof document !== "undefined") {
+    document.addEventListener("visibilitychange", () => {
+      sendVisibilityToWorker();
+      if (document.visibilityState === "visible" && !validStatus.includes(ws.status) && user.isLogin)
+        reloadWorker();
+    });
+  }
+
   mitter.off(MittEventType.CHAT_WS_RELOAD);
   mitter.on(MittEventType.CHAT_WS_RELOAD, reloadWorker);
 

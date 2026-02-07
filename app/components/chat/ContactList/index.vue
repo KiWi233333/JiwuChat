@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { SwipeActionButton } from "@/components/common/SwipeAction.vue";
 import type { ChatContactVO } from "@/composables/api/chat/contact";
 import ContextMenu from "@imengyu/vue3-context-menu";
 import { RoomType } from "@/composables/api/chat/contact";
@@ -174,6 +175,36 @@ function handleOfflineReload() {
   if (ws.status !== WsStatusEnum.OPEN) {
     ws.reload();
   }
+}
+
+// 获取滑动菜单按钮
+function getSwipeButtons(room: ChatContactVO): SwipeActionButton[] {
+  if (!setting.isMobileSize)
+    return [];
+
+  const isPin = !!room.pinTime;
+  const isShield = room.shieldStatus === isTrue.TRUE;
+
+  return [
+    {
+      text: isPin ? "取消置顶" : "置顶",
+      type: "primary",
+      onClick: () => chat.setPinContact(room.roomId, isPin ? isTrue.FALSE : isTrue.TRUE),
+    },
+    {
+      text: isShield ? "取消免打扰" : "免打扰",
+      type: "warning",
+      onClick: () => chat.setShieldContact(room.roomId, !isShield ? isTrue.TRUE : isTrue.FALSE),
+    },
+    {
+      text: "删除",
+      type: "danger",
+      // icon: "i-solar:trash-bin-minimalistic-outline",
+      onClick: () => {
+        chat.deleteContactConfirm(room.roomId, () => {});
+      },
+    },
+  ];
 }
 
 // 右键菜单
@@ -366,6 +397,9 @@ onDeactivated(() => {
   <div
     class="group main main-bg-color"
   >
+    <!-- 移动端头部菜单 -->
+    <LazyMenuHeaderMenuBarMobile v-if="setting.isMobileSize" />
+
     <!-- 搜索群聊 -->
     <div
       class="nav-padding-top-6 header"
@@ -412,7 +446,7 @@ onDeactivated(() => {
       </div>
     </div>
     <!-- 会话列表 -->
-    <ListVirtualScrollList
+    <CommonListVirtualScrollList
       ref="scrollbarRef"
       :overscan="20"
       :items="chat.getContactList"
@@ -423,6 +457,7 @@ onDeactivated(() => {
       item-class="contact-item"
       :get-item-key="(room) => room.roomId"
       :selected-index="currentRoomIndex"
+      :pull-distance="180"
       enable-pull-to-refresh
       @refresh="reload"
       @scroll="onScroll"
@@ -431,7 +466,7 @@ onDeactivated(() => {
     >
       <!-- 添加骨架屏 -->
       <template #pre>
-        <div v-if="isReload" key="skeleton" class="main-bg-color absolute left-0 top-0 z-2 h-100vh w-full flex-1 overflow-y-hidden">
+        <div v-if="isReload" key="skeleton" class="main-bg-color absolute left-0 top-0 z-120 h-100vh w-full flex-1 overflow-y-hidden">
           <div v-for="i in 12" :key="i" class="contact-sky">
             <div class="flex-shrink-0 flex-shrink-0 rounded-full bg-color object-cover !h-10 !w-10" />
             <!-- 信息 -->
@@ -443,54 +478,61 @@ onDeactivated(() => {
         </div>
       </template>
       <template #default="{ item: room }">
-        <div
-          :id="`contact-${room.roomId}`"
-          v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.05)', duration: 800 }"
-          class="contact"
-          :class="{
-            'is-pin': room.pinTime,
-            'is-checked': room.roomId === chat.theRoomId,
-            'is-shield': room.shieldStatus === isTrue.TRUE,
-          }"
-          @contextmenu.stop="onContextMenu($event, room)"
+        <CommonSwipeAction
+          class="h-full"
+          :disabled="!setting.isMobileSize"
+          :right-buttons="getSwipeButtons(room)"
+          :auto-close="true"
         >
-          <el-badge
-            :hidden="!room.unreadCount"
-            :max="99"
-            :offset="[-5, 5]"
-            :value="room.unreadCount"
-            class="badge flex-shrink-0 !h-10 !w-10"
+          <div
+            :id="`contact-${room.roomId}`"
+            v-ripple="{ color: 'rgba(var(--el-color-primary-rgb), 0.05)', duration: 800 }"
+            class="contact"
+            :class="{
+              'is-pin': room.pinTime,
+              'is-checked': room.roomId === chat.theRoomId,
+              'is-shield': room.shieldStatus === isTrue.TRUE,
+            }"
+            @contextmenu.stop="onContextMenu($event, room)"
           >
-            <CardElImage
-              :error-class="contactTypeIconClassMap[(room as ChatContactVO).type]"
-              :default-src="room.avatar"
-              fit="cover"
-              class="h-full w-full rounded-full card-bg-color-2 object-cover shadow"
-            />
-          </el-badge>
-          <div class="flex flex-1 flex-col justify-between truncate">
-            <div flex truncate>
-              <p class="text truncate text-color">
-                {{ room.name }}
+            <el-badge
+              :hidden="!room.unreadCount"
+              :max="99"
+              :offset="[-5, 5]"
+              :value="room.unreadCount"
+              class="badge flex-shrink-0 !h-10 !w-10"
+            >
+              <CommonElImage
+                :error-class="contactTypeIconClassMap[(room as ChatContactVO).type]"
+                :default-src="room.avatar"
+                fit="cover"
+                class="h-full w-full rounded-full card-bg-color-2 object-cover shadow"
+              />
+            </el-badge>
+            <div class="flex flex-1 flex-col justify-between truncate">
+              <div flex truncate>
+                <p class="text truncate text-color">
+                  {{ room.name }}
+                </p>
+                <!-- AI机器人 -->
+                <i v-if="RoomTypeTagType[room.type]" i-ri:robot-2-line class="ai-icon" />
+                <span class="text ml-a w-fit flex-shrink-0 text-right text-0.7em text-secondary leading-2em">
+                  {{ formatContactDate(room.activeTime) }}
+                </span>
+              </div>
+              <p class="text mt-1 flex text-small text-secondary">
+                <small
+                  class="h-1.5em flex-1 truncate"
+                  :class="{ 'text-theme-info font-500': room.unreadCount && room.shieldStatus !== isTrue.TRUE }"
+                >
+                  {{ room.text }}
+                </small>
+                <small v-if="room.shieldStatus === isTrue.TRUE" class="text i-carbon:notification-off ml-1 flex-shrink-0 overflow-hidden text-3 text-small" />
+                <small v-if="room.pinTime" class="text i-solar:pin-bold-duotone ml-1 flex-shrink-0 overflow-hidden text-3 text-secondary" />
               </p>
-              <!-- AI机器人 -->
-              <i v-if="RoomTypeTagType[room.type]" i-ri:robot-2-line class="ai-icon" />
-              <span class="text ml-a w-fit flex-shrink-0 text-right text-0.7em text-secondary leading-2em">
-                {{ formatContactDate(room.activeTime) }}
-              </span>
             </div>
-            <p class="text mt-1 flex text-small text-secondary">
-              <small
-                class="h-1.5em flex-1 truncate"
-                :class="{ 'text-theme-info font-500': room.unreadCount && room.shieldStatus !== isTrue.TRUE }"
-              >
-                {{ room.text }}
-              </small>
-              <small v-if="room.shieldStatus === isTrue.TRUE" class="text i-carbon:notification-off ml-1 flex-shrink-0 overflow-hidden text-3 text-small" />
-              <small v-if="room.pinTime" class="text i-solar:pin-bold-duotone ml-1 flex-shrink-0 overflow-hidden text-3 text-secondary" />
-            </p>
           </div>
-        </div>
+        </CommonSwipeAction>
       </template>
 
       <template #empty>
@@ -499,7 +541,7 @@ onDeactivated(() => {
           <span>快去找人聊天吧！</span>
         </div>
       </template>
-    </ListVirtualScrollList>
+    </CommonListVirtualScrollList>
   </div>
 </template>
 
@@ -518,9 +560,13 @@ onDeactivated(() => {
 .contact-list {
   --at-apply: "sm:p-2 p-0";
 
+  :deep(.swipe-action-content) {
+    height: 100%;
+  }
+
   .contact {
     // transition: background-color 100ms ease-in-out;
-    --at-apply: "h-full bg-color sm:(bg-transparent) dark:bg-transparent flex items-center gap-3 p-4 sm:(h-16 p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+    --at-apply: "h-full bg-color sm:(bg-transparent) dark:bg-dark-9 flex items-center gap-3 p-4 sm:(h-16 p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
     scroll-margin-top: 0.5rem;
     scroll-margin-bottom: 0.5rem;
     .text {

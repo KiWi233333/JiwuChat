@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { MdPreview } from "md-editor-v3";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import "md-editor-v3/lib/preview.css";
 
 /**
@@ -88,7 +89,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
               :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
               code-theme="a11y"
               :code-foldable="false"
-              ctx-name="content"
+              :ctx-name="MSG_CTX_NAMES.CONTENT"
               class="markdown-preview"
               :model-value="data.message?.content || ''"
             />
@@ -99,7 +100,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
       <!-- 状态 -->
       <small
         v-if="data.message.body?.status === AiReplyStatusEnum.COTINUE && data.message.body.reply?.uid === user.userId"
-        ctx-name="ai-status"
+        :ctx-name="MSG_CTX_NAMES.AI_STATUS"
         class="at-list flex-mr-a border-default"
         @click.stop="ElMessage.warning('此问答已达最大回答长度，该能力敬请期待！')"
       >

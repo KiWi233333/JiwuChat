@@ -201,7 +201,7 @@ onDeactivated(() => {
         @keydown.arrow-down.stop="handleKeydown('arrow-down')"
         @keydown.arrow-up.stop="handleKeydown('arrow-up')"
       />
-      <BtnElButton
+      <CommonElButton
         type="primary"
         class="w-5rem pr-4 text-sm shadow"
         style="position: relative; transition: 0.2s; height: 2rem;font-size: 0.8em;"
@@ -211,7 +211,7 @@ onDeactivated(() => {
         @click.self="onSearch"
       >
         搜&nbsp;索
-      </BtnElButton>
+      </CommonElButton>
     </div>
     <Transition enter-active-class="animate-(fade-in duration-100)" leave-active-class="animate-(fade-out duration-100)">
       <div v-if="isShowModel" class="absolute left-0 top-8 z-1 w-full bg-color">
@@ -265,15 +265,15 @@ onDeactivated(() => {
         </div>
         <!-- 列表 -->
         <div class="flex-1">
-          <ListVirtualScrollList
+          <CommonListVirtualScrollList
             v-if="isShowResult && searchPage.current && searchPageList.length > 0"
             ref="virtualListRef"
             :items="searchPageList"
             item-height="4rem"
-            :height="setting.isMobileSize ? 'calc(100vh - 16.5rem)' : 'calc(100vh - 7rem)'"
+            height="calc(100dvh - 10rem)"
             :selected-index="currentFocus"
             class="relative flex-1 pt-2"
-            wrap-class="py-2 flex-1 overflow-hidden"
+            wrap-class="py-2 pb-20 flex-1 overflow-hidden"
             enable-pull-to-refresh
             :overscan="20"
             :pull-trigger-distance="30"
@@ -290,7 +290,7 @@ onDeactivated(() => {
                 tabindex="0"
                 @click="emit('submit', item)"
               >
-                <CardElImage
+                <CommonElImage
                   :src="BaseUrlImg + item.avatar"
                   fit="cover"
                   error-class="i-solar:user-bold-duotone"
@@ -311,10 +311,10 @@ onDeactivated(() => {
                 </p>
               </div>
             </template>
-          </ListVirtualScrollList>
+          </CommonListVirtualScrollList>
           <ElEmpty
             v-if="!searchPage.total"
-            class="h-[calc(100vh-16.5rem)] sm:h-[calc(100vh-5rem)]"
+            class="h-100dvh min-h-0 flex flex-1 flex-col items-center justify-center"
             :image-size="80"
             :description="searchPageList.length <= 0 && searchPage.current > 0 ? '没有找到好友' : '好友查找'"
           >

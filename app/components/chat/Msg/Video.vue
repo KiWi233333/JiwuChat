@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { getImgSize } from ".";
 
 /**
@@ -52,26 +53,26 @@ const size = computed(() => getImgSize(props.data.message.body?.thumbWidth || pr
       <div
         class="relative max-h-50vh max-w-76vw flex-row-c-c cursor-pointer border-default-hover card-default md:(max-h-18rem max-w-18rem)"
         title="点击播放[视频]"
-        ctx-name="video"
+        :ctx-name="MSG_CTX_NAMES.VIDEO"
         :style="{ width: size.width || 100, height: size.height || 100 }"
         @click.stop="showVideoDetail($event)"
       >
         <template
           v-if="body?.url"
         >
-          <CardElImage
+          <CommonElImage
             loading="lazy"
             :style="{ width: size.width || 100, height: size.height || 100 }"
-            ctx-name="video"
+            :ctx-name="MSG_CTX_NAMES.VIDEO"
             error-class="i-solar:file-smile-line-duotone p-2.8"
             :src="thumbUrl"
             class="h-full w-full flex-row-c-c card-default"
           />
-          <div ctx-name="video" class="play-btn absolute h-12 w-12 flex-row-c-c rounded-full" style="border-width: 2px;">
-            <i i-solar:alt-arrow-right-bold ml-1 p-4 ctx-name="video" />
+          <div :ctx-name="MSG_CTX_NAMES.VIDEO" class="play-btn absolute h-12 w-12 flex-row-c-c rounded-full" style="border-width: 2px;">
+            <i i-solar:alt-arrow-right-bold ml-1 p-4 :ctx-name="MSG_CTX_NAMES.VIDEO" />
           </div>
         </template>
-        <div v-if="formattedDuration" ctx-name="video-duration" class="absolute bottom-1 right-2 text-white text-shadow-lg">
+        <div v-if="formattedDuration" :ctx-name="MSG_CTX_NAMES.VIDEO_DURATION" class="absolute bottom-1 right-2 text-white text-shadow-lg">
           {{ formattedDuration }}
         </div>
       </div>

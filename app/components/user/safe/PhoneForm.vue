@@ -43,7 +43,7 @@ async function onUpdatePhone(formEl: FormInstance | undefined) {
         confirmButtonText: "确认修改",
         lockScroll: false,
         cancelButtonText: "取消",
-      }).then((action: string) => {
+      }).then((action) => {
         if (action === "confirm")
           toUpdate();
       });
@@ -100,7 +100,6 @@ async function getPhoneCode() {
     hide-required-asterisk
     :rules="rules"
     :model="form"
-    class="block w-95vw overflow-hidden border-default-2 rounded-2 card-default p-1.2em backdrop-blur-5px sm:w-360px"
     @submit.prevent="() => {}"
   >
     <div mb-4 mt-2 text-center text-lg font-bold tracking-0.2em>

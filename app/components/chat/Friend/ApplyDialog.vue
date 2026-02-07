@@ -15,8 +15,8 @@ const isShowApply = computed({
   set: value => emit("update:show", value),
 });
 
-
 const user = useUserStore();
+const setting = useSettingStore();
 // 添加好友
 const applyFormRef = useTemplateRef("applyFormRef");
 const applyForm = ref<ChatUserFriendApplyDTO>({
@@ -51,10 +51,11 @@ async function addFrendApplyById() {
 </script>
 
 <template>
-  <DialogPopup
+  <CommonPopup
     v-model="isShowApply"
     title="好友申请"
     center
+    content-class="w-full rounded-2 p-4 border-default-2 !bg-color-2"
     :duration="360"
   >
     <el-form ref="applyFormRef" :model="applyForm">
@@ -72,7 +73,7 @@ async function addFrendApplyById() {
                    trigger: ['blur'],
                    message: '申请理由不能为空！',
                  }]"
-        class="w-20rem"
+        class="max-w-full sm:w-20rem"
         style="margin: 1em 0 1.5em 0;"
       >
         <el-input
@@ -86,23 +87,27 @@ async function addFrendApplyById() {
       </el-form-item>
     </el-form>
     <template #footer>
-      <span class="-footer">
-        <BtnElButton
-          style="transition: .2s; width: 7em;letter-spacing: 1px;"
+      <span class="footer-buttons flex-row-c-c">
+        <CommonElButton
+          class="mx-1 flex-1"
+          :size="setting.isMobileSize ? 'large' : 'default'"
+          style="transition: .2s; letter-spacing: 1px;"
           @click="isShowApply = false"
         >
           取消
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
+          class="mx-1 flex-1"
           type="primary"
-          style="transition: .2s; width: 7em;letter-spacing: 1px;"
+          :size="setting.isMobileSize ? 'large' : 'default'"
+          style="transition: .2s; letter-spacing: 1px;"
           @click="addFrendApplyById"
         >
           发起申请
-        </BtnElButton>
+        </CommonElButton>
       </span>
     </template>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style lang="scss" scoped>

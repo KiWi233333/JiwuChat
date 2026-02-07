@@ -54,7 +54,7 @@ else if (props.type === "group") { // 群组相关监听
 
 <template>
   <div>
-    <ListAutoIncre
+    <CommonListAutoIncre
       :immediate="immediate"
       :auto-stop="autoStop"
       :no-more="pageInfo.isLast"
@@ -79,7 +79,7 @@ else if (props.type === "group") { // 群组相关监听
             isFriendPanel ? { ...p, id: (p as ChatUserFriendVO).userId } : p,
           )"
         >
-          <CardAvatar
+          <CommonAvatar
             class="h-2.4rem w-2.4rem flex-row-c-c overflow-hidden bg-color-2 shadow-sm card-rounded-df"
             :src="BaseUrlImg + p.avatar"
             load-class="none-sky"
@@ -89,7 +89,7 @@ else if (props.type === "group") { // 群组相关监听
           <i v-if="(p as ChatUserFriendVO).type === UserType.ROBOT" i-ri:robot-2-line class="ai-icon" />
         </div>
       </template>
-    </ListAutoIncre>
+    </CommonListAutoIncre>
   </div>
 </template>
 

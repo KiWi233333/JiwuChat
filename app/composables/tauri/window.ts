@@ -116,11 +116,6 @@ export async function minimizeWindow(label?: Labels) {
   if (!setting.isDesktop) {
     return;
   }
-  const chat = useChatStore();
-  if (!chat.notDialogShow) {
-    chat.notDialogShow = false;
-    return;
-  }
   const wind = label ? await WebviewWindow.getByLabel(label) : getCurrentWebviewWindow();
   wind?.minimize();
 }

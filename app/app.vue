@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { appEnName, appKeywords, appName } from "@/constants/index";
 import { appMounted } from "@/init/index";
+import { DRAWER_BODY_LOCK_CLASS } from "./constants/ui";
 
 // https://nuxt.com.cn/docs/guide/directory-structure/app
 useHead({
@@ -30,7 +31,7 @@ const {
 </script>
 
 <template>
-  <main class="h-100dvh flex-row-c-c">
+  <main :class="DRAWER_BODY_LOCK_CLASS" class="h-100dvh flex-row-c-c">
     <div
       class="h-full w-full overflow-hidden bg-color"
       :class="getRootClass"

@@ -75,7 +75,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(data.birthday));
   >
     <template #reference>
       <div class="relative mx-a h-9 w-9 border-default-hover rounded-1/2 card-default shadow">
-        <CardElImage
+        <CommonElImage
           :default-src="avatarUrl"
           error-class="i-solar-user-line-duotone p-2 "
           class="relative z-100 h-full w-full cursor-pointer overflow-hidden rounded-1/2" alt="头像"
@@ -188,7 +188,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(data.birthday));
         </div>
         <!-- 按钮 -->
         <div v-show="!isLoading" class="flex-row-bt-c">
-          <BtnElButton
+          <CommonElButton
             v-if="isEdit"
             icon-class="i-solar:pen-2-line-duotone mr-2"
             style="transition: .2s;font-size: 0.85em;height: 2.5em; width: 10em;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-success);"
@@ -196,8 +196,8 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(data.birthday));
             @click.stop="navigateTo('/user')"
           >
             编辑资料&ensp;
-          </BtnElButton>
-          <BtnElButton
+          </CommonElButton>
+          <CommonElButton
             v-if="isEdit"
             icon-class="i-solar:logout-3-broken mr-2"
             style="transition: .2s;font-size: 0.85em;height: 2.5em; width: 10em;text-align: center;letter-spacing: 1px;"
@@ -206,7 +206,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(data.birthday));
             @click.stop="store.exitLogin"
           >
             退出登录&ensp;
-          </BtnElButton>
+          </CommonElButton>
         </div>
       </div>
     </template>

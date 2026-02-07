@@ -216,7 +216,32 @@ function resolveAiStream(data: WSAiStreamMsg) {
   if (!contact)
     return;
 
-  const oldMsg = chat.findMsg(data.roomId, data.msgId) as ChatMessageVO<AI_CHATReplyBodyMsgVO> | undefined;
+  let oldMsg = chat.findMsg(data.roomId, data.msgId) as ChatMessageVO<AI_CHATReplyBodyMsgVO> | undefined;
+
+  // 消息不存在
+  if (!oldMsg) {
+    // 创建消息
+    const newMsg: ChatMessageVO<AI_CHATReplyBodyMsgVO> = {
+      fromUser: {
+        userId: data.userId,
+        nickName: data.userId,
+        avatar: "",
+        gender: Gender.DEFAULT,
+      },
+      message: {
+        id: data.msgId,
+        roomId: data.roomId,
+        type: MessageType.AI_CHAT_REPLY,
+        sendTime: Date.now(),
+        content: "",
+        body: {
+          status: data.status,
+        },
+      },
+    };
+    chat.appendMsg(newMsg);
+    oldMsg = newMsg;
+  }
 
   // 统一状态更新
   if (oldMsg?.message?.body) {

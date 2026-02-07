@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import ContextMenu from "@imengyu/vue3-context-menu";
 import { FILE_TYPE_ICON_DEFAULT, FILE_TYPE_ICON_MAP, formatFileSize } from "~/composables/api/res/file";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { getImgSize } from "../Msg";
 
 const {
@@ -102,12 +103,12 @@ function onContextFileMenu(e: MouseEvent, key?: string, index: number = 0, type:
         <div title="撤销图片" class="absolute right-2 top-2 z-5 h-6 w-6 card-default-br transition-opacity !rounded-full group-hover-op-80 hover-op-100 sm:op-0" @click.stop="emit('removeFile', OssFileType.IMAGE, img.key!, i)">
           <i i-solar:minus-circle-linear block h-full w-full />
         </div>
-        <CardElImage
+        <CommonElImage
           preview-teleported
           loading="lazy"
           :preview-src-list="[img.id || BaseUrlImg + img.key]"
           :src="img.id || BaseUrlImg + img.key"
-          ctx-name="img"
+          :ctx-name="MSG_CTX_NAMES.IMG"
           load-class="sky-loading block absolute top-0"
           class="card-default shadow-sm transition-shadow hover:shadow"
           :style="getImgSize(img.width, img.height)"

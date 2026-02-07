@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import ContextMenuGlobal from "@imengyu/vue3-context-menu";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { getImgSize } from "../Msg";
 
 interface Props {
@@ -99,21 +100,21 @@ async function onSend() {
 </script>
 
 <template>
-  <DialogPopup
+  <CommonPopup
     v-model="dialogVisible"
     :min-scale="0.98"
     :duration="20"
     :z-index="999"
     destroy-on-close
     :show-close="false"
-    content-class="w-86vw sm:(w-fit max-w-24rem) shadow-lg border-default-2  rounded-2 dialog-bg-color"
+    content-class="w-full sm:(w-fit max-w-24rem) shadow-lg border-default-2  rounded-2 dialog-bg-color"
   >
     <div class="p-4">
       <p text-sm>
         发送给：
       </p>
       <div class="flex items-center border-default-2-b py-4">
-        <CardElImage
+        <CommonElImage
           :error-class="contactTypeIconClassMap[(targetContact as ChatContactVO).type]"
           :default-src="targetContact.avatar"
           fit="cover"
@@ -140,12 +141,12 @@ async function onSend() {
             <div title="撤销图片" class="absolute z-5 h-6 w-6 card-default transition-opacity -right-2 -top-2 !rounded-full group-hover-op-80 hover-op-100 sm:op-0" @click.stop="emit('removeFile', OssFileType.IMAGE, img.key!, i)">
               <i i-carbon:close block h-full w-full />
             </div>
-            <CardElImage
+            <CommonElImage
               preview-teleported
               loading="lazy"
               :preview-src-list="[img.id || BaseUrlImg + img.key]"
               :src="img.id || BaseUrlImg + img.key"
-              ctx-name="img"
+              :ctx-name="MSG_CTX_NAMES.IMG"
               load-class="sky-loading block absolute top-0"
               class="border-default-2 card-default transition-shadow !h-6rem !w-6rem hover:shadow !sm:h-8rem !sm:w-8rem"
               :style="getImgSize(img.width, img.height)"
@@ -176,7 +177,7 @@ async function onSend() {
               <div title="撤销视频" class="absolute z-5 h-6 w-6 border-default-2 card-default transition-opacity -right-2 -top-2 !rounded-full group-hover-op-80 hover-op-100 sm:op-0" @click.stop="emit('removeFile', OssFileType.VIDEO, video.key!, i)">
                 <i i-carbon:close block h-full w-full />
               </div>
-              <CardElImage
+              <CommonElImage
                 error-class="i-solar:file-smile-line-duotone p-2.8"
                 :src="video?.children?.[0]?.id"
                 class="h-full max-h-16rem max-w-16rem min-h-8rem min-w-8rem w-full flex-row-c-c card-default shadow"
@@ -239,15 +240,15 @@ async function onSend() {
         @keyup.enter.stop.prevent="emit('submit', replyContent.trim())"
       />
       <div class="btn-group mt-4 flex-row-bt-c">
-        <BtnElButton
+        <CommonElButton
           class="w-full"
           bg
           text
           @click="dialogVisible = false"
         >
           取消
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
           class="w-full"
           type="primary"
           bg
@@ -255,10 +256,10 @@ async function onSend() {
           @click="onSend"
         >
           发送
-        </BtnElButton>
+        </CommonElButton>
       </div>
     </div>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style scoped lang="scss">

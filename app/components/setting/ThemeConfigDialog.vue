@@ -194,11 +194,13 @@ function importThemeConfig(file: File) {
   };
   reader.readAsText(file);
 }
+const setting = useSettingStore();
+const btnSize = computed(() => setting.isMobileSize ? "default" : "small");
 </script>
 
 <template>
   <!-- 主题配置弹窗 -->
-  <DialogPopup
+  <CommonPopup
     v-model="_show"
     title="主题定制"
     :center="true"
@@ -207,9 +209,9 @@ function importThemeConfig(file: File) {
     :duration="300"
     :z-index="999"
     destroy-on-close
-    content-class="select-none rounded-3 p-4 w-fit border-default-2 bg-color-2"
+    content-class="select-none rounded-3 p-4 sm:w-fit border-default-2 bg-color-2"
   >
-    <el-scrollbar max-height="60vh" wrap-class="max-w-86vw w-30rem text-left p-1">
+    <el-scrollbar max-height="60vh" wrap-class="w-full sm:max-w-86vw w-30rem text-left p-1">
       <!-- 预设主题区域 -->
       <div class="setting-group">
         <p class="title">
@@ -290,42 +292,42 @@ function importThemeConfig(file: File) {
     <!-- 操作按钮区域 -->
     <div class="actions-footer p-1">
       <div class="left-actions">
-        <BtnElButton
-          icon-class="i-solar:import-bold-duotone mr-1"
+        <CommonElButton
+          icon-class="i-solar:import-bold-duotone"
           text
-          size="small"
+          :size="btnSize"
           @click="openFileDialog()"
         >
           导入
-        </BtnElButton>
-        <BtnElButton
-          icon-class="i-solar:export-bold-duotone mr-1"
+        </CommonElButton>
+        <CommonElButton
+          icon-class="i-solar:export-bold-duotone"
           text
-          size="small"
+          :size="btnSize"
           @click="exportThemeConfig()"
         >
           导出
-        </BtnElButton>
+        </CommonElButton>
       </div><div class="right-actions">
-        <BtnElButton
+        <CommonElButton
           text
-          size="small"
+          :size="btnSize"
           @click="resetToDefault"
         >
           重置
-        </BtnElButton>
-        <BtnElButton
+        </CommonElButton>
+        <CommonElButton
           type="primary"
-          icon-class="i-solar:paint-roller-bold-duotone mr-1"
-          size="small"
+          icon-class="i-solar:paint-roller-bold-duotone"
+          :size="btnSize"
           :disabled="!hasUnsavedChanges"
           @click="applyTheme"
         >
           应用主题
-        </BtnElButton>
+        </CommonElButton>
       </div>
     </div>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style lang="scss" scoped>
@@ -403,12 +405,12 @@ function importThemeConfig(file: File) {
 }
 
 .actions-footer {
-  --at-apply: "pt-4 flex justify-between items-center";
+  --at-apply: "pt-4 flex sticky bottom-0 left-0 justify-between items-center";
 }
 
 .left-actions,
 .right-actions {
-  --at-apply: "flex items-center gap-2";
+  --at-apply: "flex items-center";
 }
 
 :deep(.el-scrollbar__bar) {

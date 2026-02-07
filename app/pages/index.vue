@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import { mitter, MittEventType } from "~/composables/utils/useMitt";
 import { appName } from "~/constants";
+import { MAIN_ROUTES } from "~/constants/route";
 
 const user = useUserStore();
 const setting = useSettingStore();
 const chat = useChatStore();
 const route = useRoute();
-// 是否显示菜单栏
-const showMenuBar = computed(() => route.path === "/");
+// 是否显示菜单栏（只有聊天页面才显示）
+const showMenuBar = computed(() => route.path === "/" && chat.isOpenContact);
 // 是否显示邀请进群弹窗
 const showGroupDialog = computed({
   get() {
@@ -31,7 +32,13 @@ const showGroupDialog = computed({
 useMsgLinear();
 
 // 页面过渡
-const pageTransition = computed(() => (setting.isMobileSize && !setting.settingPage.isCloseAllTransition) ? (setting.settingPage.animation.pageTransition ? chat.pageTransition : false) : false);
+const pageTransition = computed(() => {
+  const isEnabled = setting.isMobileSize && !setting.settingPage.isCloseAllTransition && setting.settingPage.animation.pageTransition;
+  if (!isEnabled) {
+    return false;
+  }
+  return chat.pageTransition;
+});
 
 // 好友申请弹窗状态
 const isShowApply = ref(false);
@@ -103,6 +110,53 @@ onMounted(() => {
 onUnmounted(() => {
   mitter.off(MittEventType.FRIEND_APPLY_DIALOG);
 });
+
+// 是否显示移动端菜单栏
+const showMobileMenuBar = computed(() => !!MAIN_ROUTES[route.path] && chat.isOpenContact);
+
+
+// 伪造路由历史记录，防止移动端返回键退出应用
+const isMobileSize = computed(() => setting.isMobileSize);
+useHistoryState(
+  toRef(chat, "isOpenContact"),
+  {
+    enabled: isMobileSize,
+    stateKey: "chatRoomOpen",
+    activeValue: false,
+    inactiveValue: true,
+  },
+);
+
+// 使用路由历史状态管理好友面板
+useHistoryState(
+  toRef(chat, "showTheFriendPanel"),
+  {
+    enabled: isMobileSize,
+    stateKey: "friendPanelOpen",
+    activeValue: true,
+    inactiveValue: false,
+  },
+);
+
+// 伪造路由历史记录，防止移动端返回键退出应用
+useHistoryState(
+  toRef(chat, "isOpenGroupMember"),
+  {
+    enabled: isMobileSize,
+    stateKey: "groupMemberOpen",
+    activeValue: true,
+    inactiveValue: false,
+  },
+);
+
+
+// 返回拦截
+useHistoryState(toRef(chat, "showExtension"), {
+  enabled: computed(() => setting.isMobileSize),
+  stateKey: "extensionOpen",
+  activeValue: true,
+  inactiveValue: false,
+});
 </script>
 
 <template>
@@ -118,7 +172,11 @@ onUnmounted(() => {
       class="h-full flex flex-1 flex-col overflow-hidden"
     >
       <!-- 头部 -->
-      <MenuHeaderMenuBar v-if="showMenuBar" nav-class="relative z-999 left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 select-none items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-b bg-color" :data-tauri-drag-region="setting.isDesktop">
+      <MenuHeaderMenuBarDesktop
+        v-if="!setting.isMobileSize && showMenuBar"
+        nav-class="relative z-999 left-0 w-full top-0 ml-a h-3.5rem w-full flex flex-shrink-0 select-none items-center justify-right gap-4 rounded-b-0 px-3 sm:(absolute right-0 top-0  p-1 ml-a h-3.125rem h-fit border-b-0 !bg-transparent) border-default-b bg-color"
+        :data-tauri-drag-region="setting.isDesktop"
+      >
         <template #center="{ appTitle }">
           <!-- 移动端菜单 -->
           <div v-if="setting.isMobile" class="absolute-center-center block tracking-0.1em">
@@ -127,14 +185,14 @@ onUnmounted(() => {
           <!-- 连接状态 -->
           <!-- <BtnWsStatusBtns v-if="showWsStatusBtns" class="offline" /> -->
         </template>
-      </MenuHeaderMenuBar>
+      </MenuHeaderMenuBarDesktop>
       <!-- 拖拽区域 -->
       <div v-if="setting.isDesktop" :data-tauri-drag-region="setting.isDesktop" class="fixed left-0 top-0 z-9 block h-8 w-full select-none" />
 
       <div
         class="relative h-1 max-h-full flex flex-1"
       >
-        <MenuChatMenu v-if="!setting.isMobileSize" class="w-fit shrink-0 !hidden !sm:flex" />
+        <MenuChat v-if="!setting.isMobileSize" class="w-fit shrink-0 !hidden !sm:flex" />
         <!-- 缓存 页面内容 -->
         <NuxtPage
           keepalive
@@ -149,12 +207,12 @@ onUnmounted(() => {
       :form="chat.inviteMemberForm"
     />
     <!-- 视频播放器 -->
-    <LazyUtilVideoPlayerDialog
+    <LazyCommonVideoPlayerDialog
       v-model="chat.showVideoDialog"
       hydrate-on-idle
     />
     <!-- 扩展菜单 -->
-    <LazyMenuExtensionMenu
+    <LazyMenuExtension
       v-model:show="chat.showExtension"
       hydrate-on-idle
     />
@@ -165,8 +223,9 @@ onUnmounted(() => {
       hydrate-on-idle
     />
     <!-- 移动端菜单 - 小屏幕才加载 -->
-    <LazyMenuBottomMenu
-      v-if="setting.isMobileSize && user.isLogin && chat.isOpenContact"
+    <LazyMenuBottom
+      v-if="setting.isMobileSize && user.isLogin"
+      v-show="showMobileMenuBar"
       hydrate-on-media-query="(max-width: 768px)"
       class="grid sm:hidden"
     />

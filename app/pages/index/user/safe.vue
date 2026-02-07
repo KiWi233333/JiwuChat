@@ -23,14 +23,26 @@ onActivated(() => {
 watch(activeName, () => {
   isAnim.value = true;
 });
+
+// 滑动切换逻辑，不能超过边界，到两边停止
+function handleSwipeNext() {
+  const currentIndex = segmentOptions.findIndex(option => option.value === activeName.value);
+  if (currentIndex < segmentOptions.length - 1) {
+    activeName.value = segmentOptions[currentIndex + 1]?.value ?? "";
+  }
+}
+
+function handleSwipePrev() {
+  const currentIndex = segmentOptions.findIndex(option => option.value === activeName.value);
+  if (currentIndex > 0) {
+    activeName.value = segmentOptions[currentIndex - 1]?.value ?? "";
+  }
+}
 </script>
 
 <template>
   <main class="w-full flex flex-1 flex-col card-bg-color p-4 pt-6 sm:(bg-color p-6 pt-10)">
-    <h3 flex items-center text-base font-500>
-      <i i-solar:lock-keyhole-bold-duotone mr-2 inline-block p-2.5 text-secondary hover:animate-spin />
-      账户与安全
-    </h3>
+    <CommonPageHeader title="账户与安全" icon="i-solar:lock-keyhole-bold-duotone" />
 
     <!-- Segmented 选择器 -->
     <div class="mt-4">
@@ -38,7 +50,15 @@ watch(activeName, () => {
     </div>
 
     <!-- 内容区域 -->
-    <el-scrollbar class="hide-scrollbar mt-4 flex flex-1 flex-col overflow-hidden">
+    <el-scrollbar
+      v-swipe="{
+        sensitivity: 2,
+        onlyHorizontal: true,
+        onSwipeLeft: handleSwipeNext,
+        onSwipeRight: handleSwipePrev,
+      }"
+      class="hide-scrollbar mt-4 flex flex-1 flex-col overflow-hidden"
+    >
       <!-- 账号 Tab -->
       <UserSafeUpdateCards v-show="activeName === 'security'" :is-anim="isAnim" />
 

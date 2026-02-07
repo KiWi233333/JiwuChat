@@ -185,8 +185,8 @@ async function handleBind(platform: OAuthPlatformCode) {
     }
 
     if (setting.isDesktop || setting.isMobile) {
-      const { open } = await import("@tauri-apps/plugin-shell");
-      await open(res.data);
+      const { openUrl } = await import("@tauri-apps/plugin-opener");
+      await openUrl(res.data);
     }
     else {
       window.location.href = res.data;
@@ -257,7 +257,7 @@ onMounted(() => {
   >
     <!-- 用户信息卡片 -->
     <div class="flex items-center gap-3 border-default-2 rounded-xl card-bg-color p-4">
-      <CardAvatar
+      <CommonAvatar
         class="h-12 w-12 shrink-0 rounded-full"
         :src="BaseUrlImg + user.userInfo.avatar"
       />
@@ -355,8 +355,7 @@ onMounted(() => {
 
       <!-- 右列：第三方账号 -->
       <div
-        v-if="oauthPlatforms.length > 0"
-        v-loading="isLoadingOAuth"
+        v-if="oauthPlatforms.length > 0 || isLoadingOAuth"
         class="flex flex-col gap-4 border-default-2 rounded-xl card-bg-color p-4"
       >
         <div class="flex flex-col gap-1">
@@ -368,48 +367,70 @@ onMounted(() => {
           </p>
         </div>
 
-        <!-- OAuth 平台列表 -->
-        <div
-          v-for="platform in oauthPlatforms"
-          :key="platform.code"
-          class="flex items-center justify-between gap-3"
-        >
-          <div class="flex items-center gap-2">
-            <img
-              :src="getOAuthPlatformIcon(platform.code)"
-              :alt="platform.name"
-              class="h-5 w-5 shrink-0"
+        <!-- 骨架屏 -->
+        <el-skeleton v-if="isLoadingOAuth" animated class="flex flex-col gap-4">
+          <template #template>
+            <div
+              v-for="i in 3"
+              :key="i"
+              class="flex items-center justify-between gap-3"
             >
-            <div class="flex flex-col gap-1">
-              <span class="text-xs text-color">{{ platform.name }}</span>
-              <span
-                v-if="getBindStatus(platform.code)"
-                class="text-small text-xs"
-              >
-                {{ getBindStatus(platform.code)?.nickname || "已绑定" }}
-              </span>
+              <div class="flex items-center gap-2">
+                <el-skeleton-item variant="circle" class="h-5 w-5 shrink-0" />
+                <div class="flex flex-col gap-1">
+                  <el-skeleton-item variant="text" style="width: 2.5rem; height: 0.875rem" />
+                  <el-skeleton-item variant="text" style="width: 3.75rem; height: 0.75rem" />
+                </div>
+              </div>
+              <el-skeleton-item variant="text" style="width: 1.875rem; height: 1.25rem" />
             </div>
+          </template>
+        </el-skeleton>
+
+        <!-- OAuth 平台列表 -->
+        <template v-else>
+          <div
+            v-for="platform in oauthPlatforms"
+            :key="platform.code"
+            class="flex items-center justify-between gap-3"
+          >
+            <div class="flex items-center gap-2">
+              <img
+                :src="getOAuthPlatformIcon(platform.code)"
+                :alt="platform.name"
+                class="h-5 w-5 shrink-0"
+              >
+              <div class="flex flex-col gap-1">
+                <span class="text-xs text-color">{{ platform.name }}</span>
+                <span
+                  v-if="getBindStatus(platform.code)"
+                  class="text-small text-xs"
+                >
+                  {{ getBindStatus(platform.code)?.nickname || "已绑定" }}
+                </span>
+              </div>
+            </div>
+            <el-button
+              v-if="getBindStatus(platform.code)"
+              text
+              size="small"
+              type="danger"
+              @click="handleUnbind(platform.code)"
+            >
+              解绑
+            </el-button>
+            <el-button
+              v-else
+              text
+              size="small"
+              type="primary"
+              :loading="bindingPlatform === platform.code"
+              @click="handleBind(platform.code)"
+            >
+              绑定
+            </el-button>
           </div>
-          <el-button
-            v-if="getBindStatus(platform.code)"
-            text
-            size="small"
-            type="danger"
-            @click="handleUnbind(platform.code)"
-          >
-            解绑
-          </el-button>
-          <el-button
-            v-else
-            text
-            size="small"
-            type="primary"
-            :loading="bindingPlatform === platform.code"
-            @click="handleBind(platform.code)"
-          >
-            绑定
-          </el-button>
-        </div>
+        </template>
       </div>
     </div>
 

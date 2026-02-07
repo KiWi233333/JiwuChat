@@ -47,9 +47,8 @@ function onClickAvatar() {
   // });
   nextTick(() => {
     navigateTo({
-      path: "/user",
+      path: `/user/${data.fromUser.userId}`,
       query: {
-        id: data.fromUser.userId,
         dis: 1,
       },
     });

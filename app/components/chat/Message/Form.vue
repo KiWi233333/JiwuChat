@@ -580,9 +580,11 @@ onMounted(() => {
   // 监听快捷键
   window.addEventListener("keydown", startRecord);
 
-  nextTick(() => {
-    selectionManager.focusAtEnd();
-  });
+  if (!setting.isMobileSize) {
+    nextTick(() => {
+      selectionManager.focusAtEnd();
+    });
+  }
   // At 用户
   mitter.on(MittEventType.CHAT_AT_USER, (e) => {
     if (isReplyAI.value) {
@@ -761,7 +763,7 @@ defineExpose({
           <!-- 语音 -->
           <template v-if="isSoundRecordMsg">
             <div v-show="!audioFile?.id" class="absolute-center-x">
-              <BtnElButton
+              <CommonElButton
                 ref="pressHandleRef"
                 type="primary" class="group tracking-0.1em hover:shadow"
                 :class="{ 'is-chating': isRecording }"
@@ -774,11 +776,11 @@ defineExpose({
                   <span class="chating-hidden">{{ isRecording ? `正在输入 ${recordingDuration}s` : '语音' }}</span>
                   <span hidden class="chating-show">停止录音 {{ recordingDuration ? `${recordingDuration}s` : '' }}</span>
                 </div>
-              </BtnElButton>
+              </CommonElButton>
             </div>
             <div v-show="audioFile?.id" class="absolute-center-x">
               <i p-2.4 />
-              <BtnElButton
+              <CommonElButton
                 type="primary"
                 class="group tracking-0.1em op-60 hover:op-100" :class="{ 'is-chating !op-100': isPlayingAudio }"
                 style="padding: 0.8rem 3rem;" round size="small"
@@ -786,13 +788,13 @@ defineExpose({
               >
                 {{ recordingDuration ? `${recordingDuration}s` : '' }}
                 <i :class="isPlayingAudio ? 'i-solar:stop-bold' : 'i-solar:play-bold'" class="icon" ml-2 p-1 />
-              </BtnElButton>
+              </CommonElButton>
               <i
                 i-solar:trash-bin-minimalistic-broken ml-3 btn-danger rounded-0 p-2.4
                 @click="handlePlayAudio('del')"
               />
             </div>
-            <BtnElButton
+            <CommonElButton
               type="primary"
               round
               style="height: 1.8rem !important;"
@@ -802,7 +804,7 @@ defineExpose({
               @click="handleSubmit()"
             >
               发送
-            </BtnElButton>
+            </CommonElButton>
           </template>
           <!-- 非语音 -->
           <template v-else>
@@ -851,7 +853,7 @@ defineExpose({
                 <i class="robot-select-icon" />
               </template>
               <template #label="{ value }">
-                <CardAvatar
+                <CommonAvatar
                   class="h-5 w-5 shrink-0 rounded-1/2 bg-color"
                   :src="BaseUrlImg + value.avatar"
                   :title="value.label"
@@ -864,7 +866,7 @@ defineExpose({
                 :value="item"
               >
                 <div class="h-full w-8em flex items-center pr-1" :title="item.label">
-                  <CardAvatar class="h-6 w-6 shrink-0 border-default rounded-1/2 bg-color" :src="BaseUrlImg + item.avatar" />
+                  <CommonAvatar class="h-6 w-6 shrink-0 border-default rounded-1/2 bg-color" :src="BaseUrlImg + item.avatar" />
                   <span class="ml-2 flex-1 truncate text-xs text-color">{{ item.label }}</span>
                 </div>
               </el-option>
@@ -954,7 +956,7 @@ defineExpose({
             width: `${optionsPosition.width}px`,
           }"
         >
-          <ListVirtualScrollList
+          <CommonListVirtualScrollList
             ref="atScrollbar"
             :items="filteredUserAtOptions"
             :selected-index="selectedAtItemIndex"
@@ -969,10 +971,10 @@ defineExpose({
             @item-hover="(item, index) => selectedAtItemIndex = index"
           >
             <template #default="{ item }">
-              <CardAvatar class="avatar" :src="BaseUrlImg + item.avatar" />
+              <CommonAvatar class="avatar" :src="BaseUrlImg + item.avatar" />
               <span class="name">{{ item.nickName }}</span>
             </template>
-          </ListVirtualScrollList>
+          </CommonListVirtualScrollList>
         </div>
         <!-- AI机器人选择框 -->
         <div
@@ -984,7 +986,7 @@ defineExpose({
             width: `${optionsPosition.width}px`,
           }"
         >
-          <ListVirtualScrollList
+          <CommonListVirtualScrollList
             ref="aiScrollbar"
             :items="filteredAiOptions"
             :item-height="32"
@@ -998,13 +1000,13 @@ defineExpose({
             @item-hover="(item, index) => selectedAiItemIndex = index"
           >
             <template #default="{ item }">
-              <CardAvatar class="avatar" :src="BaseUrlImg + item.avatar" />
+              <CommonAvatar class="avatar" :src="BaseUrlImg + item.avatar" />
               <span class="name">{{ item.nickName }}</span>
             </template>
-          </ListVirtualScrollList>
+          </CommonListVirtualScrollList>
         </div>
 
-        <BtnElButton
+        <CommonElButton
           v-if="setting.isMobileSize"
           type="primary"
           style="height: 2.2rem !important;"
@@ -1014,7 +1016,7 @@ defineExpose({
           @click="handleSubmit()"
         >
           发送
-        </BtnElButton>
+        </CommonElButton>
       </div>
 
       <!-- 发送按钮 -->
@@ -1030,7 +1032,7 @@ defineExpose({
             <i i-solar:reply-2-bold-duotone mr-1 p-2 />{{ lineBreakKeyCodeStr }}
           </p>
         </div>
-        <BtnElButton
+        <CommonElButton
           class="group ml-a overflow-hidden tracking-0.2em shadow card-rounded-df sm:ml-2"
           type="primary"
           :icon-class="isSending || isNotExistOrNorFriend ? '' : 'i-solar:plain-2-line-duotone mr-1.6'"
@@ -1041,7 +1043,7 @@ defineExpose({
           @click="handleSubmit()"
         >
           发送&nbsp;
-        </BtnElButton>
+        </CommonElButton>
       </div>
       <!-- 已经不是好友 -->
       <div

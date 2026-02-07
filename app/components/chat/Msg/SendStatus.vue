@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CardLoading } from "#components";
+import { CommonLoading } from "#components";
 
 const {
   status,
@@ -23,7 +23,7 @@ const titleMap: Record<MessageSendStatus, { title: string, className?: string, c
   [MessageSendStatus.SENDING]: {
     title: "发送中...",
     className: "animate-spin op-40",
-    iconComponent: CardLoading,
+    iconComponent: CommonLoading,
   },
   [MessageSendStatus.SUCCESS]: {
     title: "",

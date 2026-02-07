@@ -2,6 +2,7 @@ import type { PropType } from "vue";
 import type { BaseToken } from "./core/types";
 import type { ChatMessageVO } from "~/composables/api/chat/message";
 import { computed, defineComponent, h } from "vue";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 import { MessageNodeRegistry } from "./core/registry";
 import { MentionNode, TextNode, UrlNode } from "./nodes";
 
@@ -9,9 +10,9 @@ import { MentionNode, TextNode, UrlNode } from "./nodes";
  * 默认节点注册器（预注册常用节点）
  */
 export const defaultRegistry = new MessageNodeRegistry().registerAll([
-  new TextNode().getConfig(),
-  new MentionNode().getConfig(),
-  new UrlNode().getConfig(),
+  new TextNode(),
+  new MentionNode(),
+  new UrlNode(),
 ]);
 
 /**
@@ -75,7 +76,7 @@ export const MessageContent = defineComponent({
     });
 
     return () => (
-      <span ctx-name="content">
+      <span ctx-name={MSG_CTX_NAMES.CONTENT}>
         {tokens.value.map((token, index) => (
           <TokenRenderer
             key={`${token.type}-${token.start}-${index}`}

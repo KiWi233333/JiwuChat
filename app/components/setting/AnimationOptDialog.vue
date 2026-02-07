@@ -16,7 +16,7 @@ const _show = computed({
 
 <template>
   <!-- 定制化动画设置弹窗 -->
-  <DialogPopup
+  <CommonPopup
     v-model="_show"
     title="动画配置"
     :center="true"
@@ -24,9 +24,9 @@ const _show = computed({
     :show-close="true"
     :duration="300"
     destroy-on-close
-    content-class="select-none rounded-3 p-4 w-fit border-default-2 bg-color-2"
+    content-class="select-none rounded-3 p-4 sm:w-fit border-default-2 bg-color-2"
   >
-    <div class="max-w-80vw w-20rem text-left">
+    <div class="w-full text-left sm:max-w-80vw">
       <!-- 页面动画设置 -->
       <div class="setting-group">
         <p class="title">
@@ -142,7 +142,7 @@ const _show = computed({
         </div>
       </div>
     </div>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style lang="scss" scoped>
@@ -158,7 +158,7 @@ const _show = computed({
   }
   .box {
     border: 1px solid transparent;
-    --at-apply: "text-sm card-rounded-df bg-white dark:bg-dark-6 shadow px-3 sm:px-4 py-2 flex flex-col gap-3";
+    --at-apply: "text-sm card-rounded-df bg-white dark:bg-dark-6 shadow-sm px-3 sm:px-4 py-2 flex flex-col gap-3";
 
     .inputs {
       --at-apply: "w-10rem sm:w-12rem";

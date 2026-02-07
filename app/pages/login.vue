@@ -66,7 +66,7 @@ function initWindowAnimate() {
     <!-- 背景 -->
     <Teleport to="body">
       <div v-if="setting.isWeb && !setting.isMobileSize" class="fixed left-0 top-0 h-full w-full -z-1">
-        <LazyOtherLoginBg
+        <LazyAuthLoginBg
           :enable-rainbow="false"
           :grid-color="$colorMode.value === 'dark' ? '#7429ff' : '#000000'"
           :ripple-intensity="0.02"
@@ -87,7 +87,7 @@ function initWindowAnimate() {
           }"
         >
           <!-- 标题 -->
-          <HeadrHeaderLogo v-if="!setting.isMobileSize" class="ml-4" />
+          <MenuHeaderLogo v-if="!setting.isMobileSize" class="ml-4" />
           <!-- 菜单按钮 -->
           <div class="group ml-a flex flex items-center gap-2 p-2 sm:px-3">
             <BtnTheme
@@ -119,14 +119,14 @@ function initWindowAnimate() {
     >
       <div data-fades class="form-main relative mx-a w-full text-center sm:px-4">
         <!-- 登录 -->
-        <FormLoginForm
+        <AuthLoginForm
           v-if="user.showLoginPageType === 'login'"
           key="login-form"
           style="--anima: blur-in;"
           class="login-form"
         />
         <!-- 注册 -->
-        <FormRegisterForm
+        <AuthRegisterForm
           v-else-if="user.showLoginPageType === 'register'"
           key="register-form"
           style="--anima: blur-in;"

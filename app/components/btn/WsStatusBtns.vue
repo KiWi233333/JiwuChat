@@ -27,7 +27,7 @@ const getStatusText = computed(() => {
       <span v-if="online" class="text-theme-danger">(无网络)</span>
     </small>
     <div class="btns">
-      <BtnElButton
+      <CommonElButton
         icon-class="i-solar:refresh-outline mr-1"
         class="hover:shadow-md"
         type="primary"
@@ -37,8 +37,8 @@ const getStatusText = computed(() => {
         @click="ws.reload()"
       >
         重连
-      </BtnElButton>
-      <BtnElButton
+      </CommonElButton>
+      <CommonElButton
         icon-class="i-solar:power-bold mr-1"
         class="hover:shadow-md"
         type="danger"
@@ -48,7 +48,7 @@ const getStatusText = computed(() => {
         @click="navigateTo('/login')"
       >
         登录
-      </BtnElButton>
+      </CommonElButton>
     </div>
   </div>
 </template>

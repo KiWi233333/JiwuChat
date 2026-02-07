@@ -271,7 +271,7 @@ function onInviteMember() {
             id: p.data.userId,
           })"
         >
-          <CardElImage
+          <CommonElImage
             :default-src="p.data.avatar"
             fit="cover"
             error-class="i-solar-user-line-duotone"
@@ -304,7 +304,7 @@ function onInviteMember() {
   }
 }
 .right {
-  --at-apply: "absolute z-1 border-default !border-r-0 shadow-sm flex-row-c-c rounded-[2rem_0_0_2rem] -right-2 top-3px  cursor-pointer transition-right hover:right-0 h-38px w-38px p-3px flex-shrink-0";
+  --at-apply: "absolute bg-color z-1 border-default !border-r-0 shadow-sm flex-row-c-c rounded-[2rem_0_0_2rem] -right-2 top-3px  cursor-pointer transition-right hover:right-0 h-38px w-38px p-3px flex-shrink-0";
 }
 :deep(.el-scrollbar__thumb) {
   display: none;

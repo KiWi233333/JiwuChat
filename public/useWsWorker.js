@@ -9,6 +9,9 @@ let heartbeatTimer = null;
 // WebSocket连接状态
 let connectionStatus = null;
 
+// 页面是否可见（聚焦/前台），仅可见时请求重连
+let pageVisible = true;
+
 // 上次心跳时间
 let lastHeartbeatTime = new Date();
 
@@ -58,21 +61,29 @@ function startHeartbeatMonitor() {
 
 // 监听来自主线程的消息
 self.onmessage = function (event) {
-  const { status: newStatus, noticeType } = event.data;
+  const data = event.data;
 
-  // 更新连接状态
-  connectionStatus = newStatus;
-
-  // 记录初始化日志
-  sendLog(`Web Worker 初始化，ws状态：${connectionStatus} ${noticeType}`);
-
-  // 检查连接状态
-  if (connectionStatus !== 1) {
-    // 连接状态异常，请求重新加载
-    requestReload();
+  // 仅同步可见性（visibilitychange 时主线程下发）
+  if (data.type === "visibility") {
+    pageVisible = data.visible !== false;
     return;
   }
 
-  // 连接状态正常，启动心跳监控
+  const { status: newStatus, noticeType, visible } = data;
+
+  // 更新连接状态与可见性
+  connectionStatus = newStatus;
+  if (visible !== undefined)
+    pageVisible = visible !== false;
+
+  sendLog(`Web Worker 初始化，ws状态：${connectionStatus} ${noticeType}，可见：${pageVisible}`);
+
+  // 连接异常时仅在前台请求重连，后台由主线程在 visibilitychange 时重连
+  if (connectionStatus !== 1) {
+    if (pageVisible)
+      requestReload();
+    return;
+  }
+
   startHeartbeatMonitor();
 };

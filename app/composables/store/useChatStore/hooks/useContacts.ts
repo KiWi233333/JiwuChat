@@ -303,14 +303,16 @@ export function createContactsModule(ctx: ContactsContext) {
         contact = (res.data || contactMap.value[id as number]) as ChatContactDetailVO;
       }
     }
-    if (contact)
+    await nextTick();
+    if (contact) {
       await setContact(contact);
+    }
+    await nextTick();
+    await navigateTo({ path: "/" });
     if (setting.isMobileSize) {
       setTheFriendOpt(FriendOptType.Empty);
       isOpenContact.value = false;
     }
-    await nextTick();
-    await navigateTo({ path: "/" });
   }
 
   // 联系人面板管理

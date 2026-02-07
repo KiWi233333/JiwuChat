@@ -190,16 +190,16 @@ defineExpose({
 </script>
 
 <template>
-  <DialogPopup
+  <CommonPopup
     v-model="show"
     :min-scale="0.96"
     :duration="300"
     destroy-on-close
     :show-close="false"
-    content-class="max-w-95vw sm:w-fit shadow-lg border-default-2  rounded-2 dialog-bg-color"
+    content-class="sm:w-fit w-full light:!bg-white dark:bg-color-2 shadow-lg sm:border-default-2  rounded-2 sm:dialog-bg-color"
   >
     <template v-if="setting.isMobileSize" #title>
-      <div :data-tauri-drag-region="setting.isDesktop" select-none p-4 pb-0 text-center text-sm>
+      <div :data-tauri-drag-region="setting.isDesktop" select-none class="px-4 text-center">
         <i :class="form.roomId ? 'i-solar:users-group-rounded-bold' : 'i-solar:users-group-rounded-line-duotone'" class="mr-2 p-2.6 text-small" />
         {{ form.roomId ? '邀请成员' : '新建群聊' }}
       </div>
@@ -211,7 +211,7 @@ defineExpose({
       class="relative overflow-hidden rounded-2"
     >
       <div ref="autoAnimateRef">
-        <div v-show="!imgStep" key="first" class="w-82vw flex flex flex-col md:w-45rem md:flex-row">
+        <div v-show="!imgStep" key="first" class="w-full flex flex flex-col md:w-45rem md:flex-row">
           <!-- 未选列表 -->
           <el-form-item class="left flex-1 p-4 sm:p-6">
             <template #label>
@@ -229,8 +229,8 @@ defineExpose({
               </div>
             </template>
             <el-checkbox-group v-model="form.uidList" class="w-full bg-color-2 card-rounded-df sm:!bg-transparent">
-              <div class="h-0 max-h-40vh min-h-40vh flex flex-col overflow-y-auto p-2 pr-0 sm:(max-h-22rem min-h-22rem p-0)">
-                <ListAutoIncre
+              <el-scrollbar max-height="40vh" class="h-0 min-h-40vh flex flex-col p-2 pr-0 sm:(max-h-22rem min-h-22rem p-0)">
+                <CommonListAutoIncre
                   :immediate="false"
                   :auto-stop="false"
                   :no-more="notMore"
@@ -239,26 +239,27 @@ defineExpose({
                   <el-checkbox v-for="p in filterFriendList" :key="p.userId" class="check-item mb-2" :value="p.userId" :label="p.userId" style="width: 100%;height: fit-content;">
                     <div class="w-full flex items-center gap-2">
                       <div class="avatar-icon">
-                        <CardElImage class="h-full w-full overflow-hidden rounded" :src="BaseUrlImg + p.avatar" fit="cover" />
+                        <CommonElImage class="h-full w-full overflow-hidden rounded" :src="BaseUrlImg + p.avatar" fit="cover" />
                       </div>
                       <span class="truncate text-color">{{ p.nickName || "未填写" }}</span>
                     </div>
                   </el-checkbox>
-                </ListAutoIncre>
+                </CommonListAutoIncre>
 
                 <div v-if="notMore" class="h-full w-full flex-row-c-c pb-12 text-xs op-60">
                   没有更多了
                 </div>
-              </div>
+              </el-scrollbar>
             </el-checkbox-group>
             <!-- 第一步 -->
             <div v-if="setting.isMobileSize" key="1" class="mt-4 w-full flex justify-between">
-              <el-button class="w-1/2" @click="show = false">
+              <el-button class="w-1/2" :size="setting.isMobileSize ? 'large' : 'default'" @click="show = false">
                 取消
               </el-button>
               <el-button
                 class="w-1/2"
                 :disabled="form.uidList.length <= 0"
+                :size="setting.isMobileSize ? 'large' : 'default'"
                 :type="form.roomId ? 'info' : 'warning'" @click="next()"
               >
                 {{ form.roomId ? '邀请' : '下一步' }}
@@ -279,17 +280,17 @@ defineExpose({
             class="right h-fit flex-1 bg-color-2 p-4 sm:p-6"
             style="display: flex;;flex-direction: column;margin: 0;"
           >
-            <ListTransitionGroup
+            <CommonListTransitionGroup
               v-show="getCheckList.length > 0" tag="div" class="scroll-bar grid grid-cols-3 mt-0 max-h-200px min-h-200px w-full items-start gap-col-2 overflow-y-auto card-rounded-df sm:(grid-cols-4 max-h-300px min-h-300px)"
             >
               <div v-for="p in getCheckList" :key="p.userId" class="item" :label="p.userId">
                 <i i-solar:close-circle-bold btn-primary p-2 class="absolute right-2px top-2px z-1" @click="remove(p.userId)" />
                 <div class="avatar-icon">
-                  <CardElImage class="h-full w-full overflow-hidden rounded" :src="BaseUrlImg + p.avatar" fit="cover" />
+                  <CommonElImage class="h-full w-full overflow-hidden rounded" :src="BaseUrlImg + p.avatar" fit="cover" />
                 </div>
                 <span class="block max-w-18 truncate">{{ p.nickName || "未填写" }}</span>
               </div>
-            </ListTransitionGroup>
+            </CommonListTransitionGroup>
             <!-- 空白 -->
             <div v-show="getCheckList.length <= 0" class="h-200px w-full flex-row-c-c text-small-50 card-rounded-df sm:h-300px">
               <i i-solar:user-plus-broken mr-2 p-3 />
@@ -314,7 +315,7 @@ defineExpose({
         <div
           v-if="imgStep"
           key="2"
-          class="mt-4 h-250px min-w-80vw flex-row-c-c flex-col sm:(h-300px min-w-fit w-280px)"
+          class="mt-4 h-250px min-w-full flex-row-c-c flex-col sm:(h-300px min-w-fit w-280px)"
         >
           <!-- 选择头像 -->
           <el-form-item
@@ -330,7 +331,7 @@ defineExpose({
             style="height: fit-content;margin: auto auto 0 auto;"
           >
             <div class="flex-row-c-c flex-col">
-              <InputOssFileUpload
+              <CommonOssFileUpload
                 ref="inputOssFileUploadRef"
                 key="inputOssFileUploadRef"
                 :multiple="false"
@@ -359,7 +360,7 @@ defineExpose({
         </div>
       </div>
     </el-form>
-  </DialogPopup>
+  </CommonPopup>
 </template>
 
 <style lang="scss" scoped>

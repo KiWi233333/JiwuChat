@@ -3,20 +3,9 @@
  * @returns UI
  */
 export function createUIModule() {
-  const showExtension = ref(false);
-  const pageTransition = ref<{ name?: string, mode?: "in-out" | "out-in", duration?: number }>({ name: "", duration: 200 });
-
-  const showVideoDialog = ref(false);
-  const notDialogShow = computed({
-    get: () => !showVideoDialog.value && !showExtension.value && !showVideoDialog.value && !useImageViewer.state.visible,
-    set: (val: boolean) => {
-      if (!val) {
-        showVideoDialog.value = false;
-        showExtension.value = false;
-        useImageViewer.close();
-      }
-    },
-  });
+  const showExtension = ref(false); // 扩展面板
+  const pageTransition = ref<{ name?: string, mode?: "in-out" | "out-in", duration?: number }>({ name: "", duration: 200 }); // 页面过渡
+  const showVideoDialog = ref(false); // 视频对话框
 
   const shouldAutoScroll = ref(true); // 初始状态为true，表示默认自动滚动
   const isScrollBottom = ref(true); // 初始状态为true，表示默认在底部
@@ -46,7 +35,6 @@ export function createUIModule() {
     showExtension,
     pageTransition,
     showVideoDialog,
-    notDialogShow,
     shouldAutoScroll,
     isScrollBottom,
     scrollBottom,

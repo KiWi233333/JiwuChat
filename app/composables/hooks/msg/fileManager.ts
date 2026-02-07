@@ -2,6 +2,7 @@
 import type { ComputedRef, Ref, ShallowReactive } from "vue";
 import { h, nextTick, render } from "vue";
 import FilePreviewCard from "~/components/chat/Preview/File.vue";
+import { MSG_CTX_NAMES } from "~/constants/msgContext";
 
 export class FileManager {
   private maxCount = 9;
@@ -78,7 +79,7 @@ export class FileManager {
         fileName: displayName,
         size,
         mimeType,
-        ctxName: "file",
+        ctxName: MSG_CTX_NAMES.FILE,
         onDelete() {
           // TODO: 释放资源
           container.remove();
