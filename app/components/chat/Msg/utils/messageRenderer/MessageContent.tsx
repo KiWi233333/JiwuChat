@@ -10,9 +10,9 @@ import { MentionNode, TextNode, UrlNode } from "./nodes";
  * 默认节点注册器（预注册常用节点）
  */
 export const defaultRegistry = new MessageNodeRegistry().registerAll([
-  new TextNode().getConfig(),
-  new MentionNode().getConfig(),
-  new UrlNode().getConfig(),
+  new TextNode(),
+  new MentionNode(),
+  new UrlNode(),
 ]);
 
 /**

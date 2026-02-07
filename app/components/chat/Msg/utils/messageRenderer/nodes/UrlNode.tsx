@@ -102,6 +102,12 @@ export class UrlNode extends MessageNode<UrlToken> {
           : `http://${url}`;
       });
 
+      function onClick(e: MouseEvent) {
+        e.preventDefault();
+        e.stopPropagation();
+        useOpenUrl(fullUrl.value);
+      }
+
       return () => (
         <a
           href={fullUrl.value}
@@ -109,6 +115,7 @@ export class UrlNode extends MessageNode<UrlToken> {
           data-url={fullUrl.value}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={onClick}
           class="msg-link"
           title={props.token.data?.altTitle || fullUrl.value}
         >
