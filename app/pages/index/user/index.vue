@@ -153,45 +153,45 @@ useHead({
           variant="list"
         />
       </div>
-    </div>
 
-    <!-- 底部操作按钮 (仅在查看他人时显示) -->
-    <div
-      v-if="!isLoading && otherUserId && otherUserId !== store.userInfo?.id"
-      data-fade
-      class="fixed bottom-0 left-0 z-10 mx-a mr-auto max-w-42rem w-full flex gap-3 rounded-t-xl bg-color bg-op-90 p-4 shadow-lg backdrop-blur-8 sm:(static mt-3 justify-center border-default-2 rounded-xl shadow-sm)"
-    >
-      <template v-if="isFriend">
+      <!-- 底部操作按钮 (仅在查看他人时显示) -->
+      <div
+        v-if="!isLoading && otherUserId && otherUserId !== store.userInfo?.id"
+        data-fade
+        class="fixed bottom-0 left-0 z-10 mr-auto max-w-42rem w-full flex gap-3 rounded-t-xl bg-color bg-op-90 p-4 shadow-lg backdrop-blur-8 sm:(static mt-3 justify-center border-default-2 rounded-xl shadow-sm)"
+      >
+        <template v-if="isFriend">
+          <CommonElButton
+            icon-class="i-solar:trash-bin-trash-outline p-2 mr-1"
+            style="--el-color-primary: var(--el-color-danger);"
+            plain
+            :size="setting.isMobileSize ? 'large' : 'default'"
+            class="flex-1 border-none bg-color-2 sm:(w-36 flex-none)"
+            @click="deleteFriend"
+          >
+            删除好友
+          </CommonElButton>
+          <CommonElButton
+            icon-class="i-solar:chat-line-bold p-2 mr-1"
+            type="primary"
+            :size="setting.isMobileSize ? 'large' : 'default'"
+            class="flex-1 border-none sm:(w-36 flex-none)"
+            @click="chat.toContactSendMsg('userId', otherUserId)"
+          >
+            发送消息
+          </CommonElButton>
+        </template>
         <CommonElButton
-          icon-class="i-solar:trash-bin-trash-outline p-2 mr-1"
-          style="--el-color-primary: var(--el-color-danger);"
-          plain
-          :size="setting.isMobileSize ? 'large' : 'default'"
-          class="flex-1 border-none bg-color-2 sm:(w-36 flex-none)"
-          @click="deleteFriend"
-        >
-          删除好友
-        </CommonElButton>
-        <CommonElButton
-          icon-class="i-solar:chat-line-bold p-2 mr-1"
+          v-else
+          icon-class="i-solar:user-plus-bold p-2 mr-1"
           type="primary"
           :size="setting.isMobileSize ? 'large' : 'default'"
           class="flex-1 border-none sm:(w-36 flex-none)"
-          @click="chat.toContactSendMsg('userId', otherUserId)"
+          @click="handleApplyFriend"
         >
-          发送消息
+          添加好友
         </CommonElButton>
-      </template>
-      <CommonElButton
-        v-else
-        icon-class="i-solar:user-plus-bold p-2 mr-1"
-        type="primary"
-        :size="setting.isMobileSize ? 'large' : 'default'"
-        class="flex-1 border-none sm:(w-36 flex-none)"
-        @click="handleApplyFriend"
-      >
-        添加好友
-      </CommonElButton>
+      </div>
     </div>
 
     <!-- 好友申请弹窗 -->

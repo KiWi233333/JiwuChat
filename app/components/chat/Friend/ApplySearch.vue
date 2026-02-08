@@ -248,7 +248,7 @@ onDeactivated(() => {
             @click="clickTag(p, i)"
           >
             {{ p }}
-            <i title="删除" class="i-carbon:close ml-1 btn-danger btn-danger p-2" @click.stop.capture="removeHistoryAccount(p, i)" />
+            <i title="删除" class="i-carbon:close ml-1 btn-danger p-2" @click.stop.capture="removeHistoryAccount(p, i)" />
           </span>
         </div>
         <!-- 历史记录 -->
@@ -270,7 +270,7 @@ onDeactivated(() => {
             ref="virtualListRef"
             :items="searchPageList"
             item-height="4rem"
-            height="calc(100dvh - 10rem)"
+            height="calc(100dvh - 4rem)"
             :selected-index="currentFocus"
             class="relative flex-1 pt-2"
             wrap-class="py-2 pb-20 flex-1 overflow-hidden"

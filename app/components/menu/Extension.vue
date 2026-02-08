@@ -178,7 +178,7 @@ function createItem() {
             :class="item.icon"
           />
           <div
-            class="absolute right-1 top-1 btn-danger-bg group-hover:(op-100) sm:op-0"
+            class="absolute right-1 top-1 transition-200 hover:bg-color-2 group-hover:(op-100) sm:op-0 !rounded-xs"
             @click.stop.prevent="onRemove(item)"
           >
             <i class="i-carbon:subtract p-2 p-2.2" />
@@ -206,6 +206,7 @@ function createItem() {
             'not-link': item.disabled,
             [`${item.class || ''}`]: item.class,
           }"
+          @click.stop="!item.disabled && open(item)"
         >
           <i
             class="mx-a block h-6 w-6" :class="item.icon"
@@ -213,14 +214,13 @@ function createItem() {
           />
           <div
             v-if="!item.disabled && !setting.isMobileSize"
-            class="add"
+            class="add !rounded-xs"
             @click.stop="onAdd(item)"
           >
             <i class="i-carbon:add p-2 p-2.2" />
           </div>
           <div
             class="mx-a mt-2 text-center text-xs"
-            @click.stop="!item.disabled && open(item)"
           >
             {{ item.title }}
           </div>
@@ -244,6 +244,15 @@ function createItem() {
     </CommonListTransitionGroup>
     <template #footer>
       <div class="flex justify-center pb-2 sm:justify-end">
+        <!-- 是否新开窗口（系统配置，仅桌面端有意义） -->
+        <el-checkbox
+          v-if="!setting.isMobileSize"
+          v-model="setting.extendOpenInNewWindow"
+          class="mr-2"
+          :size="setting.isMobileSize ? 'large' : 'small'"
+        >
+          新开窗口
+        </el-checkbox>
         <el-button
           class="ml-a w-1/2 sm:w-fit"
           :size="setting.isMobileSize ? 'large' : 'small'"

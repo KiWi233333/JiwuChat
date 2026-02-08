@@ -25,7 +25,14 @@ function handleEmojiSubmit(val: string) {
   >
     <template #reference>
       <slot name="reference">
-        <i class="i-solar:sticker-smile-circle-2-linear h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" />
+        <div class="cursor-pointer">
+          <CommonIconTip
+            class="text-5"
+            :disabled-tooltip="popoverVisible"
+            icon="i-solar:sticker-smile-circle-2-linear"
+            tip="表情"
+          />
+        </div>
       </slot>
     </template>
     <div

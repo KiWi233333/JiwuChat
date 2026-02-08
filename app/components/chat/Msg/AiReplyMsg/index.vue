@@ -61,7 +61,16 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
                 <i i-solar:lightbulb-linear p-2 />
                 <span>思考:</span>
               </span>
-              {{ data?.message?.body?.reasoningContent }}
+              <MdPreview
+                :id="`msg-reason-md-${data.message?.id}`"
+                language="zh-CN"
+                :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
+                code-theme="a11y"
+                :code-foldable="false"
+                :ctx-name="MSG_CTX_NAMES.CONTENT"
+                class="reason-markdown-preview"
+                :model-value="data?.message?.body?.reasoningContent || ''"
+              />
               <svg v-if="showReasonLoading" class="inline-block h-1.2em w-1.2em animate-spin -mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" /><path fill="currentColor" d="M12 4.5a7.5 7.5 0 1 0 0 15a7.5 7.5 0 0 0 0-15M1.5 12C1.5 6.201 6.201 1.5 12 1.5S22.5 6.201 22.5 12S17.799 22.5 12 22.5S1.5 17.799 1.5 12" opacity=".1" /><path fill="currentColor" d="M12 4.5a7.46 7.46 0 0 0-5.187 2.083a1.5 1.5 0 0 1-2.075-2.166A10.46 10.46 0 0 1 12 1.5a1.5 1.5 0 0 1 0 3" /></g></svg>
             </div>
             <template #toggle-button="{ isExpanded, toggleExpand }">
@@ -122,7 +131,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 
     .md-editor-preview {
       color: var(--el-text-color-primary);
-      font-size: 0.875rem;
+      --at-apply: "text-0.75rem sm:text-0.8rem";
 
       img {
         border-radius: 0.25rem;
@@ -229,7 +238,7 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 
       // 引用块
       blockquote {
-        --at-apply: "rounded-3 rounded-l-1 border-l-color-[var(--el-color-warning)] overflow-hidden border-collapse-separate border-spacing-0";
+        --at-apply: "rounded-3 rounded-l-1 border-l-color-[var(--el-border-color)] overflow-hidden bg-color-2 dark:!bg-op-40 text-secondary border-spacing-0";
       }
     }
   }
@@ -237,9 +246,29 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 
 // 思考内容
 :deep(.reason-content-wrapper) {
-  --at-apply: "mt-1 mb-2 overflow-hidden  relative z-0 card-rounded-df p-2 shadow-(sm inset) bg-color-2 text-mini-50 flex overflow-hidden";
+  --at-apply: "mt-1 mb-2 overflow-hidden relative z-0 card-rounded-df p-2 shadow-(sm inset) bg-color-2 text-mini-50 flex overflow-hidden";
   .reason-content-inner {
-    --at-apply: "leading-1.5em w-full whitespace-pre-wrap";
+    --at-apply: "leading-1.5em w-full min-w-0";
+  }
+  .reason-markdown-preview {
+    --at-apply: "op-70 p-0 bg-transparent flex-1 min-w-0";
+    .md-editor-preview-wrapper {
+      padding: 0 !important;
+
+      .md-editor-preview {
+        --at-apply: "text-0.72rem sm:text-0.75rem";
+
+        p {
+          margin: 0.2em 0;
+        }
+        p:first-child {
+          margin-top: 0;
+        }
+        .md-editor-code {
+          --at-apply: "rounded-2 border-default card-bg-color-3 text-0.75rem";
+        }
+      }
+    }
   }
   .reason-toggle-btn {
     --at-apply: "absolute btn-default-text translate-y-1 scale-80 z-2 op-0 pl-3 bottom-1.5 right-1.5 pr-2 text-mini leading-6 shadow rounded cursor-pointer transition-200 border-none bg-transparent shadow-none";

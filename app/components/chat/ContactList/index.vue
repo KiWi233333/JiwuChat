@@ -86,12 +86,11 @@ async function reload(size: number = 20, dto?: ContactPageDTO, isAll: boolean = 
       console.error("加载会话列表失败", error);
       isReload.value = false;
     }
-    // 默认加载首个会话
-    if (!setting.isMobileSize && historyContactId.value && chat.contactMap[historyContactId.value]) {
-      chat.setContact(chat.contactMap[historyContactId.value]);
-    }
-    else {
-      chat.setContact();
+
+    // 历史会话 ｜ 第一个 ｜ 移动端打开会话
+    chat.setContact(historyContactId.value ? chat.contactMap[historyContactId.value] : setting.isMobileSize ? (chat.getContactList?.[0] || undefined) : undefined);
+
+    if (setting.isMobileSize) {
       chat.isOpenContact = true;
     }
   }
@@ -594,7 +593,7 @@ onDeactivated(() => {
   }
 }
 .header {
-  --at-apply: "sm:(h-18 px-4) bg-color sm:(bg-white dark:bg-[#111111]) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
+  --at-apply: "sm:(h-18 px-2.5) bg-color sm:(bg-white dark:bg-[#111111]) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
   :deep(.el-input) {
     .el-input__wrapper {
       --at-apply: "!shadow-none !outline-none !input-bg-color";

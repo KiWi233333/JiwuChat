@@ -5,6 +5,8 @@ const {
   isEdit: boolean;
 }>();
 
+const popoverVisible = ref(false);
+
 const bgList = ref<string[]>([
   "/image/user-bg/kiwi-bg-1.jpg",
   "/image/user-bg/kiwi-bg-2.jpg",
@@ -21,29 +23,33 @@ const bgUrl = useLocalStorage(`${user.userId}-user-bg`, "/image/user-bg/kiwi-bg-
   <div class="group top-bg relative select-none">
     <el-popover
       v-if="isEdit"
+      v-model:visible="popoverVisible"
       width="fit-content"
       placement="top"
       :teleported="true"
       trigger="click"
     >
       <template #reference>
-        <!-- 切换按钮 -->
-        <el-button
-          class="absolute right-4 top-4 z-999 group-hover:opacity-100 sm:opacity-50"
-          plain
-          circle
-          round
+        <div
+          class="absolute right-6 top-6 z-999 group-hover:opacity-100 sm:opacity-50"
         >
-          <i
-            i-solar:pallete-2-bold h-1.6em w-1.6em
+          <CommonIconTip
+            class="text-5"
+            icon="i-solar:pallete-2-bold"
+            tip="切换壁纸"
+            :background="false"
+            :disabled-tooltip="popoverVisible"
           />
-        </el-button>
+        </div>
       </template>
       <template #default>
         <span class="text-sm">
           <i class="i-solar:star-bold-duotone mr-1 p-2" />
           切换壁纸</span>
-        <div class="img-list grid grid-cols-3 mt-2 w-90vw gap-4 sm:w-400px">
+        <div
+          class="img-list grid grid-cols-3 mt-2 w-90vw gap-4 sm:w-400px"
+          @mouseleave="popoverVisible = false"
+        >
           <CommonElImage
             v-for="(p, i) in bgList"
             :key="i"

@@ -11,6 +11,7 @@ const store = useUserStore();
 const formData = new FormData();
 const ws = useWsStore();
 const showMarkPhone = ref(true);
+const popoverVisible = ref(false);
 // 表单
 const avatatRef = useTemplateRef("avatatRef");
 const avatarUrl = computed({
@@ -62,13 +63,20 @@ const updateSucess: UploadProps["onSuccess"] = async (data: Result<string>, uplo
 const getAgeText = computed(() => calculateAge(data.birthday));
 const getConstellation = computed(() => computeConstellation(data.birthday));
 const getBirthdayCount = computed(() => calculateBirthdayCount(data.birthday));
+
+function handleEditProfile() {
+  navigateTo("/user");
+  // 关闭弹窗
+  popoverVisible.value = false;
+}
 </script>
 
 <template>
   <MenuPopper
+    v-model:visible="popoverVisible"
     placement="right-start"
     transition="popper-fade"
-    trigger="hover"
+    trigger="click"
     :offset="4"
     :show-arrow="false"
     popper-class="!border-default !card-default-br-2"
@@ -193,7 +201,7 @@ const getBirthdayCount = computed(() => calculateBirthdayCount(data.birthday));
             icon-class="i-solar:pen-2-line-duotone mr-2"
             style="transition: .2s;font-size: 0.85em;height: 2.5em; width: 10em;text-align: center;letter-spacing: 1px;--el-color-primary: var(--el-color-success);"
             plain
-            @click.stop="navigateTo('/user')"
+            @click.stop="handleEditProfile"
           >
             编辑资料&ensp;
           </CommonElButton>

@@ -106,6 +106,8 @@ const DISABLED_BROWSER_SHORTCUTS: Record<string, boolean> = {
   "cmd+h": true, // 替换
   "cmd+l": true, // 跳转
   "cmd+s": true, // 保存
+  "cmd+r": !import.meta.env.DEV, // 刷新页面
+  "ctrl+r": !import.meta.env.DEV, // 刷新页面
 };
 
 /**

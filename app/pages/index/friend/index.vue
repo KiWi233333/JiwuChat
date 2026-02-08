@@ -75,7 +75,7 @@ const rightColumnClass = computed(() => {
   <div class="h-full w-full flex flex-1">
     <!-- 左侧列表面板 -->
     <div :class="leftColumnClass">
-      <ChatFriendTabs class="nav-padding-top-6 relative mx-a h-full flex-shrink-0 p-4 pb-0" />
+      <ChatFriendTabs class="nav-padding-top-6 relative mx-a h-full flex-shrink-0 p-4 pb-0 sm:px-2.5" />
     </div>
 
     <!-- 右侧详情面板 -->

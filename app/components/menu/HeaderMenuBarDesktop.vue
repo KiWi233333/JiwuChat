@@ -41,11 +41,15 @@ const getAppTitle = computed(() => {
 
     <!-- 菜单栏右侧 -->
     <slot name="right">
-      <div class="right relative z-1 flex items-center gap-2 pr-4">
+      <div
+        class="right relative z-1 flex items-center gap-2"
+        :class="{ 'pr-4': setting.isDesktop || setting.isWeb }"
+      >
         <!-- 桌面更新菜单 -->
-        <SettingUpdator v-if="$route.path !== '/setting'" />
+        <SettingUpdater v-if="$route.path !== '/setting'" />
+
         <!-- 下载（部分端） -->
-        <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1 w-5 h-5" />
+        <BtnDownload v-if="!setting.isWeb" />
 
         <!-- 折叠菜单 -->
         <MenuDots v-if="$route.path.startsWith('/extend')">
@@ -61,6 +65,7 @@ const getAppTitle = computed(() => {
           </template>
         </MenuDots>
 
+        <!-- Windows/Linux/Web 菜单 -->
         <template v-if="setting.isDesktop || setting.isWeb">
           <!-- web下载推广菜单 -->
           <BtnAppDownload />

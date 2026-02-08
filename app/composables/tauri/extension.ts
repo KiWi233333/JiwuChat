@@ -6,6 +6,7 @@ import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 export function useOpenExtendWind() {
   const openItem = ref<ExtendItem>();
   const setting = useSettingStore();
+  const chat = useChatStore();
   // 打开扩展窗口
   const open = async (item: ExtendItem, log: boolean = true) => {
     if (!item.url) {
@@ -19,7 +20,14 @@ export function useOpenExtendWind() {
       ElMessage.warning("扩展窗口正在加载中！");
       return;
     }
-    // 判断是否已经打开
+    // 1）根据「新开窗口」设置决定是主窗口内跳转还是独立窗口
+    if (!setting.extendOpenInNewWindow) {
+      const type = item.url.replace(/^\/extend\/?/, "") || undefined;
+      await navigateTo({ path: "/internal", query: type ? { type } : {} });
+      chat.showExtension = false;
+      return;
+    }
+    // 2）桌面端
     if (setting.isDesktop) {
       const window = await WebviewWindow.getByLabel(EXTEND_WINDOW_LABEL);
       if (window) {

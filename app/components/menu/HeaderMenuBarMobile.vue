@@ -59,11 +59,15 @@ const getAppTitle = computed(() => {
     <!-- 菜单栏 -->
     <slot name="left">
       <div
-        class="relative z-1000 mr-a btn-primary"
-        :class="!chat.isOpenContact ? 'flex-row-c-c animate-zoom-in animate-duration-200' : 'hidden '"
+        class="relative z-1000 mr-a flex-row-c-c gap-1"
+        :class="!chat.isOpenContact ? 'animate-zoom-in animate-duration-200' : 'hidden'"
         @click="toggleContactOpen"
       >
-        <i i-solar-alt-arrow-left-line-duotone p-3 />
+        <CommonIconTip
+          class="btn-primary text-5"
+          icon="i-solar:alt-arrow-left-line-duotone"
+          tip="返回"
+        />
         <small v-show="!hiddenCountTip" class="unread-count-badge font-500">
           {{ chat.unReadCount > 99 ? '99+' : chat.unReadCount }}
         </small>
@@ -76,10 +80,11 @@ const getAppTitle = computed(() => {
     <slot name="center" :app-title="getAppTitle" />
     <!-- 会话搜索框 -->
     <slot name="search-contact">
-      <i
+      <CommonIconTip
         v-if="$route.path === '/' && chat.isOpenContact"
-        class="i-solar:magnifer-outline ml-a btn-primary"
-        title="搜索会话"
+        class="ml-a text-5"
+        icon="i-solar:magnifer-outline"
+        tip="搜索会话"
         @click="toggleContactSearch"
       />
     </slot>
@@ -87,17 +92,16 @@ const getAppTitle = computed(() => {
     <slot name="right">
       <div class="right relative z-1 flex items-center gap-1">
         <!-- 下载（部分端） -->
-        <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1 w-5 h-5" />
+        <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1" />
         <!-- 折叠菜单 -->
         <MenuDots :show-arrow="false">
           <template #btn>
-            <div
-              text
-              class="mx-1 w-2em flex-row-c-c btn-primary"
-              size="small"
-              title="菜单"
-            >
-              <i class="i-solar:add-circle-linear p-2.6" />
+            <div>
+              <CommonIconTip
+                class="mx-1 flex-row-c-c text-5"
+                icon="i-solar:add-circle-linear"
+                tip="菜单"
+              />
             </div>
           </template>
         </MenuDots>

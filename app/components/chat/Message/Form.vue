@@ -752,14 +752,16 @@ defineExpose({
     <div class="form-contain">
       <!-- 工具栏 TODO: AI机器人暂不支持 -->
       <template v-if="!isAiRoom">
-        <div class="relative h-9 flex flex-shrink-0 items-center gap-3 sm:px-2">
-          <el-tooltip popper-style="padding: 0.2em 0.5em;" :content="!isSoundRecordMsg ? '语音' : '键盘'" placement="top">
-            <i
-              :class="!isSoundRecordMsg ? 'i-solar:microphone-3-broken hover:animate-pulse' : 'i-solar:keyboard-broken'"
-              class="h-6 w-6 btn-primary cursor-pointer"
+        <div class="relative h-9 flex flex-shrink-0 items-center gap-2 sm:px-2">
+          <span :class="{ 'hover:animate-pulse': isSoundRecordMsg }" class="inline-flex">
+            <CommonIconTip
+              class="text-5"
+              :icon="!isSoundRecordMsg ? 'i-solar:microphone-3-broken' : 'i-solar:keyboard-broken'"
+              :tip="!isSoundRecordMsg ? '语音' : '键盘'"
+              placement="top"
               @click="chat.msgForm.msgType = chat.msgForm.msgType === MessageType.TEXT ? MessageType.SOUND : MessageType.TEXT"
             />
-          </el-tooltip>
+          </span>
           <!-- 语音 -->
           <template v-if="isSoundRecordMsg">
             <div v-show="!audioFile?.id" class="absolute-center-x">
@@ -808,13 +810,28 @@ defineExpose({
           </template>
           <!-- 非语音 -->
           <template v-else>
-            <div v-show="!setting.isMobileSize" class="grid cols-4 items-center gap-3 sm:flex sm:gap-4">
+            <div v-show="!setting.isMobileSize" class="grid cols-4 items-center gap-2 sm:flex sm:gap-2">
               <!-- 图片 -->
-              <i class="i-solar:album-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" @click.stop="fileActions.selectImageFiles()" />
+              <CommonIconTip
+                class="text-5"
+                icon="i-solar:album-line-duotone"
+                tip="图片"
+                @click="fileActions.selectImageFiles()"
+              />
               <!-- 视频 -->
-              <i class="i-solar:video-library-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" @click.stop="fileActions.selectVideoFiles()" />
+              <CommonIconTip
+                class="text-5"
+                icon="i-solar:video-library-line-duotone"
+                tip="视频"
+                @click="fileActions.selectVideoFiles()"
+              />
               <!-- 文件 -->
-              <i class="i-solar:folder-with-files-line-duotone h-6 w-6 btn-primary cursor-pointer sm:(h-5 w-5)" @click.stop="fileActions.selectFile({ multiple: true, directory: false })" />
+              <CommonIconTip
+                class="text-5"
+                icon="i-solar:folder-with-files-line-duotone"
+                tip="文件"
+                @click="fileActions.selectFile({ multiple: true, directory: false })"
+              />
               <!-- Emoji -->
               <CommonEmojiSelect @submit="handleEmojiSubmit" />
             </div>
@@ -873,23 +890,26 @@ defineExpose({
             </el-select>
             <i ml-a block w-0 />
             <!-- 群通知消息 -->
-            <div
+            <CommonIconTip
               v-if="isLord"
-              title="群通知消息"
-              class="i-carbon:bullhorn inline-block btn-primary p-3.2 transition-200 sm:p-2.8"
+              class="text-5"
+              icon="i-carbon:bullhorn"
+              tip="群通知消息"
               @click="showGroupNoticeDialog = true"
             />
             <template v-if="isSelfRoom && !setting.isMobileSize">
               <!-- 语音通话 -->
-              <div
-                title="语音通话"
-                class="i-solar:phone-calling-outline btn-primary p-3 transition-200 sm:p-2.8"
+              <CommonIconTip
+                class="text-5"
+                icon="i-solar:phone-calling-outline"
+                tip="语音通话"
                 @click="chat.openRtcCall(chat.theRoomId!, CallTypeEnum.AUDIO)"
               />
               <!-- 视频通话 -->
-              <div
-                title="视频通话"
-                class="i-solar:videocamera-record-line-duotone btn-primary p-3.2 transition-200 sm:p-2.8"
+              <CommonIconTip
+                class="text-5"
+                icon="i-solar:videocamera-record-line-duotone"
+                tip="视频通话"
                 @click="chat.openRtcCall(chat.theRoomId!, CallTypeEnum.VIDEO)"
               />
             </template>

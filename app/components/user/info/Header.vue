@@ -387,7 +387,7 @@ function showInvitation() {
         </div>
 
         <!-- 性别选择 -->
-        <div class="tag-item relative w-18 flex items-center">
+        <div class="tag-item relative min-w-18 flex items-center">
           <i :class="genderConfig.icon" :style="{ color: genderConfig.color.replace('text-', '') }" />
           <el-select
             v-if="isEdit"
@@ -430,7 +430,7 @@ function showInvitation() {
               :bg="false"
               text
               size="small"
-              class="absolute right-2 top-2 transition-opacity group-hover:op-100 sm:op-0"
+              class="absolute right-2 top-2 p-2 transition-opacity group-hover:op-100 sm:op-0"
               @click="onFocusSlogan"
             >
               <i class="i-solar:pen-new-square-outline" />

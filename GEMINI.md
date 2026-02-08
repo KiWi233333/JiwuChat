@@ -1,6 +1,6 @@
 # JiwuChat 项目背景
 
-本文件为 Gemini 等 AI 助手提供项目指导,帮助理解并参与 JiwuChat 项目开发。
+本文件为 Gemini 等 AI 助手提供项目指导，帮助理解并参与 JiwuChat 项目开发。编码、样式、SCSS、Icon、Composables 等规范与 **CLAUDE.md**、**AGENTS.md** 保持一致，可交叉查阅。
 
 ## 项目概述
 
@@ -155,12 +155,23 @@
 
 ## 编码规范
 
+### 编码与命名
+
+- **缩进**: 2 空格；**引号**: 双引号；**分号**: 必须
+- **ESLint**: 以 ESLint 为准，提交前执行 `pnpm run lint:fix`
+- **Vue 组件文件**: `PascalCase.vue`；**Composables**: `useXxx.ts`；**API 函数**: 小驼峰、语义化
+
 ### Vue 组件开发规范
+
+#### 组件命名与引用（Nuxt 特性）
+
+- **路径即组件名**：Nuxt 按 `components/` 下路径自动注册，路径转为 PascalCase 组件名。
+- 例如：`app/components/common/IconTip/index.vue` → 模板中使用 **`CommonIconTip`**；`common/PageHeader.vue` → **`CommonPageHeader`**。模板中引用时使用该“路径名”，不要臆造短名。
 
 #### Props 定义
 
-- **使用解构默认值**:使用 `defineProps` 直接解构并设置默认值,不使用 `withDefaults`
-- **类型定义分离**:将类型定义放在普通 `<script lang="ts">` 块中,逻辑放在 `<script setup lang="ts">` 块中
+- **使用解构默认值**: 使用 `defineProps` 直接解构并设置默认值，**不使用** `withDefaults`
+- **类型定义分离**: 类型放在普通 `<script lang="ts">` 块中，逻辑放在 `<script setup lang="ts">` 块中
 
 ```vue
 <!-- ✅ 正确写法 -->
@@ -175,7 +186,7 @@ export interface MyComponentProps {
 const { name = 'default', count = 0 } = defineProps<MyComponentProps>()
 </script>
 
-<!-- ❌ 不推荐:避免使用 withDefaults -->
+<!-- ❌ 不推荐: 避免使用 withDefaults -->
 <script setup lang="ts">
 const props = withDefaults(defineProps<MyComponentProps>(), {
   name: 'default',
@@ -184,23 +195,54 @@ const props = withDefaults(defineProps<MyComponentProps>(), {
 </script>
 ```
 
+#### Emits
+
+- 使用 `defineEmits<{ (e: "eventName", payload?: Type): void }>()` 并保持类型明确。
+
+#### 已知坑点
+
+- **el-tooltip**：不要同时传 `:content="tip"` 和 `<template #content>`，易导致 “Maximum call stack size exceeded”。只二选一：要么用 `content` 简单文案，要么只用 `#content` 插槽。
+
 #### 样式规范
 
-- **避免 BEM 命名**:不使用 BEM 嵌套写法(`&__element`、`&--modifier`)
-- **使用 UnoCSS 工具类**:优先使用 `uno.config.ts` 中定义的 shortcuts
-- **常用颜色类**:
-  - 背景:`card-bg-color`、`bg-color`、`bg-color-2`、`bg-color-3`
-  - 文字:`text-color`、`text-small`、`text-small-color`、`text-mini`
-  - 边框:`border-default`
-- **动态样式**:使用 computed 生成类名,避免 `:deep()` 嵌套选择器
+- **单位**：尺寸一律用 **rem**（spacing、font-size、宽高、定位），避免 px。
+- **UnoCSS**：优先使用 `uno.config.ts` 中定义的 shortcuts；常用类：背景 `card-bg-color`、`bg-color`、`bg-color-2`、`bg-color-3`；文字 `text-color`、`text-small`、`text-small-color`、`text-mini`；边框 `border-default`；按钮 `btn-primary`、`btn-danger` 等。
+- **动态样式**：使用 computed 生成类名，避免 `:deep()` 嵌套选择器。
+- **避免 BEM 命名**：不使用 BEM 嵌套写法（`&__element`、`&--modifier`）。
+
+#### SCSS 规范（scoped 组件内）
+
+- 在 `<style lang="scss" scoped>` 里用 **`--at-apply`** 引用 UnoCSS 工具类或 shortcuts，避免裸 `@apply`（部分环境会报 Unknown at rule）。
+- 用 SCSS 把多个 utility 组合成语义类（如 `.card-item`），而不是在模板里堆 class。所有颜色需考虑深色模式（shortcuts 或 `dark:`）。
+
+```scss
+.icon-tip {
+  --at-apply: "relative cursor-pointer select-none transition-200";
+  &.is-disabled {
+    --at-apply: "cursor-not-allowed opacity-50";
+  }
+}
+```
+
+#### Icon 规范
+
+- 使用 UnoCSS presetIcons + Iconify，class 格式为 **`i-{collection}:{icon-name}`**。
+- 常见集合：`i-solar:xxx`、`i-carbon:xxx`、`i-ri:xxx`。示例：`class="i-solar:settings-linear"`、`icon="i-ri:user-line"`。
+
+#### Composables / Hooks 与类型
+
+- **Composables**：业务逻辑在 `app/composables/`；`api/` 按领域导出 API 函数；`hooks/` 为 `useXxx.ts`（msg、oauth、oss、ws）；`store/` 为 Pinia；`utils/` 为纯工具；`tauri/` 为 Tauri 相关。
+- **API 层**：通过 `useHttp` 发请求，返回类型使用 `Result<T>`（`types/result.ts`），并写 JSDoc。
+- **类型定义**：通用类型、枚举放 `app/types/`；接口统一用 `Result<T>` 与 `StatusCode`。
 
 ### 代码风格
 
-- **Vue 风格**:组件统一使用 `<script setup lang="ts">`
-- **样式**:模板中优先使用 **UnoCSS** 工具类,复杂样式或覆盖使用 SCSS 写在 `<style>` 中
-- **自动导入**:Nuxt 配置自动导入 composables 和工具函数,无需手动 import
-- **Linter**:代码严格遵循 `@antfu/eslint-config` 规则
-- **TypeScript**:启用 strict 模式,使用类型安全的 API 调用
+- **Vue 风格**: 组件统一使用 `<script setup lang="ts">`
+- **样式**: 模板中优先使用 **UnoCSS** 工具类；复杂样式用 SCSS + `--at-apply` 写在 `<style>` 中
+- **自动导入**: Nuxt 配置自动导入 composables 和工具函数，无需手动 import
+- **Linter**: 代码严格遵循 `@antfu/eslint-config` 规则
+- **TypeScript**: 启用 strict 模式，使用类型安全的 API 调用
+- **视觉与布局**: 列表/卡片优先 grid + minmax；交互项用卡片语义 + hover（shadow、translate）；复杂装饰用 SCSS 伪元素
 
 ### Git Commit 规范
 
@@ -228,13 +270,11 @@ const props = withDefaults(defineProps<MyComponentProps>(), {
 
 #### 规则
 
-- Type 必须小写
-- Header 最大长度:100 字符
-- Subject 结尾不加句号
-- **不要**包含 footer 内容
-- **不要**说明是谁生成的 commit
+- Type 必须小写；Header 最大长度 100 字符；Subject 结尾不加句号
+- **不要**包含 footer 内容；**不要**说明是谁生成的 commit
+- **禁止自动提交**：严禁在完成代码修改后自动执行 `git commit`；必须在用户明确要求时才执行提交。
 
-**示例**:`feat(chat): 添加消息编辑功能`
+**示例**: `feat(chat): 添加消息编辑功能`
 
 ## 核心配置文件
 

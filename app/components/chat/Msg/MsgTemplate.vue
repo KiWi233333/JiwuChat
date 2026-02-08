@@ -115,7 +115,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
         v-if="showReply"
         title="点击跳转"
         :ctx-name="MSG_CTX_NAMES.REPLY"
-        class="reply flex items-center"
+        class="reply flex items-center text-color text-op-60 transition-all hover:text-op-100"
         @click="chat.scrollReplyMsg(body?.reply?.id || 0, body?.reply?.gapCount, false)"
       >
         <i class="reply-icon i-solar:forward-2-bold-duotone mr-1 inline-block h-4 w-4" />
