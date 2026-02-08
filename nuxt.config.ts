@@ -125,12 +125,11 @@ export default defineNuxtConfig({
     "/ai": { prerender: true },
   },
 
-  // 自动导入
+  // 自动导入（仅扫描脚本文件，排除 .md 等避免 Duplicated imports 警告）
   imports: {
     dirs: [
-      // Scan top-level modules
-      "composables/**",
-      "types/**",
+      "composables/**/*.{ts,js,mjs,mts}",
+      "types/**/*.{ts,js,mjs,mts}",
     ],
   },
 
