@@ -160,7 +160,7 @@ export const useSettingStore = defineStore(
       return {
         // 字体
         fontFamily: {
-          value: "",
+          value: DEFAULT_FONT_FAMILY_LIST?.[4]?.value || "",
           list: [] as { name: string; value: string; url?: string; baseFontWeight?: number }[],
         },
         fontSize: {
