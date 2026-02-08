@@ -1,17 +1,16 @@
 <script lang="ts" setup>
+import type { ExtendPageType } from "~/constants/extend";
 import { EXTEND_PAGE_CONFIG, isExtendPageType } from "~/constants/extend";
 import extendPage from "~/pages/extend/[type].vue";
 
 const route = useRoute();
-const type = route.query.type as string | undefined;
-if (!type || !isExtendPageType(type)) {
-  throw createError({ statusCode: 404, statusMessage: "Not found" });
-}
-
-const config = EXTEND_PAGE_CONFIG[type];
-const pageTitle = config.title;
-const pageDescription = config.description;
-const pageIcon = config.icon ?? "i-ri:apps-2-line";
+const type = computed(() => route.query.type as string | undefined);
+const config = computed(() => EXTEND_PAGE_CONFIG[type.value as ExtendPageType] || undefined);
+watch(type, (newVal) => {
+  if (!newVal || !isExtendPageType(newVal)) {
+    throw createError({ statusCode: 404, statusMessage: "Not found" });
+  }
+});
 </script>
 
 <template>
@@ -19,15 +18,15 @@ const pageIcon = config.icon ?? "i-ri:apps-2-line";
     <!-- 移动端左上角可返回的标题 -->
     <div class="flex shrink-0 items-center px-3 pb-4 pt-2">
       <CommonPageHeader
-        :title="pageTitle"
-        :description="pageDescription"
-        :icon="pageIcon"
+        :title="config.title"
+        :description="config?.description"
+        :icon="config.icon"
       />
     </div>
     <!-- 扩展内容区域 -->
-    <div class="min-h-0 flex flex-1 flex-col overflow-hidden rounded">
-      <div class="internal-page__content min-h-0 flex flex-1 flex-col overflow-hidden rounded-b-sm">
-        <extendPage :key="type" :type="type" />
+    <div class="min-h-0 flex flex-1 flex-col overflow-hidden border-default-2 rounded">
+      <div class="min-h-0 flex flex-1 flex-col overflow-hidden rounded-b-sm">
+        <extendPage :key="type" :type="type" :show-loading="true" />
       </div>
     </div>
   </main>

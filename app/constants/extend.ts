@@ -31,6 +31,7 @@ export const EXTEND_PAGE_CONFIG: Record<ExtendPageType, ExtendPageConfig> = {
   shop: {
     title: "极物圈商城",
     icon: "i-ri:shopping-bag-3-line",
+    description: "极物圈商城，专注于购物分享，记录美好生活！",
     getUrl: user =>
       user.getToken ? `https://jiwu.kiwi2333.top/?token=${user.getToken}` : "",
     windowSize: {
@@ -44,7 +45,7 @@ export const EXTEND_PAGE_CONFIG: Record<ExtendPageType, ExtendPageConfig> = {
     title: "悦读时光",
     icon: "i-ri:book-3-line",
     description: "悦读时光，专注于分享生活点滴，记录美好生活！",
-    url: "https://readjoy.kiwi233.top/",
+    url: "https://readjoy.kiwi2333.top/",
     windowSize: {
       minWidth: 375,
       minHeight: 780,
@@ -56,7 +57,7 @@ export const EXTEND_PAGE_CONFIG: Record<ExtendPageType, ExtendPageConfig> = {
     title: "博客",
     icon: "i-ri:article-line",
     description: "分享极物聊天的心得与经验",
-    url: "https://kiwi233.top/",
+    url: "https://kiwi2333.top/",
     windowSize: {
       minWidth: 375,
       minHeight: 780,
