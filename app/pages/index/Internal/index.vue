@@ -15,7 +15,7 @@ const pageIcon = config.icon ?? "i-ri:apps-2-line";
 </script>
 
 <template>
-  <main class="internal-page w-full flex flex-1 flex-col card-bg-color p-2 sm:bg-color">
+  <main class="internal-page w-full flex flex-1 flex-col bg-color-2 p-2 sm:bg-color">
     <!-- 移动端左上角可返回的标题 -->
     <div class="flex shrink-0 items-center px-3 pb-4 pt-2">
       <CommonPageHeader

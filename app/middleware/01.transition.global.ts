@@ -38,15 +38,14 @@ function setPageTransition(
 
   const toDepth = getDepth(toPath, toMainIndex !== undefined);
   const fromDepth = getDepth(fromPath, fromMainIndex !== undefined);
-
-  if (toDepth > fromDepth) {
+  if (toDepth === fromDepth && toDepth === 1) {
+    chat.pageTransition.name = "page-fade-in";
+  }
+  else if (toDepth >= fromDepth) {
     chat.pageTransition.name = "page-slide-left";
   }
   else if (toDepth < fromDepth) {
     chat.pageTransition.name = "page-slide-right";
-  }
-  else {
-    chat.pageTransition.name = "page-fade-in";
   }
 }
 

@@ -4,10 +4,6 @@ import { processMessage } from "./messageConfig";
 import { WsMsgKey } from "./messageKeys";
 import { messageConfig } from "./messages";
 
-export type { MessageContext, MessageHandler } from "./messageConfig";
-export type { WsMsgItemMap };
-export { WsMsgKey };
-
 /**
  * WebSocket消息处理Hook
  */
