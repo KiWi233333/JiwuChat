@@ -154,7 +154,7 @@ defineExpose({
           <!-- 底部 -->
           <div
             v-if="$slots.footer"
-            class="drawer-footer border-default-t"
+            class="drawer-footer"
           >
             <slot name="footer" />
           </div>

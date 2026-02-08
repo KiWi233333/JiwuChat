@@ -65,17 +65,10 @@ function handleEndReachedMember(direction: ScrollbarDirection) {
   }
 }
 // 处理成员点击事件
-function handleMemberClick(member: any, index: number) {
+function handleMemberClick(event: MouseEvent, member: any, index: number) {
   // 移动端点击显示右键菜单
   if (setting.isMobileSize) {
-    // 模拟右键菜单事件
-    const mockEvent = new MouseEvent("contextmenu", {
-      bubbles: true,
-      cancelable: true,
-      clientX: 0,
-      clientY: 0,
-    });
-    onMemberContextMenu(mockEvent, member);
+    onMemberContextMenu(event, member);
   }
 }
 
@@ -264,7 +257,7 @@ async function changShieldStatus() {
           <div
             :class="member.activeStatus === ChatOfflineType.ONLINE ? 'live' : 'op-60 filter-grayscale filter-grayscale-100'"
             class="user-card w-full flex-row-c-c gap-2"
-            @click="handleMemberClick(member, 0)"
+            @click="handleMemberClick($event, member, 0)"
             @dblclick="onMemberContextMenu($event, member)"
             @contextmenu="onMemberContextMenu($event, member)"
           >
