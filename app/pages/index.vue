@@ -131,7 +131,7 @@ useHistoryState(
 useHistoryState(
   toRef(chat, "showTheFriendPanel"),
   {
-    enabled: isMobileSize,
+    enabled: true,
     stateKey: "friendPanelOpen",
     activeValue: true,
     inactiveValue: false,
@@ -148,15 +148,6 @@ useHistoryState(
     inactiveValue: false,
   },
 );
-
-
-// 返回拦截
-useHistoryState(toRef(chat, "showExtension"), {
-  enabled: computed(() => setting.isMobileSize),
-  stateKey: "extensionOpen",
-  activeValue: true,
-  inactiveValue: false,
-});
 </script>
 
 <template>

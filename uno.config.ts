@@ -87,11 +87,11 @@ export default defineConfig({
     ["absolute-center-x", "absolute left-1/2 -translate-x-1/2"],
 
     // element风格按钮，rounded 规范值采用 rounded, rounded-md, rounded-lg 等
-    ["btn-info", "transition-200 cursor-pointer rounded hover:text-theme-info"],
-    ["btn-success", "transition-200 cursor-pointer rounded hover:text-theme-success"],
-    ["btn-primary", "transition-200 cursor-pointer rounded hover:text-theme-primary"],
-    ["btn-danger", "transition-200 cursor-pointer rounded hover:text-theme-danger"],
-    ["btn-warning", "transition-200 cursor-pointer rounded hover:text-theme-warning"],
+    ["btn-info", "transition-200 cursor-pointer hover:text-theme-info"],
+    ["btn-success", "transition-200 cursor-pointer hover:text-theme-success"],
+    ["btn-primary", "transition-200 cursor-pointer hover:text-theme-primary"],
+    ["btn-danger", "transition-200 cursor-pointer hover:text-theme-danger"],
+    ["btn-warning", "transition-200 cursor-pointer hover:text-theme-warning"],
     ["btn-info-border", "transition-200 cursor-pointer rounded hover:(text-theme-info border-theme-info)"],
     ["btn-success-border", "transition-200 cursor-pointer rounded hover:(text-theme-success border-theme-success)"],
     ["btn-primary-border", "transition-200 cursor-pointer rounded hover:(text-theme-primary border-theme-primary)"],

@@ -18,6 +18,8 @@ export interface ExtendPageWindowSize {
 export interface ExtendPageConfig {
   title: string;
   description?: string;
+  /** 页面/菜单用图标 (UnoCSS i-{collection}:{name}) */
+  icon?: string;
   /** 固定地址 */
   url?: string;
   /** 需登录态的动态地址，传入 user 获取 URL */
@@ -28,6 +30,7 @@ export interface ExtendPageConfig {
 export const EXTEND_PAGE_CONFIG: Record<ExtendPageType, ExtendPageConfig> = {
   shop: {
     title: "极物圈商城",
+    icon: "i-ri:shopping-bag-3-line",
     getUrl: user =>
       user.getToken ? `https://jiwu.kiwi2333.top/?token=${user.getToken}` : "",
     windowSize: {
@@ -39,6 +42,7 @@ export const EXTEND_PAGE_CONFIG: Record<ExtendPageType, ExtendPageConfig> = {
   },
   readjoy: {
     title: "悦读时光",
+    icon: "i-ri:book-3-line",
     description: "悦读时光，专注于分享生活点滴，记录美好生活！",
     url: "https://readjoy.kiwi233.top/",
     windowSize: {
@@ -50,6 +54,7 @@ export const EXTEND_PAGE_CONFIG: Record<ExtendPageType, ExtendPageConfig> = {
   },
   blog: {
     title: "博客",
+    icon: "i-ri:article-line",
     description: "分享极物聊天的心得与经验",
     url: "https://kiwi233.top/",
     windowSize: {

@@ -6,12 +6,14 @@ import {
   isExtendPageType,
 } from "~/constants/extend";
 
+const props = defineProps<{ type?: string }>();
 const route = useRoute();
 const user = useUserStore();
 const setting = useSettingStore();
 
-const type = route.params.type as string;
-if (!isExtendPageType(type)) {
+/** 来自路由 /extend/[type] 或来自 Internal 的 prop */
+const type = (props.type ?? route.params.type) as string;
+if (!type || !isExtendPageType(type)) {
   throw createError({ statusCode: 404, statusMessage: "Not found" });
 }
 const config = EXTEND_PAGE_CONFIG[type];
@@ -48,15 +50,22 @@ function retryLoad() {
   iframeKey.value += 1;
 }
 
-onMounted(async () => {
+/** 监听路由变化，更新 窗口信息 */
+watch(() => route.query, () => {
   if (setting.isDesktop && config.windowSize) {
-    const { minWidth, minHeight, width, height } = config.windowSize;
-    const wind = WebviewWindow.getCurrent();
-    await wind.setMinSize(new LogicalSize(minWidth, minHeight));
-    await wind.setSize(new LogicalSize(width, height));
-    await wind.show();
+    nextTick(async () => {
+      // 保存最小尺寸
+      const { minWidth, minHeight, width, height } = config.windowSize;
+      const wind = WebviewWindow.getCurrent();
+      // 当前窗口标签是否为扩展窗口
+      if (wind.label === EXTEND_WINDOW_LABEL) {
+        await wind.setMinSize(new LogicalSize(minWidth, minHeight));
+        await wind.setSize(new LogicalSize(width, height));
+        await wind.show();
+      }
+    });
   }
-});
+}, { immediate: true });
 </script>
 
 <template>

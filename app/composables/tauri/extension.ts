@@ -19,8 +19,13 @@ export function useOpenExtendWind() {
       ElMessage.warning("扩展窗口正在加载中！");
       return;
     }
-    // 判断是否已经打开
+    // 桌面端：根据「新开窗口」设置决定是主窗口内跳转还是独立窗口
     if (setting.isDesktop) {
+      if (!setting.extendOpenInNewWindow) {
+        const type = item.url.replace(/^\/extend\/?/, "") || undefined;
+        await navigateTo({ path: "/internal", query: type ? { type } : {} });
+        return;
+      }
       const window = await WebviewWindow.getByLabel(EXTEND_WINDOW_LABEL);
       if (window) {
         if (openItem.value?.url !== item.url)
