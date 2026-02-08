@@ -88,7 +88,7 @@ export interface MyComponentProps {
 </script>
 
 <script setup lang="ts">
-const { name = "default", count = 0 } = defineProps<MyComponentProps>()
+const { name = "default", count = 0 } = defineProps<MyComponentProps>();
 </script>
 ```
 

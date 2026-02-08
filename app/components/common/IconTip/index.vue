@@ -4,8 +4,6 @@ export interface IconTipProps {
   icon?: string;
   /** tooltip 内容 */
   tip?: string;
-  /** 图标尺寸 */
-  fontSize?: string;
   /** tooltip 显示位置 */
   placement?:
     | "top"
@@ -63,7 +61,6 @@ const {
   enabledScrollContent = false,
   popoverMaxWidth,
   popoverMaxHeight,
-  fontSize,
   icon,
 } = defineProps<IconTipProps>();
 
@@ -118,7 +115,6 @@ function handleClick(event: MouseEvent) {
           'is-round': round,
         },
       ]"
-      :style="fontSize ? { fontSize } : undefined"
       @click="handleClick"
     >
       <slot name="default">
@@ -132,6 +128,7 @@ function handleClick(event: MouseEvent) {
 .icon-tip {
   --at-apply: "relative cursor-pointer select-none transition-200";
   --at-apply: "inline-flex items-center justify-center";
+  font-size: 1.2rem;
   line-height: 1;
   box-sizing: border-box;
 

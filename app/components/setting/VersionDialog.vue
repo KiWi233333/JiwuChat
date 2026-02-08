@@ -204,6 +204,9 @@ const {
 .preview {
   :deep(#notice-toast-preview) {
     font-size: 0.74rem;
+    p:first-of-type {
+      padding-left: 0.75rem;
+    }
 
     .notice-toast-preview-wrapper {
       .task-list-item-checkbox[type="checkbox"] {

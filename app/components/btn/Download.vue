@@ -60,7 +60,14 @@ onMounted(() => {
     :hide-after="0"
   >
     <template #reference>
-      <i class="i-solar-download-minimalistic-broken btn-info" :class="iconClass" title="下载管理" />
+      <div :class="iconClass">
+        <CommonIconTip
+          class="btn-info text-5"
+          icon="i-solar:download-minimalistic-broken"
+          tip="下载管理"
+          :disabled-tooltip="setting.showDownloadPanel"
+        />
+      </div>
     </template>
     <template #default>
       <div

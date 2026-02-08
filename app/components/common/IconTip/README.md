@@ -16,26 +16,35 @@
 ## 基础用法
 
 ### 默认信息图标
+
 ```vue
 <IconTip tip="这是一条提示信息" />
 ```
 
 ### 自定义图标
+
 ```vue
 <IconTip icon="ri:user-line" tip="用户信息" />
+
 <IconTip icon="ri:settings-line" tip="设置" />
+
 <IconTip icon="carbon:warning" tip="警告信息" />
 ```
 
-### 自定义尺寸
+### 尺寸
+
+组件内通过类样式固定为 `1.2rem`，无需传 prop。需其他尺寸时由父级 class 控制（图标继承 font-size）：
+
 ```vue
-<IconTip icon="ri:heart-line" tip="收藏" font-size="20px" />
-<IconTip icon="ri:star-line" tip="标星" font-size="24px" />
+<IconTip icon="ri:heart-line" tip="收藏" />
+
+<span class="text-1.5rem"><IconTip icon="ri:star-line" tip="大号" /></span>
 ```
 
 ## 样式定制
 
 ### 背景样式
+
 ```vue
 <!-- 无背景 -->
 <IconTip icon="ri:help-line" tip="帮助" :background="false" />
@@ -48,6 +57,7 @@
 ```
 
 ### Tooltip 主题
+
 ```vue
 <!-- 深色主题(默认) -->
 <IconTip icon="ri:moon-line" tip="深色模式" effect="dark" />
@@ -57,21 +67,27 @@
 ```
 
 ### 显示位置
+
 ```vue
 <IconTip icon="ri:arrow-up-line" tip="上方" placement="top" />
+
 <IconTip icon="ri:arrow-down-line" tip="下方" placement="bottom" />
+
 <IconTip icon="ri:arrow-left-line" tip="左侧" placement="left" />
+
 <IconTip icon="ri:arrow-right-line" tip="右侧" placement="right" />
 ```
 
 ## 高级功能
 
 ### 禁用状态
+
 ```vue
 <IconTip icon="ri:lock-line" tip="已锁定" disabled />
 ```
 
 ### 长内容滚动
+
 ```vue
 <IconTip
   icon="ri:article-line"
@@ -83,6 +99,7 @@
 ```
 
 ### 点击触发
+
 ```vue
 <IconTip
   icon="ri:more-line"
@@ -93,6 +110,7 @@
 ```
 
 ### 自定义延迟
+
 ```vue
 <!-- 立即显示,延迟 200ms 隐藏 -->
 <IconTip
@@ -106,6 +124,7 @@
 ## 插槽定制
 
 ### 自定义图标插槽
+
 ```vue
 <IconTip tip="自定义图标">
   <template #default>
@@ -115,6 +134,7 @@
 ```
 
 ### 自定义内容插槽
+
 ```vue
 <IconTip icon="ri:user-line">
   <template #content>
@@ -128,6 +148,7 @@
 ```
 
 ### 复杂示例
+
 ```vue
 <IconTip
   icon="ri:notification-line"
@@ -148,18 +169,21 @@
 ## 实际应用场景
 
 ### 表单字段说明
+
 ```vue
 <el-form-item label="用户名">
   <el-input v-model="form.username" />
-  <IconTip
-    icon="ri:question-line"
-    tip="用户名长度为 4-20 个字符,支持字母、数字和下划线"
-    font-size="14px"
-  />
+  <span class="text-0.875rem">
+    <IconTip
+      icon="ri:question-line"
+      tip="用户名长度为 4-20 个字符,支持字母、数字和下划线"
+    />
+  </span>
 </el-form-item>
 ```
 
 ### 工具栏按钮
+
 ```vue
 <div class="toolbar">
   <IconTip icon="ri:save-line" tip="保存" @click="handleSave" />
@@ -170,17 +194,20 @@
 ```
 
 ### 状态指示器
+
 ```vue
-<IconTip
-  icon="ri:circle-fill"
-  :tip="isOnline ? '在线' : '离线'"
-  :active="isOnline"
-  font-size="12px"
-  round
-/>
+<span class="text-0.75rem">
+  <IconTip
+    icon="ri:circle-fill"
+    :tip="isOnline ? '在线' : '离线'"
+    :active="isOnline"
+    round
+  />
+</span>
 ```
 
 ### 功能开关
+
 ```vue
 <IconTip
   icon="ri:notification-line"
@@ -193,35 +220,34 @@
 
 ## Props 说明
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| icon | string | `'ri:information-line'` | Iconify 图标名称 |
-| tip | string | `''` | 提示文本内容 |
-| fontSize | string | `'16px'` | 图标尺寸 |
-| placement | string | `'top'` | tooltip 显示位置 |
-| effect | string | `'dark'` | tooltip 主题(dark/light) |
-| disabled | boolean | `false` | 是否禁用 |
-| round | boolean | `false` | 是否圆形背景 |
-| active | boolean | `false` | 是否激活状态 |
-| background | boolean | `true` | 是否显示背景 |
-| enabledScrollContent | boolean | `false` | 是否启用滚动内容 |
-| popoverMaxWidth | string | `'300px'` | 弹窗最大宽度 |
-| popoverMaxHeight | string | `'300px'` | 弹窗最大高度 |
-| showAfter | number | `500` | 显示延迟(ms) |
-| hideAfter | number | `0` | 隐藏延迟(ms) |
-| trigger | string | `'hover'` | 触发方式(hover/click/focus/contextmenu) |
+| 属性                 | 类型    | 默认值                  | 说明                                    |
+| -------------------- | ------- | ----------------------- | --------------------------------------- |
+| icon                 | string  | `'ri:information-line'` | Iconify 图标名称                        |
+| tip                  | string  | `''`                    | 提示文本内容                            |
+| placement            | string  | `'top'`                 | tooltip 显示位置                        |
+| effect               | string  | `'dark'`                | tooltip 主题(dark/light)                |
+| disabled             | boolean | `false`                 | 是否禁用                                |
+| round                | boolean | `false`                 | 是否圆形背景                            |
+| active               | boolean | `false`                 | 是否激活状态                            |
+| background           | boolean | `true`                  | 是否显示背景                            |
+| enabledScrollContent | boolean | `false`                 | 是否启用滚动内容                        |
+| popoverMaxWidth      | string  | `'300px'`               | 弹窗最大宽度                            |
+| popoverMaxHeight     | string  | `'300px'`               | 弹窗最大高度                            |
+| showAfter            | number  | `500`                   | 显示延迟(ms)                            |
+| hideAfter            | number  | `0`                     | 隐藏延迟(ms)                            |
+| trigger              | string  | `'hover'`               | 触发方式(hover/click/focus/contextmenu) |
 
 ## Events
 
-| 事件名 | 参数 | 说明 |
-|--------|------|------|
-| click | `(event: MouseEvent)` | 点击图标时触发 |
+| 事件名 | 参数                  | 说明           |
+| ------ | --------------------- | -------------- |
+| click  | `(event: MouseEvent)` | 点击图标时触发 |
 
 ## Slots
 
-| 插槽名 | 说明 |
-|--------|------|
-| default | 自定义图标内容 |
+| 插槽名  | 说明                |
+| ------- | ------------------- |
+| default | 自定义图标内容      |
 | content | 自定义 tooltip 内容 |
 
 ## 图标资源

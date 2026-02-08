@@ -430,7 +430,7 @@ function showInvitation() {
               :bg="false"
               text
               size="small"
-              class="absolute right-2 top-2 transition-opacity group-hover:op-100 sm:op-0"
+              class="absolute right-2 top-2 p-2 transition-opacity group-hover:op-100 sm:op-0"
               @click="onFocusSlogan"
             >
               <i class="i-solar:pen-new-square-outline" />

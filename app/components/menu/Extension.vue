@@ -246,6 +246,7 @@ function createItem() {
       <div class="flex justify-center pb-2 sm:justify-end">
         <!-- 是否新开窗口（系统配置，仅桌面端有意义） -->
         <el-checkbox
+          v-if="!setting.isMobileSize"
           v-model="setting.extendOpenInNewWindow"
           class="mr-2"
           :size="setting.isMobileSize ? 'large' : 'small'"
