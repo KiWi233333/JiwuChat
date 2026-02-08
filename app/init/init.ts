@@ -46,10 +46,11 @@ export async function userTauriInit() {
   // if (!isMobileSystem) { // 非移动端才有该功能
   //   restoreStateCurrent(StateFlags.ALL); // 恢复窗口状态
   // }
-  // msgbox 默认不调整
+  // msgbox 为系统通知窗口，初始化时保持隐藏，不调用 show
   const main = WebviewWindow.getCurrent();
-  if (main.label === "msgbox" && useRoute().path !== "/msg") {
-    navigateTo("/msg");
+  if (main.label === "msgbox") {
+    if (useRoute().path !== "/msg")
+      navigateTo("/msg");
     return;
   }
   main.show();
