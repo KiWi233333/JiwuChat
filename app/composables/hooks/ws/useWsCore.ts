@@ -1,11 +1,12 @@
+import type { WsMsgItemMap } from "./messages";
 import { WsStatusEnum } from "~/types/chat/WsType";
 import { processMessage } from "./messageConfig";
 import { WsMsgKey } from "./messageKeys";
 import { messageConfig } from "./messages";
 
 export type { MessageContext, MessageHandler } from "./messageConfig";
-export { WsMsgKey } from "./messageKeys";
-export type { WsMsgItemMap } from "./messages";
+export type { WsMsgItemMap };
+export { WsMsgKey };
 
 /**
  * WebSocket消息处理Hook
