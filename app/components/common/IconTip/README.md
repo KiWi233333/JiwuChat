@@ -38,7 +38,9 @@
 ```vue
 <IconTip icon="ri:heart-line" tip="收藏" />
 
-<span class="text-1.5rem"><IconTip icon="ri:star-line" tip="大号" /></span>
+<span class="text-1.5rem">
+<IconTip icon="ri:star-line" tip="大号" />
+</span>
 ```
 
 ## 样式定制
