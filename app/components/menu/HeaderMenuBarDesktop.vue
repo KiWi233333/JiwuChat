@@ -41,9 +41,9 @@ const getAppTitle = computed(() => {
 
     <!-- 菜单栏右侧 -->
     <slot name="right">
-      <div class="right relative z-1 flex items-center gap-2 pr-4">
+      <div class="right relative z-1 flex items-center gap-2">
         <!-- 桌面更新菜单 -->
-        <SettingUpdator v-if="$route.path !== '/setting'" />
+        <SettingUpdater v-if="$route.path !== '/setting'" />
         <!-- 下载（部分端） -->
         <BtnDownload v-if="!setting.isWeb" icon-class="block mx-1 w-5 h-5" />
 

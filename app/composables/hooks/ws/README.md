@@ -52,8 +52,8 @@ export const messageConfig = defineMessageConfig({
 
   /** 新消息类型 */
   [WsMsgBodyType.NEW_MESSAGE_TYPE]: {
-    key: WsMsgKey.NEW_TYPE_MSG,        // 使用枚举值
-    type: [] as YourMessageType[],      // 消息数据类型
+    key: WsMsgKey.NEW_TYPE_MSG, // 使用枚举值
+    type: [] as YourMessageType[], // 消息数据类型
     handlers: [storeToList, emitEvent], // 处理器列表
   },
 });
@@ -66,7 +66,7 @@ export const messageConfig = defineMessageConfig({
 
 export interface WsMsgItemMap {
   // ... 现有字段 ...
-  [WsMsgKey.NEW_TYPE_MSG]: YourMessageType[];  // 添加新字段
+  [WsMsgKey.NEW_TYPE_MSG]: YourMessageType[]; // 添加新字段
   [WsMsgKey.OTHER]: object[];
 }
 ```
@@ -76,10 +76,12 @@ export interface WsMsgItemMap {
 ```typescript
 // app/composables/hooks/ws/useWsCore.ts
 
-const emptyMsgList = (): WsMsgItemMap => ({
+function emptyMsgList(): WsMsgItemMap {
+  return {
   // ... 现有字段 ...
-  [WsMsgKey.NEW_TYPE_MSG]: [],
-});
+    [WsMsgKey.NEW_TYPE_MSG]: [],
+  };
+}
 ```
 
 ### 完成！
@@ -126,13 +128,13 @@ export const handleSpecialLogic: MessageHandler<YourMessageType> = (data, ctx) =
 
 export const messageConfig = defineMessageConfig({
   [WsMsgBodyType.SPECIAL_MESSAGE]: {
-    key: WsMsgKey.SPECIAL_MSG,  // 使用枚举
+    key: WsMsgKey.SPECIAL_MSG, // 使用枚举
     type: [] as SpecialMessage[],
     handlers: [
-      logMessage,           // 先记录日志
-      storeToList,          // 存储到列表
-      handleSpecialLogic,   // 执行特殊逻辑
-      emitEvent,            // 最后发送事件
+      logMessage, // 先记录日志
+      storeToList, // 存储到列表
+      handleSpecialLogic, // 执行特殊逻辑
+      emitEvent, // 最后发送事件
     ],
   },
 });
@@ -146,11 +148,11 @@ export const messageConfig = defineMessageConfig({
 // app/composables/hooks/ws/messages/videoCall.ts
 
 import type { MessageTypeConfig } from "../messageConfig";
-import { storeToList, emitEvent } from "../messageHandlers";
+import { emitEvent, storeToList } from "../messageHandlers";
 import { WsMsgKey } from "../messageKeys";
 
 export const videoCallConfig: MessageTypeConfig<string, VideoCallMessage[]> = {
-  key: WsMsgKey.VIDEO_CALL_MSG,  // 使用枚举
+  key: WsMsgKey.VIDEO_CALL_MSG, // 使用枚举
   type: [] as VideoCallMessage[],
   handlers: [
     (data, ctx) => {
@@ -238,7 +240,7 @@ const { wsMsgList } = useWsMessage();
 
 // ✅ 类型安全：wsMsgList.value.newMsg 的类型是 ChatMessageVO[]
 wsMsgList.value.newMsg.forEach((msg) => {
-  console.log(msg.content);  // 完整的类型提示
+  console.log(msg.content); // 完整的类型提示
   console.log(msg.fromUser); // IDE 自动补全
 });
 
@@ -263,6 +265,7 @@ export interface WsMsgItemMap {
 ```
 
 这种方式确保：
+
 - ✅ 每个字段都有准确的类型定义
 - ✅ IDE 提供完整的智能提示和自动补全
 - ✅ 编译时类型检查，捕获类型错误
@@ -320,7 +323,7 @@ export enum WsMsgKey {
 // 2. 在 messages.ts 中添加配置
 export const messageConfig = defineMessageConfig({
   [WsMsgBodyType.MESSAGE]: {
-    key: WsMsgKey.NEW_MSG,  // 使用枚举
+    key: WsMsgKey.NEW_MSG, // 使用枚举
     type: [] as ChatMessageVO[],
     handlers: [storeToList, emitEvent],
   },
@@ -365,7 +368,7 @@ export interface WsMsgItemMap {
 
 ```typescript
 // 尝试的自动推断方式
-export type WsMsgItemMap = InferMessageMap<typeof messageConfig>
+export type WsMsgItemMap = InferMessageMap<typeof messageConfig>;
 
 // 结果：所有字段都被推断为 object[]，而不是具体类型
 // wsMsgList.value.newMsg 类型变成 object[] 而不是 ChatMessageVO[]
@@ -374,6 +377,7 @@ export type WsMsgItemMap = InferMessageMap<typeof messageConfig>
 TypeScript 的泛型推断在处理复杂嵌套类型时会丢失具体类型信息。虽然配置中声明了 `type: [] as ChatMessageVO[]`，但通过泛型传递后类型被宽化。
 
 **当前方案**使用枚举键 + 手动定义接口，虽然需要在接口中手动添加字段，但保证了：
+
 - ✅ 完整的类型安全
 - ✅ 准确的类型推断
 - ✅ 完美的 IDE 支持
@@ -400,8 +404,8 @@ TypeScript 的泛型推断在处理复杂嵌套类型时会丢失具体类型信
 
 ```typescript
 // ❌ 不推荐：字符串硬编码
-wsMsgList.value["newMsg"]  // 拼写错误不会被发现
+wsMsgList.value.newMsg; // 拼写错误不会被发现
 
 // ✅ 推荐：使用枚举
-wsMsgList.value[WsMsgKey.NEW_MSG]  // 拼写错误会立即报错
+wsMsgList.value[WsMsgKey.NEW_MSG]; // 拼写错误会立即报错
 ```

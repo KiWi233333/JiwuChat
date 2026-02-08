@@ -1,5 +1,6 @@
 import type { NavigationGuardReturn, RouteLocationNormalized } from "vue-router";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { isExtendRoute } from "~/constants/extend";
 import { detectIsDesktop } from "~/utils/routerGuard";
 
 /** 未登录时开放的路由（登录页、OAuth 回调页） */
@@ -30,6 +31,7 @@ async function handleDesktopNavigation(
   from: RouteLocationNormalized,
 ): Promise<NavigationGuardReturn> {
   const user = useUserStore();
+  const setting = useSettingStore();
   const toPath = to.path;
   const fromPath = from.path;
   const isToUnauthRoute = isUnauthenticatedRoute(toPath);
@@ -66,8 +68,8 @@ async function handleDesktopNavigation(
     return;
   }
 
-  // 扩展页面权限检查
-  if (!fromPath.startsWith("/extend") && toPath.startsWith("/extend")) {
+  // 扩展页：仅当「新开窗口」开启时禁止在主窗口内跳转 /extend（仅对扩展有效，其他页面不受此配置影响）
+  if (!isExtendRoute(fromPath) && isExtendRoute(toPath) && setting.extendOpenInNewWindow) {
     return abortNavigation();
   }
 

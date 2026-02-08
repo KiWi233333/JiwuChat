@@ -154,6 +154,8 @@ export const useSettingStore = defineStore(
     const shortcutManager = useShortcuts();
     // ---------------------菜单-----------------
     const selectExtendMenuList = useLocalStorage<ExtendItem[]>(`${SETTING_STORE_KEY}:selectExtendMenuList`, []);
+    /** 扩展菜单：是否新开窗口打开（仅对扩展页有效，仅桌面端生效；设置/登录等不受此配置影响） */
+    const extendOpenInNewWindow = useLocalStorage(`${SETTING_STORE_KEY}:extendOpenInNewWindow`, true);
     // ---------------------设置-----------------
     const settingPage = useLocalStorage(`${SETTING_STORE_KEY}:settingPage`, defaultSettingPage());
     function defaultSettingPage() {
@@ -598,6 +600,7 @@ export const useSettingStore = defineStore(
       };
       settingPage.value = defaultSettingPage();
       selectExtendMenuList.value = [];
+      extendOpenInNewWindow.value = true;
       fileDownloadMap.value = {};
       appDataDownloadDirUrl.value = "";
       loadSystemFonts();
@@ -666,6 +669,7 @@ export const useSettingStore = defineStore(
       isWeb,
       isDefaultRtcCallBell,
       selectExtendMenuList,
+      extendOpenInNewWindow,
       openShadow,
       // actions
       checkUpdates,
