@@ -24,6 +24,8 @@ export interface IconTipProps {
   effect?: "dark" | "light";
   /** 是否禁用 */
   disabled?: boolean;
+  /** 是否禁用 tooltip */
+  disabledTooltip?: boolean;
   /** 是否圆形背景 */
   round?: boolean;
   /** 是否激活状态 */
@@ -55,6 +57,7 @@ const {
   trigger = "hover",
   background = true,
   disabled = false,
+  disabledTooltip = false,
   round = false,
   active = false,
   enabledScrollContent = false,
@@ -70,7 +73,7 @@ const emit = defineEmits<{
 
 const setting = useSettingStore();
 
-const shouldDisableTooltip = computed(() => setting.isMobileSize || disabled);
+const shouldDisableTooltip = computed(() => setting.isMobileSize || disabled || disabledTooltip);
 
 function handleClick(event: MouseEvent) {
   if (!disabled) {
@@ -88,7 +91,6 @@ function handleClick(event: MouseEvent) {
     :show-after="showAfter"
     :hide-after="hideAfter"
     :trigger="trigger"
-    v-bind="$attrs"
   >
     <template #content>
       <slot name="content">
@@ -107,6 +109,7 @@ function handleClick(event: MouseEvent) {
 
     <span
       class="icon-tip"
+      v-bind="$attrs"
       :class="[
         {
           'is-disabled': disabled,
