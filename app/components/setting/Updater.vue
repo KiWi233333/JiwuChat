@@ -18,6 +18,20 @@ const ignoreShowVersionDialog = computed({
   },
 });
 
+// 更新状态文本
+const updateStatusText = computed(() => {
+  if (setting.appUploader.isUpdating) {
+    if (setting.appUploader.downloadedText) {
+      return setting.appUploader.downloadedText;
+    }
+    return setting.osType === "macos" ? "下载并安装中..." : "下载中...";
+  }
+  return "";
+});
+
+// 是否为 macOS
+const isMacOS = computed(() => setting.osType === "macos");
+
 onMounted(async () => {
   const res = await getVersionNotice("latest");
   if (res.code === StatusCode.SUCCESS) {
@@ -39,6 +53,30 @@ const ignoreUpdate = computed({
     }
   },
 });
+
+// 处理更新按钮点击
+async function handleUpdateClick() {
+  if (isMacOS.value) {
+    // macOS 提示用户应用将自动重启
+    await ElMessageBox.confirm(
+      "MacOS 更新后需要重新启动应用以完成安装，请保存好您的工作。",
+      "确认更新",
+      {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info",
+      },
+    ).then(() => {
+      setting.handleAppUpdate();
+    }).catch(() => {
+      // 用户取消
+    });
+  }
+  else {
+    // 其他平台直接更新
+    setting.handleAppUpdate();
+  }
+}
 </script>
 
 <template>
@@ -50,6 +88,8 @@ const ignoreUpdate = computed({
       :teleported="true"
       popper-style="border-radius: 0.75rem;"
       popper-class="popover"
+      :show-arrow="false"
+      :offset="5"
       trigger="click"
       append-to="body"
       :hide-after="0"
@@ -113,11 +153,16 @@ const ignoreUpdate = computed({
             </el-scrollbar>
           </div>
           <div v-if="currentVersion !== latestVersionInfo?.version || setting.appUploader.isUpload" class="flex-row-bt-c">
-            <el-checkbox v-model="ignoreUpdate" size="small">
+            <el-checkbox v-model="ignoreUpdate" size="small" :disabled="setting.appUploader.isUpdating">
               忽略更新
             </el-checkbox>
-            <CommonElButton :loading="setting.appUploader.isUpdating" size="small" type="primary" @click="setting.handleAppUpdate()">
-              立即更新
+            <CommonElButton
+              :loading="setting.appUploader.isUpdating"
+              size="small"
+              type="primary"
+              @click="handleUpdateClick"
+            >
+              {{ setting.appUploader.isUpdating ? updateStatusText : '立即更新' }}
             </CommonElButton>
           </div>
           <div v-else class="flex-row-bt-c">

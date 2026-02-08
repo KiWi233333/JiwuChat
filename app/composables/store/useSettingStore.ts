@@ -455,6 +455,8 @@ export const useSettingStore = defineStore(
 
     /**
      * 处理更新
+     * macOS 使用 downloadAndInstall + relaunch 的方式
+     * 其他平台使用原有的 download + install 方式
      */
     async function handleAppUpdate(updateInfo?: Update, handleOnUpload?: (update: Update) => void) {
       const update = updateInfo || (await check()) as Update;
@@ -465,54 +467,113 @@ export const useSettingStore = defineStore(
       handleOnUpload && handleOnUpload(update);
 
       appUploader.value.isUpdating = true;
+      let macosRelaunchTimer: ReturnType<typeof setTimeout> | null = null;
+
       try {
         appUploader.value.contentLength = 0;
         appUploader.value.downloaded = 0;
-        await update
-          .download((e) => {
+
+        // macOS 使用 downloadAndInstall 一体化方案
+        if (osType.value === "macos") {
+          console.log("[macOS Update] 使用 downloadAndInstall 方式更新");
+
+          await update.downloadAndInstall((e) => {
             switch (e.event) {
               case "Started":
                 appUploader.value.contentLength = e.data.contentLength || 0;
                 appUploader.value.downloaded = 0;
-                appUploader.value.downloadedText = "";
-                console.log(`开始下载，长度 ${e.data.contentLength} bytes`);
+                appUploader.value.downloadedText = "开始下载...";
+                console.log(`[macOS Update] 开始下载，大小 ${e.data.contentLength} bytes`);
                 break;
               case "Progress":
                 appUploader.value.downloaded += e.data.chunkLength || 0;
                 appUploader.value.downloadedText = `${((appUploader.value.downloaded || 0) / 1024 / 1024).toFixed(2)}MB / ${((appUploader.value.contentLength || 0) / 1024 / 1024).toFixed(2)}MB`;
-                console.log(`下载中 ${appUploader.value.downloadedText}`);
+                console.log(`[macOS Update] 下载进度 ${appUploader.value.downloadedText}`);
                 break;
               case "Finished":
                 appUploader.value.downloadedText = "安装中...";
+                console.log("[macOS Update] 下载完成，开始安装");
                 break;
             }
-          })
-          .finally(() => {
-            appUploader.value.isUpload = false;
-            appUploader.value.isCheckUpdatateLoad = false;
-            appUploader.value.newVersion = "";
           });
-        // 安装中
-        appUploader.value.downloadedText = "安装中...";
-        setTimeout(() => {
-          update.install().catch((err) => {
-            appUploader.value.isUpdating = false;
-            console.warn(err);
-            ElMessage.error("安装失败，请稍后再试！");
-            appUploader.value.isCheckUpdatateLoad = false;
-          }).finally(() => {
-            appUploader.value.downloaded = 0;
-            appUploader.value.contentLength = 0;
-            appUploader.value.isUpdating = false;
-          });
-        }, 1000);
+
+          // 安装完成后立即重启应用
+          console.log("[macOS Update] 安装完成，准备重启应用");
+          appUploader.value.downloadedText = "即将重启...";
+
+          // 给用户 1 秒时间看到提示
+          macosRelaunchTimer = setTimeout(async () => {
+            try {
+              console.log("[macOS Update] 正在重启应用...");
+              await relaunch();
+            }
+            catch (err) {
+              console.error("[macOS Update] 重启失败:", err);
+              ElMessage.error("更新完成，但自动重启失败，请手动重启应用！");
+              appUploader.value.isUpdating = false;
+            }
+          }, 1000);
+        }
+        else {
+          // Windows/Linux 使用原有的 download + install 方式
+          console.log("[Windows/Linux Update] 使用 download + install 方式更新");
+
+          await update
+            .download((e) => {
+              switch (e.event) {
+                case "Started":
+                  appUploader.value.contentLength = e.data.contentLength || 0;
+                  appUploader.value.downloaded = 0;
+                  appUploader.value.downloadedText = "";
+                  console.log(`[Windows/Linux Update] 开始下载，长度 ${e.data.contentLength} bytes`);
+                  break;
+                case "Progress":
+                  appUploader.value.downloaded += e.data.chunkLength || 0;
+                  appUploader.value.downloadedText = `${((appUploader.value.downloaded || 0) / 1024 / 1024).toFixed(2)}MB / ${((appUploader.value.contentLength || 0) / 1024 / 1024).toFixed(2)}MB`;
+                  console.log(`[Windows/Linux Update] 下载中 ${appUploader.value.downloadedText}`);
+                  break;
+                case "Finished":
+                  appUploader.value.downloadedText = "安装中...";
+                  console.log("[Windows/Linux Update] 下载完成");
+                  break;
+              }
+            })
+            .finally(() => {
+              appUploader.value.isUpload = false;
+              appUploader.value.isCheckUpdatateLoad = false;
+              appUploader.value.newVersion = "";
+            });
+
+          // 安装
+          appUploader.value.downloadedText = "安装中...";
+          setTimeout(() => {
+            update.install().catch((err) => {
+              appUploader.value.isUpdating = false;
+              console.error("[Windows/Linux Update] 安装失败:", err);
+              ElMessage.error("安装失败，请稍后再试！");
+              appUploader.value.isCheckUpdatateLoad = false;
+            }).finally(() => {
+              appUploader.value.downloaded = 0;
+              appUploader.value.contentLength = 0;
+              appUploader.value.isUpdating = false;
+            });
+          }, 1000);
+        }
       }
       catch (error) {
-        console.log(error);
-        ElMessage.error("更新失败！请检查网络或稍后再试！");
+        // 清除 macOS 重启定时器（如果存在）
+        if (macosRelaunchTimer) {
+          clearTimeout(macosRelaunchTimer);
+          macosRelaunchTimer = null;
+        }
+
+        console.error("[Update Error]", error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        ElMessage.error(`更新失败: ${errorMessage}`);
+
+        // 重置状态
         appUploader.value.isCheckUpdatateLoad = false;
         appUploader.value.isUpload = false;
-        appUploader.value.isCheckUpdatateLoad = false;
         appUploader.value.isUpdating = false;
         appUploader.value.downloaded = 0;
         appUploader.value.downloadedText = "";
