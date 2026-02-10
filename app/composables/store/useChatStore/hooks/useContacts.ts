@@ -271,6 +271,36 @@ export function createContactsModule(ctx: ContactsContext) {
     return shield;
   }
 
+  /**
+   * 确保群聊会话已拉取详情（含 member、roomGroup），若未拉取则请求并刷新
+   * @param roomId 房间 id
+   */
+  async function ensureRoomDetailForGroup(roomId: number) {
+    const c = contactMap.value[roomId];
+    if (c?.member != null && c?.roomGroup != null)
+      return;
+    await reloadContact(roomId);
+  }
+
+  /**
+   * 判断当前用户在该群是否有邀请成员权限（先确保详情已拉取再按 invitePermission + member.role 判断）
+   * @param roomId 房间 id
+   * @returns 是否有邀请权限
+   */
+  async function canInviteMember(roomId: number): Promise<boolean> {
+    await ensureRoomDetailForGroup(roomId);
+    const contact = contactMap.value[roomId];
+    const role = contact?.member?.role;
+    const invitePermission = contact?.roomGroup?.detail?.invitePermission ?? InvitePermissionEnum.ANY;
+    if (invitePermission === InvitePermissionEnum.ANY)
+      return true;
+    if (invitePermission === InvitePermissionEnum.ADMIN)
+      return role === ChatRoomRoleEnum.OWNER || role === ChatRoomRoleEnum.ADMIN;
+    if (invitePermission === InvitePermissionEnum.OWNER_ONLY)
+      return role === ChatRoomRoleEnum.OWNER;
+    return false;
+  }
+
   // 从人或群发起聊天并跳转
   async function toContactSendMsg(type: "roomId" | "userId", id: string | number) {
     const setting = useSettingStore();
@@ -369,6 +399,8 @@ export function createContactsModule(ctx: ContactsContext) {
     deleteContactConfirm,
     setPinContact,
     setShieldContact,
+    ensureRoomDetailForGroup,
+    canInviteMember,
     toContactSendMsg,
     setTheFriendOpt,
     resetContacts,

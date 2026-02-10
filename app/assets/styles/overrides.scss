@@ -44,6 +44,72 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   }
 }
 
+// 无边框输入组件（去除所有边框、阴影、outline）
+.el-borderless {
+  --el-border: none !important;
+  --el-border-color: transparent !important;
+  --el-border-radius: 0 !important;
+  --el-box-shadow: none !important;
+  --el-input-border-color: transparent !important;
+
+  .el-input__wrapper {
+    border-color: transparent !important;
+    box-shadow: none;
+    background-color: transparent;
+
+    &:hover,
+    &.is-focus {
+      border-color: transparent !important;
+      box-shadow: none;
+      outline: none;
+    }
+  }
+
+  .el-input__inner {
+    border-color: transparent !important;
+    box-shadow: none;
+    outline: none;
+
+    &:focus {
+      border-color: transparent !important;
+      box-shadow: none;
+      outline: none;
+    }
+  }
+
+  .el-textarea__inner {
+    border-color: transparent !important;
+    box-shadow: none;
+    outline: none;
+
+    &:focus {
+      border-color: transparent !important;
+      box-shadow: none;
+      outline: none;
+    }
+  }
+
+  .el-select .el-input__wrapper {
+    border-color: transparent !important;
+    box-shadow: none;
+
+    &:hover,
+    &.is-focus {
+      border-color: transparent !important;
+      box-shadow: none;
+      outline: none;
+    }
+  }
+
+  .el-checkbox__inner {
+    border-color: transparent !important;
+  }
+
+  .el-radio__inner {
+    border-color: transparent !important;
+  }
+}
+
 // 单选框组
 .el-radio-group {
   font-size: medium;

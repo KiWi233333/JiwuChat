@@ -1,3 +1,5 @@
+import type { InvitePermissionEnum } from "~/composables/api/chat/room";
+
 /**
  * 获取会话列表（游标）
  * @param dto 条件
@@ -332,6 +334,10 @@ export interface RoomGroupExtJson {
    * 群聊公告
    */
   notice?: null | string
+  /**
+   * 邀请权限：0 任意成员 1 管理员与群主 2 仅群主（见 room.ts InvitePermissionEnum）
+   */
+  invitePermission?: InvitePermissionEnum | null
   [property: string]: any
 }
 
