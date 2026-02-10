@@ -51,62 +51,27 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   --el-border-radius: 0 !important;
   --el-box-shadow: none !important;
   --el-input-border-color: transparent !important;
-
-  .el-input__wrapper {
+  .el-checkbox__inner,
+  .el-radio__inner,
+  .el-input__inner,
+  .el-textarea__inner,
+  .el-input__wrapper,
+  .el-select__wrapper,
+  &.el-select .el-input__wrapper {
     border-color: transparent !important;
-    box-shadow: none;
-    background-color: transparent;
+    box-shadow: none !important;
+    --at-apply: "bg-color-2";
 
     &:hover,
+    &:focus-visible,
+    &:focus-within,
+    &:focus-within:hover,
+    &.disabled,
     &.is-focus {
       border-color: transparent !important;
-      box-shadow: none;
-      outline: none;
+      box-shadow: none !important;
+      outline: none !important;
     }
-  }
-
-  .el-input__inner {
-    border-color: transparent !important;
-    box-shadow: none;
-    outline: none;
-
-    &:focus {
-      border-color: transparent !important;
-      box-shadow: none;
-      outline: none;
-    }
-  }
-
-  .el-textarea__inner {
-    border-color: transparent !important;
-    box-shadow: none;
-    outline: none;
-
-    &:focus {
-      border-color: transparent !important;
-      box-shadow: none;
-      outline: none;
-    }
-  }
-
-  .el-select .el-input__wrapper {
-    border-color: transparent !important;
-    box-shadow: none;
-
-    &:hover,
-    &.is-focus {
-      border-color: transparent !important;
-      box-shadow: none;
-      outline: none;
-    }
-  }
-
-  .el-checkbox__inner {
-    border-color: transparent !important;
-  }
-
-  .el-radio__inner {
-    border-color: transparent !important;
   }
 }
 

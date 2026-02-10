@@ -312,9 +312,8 @@ async function changShieldStatus() {
           群聊设置
         </div>
         <div class="setting-row group min-h-fit flex flex-row-bt-c items-center gap-2 rounded-lg transition-colors sm:mt-2 sm:min-h-0 sm:py-0">
-          <small class="text-0.8rem text-small">入群方式</small>
+          <small class="text-0.8rem text-small">邀请权限</small>
           <CommonIconTip
-            v-show="!isLord"
             tip="群主可设置邀请权限"
             icon="i-solar:info-circle-linear text-small"
             class="ml-a text-mini op-0 sm:group-hover:op-100"
