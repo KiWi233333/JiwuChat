@@ -451,7 +451,7 @@ onDeactivated(() => {
       :items="chat.getContactList"
       :item-height="setting.isMobileSize ? '4.75rem' : '4.25rem'"
       max-height="100%"
-      wrap-class="w-full relative h-full sm:(p-2)"
+      wrap-class="w-full relative h-full md:(p-2)"
       :class-name="['contact-list', isAnimateDelay ? STOP_TRANSITION_KEY : '']"
       item-class="contact-item"
       :get-item-key="(room) => room.roomId"
@@ -546,18 +546,18 @@ onDeactivated(() => {
 
 <style lang="scss" scoped>
 .main {
-  --at-apply: "z-4 h-full flex flex-shrink-0 flex-col select-none overflow-hidden border-0 border-0 rounded-0 sm:(relative left-0 top-0 w-1/4 pl-0)";
+  --at-apply: "z-4 h-full flex flex-shrink-0 flex-col select-none overflow-hidden border-0 border-0 rounded-0 md:(relative left-0 top-0 w-1/4 pl-0)";
 }
 .main-bg-color {
-  --at-apply: "bg-color-3 sm:(bg-white dark:bg-[#111111])";
+  --at-apply: "bg-color-3 md:(bg-white dark:bg-[#111111])";
 }
 
 .contact-sky {
-  --at-apply: "h-19 op-60 dark:bg-transparent flex items-center gap-3 p-4 sm:(h-16 p-3 w-full text-color card-rounded-df mb-2 )  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+  --at-apply: "h-19 op-60 dark:bg-transparent flex items-center gap-3 p-4 md:(h-16 p-3 w-full text-color card-rounded-df mb-2 )  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
 }
 
 .contact-list {
-  --at-apply: "sm:p-2 p-0";
+  --at-apply: "md:p-2 p-0";
 
   :deep(.swipe-action-content) {
     height: 100%;
@@ -565,7 +565,7 @@ onDeactivated(() => {
 
   .contact {
     // transition: background-color 100ms ease-in-out;
-    --at-apply: "h-full bg-color sm:(bg-transparent) dark:bg-dark-9 flex items-center gap-3 p-4 sm:(h-16 p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+    --at-apply: "h-full bg-color md:(bg-transparent) dark:bg-dark-9 flex items-center gap-3 p-4 md:(h-16 p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
     scroll-margin-top: 0.5rem;
     scroll-margin-bottom: 0.5rem;
     .text {
@@ -579,7 +579,7 @@ onDeactivated(() => {
       --at-apply: "bg-light-4 dark:bg-dark-8";
     }
     &.is-checked {
-      --at-apply: "!sm:(bg-[var(--el-color-primary-light-9)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) ";
+      --at-apply: "!md:(bg-[var(--el-color-primary-light-9)] dark:bg-[var(--el-color-primary-light-3)] hover:op-90) ";
     }
 
     :deep(.el-badge__content) {
@@ -593,7 +593,7 @@ onDeactivated(() => {
   }
 }
 .header {
-  --at-apply: "sm:(h-18 px-2.5) bg-color sm:(bg-white dark:bg-[#111111]) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
+  --at-apply: "md:(h-18 px-2.5) bg-color md:(bg-white dark:bg-[#111111]) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height";
   :deep(.el-input) {
     .el-input__wrapper {
       --at-apply: "!shadow-none !outline-none !input-bg-color";
@@ -606,7 +606,7 @@ onDeactivated(() => {
 
 :deep(.el-scrollbar__bar) {
   right: 1px;
-  // --at-apply: "!hidden sm:block";
+  // --at-apply: "!hidden md:block";
   --el-scrollbar-bg-color: #9292928a;
 
   &:active {
