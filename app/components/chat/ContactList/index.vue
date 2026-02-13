@@ -565,7 +565,7 @@ onDeactivated(() => {
 
   .contact {
     // transition: background-color 100ms ease-in-out;
-    --at-apply: "h-full bg-color md:(bg-transparent) dark:bg-dark-9 flex items-center gap-3 p-4 md:(h-16 p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
+    --at-apply: "h-full bg-color md:(bg-transparent) dark:bg-transparent flex items-center gap-3 p-4 md:(h-16 p-3 w-full text-color card-rounded-df mb-2)  w-full text-sm  cursor-pointer  !hover:bg-[#f8f8f8] !dark:hover:bg-[#151515]";
     scroll-margin-top: 0.5rem;
     scroll-margin-bottom: 0.5rem;
     .text {
