@@ -4,13 +4,13 @@
 
 业务逻辑放在 `app/composables/`，按功能分子目录：
 
-| 目录 | 用途 | 命名/示例 |
-|------|------|-----------|
-| `api/` | 按领域划分的 API 请求 | 导出具体函数：`getChatMessagePage`, `sendChatMessage`；子目录如 `chat/`, `user/`, `res/`, `sys/` |
-| `hooks/` | 可复用业务逻辑 | `useXxx.ts`；子目录如 `msg/`, `oauth/`, `oss/`, `ws/` |
-| `store/` | Pinia 状态 | `useChatStore`, `useUserStore`, `useSettingStore`, `useWsStore` |
-| `utils/` | 纯工具函数 | `useHttp`, `useDelay`, `useCheck`, `useBaseUrl` 等 |
-| `tauri/` | Tauri 相关 | window、tray、setting 等 |
+| 目录     | 用途                  | 命名/示例                                                                                        |
+| -------- | --------------------- | ------------------------------------------------------------------------------------------------ |
+| `api/`   | 按领域划分的 API 请求 | 导出具体函数：`getChatMessagePage`, `sendChatMessage`；子目录如 `chat/`, `user/`, `res/`, `sys/` |
+| `hooks/` | 可复用业务逻辑        | `useXxx.ts`；子目录如 `msg/`, `oauth/`, `oss/`, `ws/`                                            |
+| `store/` | Pinia 状态            | `useChatStore`, `useUserStore`, `useSettingStore`, `useWsStore`                                  |
+| `utils/` | 纯工具函数            | `useHttp`, `useDelay`, `useCheck`, `useBaseUrl` 等                                               |
+| `tauri/` | Tauri 相关            | window、tray、setting 等                                                                         |
 
 ## API 层
 

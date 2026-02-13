@@ -2,14 +2,14 @@
 
 ## 前端目录（app/）
 
-| 目录 | 用途 |
-|------|------|
-| `pages/` | 文件路由，对应页面 |
-| `components/` | 按功能分：chat、user、settings、common 等；公共组件在 common/ |
+| 目录           | 用途                                                                             |
+| -------------- | -------------------------------------------------------------------------------- |
+| `pages/`       | 文件路由，对应页面                                                               |
+| `components/`  | 按功能分：chat、user、settings、common 等；公共组件在 common/                    |
 | `composables/` | api、hooks、store、utils、tauri；见 [composables-types.md](composables-types.md) |
-| `init/` | 应用初始化：system、setting、macos、iframe、share |
-| `types/` | 通用类型与枚举；Result、StatusCode 在 types/result.ts |
-| `layouts/` | Nuxt 布局组件 |
+| `init/`        | 应用初始化：system、setting、macos、iframe、share                                |
+| `types/`       | 通用类型与枚举；Result、StatusCode 在 types/result.ts                            |
+| `layouts/`     | Nuxt 布局组件                                                                    |
 
 ## 关键模块路径
 

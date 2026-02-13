@@ -9,12 +9,12 @@
 
 ## 命名约定
 
-| 类型 | 规范 | 示例 |
-|------|------|------|
-| Vue 组件文件 | `PascalCase.vue` | `IconTip.vue`, `PageHeader.vue` |
-| Composables | `useXxx.ts` | `useSetting.ts`, `useWsCore.ts` |
-| API 函数 | 小驼峰、语义化 | `getChatMessagePage`, `sendChatMessage` |
-| 类型/接口 | PascalCase | `IconTipProps`, `Result<T>` |
+| 类型         | 规范             | 示例                                    |
+| ------------ | ---------------- | --------------------------------------- |
+| Vue 组件文件 | `PascalCase.vue` | `IconTip.vue`, `PageHeader.vue`         |
+| Composables  | `useXxx.ts`      | `useSetting.ts`, `useWsCore.ts`         |
+| API 函数     | 小驼峰、语义化   | `getChatMessagePage`, `sendChatMessage` |
+| 类型/接口    | PascalCase       | `IconTipProps`, `Result<T>`             |
 
 ## Git 与 Commit
 

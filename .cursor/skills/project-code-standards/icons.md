@@ -13,11 +13,11 @@ i-{collection}:{icon-name}
 
 ## 常见集合
 
-| 前缀 | 说明 |
-|------|------|
-| `i-solar:` | Solar 图标集 |
+| 前缀        | 说明          |
+| ----------- | ------------- |
+| `i-solar:`  | Solar 图标集  |
 | `i-carbon:` | Carbon 图标集 |
-| `i-ri:` | Remix Icon |
+| `i-ri:`     | Remix Icon    |
 
 ## 使用方式
 
@@ -29,7 +29,9 @@ i-{collection}:{icon-name}
 
 ```vue
 <i class="i-solar:upload-minimalistic-linear p-4" />
+
 <i :class="isPlaying ? 'i-solar:stop-bold' : 'i-solar:play-bold'" class="icon p-1" />
+
 <CommonIconTip icon="i-ri:user-line" tip="用户" />
 ```
 
