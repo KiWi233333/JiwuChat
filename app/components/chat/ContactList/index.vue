@@ -406,7 +406,7 @@ onDeactivated(() => {
     >
       <ElInput
         id="search-contact"
-        v-model.lazy="chat.searchKeyWords"
+        v-model="chat.searchKeyWords"
         class="mr-2 text-0.8rem hover:op-80"
         style="height: 2rem;"
         name="search-content"
