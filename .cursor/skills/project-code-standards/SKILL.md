@@ -9,17 +9,17 @@ description: Enforces project code conventions for Vue/Nuxt, TypeScript, styling
 
 ## 规范文档索引
 
-| 大类         | 文件 | 内容摘要 |
-|--------------|------|----------|
-| 编码与命名   | [coding-style.md](coding-style.md) | 缩进/引号/分号、ESLint、文件与函数命名、Commit 规范、Git 规则 |
-| Vue 组件     | [vue-components.md](vue-components.md) | Nuxt 路径即组件名、Props/Emits、类型分离、el-tooltip 坑点 |
-| 样式         | [styling.md](styling.md) | rem、UnoCSS shortcuts、布局、动态类名、视觉与主题 |
-| SCSS         | [scss.md](scss.md) | --at-apply、语义类名、避免 BEM、深色模式 |
-| 图标         | [icons.md](icons.md) | class 格式 `i-{collection}:{icon-name}`、常用集合与示例 |
-| Composables 与类型 | [composables-types.md](composables-types.md) | api/hooks/store/utils 分工、Result&lt;T&gt;、types/ 目录 |
-| 路由与页面   | [routing-pages.md](routing-pages.md) | 文件路由、definePageMeta、layout、目录约定 |
-| 测试与工具   | [testing-tooling.md](testing-tooling.md) | 当前测试策略、常用命令、Tauri/依赖/OAuth 常见问题 |
-| 架构速查     | [architecture.md](architecture.md) | app 目录、WebSocket/TipTap/Tauri 关键路径、配置与环境 |
+| 大类               | 文件                                         | 内容摘要                                                      |
+| ------------------ | -------------------------------------------- | ------------------------------------------------------------- |
+| 编码与命名         | [coding-style.md](coding-style.md)           | 缩进/引号/分号、ESLint、文件与函数命名、Commit 规范、Git 规则 |
+| Vue 组件           | [vue-components.md](vue-components.md)       | Nuxt 路径即组件名、Props/Emits、类型分离、el-tooltip 坑点     |
+| 样式               | [styling.md](styling.md)                     | rem、UnoCSS shortcuts、布局、动态类名、视觉与主题             |
+| SCSS               | [scss.md](scss.md)                           | --at-apply、语义类名、避免 BEM、深色模式                      |
+| 图标               | [icons.md](icons.md)                         | class 格式 `i-{collection}:{icon-name}`、常用集合与示例       |
+| Composables 与类型 | [composables-types.md](composables-types.md) | api/hooks/store/utils 分工、Result&lt;T&gt;、types/ 目录      |
+| 路由与页面         | [routing-pages.md](routing-pages.md)         | 文件路由、definePageMeta、layout、目录约定                    |
+| 测试与工具         | [testing-tooling.md](testing-tooling.md)     | 当前测试策略、常用命令、Tauri/依赖/OAuth 常见问题             |
+| 架构速查           | [architecture.md](architecture.md)           | app 目录、WebSocket/TipTap/Tauri 关键路径、配置与环境         |
 
 ## 快速检查清单
 

@@ -17,12 +17,12 @@
 
 ### 常用 shortcuts 速查
 
-| 用途 | 类名示例 |
-|------|----------|
-| 背景 | `card-bg-color`, `bg-color`, `bg-color-2`, `bg-color-3`, `bg-color-inverse` |
-| 文字 | `text-color`, `text-small`, `text-small-color`, `text-mini`, `text-mini-50` |
-| 边框 | `border-default`, `border-default-b`, `border-default-t`, `border-default-l`, `border-default-r` |
-| 按钮语义 | `btn-primary`, `btn-danger`, `btn-info`, `btn-success`, `btn-warning`, `btn-default` |
+| 用途     | 类名示例                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| 背景     | `card-bg-color`, `bg-color`, `bg-color-2`, `bg-color-3`, `bg-color-inverse`                      |
+| 文字     | `text-color`, `text-small`, `text-small-color`, `text-mini`, `text-mini-50`                      |
+| 边框     | `border-default`, `border-default-b`, `border-default-t`, `border-default-l`, `border-default-r` |
+| 按钮语义 | `btn-primary`, `btn-danger`, `btn-info`, `btn-success`, `btn-warning`, `btn-default`             |
 
 完整列表以项目根目录 `uno.config.ts` 为准。
 
