@@ -377,6 +377,24 @@ export interface UpdateRoomGroupDTO {
 }
 
 /**
+ * 群聊邀请权限枚举
+ * - ANY: 任意成员可邀请
+ * - ADMIN: 管理员和群主可邀请
+ * - OWNER_ONLY: 仅群主可邀请
+ */
+export enum InvitePermissionEnum {
+  ANY = 0,
+  ADMIN = 1,
+  OWNER_ONLY = 2,
+}
+
+export const InvitePermissionEnumMap: Record<InvitePermissionEnum, string> = {
+  [InvitePermissionEnum.ANY]: "所有成员",
+  [InvitePermissionEnum.ADMIN]: "管理员/群主",
+  [InvitePermissionEnum.OWNER_ONLY]: "仅群主",
+};
+
+/**
  * 群详情
  *
  * UpdateRoomGroupExtJsonDTO
@@ -386,6 +404,10 @@ export interface UpdateRoomGroupExtJsonDTO {
    * 群聊公告
    */
   notice?: null | string
+  /**
+   * 邀请权限
+   */
+  invitePermission?: InvitePermissionEnum | null
 }
 
 export const ChatRoomRoleEnumMap: Record<ChatRoomRoleEnum, string> = {

@@ -152,7 +152,7 @@ function handleClick(event: MouseEvent) {
     --at-apply: "p-1 rounded-sm";
 
     &:hover:not(.is-disabled) {
-      --at-apply: bg-color-inverse text-color;
+      --at-apply: "bg-color-inverse text-color";
     }
   }
 
@@ -161,12 +161,10 @@ function handleClick(event: MouseEvent) {
   }
 
   &.is-active {
-    --at-apply: "bg-theme-primary";
-    color: white;
+    --at-apply: "bg-color-inverse";
 
     &:hover:not(.is-disabled) {
-      background-color: oklch(from var(--el-color-primary) l c h / 0.8);
-      color: white;
+      --at-apply: "bg-color-second";
     }
   }
 }

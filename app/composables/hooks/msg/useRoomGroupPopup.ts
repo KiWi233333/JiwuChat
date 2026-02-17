@@ -1,7 +1,8 @@
+import type { InvitePermissionEnum } from "~/composables/api/chat/room";
 import ContextMenu from "@imengyu/vue3-context-menu";
 import { mitter, MittEventType } from "~/composables/utils/useMitt";
 
-
+// @unocss-include
 export function useRoomGroupPopup(opt: { editFormField: Ref<string>, }) {
   const { editFormField } = opt;
 
@@ -38,10 +39,11 @@ export function useRoomGroupPopup(opt: { editFormField: Ref<string>, }) {
   const isEmpty = computed(() => chat.currentMemberList?.length === 0);
 
   // 文本
-  const TextMap = {
+  const TextMap: Record<string, string> = {
     name: "群名称",
     notice: "群公告",
     avatar: "群头像",
+    invitePermission: "入群方式",
   };
 
   // 群头像
@@ -66,26 +68,22 @@ export function useRoomGroupPopup(opt: { editFormField: Ref<string>, }) {
   /**
    * 修改群聊详情
    * @param field 修改字段
-   * @param val 修改的值
+   * @param val 修改的值（invitePermission 为 InvitePermissionEnum）
    */
-  async function submitUpdateRoom(field: "name" | "avatar" | "notice", val: string | undefined | null = "") {
-    if (field === "name" && val && val.trim().length <= 0)
+  async function submitUpdateRoom(field: "name" | "avatar" | "notice" | "invitePermission", val: string | InvitePermissionEnum | undefined | null = "") {
+    if (field === "name" && typeof val === "string" && val.trim().length <= 0)
       return ElMessage.warning("请输入内容！");
-    // 没有变化则不触发修改
-
-    if ((field === "name" && chat.theContact?.[field] === val) || (field === "notice" && chat?.theContact?.roomGroup?.detail?.notice === val)) {
+    const currentInvite = chat.theContact?.roomGroup?.detail?.invitePermission;
+    const noChange = (field === "name" && chat.theContact?.[field] === val)
+      || (field === "notice" && chat?.theContact?.roomGroup?.detail?.notice === val)
+      || (field === "invitePermission" && currentInvite === val);
+    if (noChange) {
       editFormField.value = "";
       return;
     }
-    const data = field === "notice"
-      ? {
-          detail: {
-            [field]: val?.trim(),
-          },
-        }
-      : {
-          [field]: val?.trim(),
-        } as UpdateRoomGroupDTO;
+    const data: UpdateRoomGroupDTO = (field === "notice" || field === "invitePermission")
+      ? { detail: field === "invitePermission" ? { invitePermission: val as InvitePermissionEnum } : { [field]: (val as string)?.trim() } }
+      : { [field]: (val as string)?.trim() } as UpdateRoomGroupDTO;
 
     ElMessageBox.confirm(`是否确认修改${TextMap[field]}？`, {
       title: TextMap[field] || "提示",
@@ -98,24 +96,32 @@ export function useRoomGroupPopup(opt: { editFormField: Ref<string>, }) {
         if (action === "confirm") {
           const res = await updateGroupRoomInfo(chat.theRoomId!, data, user.getToken);
           if (res.code === StatusCode.SUCCESS && res.data === 1) {
-          // 更新会话
             const item = chat.contactMap[chat.theRoomId!];
             if (field === "name") {
               if (item)
-                item.name = val?.trim() as string;
-              chat.theContact.name = val?.trim() as string;
+                item.name = (val as string)?.trim();
+              chat.theContact.name = (val as string)?.trim();
             }
             else if (field === "avatar") {
               if (item)
-                item.avatar = val?.trim() as string;
-              chat.theContact.avatar = val?.trim() as string;
+                item.avatar = (val as string)?.trim();
+              chat.theContact.avatar = (val as string)?.trim();
             }
             else if (field === "notice") {
               if (!chat.theContact?.roomGroup)
                 return;
               if (!chat.theContact.roomGroup.detail)
                 chat.theContact.roomGroup.detail = {};
-              chat.theContact.roomGroup.detail.notice = val?.trim() as string;
+              chat.theContact.roomGroup.detail.notice = (val as string)?.trim();
+            }
+            else if (field === "invitePermission") {
+              if (!chat.theContact?.roomGroup)
+                return;
+              if (!chat.theContact.roomGroup.detail)
+                chat.theContact.roomGroup.detail = {};
+              chat.theContact.roomGroup.detail.invitePermission = (val as InvitePermissionEnum);
+              if (theContactClone.value?.roomGroup?.detail)
+                theContactClone.value.roomGroup.detail.invitePermission = val as InvitePermissionEnum;
             }
             editFormField.value = "";
           }
@@ -417,12 +423,11 @@ export function useRoomGroupPopup(opt: { editFormField: Ref<string>, }) {
               customClass: "group",
               icon: "group-hover:scale-110 transition-transform i-solar:share-line-duotone",
               onClick: async () => {
-                const res = await useAsyncCopyText(`${window.location.origin}/user/info?id=${item.userId}`);
+                await copyText(`${window.location.origin}/user/info?id=${item.userId}`);
                 ElMessage.success({
                   message: "成功复制至剪贴板！",
                   grouping: true,
                 });
-                const { isSupported, share } = useShare();
               },
             },
           ],

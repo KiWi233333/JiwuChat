@@ -249,6 +249,78 @@ export const msgBodyVOBuilderMap = {
   },
 } as const;
 
+/** 消息反应 emoji 编码常量 */
+export type ReactionEmojiType
+  // 第一梯队：高频基础表情
+  = "thumbs_up" | "heart" | "laugh" | "fire" | "clap" | "pray"
+  // 第二梯队：常用情绪与社交
+    | "party" | "thumbs_down" | "cry_laugh" | "love_eyes" | "surprised" | "sad"
+  // 第三梯队：态度与反馈
+    | "angry" | "think" | "eyes" | "hundred" | "rocket" | "ok_hand"
+  // 第四梯队：补充表情
+    | "sparkles" | "cool" | "hug" | "muscle" | "check" | "wave";
+
+/** 单条 reaction 聚合 */
+export interface ReactionVO {
+  emojiType: ReactionEmojiType;
+  count: number;
+  userIds: string[];
+  isCurrentUser: boolean;
+}
+
+/** Toggle 请求参数 */
+export interface ReactionToggleDTO {
+  msgId: number;
+  emojiType: ReactionEmojiType;
+}
+
+/** Toggle 响应 / WebSocket 推送体 */
+export interface WSMsgReaction {
+  msgId: number;
+  roomId: number;
+  emojiType: ReactionEmojiType;
+  userId: string;
+  /** 1=添加, 0=取消 */
+  action: 0 | 1;
+  reactions: ReactionVO[];
+}
+
+// @unocss-include
+/** emoji 映射表（飞书风格排序） */
+export const MSG_REACTION_EMOJI_MAP: Record<ReactionEmojiType, { unicode: string; icon: string; label: string; order: number }> = {
+  // ---- 高频基础 ----
+  thumbs_up: { unicode: "👍", icon: "i-fluent-emoji:thumbs-up", label: "点赞", order: 99 },
+  ok_hand: { unicode: "👌", icon: "i-fluent-emoji:ok-hand", label: "OK", order: 98 },
+  pray: { unicode: "🙏", icon: "i-fluent-emoji:folded-hands", label: "祈祷", order: 97 },
+  clap: { unicode: "👏", icon: "i-fluent-emoji:clapping-hands", label: "鼓掌", order: 96 },
+  thumbs_down: { unicode: "👎", icon: "i-fluent-emoji:thumbs-down", label: "踩", order: 95 },
+  fire: { unicode: "🔥", icon: "i-fluent-emoji:fire", label: "火", order: 94 },
+  // ---- 常用情绪 ----
+  laugh: { unicode: "😂", icon: "i-fluent-emoji:grinning-squinting-face", label: "笑哭", order: 93 },
+  cry_laugh: { unicode: "🤣", icon: "i-fluent-emoji:rolling-on-the-floor-laughing", label: "笑翻", order: 92 },
+  heart: { unicode: "❤️", icon: "i-fluent-emoji:red-heart", label: "爱心", order: 91 },
+  party: { unicode: "🎉", icon: "i-fluent-emoji:party-popper", label: "庆祝", order: 90 },
+  love_eyes: { unicode: "😍", icon: "i-fluent-emoji:smiling-face-with-heart-eyes", label: "花痴", order: 89 },
+  surprised: { unicode: "😮", icon: "i-fluent-emoji:face-with-open-mouth", label: "惊讶", order: 88 },
+  sad: { unicode: "😢", icon: "i-fluent-emoji:crying-face", label: "难过", order: 87 },
+  angry: { unicode: "😡", icon: "i-fluent-emoji:angry-face", label: "生气", order: 86 },
+  // ---- 态度反馈 ----
+  hundred: { unicode: "💯", icon: "i-fluent-emoji:hundred-points", label: "满分", order: 85 },
+  rocket: { unicode: "🚀", icon: "i-fluent-emoji:rocket", label: "火箭", order: 84 },
+  think: { unicode: "🤔", icon: "i-fluent-emoji:thinking-face", label: "思考", order: 83 },
+  eyes: { unicode: "👀", icon: "i-fluent-emoji:eyes", label: "关注", order: 82 },
+  // ---- 补充表情 ----
+  sparkles: { unicode: "✨", icon: "i-fluent-emoji:sparkles", label: "闪耀", order: 81 },
+  cool: { unicode: "😎", icon: "i-fluent-emoji:smiling-face-with-sunglasses", label: "酷", order: 80 },
+  hug: { unicode: "🤗", icon: "i-fluent-emoji:hugging-face", label: "拥抱", order: 79 },
+  muscle: { unicode: "💪", icon: "i-fluent-emoji:flexed-biceps", label: "加油", order: 78 },
+  check: { unicode: "✅", icon: "i-fluent-emoji:check-mark", label: "完成", order: 77 },
+  wave: { unicode: "👋", icon: "i-fluent-emoji:waving-hand", label: "挥手", order: 76 },
+};
+
+/** 全部 emoji 类型列表 */
+export const MSG_REACTION_EMOJI_LIST: ReactionEmojiType[] = Object.keys(MSG_REACTION_EMOJI_MAP).sort((a, b) => MSG_REACTION_EMOJI_MAP[b as ReactionEmojiType].order - MSG_REACTION_EMOJI_MAP[a as ReactionEmojiType].order) as ReactionEmojiType[];
+
 /**
  * 消息返回体
  * Date: 2023-03-23
@@ -309,7 +381,10 @@ export interface Message<T> {
    * 消息内容不同的消息类型，内容体不同，见https://www.yuque.com/snab/mallcaht/rkb2uz5k1qqdmcmd
    */
   body?: T;
-  // body?:T  MessageBodyMap[MessageType] | ;
+  /**
+   * 表情反应列表
+   */
+  reactions?: ReactionVO[] | null;
 }
 
 export interface MessageBodyMap {
@@ -688,4 +763,41 @@ export enum ChatReadType {
    * 未读
    */
   UNREAD = 1,
+}
+
+/**
+ * 添加/取消表情反应（Toggle）
+ * @param roomId 房间ID
+ * @param dto 请求参数
+ * @param token JWT Token
+ * @returns 最新 reaction 聚合
+ */
+export function toggleMessageReaction(roomId: number, dto: ReactionToggleDTO, token: string) {
+  return useHttp.put<Result<WSMsgReaction>>(
+    `/chat/message/msg/${roomId}/reaction`,
+    dto,
+    {
+      headers: {
+        Authorization: token,
+      },
+    },
+  );
+}
+
+/**
+ * 查询单条消息的 Reaction 详情（全量用户列表）
+ * @param msgId 消息ID
+ * @param token JWT Token
+ * @returns reaction 聚合列表
+ */
+export function getMessageReactions(msgId: number, token: string) {
+  return useHttp.get<Result<ReactionVO[]>>(
+    `/chat/message/msg/${msgId}/reactions`,
+    {},
+    {
+      headers: {
+        Authorization: token,
+      },
+    },
+  );
 }

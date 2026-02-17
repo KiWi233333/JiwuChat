@@ -1,3 +1,4 @@
+import type { WSMsgReaction } from "~/composables/api/chat/message";
 import type { WSUpdateContactInfoMsg } from "~/types/chat/WsType";
 import { WsMsgBodyType } from "~/types/chat/WsType";
 import { defineMessageConfig } from "./messageConfig";
@@ -93,6 +94,13 @@ export const messageConfig = defineMessageConfig({
     type: [] as WSUpdateContactInfoMsg[],
     handlers: silentHandlers,
   },
+
+  /** 消息表情反应 */
+  [WsMsgBodyType.MSG_REACTION]: {
+    key: WsMsgKey.REACTION_MSG,
+    type: [] as WSMsgReaction[],
+    handlers: silentHandlers,
+  },
 });
 
 /**
@@ -115,6 +123,7 @@ export interface WsMsgItemMap {
   [WsMsgKey.PIN_CONTACT_MSG]: WSPinContactMsg[];
   [WsMsgKey.AI_STREAM_MSG]: WSAiStreamMsg[];
   [WsMsgKey.UPDATE_CONTACT_INFO_MSG]: WSUpdateContactInfoMsg[];
+  [WsMsgKey.REACTION_MSG]: WSMsgReaction[];
   [WsMsgKey.OTHER]: object[];
 }
 

@@ -181,12 +181,12 @@ async function onExitOrDeleteFriend() {
     </div>
 
     <!-- 移动端：分组列表样式（会话设置） -->
-    <div class="group-section group-section-settings sm:border-default-2-t">
+    <div class="group-section group-section-settings sm:(mt-3 border-default-2-t pt-3)">
       <div class="label-item select-none text-3.5">
         <div class="title mb-2 text-small">
           会话设置
         </div>
-        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:min-h-0 active:bg-color-3 sm:py-0">
+        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:mt-2 sm:min-h-0 active:bg-color-3 sm:py-0">
           <small class="text-0.8rem text-small">设为置顶</small>
           <el-switch
             :model-value="isPin"
@@ -196,7 +196,7 @@ async function onExitOrDeleteFriend() {
             :before-change="changIsPin"
           />
         </div>
-        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:min-h-0 active:bg-color-3 sm:py-0">
+        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:mt-2 sm:min-h-0 active:bg-color-3 sm:py-0">
           <small class="text-0.8rem text-small">消息免打扰</small>
           <el-switch
             :model-value="shieldStatus"
@@ -216,7 +216,7 @@ async function onExitOrDeleteFriend() {
       :size="setting.isMobileSize ? 'large' : 'default'"
       type="danger"
       plain
-      class="group-exit-btn mt-3 w-full border-none bg-color"
+      class="group-exit-btn mt-3 w-full border-none bg-color sm:(border-default-2 bg-color-3) !transition-200"
       @click="onExitOrDeleteFriend"
     >
       <span>

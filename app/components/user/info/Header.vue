@@ -258,14 +258,14 @@ function onBlur() {
 }
 
 // 分享相关方法
-function showInvitation() {
-  useAsyncCopyText(`${document.URL}?id=${user?.id}`)
-    .then(() => {
-      ElMessage.success("链接已复制到剪切板！");
-    })
-    .catch(() => {
-      ElMessage.error("链接分享失败！");
-    });
+async function showInvitation() {
+  const success = await copyText(`${document.URL}?id=${user?.id}`);
+  if (success) {
+    ElMessage.success("链接已复制到剪切板！");
+  }
+  else {
+    ElMessage.error("链接分享失败！");
+  }
 }
 </script>
 

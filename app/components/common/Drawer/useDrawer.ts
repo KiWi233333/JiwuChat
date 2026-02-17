@@ -401,6 +401,7 @@ export function useDrawer(
     activeValue: true,
     inactiveValue: false,
     useBackNavigation: true,
+    scope: "global",
   });
 
   // ==================== 背景联动处理 ====================

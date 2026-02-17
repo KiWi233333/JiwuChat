@@ -12,9 +12,9 @@
 
 ```ts
 definePageMeta({
-  layout: "default",  // 使用 layouts/default.vue
-  layout: false,      // 不使用布局（如 demo/测试页）
-})
+  layout: "default", // 使用 layouts/default.vue
+  layout: false, // 不使用布局（如 demo/测试页）
+});
 ```
 
 - 常用：需要整页无侧栏/无壳时设 `layout: false`；否则用项目默认 layout。

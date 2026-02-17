@@ -1,6 +1,14 @@
 import type { Ref, WatchStopHandle } from "vue";
 import { useDebounceFn } from "@vueuse/core";
-import { nextTick, onBeforeUnmount, ref, toValue, watch } from "vue";
+import {
+  nextTick,
+  onActivated,
+  onBeforeUnmount,
+  onDeactivated,
+  ref,
+  toValue,
+  watch,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 type MaybeRefOrGetter<T> = Ref<T> | (() => T) | T;
@@ -31,6 +39,11 @@ interface UseHistoryStateOptions<T> {
    * 默认为 true,设为 false 则使用 router.replace() 移除参数
    */
   useBackNavigation?: boolean;
+  /**
+   * 作用范围：global 随当前路由变化，适用于全局组件（如布局级 Drawer/Popup）；local 仅在当前首次挂载时的路径生效
+   * 默认为 global
+   */
+  scope?: "local" | "global";
 }
 
 /**
@@ -100,14 +113,16 @@ class HistoryStateManager {
   }
 
   /**
-   * 移除最后一条指定 key 的记录
+   * 移除最后一条指定 key 的记录；若传 path 则只移除匹配该 path 的（保证只 pop 当前路由层）
    */
-  pop(stateKey: string): HistoryRecord | undefined {
+  pop(stateKey: string, path?: string): HistoryRecord | undefined {
     for (let i = this.stack.length - 1; i >= 0; i--) {
       const record = this.stack[i];
-      if (record && record.stateKey === stateKey) {
-        return this.stack.splice(i, 1)[0];
-      }
+      if (!record || record.stateKey !== stateKey)
+        continue;
+      if (path !== undefined && record.path !== path)
+        continue;
+      return this.stack.splice(i, 1)[0];
     }
     return undefined;
   }
@@ -123,10 +138,12 @@ class HistoryStateManager {
   }
 
   /**
-   * 检查是否有指定 key 的记录
+   * 检查是否有指定 key 的记录；若传 path 则只检查该 path 下的记录
    */
-  hasRecord(stateKey: string): boolean {
-    return this.stack.some(r => r.stateKey === stateKey);
+  hasRecord(stateKey: string, path?: string): boolean {
+    return this.stack.some(
+      r => r.stateKey === stateKey && (path === undefined || r.path === path),
+    );
   }
 
   /**
@@ -156,17 +173,12 @@ class HistoryStateManager {
 export const historyStateManager = HistoryStateManager.getInstance();
 
 /**
- * 通过 Vue Router Query 参数管理状态的 Hook
- * 1. 状态变为 Active -> 添加 Query 参数 (push)
- * 2. 状态变为 Inactive -> 返回上一页 (back) 或移除参数 (replace)
- * 3. 路由参数变化 -> 同步状态
+ * 通过 Vue Router Query 参数管理状态的 Hook（堆栈式）
+ * 1. 状态变为 Active -> 添加 Query 参数 (router.push)，保留当前 URL 上其它 key，形成一层新历史
+ * 2. 状态变为 Inactive -> 若有本实例的记录则 router.back() 回退一层，否则 replace 仅移除本 key，不影响其它 key
+ * 3. 路由参数变化 -> 同步状态；若 URL 中本 key 消失（如用户按浏览器返回）则从 manager 弹出对应记录，保持堆栈一致
  *
- * 解决了 KeepAlive 组件在跳转其他页面时错误重置状态的问题
- *
- * v2.0 改进：
- * - 引入全局管理器，追踪所有实例的历史记录
- * - 防止重复注册相同的 stateKey
- * - 更安全的 back() 逻辑，只在确认是自己添加的记录时才使用 back()
+ * 多状态叠加：多个实例（如 Drawer + Modal）依次打开时，每次 push 一层，回退时只回退本层，不破坏其它层状态
  */
 export function useHistoryState<T = boolean>(
   state: Ref<T>,
@@ -178,6 +190,7 @@ export function useHistoryState<T = boolean>(
     activeValue = (options.activeValue !== undefined ? options.activeValue : true) as T,
     inactiveValue = (options.inactiveValue !== undefined ? options.inactiveValue : false) as T,
     useBackNavigation = true,
+    scope = "global",
   } = options;
 
   const manager = HistoryStateManager.getInstance();
@@ -217,8 +230,14 @@ export function useHistoryState<T = boolean>(
   // 注册 stateKey
   manager.register(stateKey);
 
-  // 记录初始化时的路径,仅在当前路径下响应变化
+  // 记录初始化时的路径（local 模式仅在该路径下响应）
   const initialPath = route.path;
+
+  /** 当前生效的路径：global 为当前路由 path，local 为 initialPath */
+  const getActivePath = (): string => (scope === "global" ? route!.path : initialPath);
+  /** 是否处于应响应操作的路径上（global 始终为 true） */
+  const isOnActivePath = (): boolean =>
+    scope === "global" || route?.path === initialPath;
 
   // 标记是否正在同步中,防止循环触发
   const isSyncing = ref(false);
@@ -253,22 +272,18 @@ export function useHistoryState<T = boolean>(
    * v2.0 改进：只有当确认是自己添加的记录时才使用 back()
    */
   const removeQueryKey = async () => {
-    if (route?.path !== initialPath || !hasQueryKey())
+    if (!isOnActivePath() || !hasQueryKey())
       return;
 
     isSyncing.value = true;
+    const activePath = getActivePath();
 
-    // 检查管理器中是否有我们自己的记录
-    const hasOurRecord = manager.hasRecord(stateKey);
-    // 检查是否应该使用 back()：
-    // 1. 配置允许 useBackNavigation
-    // 2. 我们有自己添加的记录
-    // 3. history.length > 1
+    // 检查当前路径下是否有本实例的记录（只回退本层）
+    const hasOurRecord = manager.hasRecord(stateKey, activePath);
     const shouldUseBack = useBackNavigation && hasOurRecord && window.history.length > 1;
 
     if (shouldUseBack) {
-      // 从管理器移除记录
-      manager.pop(stateKey);
+      manager.pop(stateKey, activePath);
 
       // 使用 back() 返回上一页
       let unwatch: WatchStopHandle | undefined;
@@ -282,6 +297,7 @@ export function useHistoryState<T = boolean>(
         isSyncing.value = false;
       };
 
+      // 若 300ms 内路由未变化（如 back 未生效），fallback 解除 isSyncing 避免死锁
       timeoutId = setTimeout(cleanup, 300);
 
       unwatch = watch(
@@ -295,42 +311,45 @@ export function useHistoryState<T = boolean>(
       router.back();
     }
     else {
-      // 使用 replace 移除参数（更安全的方式）
-      const query = { ...route.query };
-      delete query[stateKey];
-
-      // 从管理器移除记录（如果有的话）
-      manager.pop(stateKey);
-
-      await router.replace({
-        path: initialPath,
-        query,
-      });
-      isSyncing.value = false;
+      // 仅移除本 key、保留其它 key，不破坏其它层状态
+      try {
+        const query = { ...route.query };
+        delete query[stateKey];
+        manager.pop(stateKey, activePath);
+        await router.replace({
+          path: activePath,
+          query,
+        });
+      }
+      finally {
+        isSyncing.value = false;
+      }
     }
   };
 
   /**
-   * 添加路由参数
+   * 添加路由参数：push 新一层历史并保留当前 URL 上其它 key，实现多状态堆叠
    */
   const addQueryKey = async () => {
-    if (route?.path !== initialPath || hasQueryKey())
+    if (!isOnActivePath() || hasQueryKey())
       return;
 
     isSyncing.value = true;
-
-    // 记录到管理器
-    manager.push({
-      stateKey,
-      path: initialPath,
-      timestamp: Date.now(),
-    });
-
-    await router.push({
-      path: initialPath,
-      query: { ...route.query, [stateKey]: "1" },
-    });
-    isSyncing.value = false;
+    const activePath = getActivePath();
+    try {
+      manager.push({
+        stateKey,
+        path: activePath,
+        timestamp: Date.now(),
+      });
+      await router.push({
+        path: activePath,
+        query: { ...route!.query, [stateKey]: "1" },
+      });
+    }
+    finally {
+      isSyncing.value = false;
+    }
   };
 
   /**
@@ -362,7 +381,7 @@ export function useHistoryState<T = boolean>(
     stopStateWatcher = watch(
       state,
       async (val) => {
-        if (!toValue(enabled) || isSyncing.value || route?.path !== initialPath)
+        if (!toValue(enabled) || isSyncing.value || !isOnActivePath())
           return;
 
         if (val === activeValue || val === inactiveValue)
@@ -371,29 +390,37 @@ export function useHistoryState<T = boolean>(
       { flush: "post" },
     );
 
-    // 2. 监听路由变化 -> 同步 State
+    // 2. 监听路由变化 -> 同步 State（栈中间前进/回退时也响应式跟随当前 URL）
+    // 有 key：同步为 active，且若当前路径尚无记录则 push（便于之后 back 时正确 sync 为 inactive）
+    // 无 key：仅当「当前路径下曾有本层记录」时同步为 inactive 并 pop（本页 back），否则为 push 到新路由不撤销
     stopRouteWatcher = watch(
       () => route.query,
       async (query) => {
-        if (!toValue(enabled) || isSyncing.value || route?.path !== initialPath)
+        if (!toValue(enabled) || isSyncing.value || !isOnActivePath())
           return;
 
-        await syncState(hasQueryKey(query) ? activeValue : inactiveValue);
+        const hasKey = hasQueryKey(query);
+        const currentPath = getActivePath();
+        if (hasKey) {
+          if (!manager.hasRecord(stateKey, currentPath))
+            manager.push({ stateKey, path: currentPath, timestamp: Date.now() });
+          await syncState(activeValue);
+        }
+        else if (manager.hasRecord(stateKey, currentPath)) {
+          await syncState(inactiveValue);
+          manager.pop(stateKey, currentPath);
+        }
       },
       { flush: "post" },
     );
 
-    // 3. 监听路径变化 -> 当离开当前页面时，清理管理器中的记录
+    // 3. 监听路径变化 -> 仅重置初始化态，不 pop
+    // 区分：push 到新路由 = 累加栈，旧页状态保留在 history 中；只有 back/关闭本层 时才 pop（在 removeQueryKey 或 route 失 key 时）
     stopPathWatcher = watch(
       () => route.path,
-      (newPath) => {
-        if (newPath !== initialPath) {
-          // 离开页面时，如果状态是 active，需要从管理器中移除记录
-          // 但不触发路由操作（因为已经在其他页面了）
-          if (manager.hasRecord(stateKey)) {
-            manager.pop(stateKey);
-          }
-        }
+      () => {
+        if (scope === "global")
+          initialized.value = false;
       },
       { flush: "post" },
     );
@@ -407,14 +434,14 @@ export function useHistoryState<T = boolean>(
    * 3. URL 没参数且 state 不是 activeValue -> 同步 state 为 inactiveValue
    */
   const initializeSync = async () => {
-    if (initialized.value || route?.path !== initialPath)
+    if (initialized.value || !isOnActivePath())
       return;
 
     // 等待路由状态稳定
     await nextTick();
 
     initialized.value = true;
-
+    const activePath = getActivePath();
     const hasKey = hasQueryKey();
 
     if (hasKey && state.value !== activeValue) {
@@ -422,7 +449,7 @@ export function useHistoryState<T = boolean>(
       // 同时记录到管理器（因为这是恢复场景）
       manager.push({
         stateKey,
-        path: initialPath,
+        path: activePath,
         timestamp: Date.now(),
       });
       await syncState(activeValue);
@@ -437,37 +464,57 @@ export function useHistoryState<T = boolean>(
     }
   };
 
-  // 监听 enabled 变化
-  const stopEnabledWatcher = watch(
-    () => toValue(enabled),
-    async (value) => {
-      if (value) {
-        setupWatchers();
-        await initializeSync();
-      }
-      else {
-        await cleanup();
-      }
-    },
-    { immediate: true },
-  );
+  /**
+   * 创建 enabled 监听器，返回 stop 句柄
+   * 用于首次挂载与 keep-alive 激活时复用
+   */
+  const setupEnabledWatcher = (): WatchStopHandle =>
+    watch(
+      () => toValue(enabled),
+      async (value) => {
+        if (value) {
+          setupWatchers();
+          await initializeSync();
+        }
+        else {
+          await cleanup();
+        }
+      },
+      { immediate: true },
+    );
+
+  let stopEnabledWatcher: WatchStopHandle | null = setupEnabledWatcher();
 
   onBeforeUnmount(() => {
     stopStateWatcher?.();
     stopRouteWatcher?.();
     stopPathWatcher?.();
-    stopEnabledWatcher();
-    // 注销 stateKey
+    stopEnabledWatcher?.();
+    stopEnabledWatcher = null;
     manager.unregister(stateKey);
+  });
+
+  onActivated(() => {
+    nextTick().then(() => {
+      if (!router || !route)
+        return;
+      if (scope === "local" && route.path !== initialPath)
+        return;
+      if (manager.isRegistered(stateKey))
+        return;
+      manager.register(stateKey);
+      stopEnabledWatcher = setupEnabledWatcher();
+    });
   });
 
   onDeactivated(() => {
     stopStateWatcher?.();
     stopRouteWatcher?.();
     stopPathWatcher?.();
-    stopEnabledWatcher();
-    // 注销 stateKey
+    stopEnabledWatcher?.();
+    stopEnabledWatcher = null;
     manager.unregister(stateKey);
+    initialized.value = false;
   });
 
   return {

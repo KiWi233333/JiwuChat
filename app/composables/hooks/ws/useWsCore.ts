@@ -21,6 +21,7 @@ export function useWsMessage() {
     [WsMsgKey.PIN_CONTACT_MSG]: [],
     [WsMsgKey.AI_STREAM_MSG]: [],
     [WsMsgKey.UPDATE_CONTACT_INFO_MSG]: [],
+    [WsMsgKey.REACTION_MSG]: [],
     [WsMsgKey.OTHER]: [],
   });
 

@@ -92,6 +92,9 @@ const {
   handleSelectAtUser,
   handleSelectAiRobot,
 
+  // 粘贴解析
+  pasteHtmlWithTokens,
+
   // 消息构建
   constructMsgFormDTO,
 
@@ -151,7 +154,13 @@ async function handlePasteEvent(e: ClipboardEvent) {
     return;
   }
 
-  // 处理文本
+  // 优先解析 HTML 以保留自定义 token（@用户、AI 机器人）
+  const html = clipboardData.getData("text/html");
+  if (html && pasteHtmlWithTokens(html)) {
+    return;
+  }
+
+  // 降级：纯文本粘贴
   const text = clipboardData.getData("text/plain");
   if (text) {
     const selection = window.getSelection();
@@ -423,8 +432,13 @@ function resetForm() {
 //   });
 // }
 
-// 移动端工具栏
+// 移动端工具栏（与路由 query 同步，支持浏览器返回关闭）
 const showMobileTools = ref(false);
+useHistoryState(showMobileTools, {
+  stateKey: "formMobileTools",
+  enabled: computed(() => setting.isMobileSize),
+  scope: "local",
+});
 watch(
   () => [chat.isOpenContact, isSoundRecordMsg, inputFocus],
   ([open, rcord, focus]) => {
@@ -913,10 +927,13 @@ defineExpose({
                 @click="chat.openRtcCall(chat.theRoomId!, CallTypeEnum.VIDEO)"
               />
             </template>
-            <!-- 工具栏打开扩展 -->
-            <span
-              class="i-solar:add-circle-linear inline-block btn-primary p-3 transition-200 sm:hidden"
+            <!-- 工具栏打开扩展（仅移动端） -->
+            <CommonIconTip
+              class="text-5 transition-200 sm:hidden"
               :class="{ 'rotate-45': showMobileTools }"
+              icon="i-solar:add-circle-linear"
+              :background="false"
+              :tip="showMobileTools ? '收起工具' : '展开工具'"
               @click="showMobileTools = !showMobileTools"
             />
           </template>

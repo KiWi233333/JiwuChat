@@ -317,11 +317,9 @@ async function handleDialogConfirm() {
 
 // 复制Key
 async function copyKey(key: string, msg = "API Key已复制到剪贴板！") {
-  try {
-    useCopyText(key);
+  const success = await copyText(key);
+  if (success) {
     ElMessage.success(msg);
-  }
-  catch (error) {
   }
 }
 

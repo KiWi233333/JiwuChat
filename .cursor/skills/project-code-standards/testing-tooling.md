@@ -14,12 +14,12 @@
 
 ## 常用命令速查
 
-| 用途     | 命令 |
-|----------|------|
-| 开发 Web | `pnpm run dev:nuxt` |
-| 开发桌面 | `pnpm run dev:tauri` |
-| 全量构建 | `pnpm run build` |
-| 代码检查 | `pnpm run lint:fix` |
+| 用途      | 命令                          |
+| --------- | ----------------------------- |
+| 开发 Web  | `pnpm run dev:nuxt`           |
+| 开发桌面  | `pnpm run dev:tauri`          |
+| 全量构建  | `pnpm run build`              |
+| 代码检查  | `pnpm run lint:fix`           |
 | Rust 检查 | `cd src-tauri && cargo check` |
 
 ## 常见问题

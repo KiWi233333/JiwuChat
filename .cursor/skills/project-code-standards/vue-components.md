@@ -5,11 +5,11 @@
 - Nuxt 按 `components/` 下路径自动注册，**路径会转为 PascalCase 组件名**。
 - 模板中必须使用该“路径名”，不要臆造短名（除非在 nuxt.config 中配置了自定义解析）。
 
-| 文件路径 | 模板中使用的组件名 |
-|----------|--------------------|
-| `app/components/common/IconTip/index.vue` | `CommonIconTip` |
-| `app/components/common/PageHeader.vue` | `CommonPageHeader` |
-| `app/components/common/TextTip/index.vue` | `CommonTextTip` |
+| 文件路径                                  | 模板中使用的组件名 |
+| ----------------------------------------- | ------------------ |
+| `app/components/common/IconTip/index.vue` | `CommonIconTip`    |
+| `app/components/common/PageHeader.vue`    | `CommonPageHeader` |
+| `app/components/common/TextTip/index.vue` | `CommonTextTip`    |
 
 ## Props 定义
 
@@ -25,7 +25,7 @@ export interface MyComponentProps {
 </script>
 
 <script setup lang="ts">
-const { name = "default", count = 0 } = defineProps<MyComponentProps>()
+const { name = "default", count = 0 } = defineProps<MyComponentProps>();
 </script>
 ```
 
@@ -37,7 +37,7 @@ const { name = "default", count = 0 } = defineProps<MyComponentProps>()
 const emit = defineEmits<{
   (e: "click", event: MouseEvent): void
   (e: "update", value: string): void
-}>()
+}>();
 ```
 
 ## 已知坑点

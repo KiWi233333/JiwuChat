@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ScrollbarDirection } from "element-plus";
-import { ChatRoomRoleEnum } from "~/composables/api/chat/room";
+import { ChatRoomRoleEnum, InvitePermissionEnum, InvitePermissionEnumMap } from "~/composables/api/chat/room";
 
 type EditFormItems = "name" | "notice" | "";
 
@@ -72,14 +72,10 @@ function handleMemberClick(event: MouseEvent, member: any, index: number) {
   }
 }
 
-// 邀请进群
+// 邀请进群（由 store 统一校验邀请权限并打开弹窗）
 function handleAddMember() {
-  chat.inviteMemberForm = {
-    show: true,
-    roomId: chat.theRoomId!,
-    uidList: [],
-  };
-};
+  chat.openInviteMemberForm(chat.theRoomId!, []);
+}
 
 const isPin = computed(() => !!chat.theContact?.pinTime);
 const isPinLoading = ref(false);
@@ -189,27 +185,27 @@ async function changShieldStatus() {
     </div>
 
     <!-- 移动端：分组列表样式（群成员） -->
-    <div class="group-section group-section-members sm:border-default-2-t">
+    <div class="group-section group-section-members sm:(border-default-2-t) !sm:mt-4">
       <div class="label-item select-none">
-        <div class="flex items-center">
+        <div class="flex items-center gap-2">
           <small>群成员</small>
-          <div
-            class="group-action-btn ml-a min-h-2.5rem min-w-2.5rem flex items-center justify-center rounded-lg transition-colors active:bg-color-3 hover:bg-color-2 active:opacity-80"
+          <CommonIconTip
+            class="group-action-btn ml-a min-h-8 min-w-8 flex items-center justify-center rounded-lg transition-colors active:bg-color-3 hover:bg-color-2 active:opacity-80"
+            icon="i-solar:add-circle-linear"
+            tip="添加群成员"
             @click="handleAddMember"
-          >
-            <i class="i-solar:add-circle-linear block h-4.5 w-4.5 btn-info" />
-          </div>
-          <div
-            class="group-action-btn min-h-2.5rem min-w-2.5rem flex items-center justify-center rounded-lg transition-colors active:bg-color-3 hover:bg-color-2 active:opacity-80"
+          />
+          <CommonIconTip
+            class="group-action-btn min-h-8 min-w-8 flex items-center justify-center rounded-lg transition-colors active:bg-color-3 hover:bg-color-2 active:opacity-80"
+            icon="i-solar:magnifer-linear"
+            tip="搜索群成员"
             @click="() => {
               showSearch = !showSearch
               if (showSearch) {
                 searchInputRef?.focus?.()
               }
             }"
-          >
-            <i class="i-solar:magnifer-linear block h-4.5 w-4.5 btn-info" />
-          </div>
+          />
         </div>
       </div>
       <!-- 搜索群聊 -->
@@ -222,9 +218,10 @@ async function changShieldStatus() {
         <ElInput
           ref="searchInputRef"
           v-model.lazy="searchUserWord"
-          style="height: 1.8rem;font-size: 0.8rem;"
           name="search-content"
           type="text"
+          size="small"
+          class="el-borderless h-8"
           clearable
           autocomplete="off"
           :prefix-icon="ElIconSearch"
@@ -284,7 +281,7 @@ async function changShieldStatus() {
               </el-tag>
               <small
                 v-if="member.roleType && member.roleType !== ChatRoomRoleEnum.MEMBER"
-                class="role h-fit w-fit rounded-8 px-3 py-0.5 text-0.8rem font-500 leading-0.7rem"
+                class="role h-fit w-fit rounded-8 px-3 py-0.5 text-0.8rem leading-0.7rem"
                 :class="chatRoomRoleClassMap[`${member.roleType}-border`]"
               >{{ chatRoomRoleTextMap[member.roleType] }}</small>
             </div>
@@ -308,13 +305,46 @@ async function changShieldStatus() {
       </CommonListVirtualScrollList>
     </div>
 
+    <!-- 入群方式：所有人可见，默认禁用，仅群主可编辑 -->
+    <div class="group-section group-section-invite sm:border-default-2-t">
+      <div class="label-item select-none text-3.5">
+        <div class="title mb-2 text-small">
+          群聊设置
+        </div>
+        <div class="setting-row group min-h-fit flex flex-row-bt-c items-center gap-2 rounded-lg transition-colors sm:mt-2 sm:min-h-0 sm:py-0">
+          <small class="text-0.8rem text-small">邀请权限</small>
+          <CommonIconTip
+            tip="群主可设置邀请权限"
+            icon="i-solar:info-circle-linear text-small"
+            class="ml-a text-mini op-0 sm:group-hover:op-100"
+            :background="false"
+          />
+          <el-select
+            :disabled="!isLord"
+            :model-value="theContactClone?.roomGroup?.detail?.invitePermission ?? InvitePermissionEnum.ANY"
+            class="el-borderless max-w-32"
+            :size="setting.isMobileSize ? 'default' : 'small'"
+            placeholder="选择入群方式"
+            @change="(val: InvitePermissionEnum) => submitUpdateRoom('invitePermission', val)"
+          >
+            <el-option
+              v-for="(label, key) in InvitePermissionEnumMap"
+              :key="key"
+              :label="label"
+              :value="Number(key)"
+            />
+          </el-select>
+        </div>
+      </div>
+    </div>
+
     <!-- 移动端：分组列表样式（会话设置） -->
-    <div class="group-section group-section-settings sm:border-default-2-t">
+    <div class="group-section group-section-settings sm:(border-default-2-t) !sm:mt-4">
       <div class="label-item select-none text-3.5">
         <div class="title mb-2 text-small">
           会话设置
         </div>
-        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:min-h-0 active:bg-color-3 sm:py-0">
+        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:mt-2 sm:min-h-0 active:bg-color-3 sm:py-0">
           <small class="text-0.8rem text-small">设为置顶</small>
           <el-switch
             :model-value="isPin"
@@ -324,7 +354,7 @@ async function changShieldStatus() {
             :before-change="changIsPin"
           />
         </div>
-        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:min-h-0 active:bg-color-3 sm:py-0">
+        <div class="setting-row min-h-fit flex flex-row-bt-c items-center rounded-lg transition-colors sm:mt-2 sm:min-h-0 active:bg-color-3 sm:py-0">
           <small class="text-0.8rem text-small">消息免打扰</small>
           <el-switch
             :model-value="shieldStatus"
@@ -344,7 +374,7 @@ async function changShieldStatus() {
       :size="setting.isMobileSize ? 'large' : 'default'"
       plain
       type="danger"
-      class="group-exit-btn mt-3 w-full border-none bg-color"
+      class="group-exit-btn mt-3 w-full border-none bg-color sm:(border-default-2 bg-color-3) !transition-200"
       @click="onExitOrClearGroup"
     >
       <span>
@@ -374,6 +404,11 @@ async function changShieldStatus() {
   }
 }
 .group-section-members {
+  @media (min-width: 640px) {
+    padding-top: 0.75rem;
+  }
+}
+.group-section-invite {
   @media (min-width: 640px) {
     padding-top: 0.75rem;
   }

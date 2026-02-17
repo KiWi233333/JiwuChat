@@ -99,7 +99,11 @@
 
     "websocket:default",
     "websocket:allow-connect",
-    "websocket:allow-send"
+    "websocket:allow-send",
+
+    "clipboard-manager:allow-write-text",
+    "clipboard-manager:allow-read-text",
+    "clipboard-manager:allow-clear"
   ],
   "local": true,
   "remote": {

@@ -62,6 +62,7 @@ onMounted(() => {
     <template #reference>
       <div :class="iconClass">
         <CommonIconTip
+          v-bind="$attrs"
           class="btn-info text-5"
           icon="i-solar:download-minimalistic-broken"
           tip="下载管理"

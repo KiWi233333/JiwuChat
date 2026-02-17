@@ -18,7 +18,7 @@ const copyingDirective: Directive<CopyingElement, string | undefined> = {
   mounted(el: CopyingElement, binding: DirectiveBinding<string | undefined>) {
     const handler = async (e: Event) => {
       e.stopPropagation();
-      const res = await useAsyncCopyText(binding.value || el.innerHTML);
+      const res = await copyText(binding.value || el.innerHTML);
       if (res && binding.modifiers.toast) {
         ElMessage.success({
           message: "成功复制至剪贴板！",
@@ -39,7 +39,7 @@ const copyingDirective: Directive<CopyingElement, string | undefined> = {
 
     const handler = async (e: Event) => {
       e.stopPropagation();
-      const res = await useAsyncCopyText(binding.value || el.innerHTML);
+      const res = await copyText(binding.value || el.innerHTML);
       if (res && binding.modifiers.toast) {
         ElMessage.success({
           message: "成功复制至剪贴板！",

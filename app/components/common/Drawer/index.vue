@@ -6,6 +6,10 @@ import type { DrawerProps } from "./useDrawer";
 import { ref } from "vue";
 import { useDrawer } from "./useDrawer";
 
+defineOptions({
+  inheritAttrs: false,
+});
+
 const props = withDefaults(defineProps<DrawerProps>(), {
   direction: "bottom",
   showHandle: true,

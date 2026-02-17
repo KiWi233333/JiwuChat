@@ -43,7 +43,7 @@ const getAppTitle = computed(() => {
     <slot name="right">
       <div
         class="right relative z-1 flex items-center gap-2"
-        :class="{ 'pr-4': setting.isDesktop || setting.isWeb }"
+        :class="{ 'pr-4': setting.osType === 'macos' }"
       >
         <!-- 桌面更新菜单 -->
         <SettingUpdater v-if="$route.path !== '/setting'" />
@@ -73,18 +73,13 @@ const getAppTitle = computed(() => {
           <template v-if="setting.isDesktop && setting.appPlatform !== 'macos'">
             <MenuController size="small">
               <template #start="{ data }">
-                <ElButton
-                  text
-                  size="small"
-                  :style="data.btnStyle"
+                <CommonIconTip
+                  icon="i-solar:pin-broken"
+                  :tip="data.isAlwaysOnTopVal ? '取消置顶' : '置顶'"
+                  :active="data.isAlwaysOnTopVal"
+                  :class="data.isAlwaysOnTopVal ? 'mb-1 color-theme-warning -rotate-45' : 'mb-0 btn-primary'"
                   @click="data.handleWindow('alwaysOnTop')"
-                >
-                  <i
-                    :title="data.isAlwaysOnTopVal ? '取消置顶' : '置顶'"
-                    class="i-solar:pin-broken cursor-pointer text-0.8em transition-200"
-                    :class="data.isAlwaysOnTopVal ? ' mb-1 color-theme-warning -rotate-45' : 'mb-0 btn-primary'"
-                  />
-                </ElButton>
+                />
                 <div class="mx-1 h-1.2em border-default-l" />
               </template>
             </MenuController>

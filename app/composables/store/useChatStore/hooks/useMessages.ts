@@ -134,6 +134,19 @@ export function createMessagesModule(ctx: MessagesContext) {
     }, 300);
   }
 
+  /**
+   * 更新消息的 reactions
+   * @param roomId 房间ID
+   * @param msgId 消息ID
+   * @param reactions 最新 reaction 聚合列表
+   */
+  function updateMsgReactions(roomId: number, msgId: number, reactions: ReactionVO[]) {
+    const msg = findMsg(roomId, msgId);
+    if (!msg)
+      return;
+    msg.message.reactions = reactions;
+  }
+
   // 标记全部已读
   const clearAllUnread = () => {
     for (const key in contactMap.value) {
@@ -167,6 +180,7 @@ export function createMessagesModule(ctx: MessagesContext) {
     setReadRoom,
     clearAllUnread,
     getMessageList,
+    updateMsgReactions,
   };
 }
 

@@ -43,3 +43,11 @@ report.html
 .docs
 app/pages/test
 openspec
+src-tauri/gen/android/.settings/org.eclipse.buildship.core.prefs
+src-tauri/gen/android/app/.settings/org.eclipse.buildship.core.prefs
+src-tauri/gen/android/app/.classpath
+src-tauri/gen/android/app/.project
+src-tauri/gen/android/.project
+
+# 不纳入版本与 CI 的文档子目录（原 submodule，已取消登记）
+docs/jiwu-chat-blog

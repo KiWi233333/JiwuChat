@@ -53,51 +53,6 @@ export function getDayStartEnd(date: Date = new Date()): Date[] {
 };
 
 /**
- * 复制文字
- * @param text 复制的文本
- */
-export function useCopyText(text: string) {
-  // 动态创建 textarea 标签
-  const textarea: HTMLTextAreaElement = document.createElement("textarea");
-  // 将该 textarea 设为 readonly 防止 iOS 下自动唤起键盘，同时将 textarea 移出可视区域
-  textarea.readOnly = true;
-  textarea.style.position = "absolute";
-  textarea.style.opacity = "0";
-  textarea.style.left = "-500px";
-  // 将要 copy 的值赋给 textarea 标签的 value 属性
-  textarea.value = text;
-  // 将 textarea 插入到 body 中
-  document.body.appendChild(textarea);
-  // 选中值并复制
-  textarea.select();
-  const result = document.execCommand("Copy");
-  document.body.removeChild(textarea);
-  return result;
-}
-/**
- *
- * 复制文本（异步）
- * @param text 复制的文本
- * @returns promise
- */
-export function useAsyncCopyText(text: string): Promise<boolean> {
-  // 新语法
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text);
-    return Promise.resolve(true);
-  }
-  else {
-    // 兼容移动端版本
-    return new Promise((resolve, reject) => {
-      if (useCopyText(text))
-        return resolve(true);
-      else
-        return resolve(false);
-    });
-  }
-}
-
-/**
  * 比对对象生成(表层级)
  * @param oldObj
  * @param newObj
