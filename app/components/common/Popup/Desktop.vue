@@ -102,6 +102,7 @@ useHistoryState(modelValue, {
   activeValue: true,
   inactiveValue: false,
   useBackNavigation: true,
+  scope: "global",
 });
 
 // ==================== 计算属性 ====================

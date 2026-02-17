@@ -1,6 +1,6 @@
 // 本地缓存工具函数
 const TRANSLATION_CACHE_KEY = "translation_cache";
-export const TranslationPagePath = "/setting?dis=1#translation";
+export const TranslationPagePath = "/setting/tools?dis=1#translation";
 
 interface TranslationCache {
   [key: string]: TranslationVO;
