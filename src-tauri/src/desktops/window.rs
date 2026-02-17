@@ -70,3 +70,21 @@ pub fn show_window(app: &AppHandle) {
         setup_desktop_window(app).unwrap_or_else(|e| eprintln!("创建窗口时出错: {:?}", e));
     }
 }
+
+#[cfg(desktop)]
+pub fn hide_window(app: &AppHandle) {
+    if let Some(window) = app.webview_windows().get("main") {
+        let _ = window.hide();
+    } else if let Some(window) = app.webview_windows().get("login") {
+        let _ = window.hide();
+    }
+}
+
+#[cfg(desktop)]
+pub fn minimize_window(app: &AppHandle) {
+    if let Some(window) = app.webview_windows().get("main") {
+        let _ = window.minimize();
+    } else if let Some(window) = app.webview_windows().get("login") {
+        let _ = window.minimize();
+    }
+}

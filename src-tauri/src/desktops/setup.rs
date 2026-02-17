@@ -63,10 +63,12 @@ pub fn setup_desktop() {
         .build(tauri::generate_context!())
         .expect("error while running tauri application")
         .run(|app_handle, event| {
-            // macOS 独有：点击程序坞恢复应用时，若无可见窗口则显示主窗口
+            // macOS 独有：点击程序坞时切换主窗口显示/隐藏
             #[cfg(target_os = "macos")]
             if let tauri::RunEvent::Reopen { has_visible_windows, .. } = event {
-                if !has_visible_windows {
+                if has_visible_windows {
+                    super::window::hide_window(app_handle);
+                } else {
                     let _ = super::window::show_window(app_handle);
                 }
             }
