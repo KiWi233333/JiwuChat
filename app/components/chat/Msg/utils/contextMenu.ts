@@ -107,11 +107,11 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         hidden: !txt,
         customClass: "group",
         icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
-        onClick: () => {
+        onClick: async () => {
           if (!txt) {
             return ElMessage.error("复制失败，请选择文本！");
           }
-          useCopyText(txt as string);
+          await copyText(txt as string);
         },
       },
       {
@@ -154,9 +154,9 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         label: "复制链接",
         customClass: "group",
         icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
-        onClick: () => {
+        onClick: async () => {
           const url = getElementAttr(e?.target as HTMLElement, "url");
-          navigator.clipboard.writeText((url || txt) as string);
+          await copyText((url || txt) as string);
           ElMessage.success("复制成功！");
         },
       },
@@ -181,8 +181,8 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         hidden: !txt || !translation,
         customClass: "group",
         icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
-        onClick: () => {
-          useCopyText(translation?.result as string);
+        onClick: async () => {
+          await copyText(translation?.result as string);
         },
       },
       {
@@ -236,27 +236,14 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
           if (!img) {
             return ElMessage.error("图片处理失败！");
           }
-
-          const { copy, isSupported } = useClipboardItems({
-            read: false,
-            source: [new ClipboardItem({ [img.type]: img })],
-          });
-
-          if (isSupported.value) {
-            copy()
-              .then(() => {
-                ElMessage.success("图片已复制到剪切板！");
-              })
-              .catch((e) => {
-                console.warn(e);
-                ElMessage.error("复制失败，请手动保存！");
-              });
-            img = null;
+          const success = await writeImage(img);
+          if (success) {
+            ElMessage.success("图片已复制到剪切板！");
           }
           else {
-            ElMessage.error("当前设备不支持复制图片！");
-            img = null;
+            ElMessage.error("复制失败，请手动保存！");
           }
+          img = null;
         },
       },
       {
@@ -310,9 +297,9 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         hidden: !data.fromUser.nickName,
         customClass: "group",
         icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
-        onClick: () => {
+        onClick: async () => {
           const txt = window.getSelection()?.toString() || data.fromUser.nickName;
-          useCopyText(txt as string);
+          await copyText(txt as string);
         },
       },
       {
@@ -415,11 +402,11 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
         hidden: !txt,
         customClass: "group",
         icon: "i-solar-copy-line-duotone group-hover:(scale-110 i-solar-copy-bold-duotone) group-btn-info",
-        onClick: () => {
+        onClick: async () => {
           if (!txt) {
             return ElMessage.error("复制失败，请选择文本！");
           }
-          useCopyText(txt as string);
+          await copyText(txt as string);
         },
       },
       {

@@ -152,7 +152,7 @@ async function handleUpdateClick() {
               />
             </el-scrollbar>
           </div>
-          <div v-if="currentVersion !== latestVersionInfo?.version || setting.appUploader.isUpload" class="flex-row-bt-c">
+          <div v-if="(currentVersion !== latestVersionInfo?.version || setting.appUploader.isUpload) && setting.isDesktop" class="flex-row-bt-c">
             <el-checkbox v-model="ignoreUpdate" size="small" :disabled="setting.appUploader.isUpdating">
               忽略更新
             </el-checkbox>

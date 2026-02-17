@@ -417,12 +417,11 @@ export function useRoomGroupPopup(opt: { editFormField: Ref<string>, }) {
               customClass: "group",
               icon: "group-hover:scale-110 transition-transform i-solar:share-line-duotone",
               onClick: async () => {
-                const res = await useAsyncCopyText(`${window.location.origin}/user/info?id=${item.userId}`);
+                await copyText(`${window.location.origin}/user/info?id=${item.userId}`);
                 ElMessage.success({
                   message: "成功复制至剪贴板！",
                   grouping: true,
                 });
-                const { isSupported, share } = useShare();
               },
             },
           ],

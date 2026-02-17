@@ -851,77 +851,110 @@ export function useMsgInputForm(
     scrollbar?.scrollToItem?.(selectedIndex);
   }
 
+  // 右键菜单打开前保存的选区快照
+  let savedContextMenuRange: Range | null = null;
+  let savedContextMenuText = "";
+
+  /**
+   * 恢复右键菜单打开前的选区
+   */
+  function restoreContextMenuSelection(): Selection | null {
+    const selection = window.getSelection();
+    if (savedContextMenuRange) {
+      selection?.removeAllRanges();
+      selection?.addRange(savedContextMenuRange);
+    }
+    else {
+      // 没有保存的选区，聚焦到输入框末尾
+      selectionManager.focusAtEnd();
+    }
+    return window.getSelection();
+  }
+
   // 通用剪贴板操作
   const clipboardActions = {
     async cut() {
-      const selection = window.getSelection();
-      if (selection && selection.toString()) {
-        try {
-          await navigator.clipboard.writeText(selection.toString());
-          selection.deleteFromDocument();
-          updateFormContent();
-          nextTick(() => {
-            selectionManager.focusAtEnd();
-          });
-        }
-        catch (err) {
-          document.execCommand("cut");
-          updateFormContent();
-        }
+      const text = savedContextMenuText;
+      if (!text) {
+        return;
       }
+      const success = await copyText(text);
+      // 恢复选区并删除选中内容
+      const selection = restoreContextMenuSelection();
+      if (success) {
+        if (selection && selection.rangeCount > 0) {
+          selection.deleteFromDocument();
+        }
+        updateFormContent();
+      }
+      else {
+        msgInputRef.value?.focus();
+        document.execCommand("cut");
+        updateFormContent();
+      }
+      nextTick(() => {
+        selectionManager.focusAtEnd();
+      });
     },
 
     async copy() {
-      const selection = window.getSelection();
-      if (selection && selection.toString()) {
-        try {
-          await navigator.clipboard.writeText(selection.toString());
-          nextTick(() => {
-            selectionManager.focusAtEnd();
-          });
-        }
-        catch (err) {
-          document.execCommand("copy");
-        }
+      const text = savedContextMenuText;
+      if (!text) {
+        return;
       }
+      const success = await copyText(text);
+      if (!success) {
+        restoreContextMenuSelection();
+        document.execCommand("copy");
+      }
+      nextTick(() => {
+        selectionManager.focusAtEnd();
+      });
     },
 
     async paste() {
       try {
-        // 先尝试从剪贴板读取数据
-        const clipboardData = await navigator.clipboard.read();
+        const result = await clipboardRead();
 
-        for (const item of clipboardData) {
-          if (item.types.some(type => type.startsWith("image/"))) {
-            const imageType = item.types.find(type => type.startsWith("image/"));
-            if (imageType) {
-              const blob = await item.getType(imageType);
-              const file = new File([blob], `pasted-image-${Date.now()}.${imageType.split("/")[1]}`, { type: imageType });
-              await imageManager.insert(file);
-              return;
-            }
-          }
+        if (result?.type === "image" && result.blob) {
+          const ext = result.blob.type.split("/")[1] || "png";
+          const file = new File([result.blob], `pasted-image-${Date.now()}.${ext}`, { type: result.blob.type });
+          await imageManager.insert(file);
+          return;
         }
 
-        // 如果没有图片，处理文本
-        const text = await navigator.clipboard.readText();
-        if (text) {
+        if (result?.type === "text" && result.text) {
+          // 恢复选区后插入文本
+          restoreContextMenuSelection();
           const selection = window.getSelection();
           if (selection && selection.rangeCount > 0) {
             const range = selection.getRangeAt(0);
             range.deleteContents();
-            range.insertNode(document.createTextNode(text));
+            range.insertNode(document.createTextNode(result.text));
             range.collapse(false);
             updateFormContent();
           }
+          else {
+            // 选区恢复失败，使用 execCommand 兜底
+            msgInputRef.value?.focus();
+            document.execCommand("insertText", false, result.text);
+            updateFormContent();
+          }
+          nextTick(() => {
+            selectionManager.focusAtEnd();
+          });
+          return;
         }
       }
       catch (err) {
         // 降级处理
         try {
-          const text = await navigator.clipboard.readText();
-          document.execCommand("insertText", false, text);
-          updateFormContent();
+          const text = await readText();
+          if (text) {
+            msgInputRef.value?.focus();
+            document.execCommand("insertText", false, text);
+            updateFormContent();
+          }
         }
         catch (e) {
           console.warn("Paste failed:", e);
@@ -945,7 +978,13 @@ export function useMsgInputForm(
   // 右键菜单
   function onContextMenu(e: MouseEvent) {
     e.preventDefault();
-    const selectedText = window.getSelection()?.toString();
+    // 保存当前选区快照（菜单打开后焦点会丢失）
+    const selection = window.getSelection();
+    const selectedText = selection?.toString() || "";
+    savedContextMenuText = selectedText;
+    savedContextMenuRange = (selection && selection.rangeCount > 0)
+      ? selection.getRangeAt(0).cloneRange()
+      : null;
 
     const contextMenuItems = [
       {

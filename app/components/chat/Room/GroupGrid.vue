@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { ChatRoomAdminAddDTO } from "~/composables/api/chat/room";
 import ContextMenu from "@imengyu/vue3-context-menu";
-import { useAsyncCopyText } from "~/composables/utils";
 import { mitter, MittEventType } from "~/composables/utils/useMitt";
 
 const { data } = defineProps<{ data: ChatRoomGroupVO }>();
@@ -147,7 +146,7 @@ function onContextMenu(e: MouseEvent, item: ChatMemberVO) {
             label: "分享",
             icon: "i-solar:share-line-duotone",
             onClick: async () => {
-              const res = await useAsyncCopyText(`${window.location.origin}/user?id=${item.userId}`);
+              const res = await copyText(`${window.location.origin}/user?id=${item.userId}`);
               if (res) {
                 ElMessage.success("成功复制至剪贴板！");
               }
