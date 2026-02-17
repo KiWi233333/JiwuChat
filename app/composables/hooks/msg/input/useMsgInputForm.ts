@@ -1,8 +1,5 @@
 import { AT_USER_TAG_CLASSNAME, DomCacheManager, InputDetector, SecurityUtils, SelectionManager, TagManager } from "./inputDomUtils";
 
-export { AT_USER_TAG_CLASSNAME, DomCacheManager, InputDetector, SecurityUtils, SelectionManager, TagManager } from "./inputDomUtils";
-export { MAX_UPLOAD_IMAGE_COUNT } from "./inputDomUtils";
-
 // @unocss-include
 // 主Hook
 export function useMsgInputForm(
