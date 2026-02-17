@@ -390,8 +390,9 @@ export function useHistoryState<T = boolean>(
       { flush: "post" },
     );
 
-    // 2. 监听路由变化 -> 同步 State
-    // 有 key 必同步为 active；无 key 时仅当「当前路径下曾有本层记录」才同步为 inactive（即本页 back 导致失 key），否则是 push 到新路由，不撤销上一页状态
+    // 2. 监听路由变化 -> 同步 State（栈中间前进/回退时也响应式跟随当前 URL）
+    // 有 key：同步为 active，且若当前路径尚无记录则 push（便于之后 back 时正确 sync 为 inactive）
+    // 无 key：仅当「当前路径下曾有本层记录」时同步为 inactive 并 pop（本页 back），否则为 push 到新路由不撤销
     stopRouteWatcher = watch(
       () => route.query,
       async (query) => {
@@ -401,6 +402,8 @@ export function useHistoryState<T = boolean>(
         const hasKey = hasQueryKey(query);
         const currentPath = getActivePath();
         if (hasKey) {
+          if (!manager.hasRecord(stateKey, currentPath))
+            manager.push({ stateKey, path: currentPath, timestamp: Date.now() });
           await syncState(activeValue);
         }
         else if (manager.hasRecord(stateKey, currentPath)) {
