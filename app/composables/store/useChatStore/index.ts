@@ -106,6 +106,19 @@ export const useChatStore = defineStore(
       });
     }
 
+    /**
+     * 打开邀请成员弹窗（先校验邀请权限，无权限时提示并不打开）
+     * @param roomId 群房间 id
+     * @param uidList 预填 uid 列表，默认 []
+     */
+    async function openInviteMemberForm(roomId: number, uidList: string[] = []) {
+      const can = await contacts.canInviteMember(roomId);
+      if (!can) {
+        ElMessage.warning("您暂无邀请成员权限");
+        return;
+      }
+      members.inviteMemberForm.value = { show: true, roomId, uidList };
+    }
 
     /** ------------------------------------------- 重置 ------------------------------------------- */
     function resetStore() {
@@ -173,6 +186,9 @@ export const useChatStore = defineStore(
       removeContact: contacts.removeContact,
       setPinContact: contacts.setPinContact,
       setShieldContact: contacts.setShieldContact,
+      ensureRoomDetailForGroup: contacts.ensureRoomDetailForGroup,
+      canInviteMember: contacts.canInviteMember,
+      openInviteMemberForm,
       theFriendOpt,
       showTheFriendPanel,
       setTheFriendOpt,

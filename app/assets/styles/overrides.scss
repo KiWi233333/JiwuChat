@@ -44,6 +44,37 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
   }
 }
 
+// 无边框输入组件（去除所有边框、阴影、outline）
+.el-borderless {
+  --el-border: none !important;
+  --el-border-color: transparent !important;
+  --el-border-radius: 0 !important;
+  --el-box-shadow: none !important;
+  --el-input-border-color: transparent !important;
+  .el-checkbox__inner,
+  .el-radio__inner,
+  .el-input__inner,
+  .el-textarea__inner,
+  .el-input__wrapper,
+  .el-select__wrapper,
+  &.el-select .el-input__wrapper {
+    border-color: transparent !important;
+    box-shadow: none !important;
+    --at-apply: "bg-color-2";
+
+    &:hover,
+    &:focus-visible,
+    &:focus-within,
+    &:focus-within:hover,
+    &.disabled,
+    &.is-focus {
+      border-color: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+  }
+}
+
 // 单选框组
 .el-radio-group {
   font-size: medium;

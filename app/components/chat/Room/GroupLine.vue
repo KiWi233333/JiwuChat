@@ -244,13 +244,9 @@ watchThrottled(() => ws.wsMsgList.onlineNotice, (list) => {
   immediate: true,
 });
 
-// 邀请进群
+// 邀请进群（由 store 统一校验邀请权限）
 function onInviteMember() {
-  chat.inviteMemberForm = {
-    show: true,
-    roomId: data.roomId,
-    uidList: [],
-  };
+  chat.openInviteMemberForm(data.roomId, []);
 }
 </script>
 

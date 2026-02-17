@@ -250,11 +250,7 @@ function onContextMenu(e: MouseEvent, item: ChatContactVO) {
       icon: "i-solar:user-speak-broken group-btn-warning group-hover:i-solar:user-speak-bold-duotone",
       label: "邀请好友",
       onClick: () => {
-        chat.inviteMemberForm = {
-          show: true,
-          roomId: item.roomId,
-          uidList: [],
-        };
+        chat.openInviteMemberForm(item.roomId, []);
       },
     });
   }
