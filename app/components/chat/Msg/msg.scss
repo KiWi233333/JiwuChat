@@ -19,6 +19,10 @@
     .sendTime {
       opacity: 0.6;
     }
+    // 表情反应工具栏：纯 CSS 显隐，无 JS 监听
+    :deep(.reaction-toolbar) {
+      --at-apply: "op-100 pointer-events-auto";
+    }
   }
   .ai-reply-msg-box,
   .msg-box {

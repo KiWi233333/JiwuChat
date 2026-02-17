@@ -1,5 +1,5 @@
 import type { Result } from "postcss";
-import type { ChatMessageVO } from "../../composables/api/chat/message";
+import type { ChatMessageVO, WSMsgReaction } from "../../composables/api/chat/message";
 import type { WSRtcCallMsg } from "~/composables/api/chat/rtc";
 
 /**
@@ -49,7 +49,7 @@ export interface WsMsgVO extends Result<WsMsgBodyVO> {
 
 export interface WsMsgBodyVO<T = WsMsgBodyType> {
   type: T
-  data: ChatMessageVO | WSOnlineOfflineNotify | WSMsgRecall | WSFriendApply | WSMemberChange | WSRtcCallMsg
+  data: ChatMessageVO | WSOnlineOfflineNotify | WSMsgRecall | WSFriendApply | WSMemberChange | WSRtcCallMsg | WSMsgReaction
 }
 
 
@@ -108,6 +108,10 @@ export enum WsMsgBodyType {
    * 会话信息更新通知
    */
   UPDATE_CONTACT_INFO = 12,
+  /**
+   * 消息表情反应变更
+   */
+  MSG_REACTION = 13,
 }
 
 // 上下线通知类型定义
@@ -277,6 +281,7 @@ export interface WsMsgDataTypeMap<T> {
   [WsMsgBodyType.PIN_CONTACT]: WSPinContactMsg
   [WsMsgBodyType.AI_STREAM]: WSAiStreamMsg
   [WsMsgBodyType.UPDATE_CONTACT_INFO]: WSUpdateContactInfoMsg
+  [WsMsgBodyType.MSG_REACTION]: WSMsgReaction
 }
 
 

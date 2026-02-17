@@ -26,6 +26,7 @@ export const useChatStore = defineStore(
     const members = createMembersModule({ theRoomId, contactMap, refreshContact: (vo, oldVo) => contacts.refreshContact(vo, oldVo) });
     const rtc = createRtcModule();
     const lists = createContactListsModule();
+    const user = useUserStore();
 
     const roomGroupPageInfo = ref({ cursor: null as null | string, isLast: false, size: 15 });
     const playSounder = ref<PlaySounder>({ state: "stop", url: "", msgId: 0, currentSecond: 0, duration: 0, audio: undefined });
@@ -33,6 +34,20 @@ export const useChatStore = defineStore(
     // 消息队列
     const { messageQueue, isProcessingQueue, isExsist: isExsistQueue, get: getMsgQueue, addToMessageQueue, resolveQueueItem, processMessageQueue, retryMessage, deleteUnSendMessage, clearMessageQueue, msgBuilder } = useMessageQueue();
     const unReadCount = computed(() => contacts.unReadContactList.value.reduce((acc, cur) => acc + cur.unreadCount, 0));
+
+    // 消息表情反应事件
+    mitter.on(MittEventType.MSG_REACTION, (data) => {
+      if (!data?.msgId || !data?.roomId)
+        return;
+      // WS 推送的 isCurrentUser 始终为 false，需自行判断
+      const userId = user?.userInfo?.id;
+      if (userId && data.reactions) {
+        for (const r of data.reactions) {
+          r.isCurrentUser = r.userIds.includes(userId);
+        }
+      }
+      messages.updateMsgReactions(data.roomId, data.msgId, data.reactions);
+    });
 
     // 消息队列事件
     mitter.on(MittEventType.MESSAGE_QUEUE, ({ type, payload }) => {
@@ -172,6 +187,7 @@ export const useChatStore = defineStore(
       setReadRoom: messages.setReadRoom,
       clearAllUnread: messages.clearAllUnread,
       isVisible: messages.isVisible,
+      updateMsgReactions: messages.updateMsgReactions,
 
       /** ---------------------------- 消息队列 ---------------------------- */
       messageQueue,

@@ -149,14 +149,16 @@ export default defineConfig({
       scale: 1.2,
       warn: true,
       collections: {
-        carbon: () =>
+        "carbon": () =>
           import("@iconify-json/carbon").then(i => i.icons as any),
-        solar: () =>
+        "solar": () =>
           import("@iconify-json/solar").then(i => i.icons as any),
-        tabler: () =>
+        "tabler": () =>
           import("@iconify-json/tabler").then(i => i.icons as any),
-        ri: () =>
+        "ri": () =>
           import("@iconify-json/ri").then(i => i.icons as any),
+        "fluent-emoji": () =>
+          import("@iconify-json/fluent-emoji").then(i => i.icons as any),
       },
     }),
     presetTypography(),

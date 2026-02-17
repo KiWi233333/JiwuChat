@@ -1,3 +1,4 @@
+import type { WSMsgReaction } from "~/composables/api/chat/message";
 import mitt from "mitt";
 
 export enum MittEventType {
@@ -17,6 +18,7 @@ export enum MittEventType {
   PIN_CONTACT = "chat-pin-contact", // 置顶通知
   UPDATE_CONTACT_INFO = "chat-update-contact-info", // 更新会话信息通知
   AI_STREAM = "chat-ai-msg", // AI消息
+  MSG_REACTION = "chat-msg-reaction", // 消息表情反应
   OTHER = "chat-other",
 
   // 组件滚动事件
@@ -115,6 +117,7 @@ type EventPayloadMap = {
   [MittEventType.PIN_CONTACT]: WSPinContactMsg;
   [MittEventType.UPDATE_CONTACT_INFO]: WSUpdateContactInfoMsg;
   [MittEventType.AI_STREAM]: WSAiStreamMsg;
+  [MittEventType.MSG_REACTION]: WSMsgReaction;
   [MittEventType.OTHER]: object;
   // 消息列表组件事件
   [MittEventType.MSG_LIST_SCROLL]: MsgListScrollPayload;
@@ -155,6 +158,7 @@ const eventAndWsMap: Readonly<Record<WsMsgBodyType, MittEventType>> = {
   [WsMsgBodyType.PIN_CONTACT]: MittEventType.PIN_CONTACT,
   [WsMsgBodyType.AI_STREAM]: MittEventType.AI_STREAM,
   [WsMsgBodyType.UPDATE_CONTACT_INFO]: MittEventType.UPDATE_CONTACT_INFO,
+  [WsMsgBodyType.MSG_REACTION]: MittEventType.MSG_REACTION,
 } as const;
 export function resolteChatPath(type: WsMsgBodyType): MittEventType {
   return eventAndWsMap[type] || MittEventType.OTHER;

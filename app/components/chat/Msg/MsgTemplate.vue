@@ -152,6 +152,8 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
       >
         有人@我
       </small>
+      <!-- 表情反应 -->
+      <ChatMsgReaction :data="data" />
     </div>
   </div>
 </template>

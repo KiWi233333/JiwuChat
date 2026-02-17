@@ -25,6 +25,8 @@ export enum WsMsgKey {
   AI_STREAM_MSG = "aiStreamMsg",
   /** 更新联系人信息 */
   UPDATE_CONTACT_INFO_MSG = "updateContactInfoMsg",
+  /** 消息表情反应 */
+  REACTION_MSG = "reactionMsg",
   /** 未配置的消息类型 */
   OTHER = "other",
 }

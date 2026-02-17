@@ -54,7 +54,7 @@ defineExpose({
     class="relative max-w-full min-h-0 min-w-0 flex-1"
     height="100%"
     wrap-class="px-0 shadow-inner-bg"
-    view-class="mb-6 mt-4"
+    view-class="mb-9 mt-4"
     @scroll="onScroll"
   >
     <div
