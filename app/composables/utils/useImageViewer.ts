@@ -1,81 +1,67 @@
+/**
+ * 全局图片预览 API
+ * 通过 createVNode + render 挂载单例 ImageViewer，共享主应用上下文（router、pinia 等）。
+ * 需在应用启动时由插件调用 initImageViewer(context)，见 plugins/image-viewer.client.ts
+ */
 import type { AppContext, VNode } from "vue";
 import type { ViewerOptions } from "~/components/common/ImageViewer.vue";
 import { createVNode, getCurrentInstance, render } from "vue";
 import ImageViewer from "~/components/common/ImageViewer.vue";
 
-// 单例实例
+export type { ViewerOptions };
+
 type ViewerInstance = InstanceType<typeof ImageViewer>;
+
 let container: HTMLElement | null = null;
 let vnode: VNode | null = null;
 let appContext: AppContext | null = null;
 
 /**
- * 获取主应用的 AppContext
- * 优先使用缓存的 appContext，否则尝试从当前组件实例获取
+ * 初始化图片预览（由 plugins/image-viewer.client.ts 在应用启动时调用）
+ * 注入主应用上下文，保证任意位置调用 useImageViewer 时都能正确使用依赖注入
  */
-function getAppContext(): AppContext | null {
-  // 如果已有 appContext，直接返回
-  if (appContext) {
-    return appContext;
-  }
+export function initImageViewer(context: AppContext) {
+  appContext = context;
+}
 
-  // 尝试从当前实例获取（仅在组件内部调用时可用）
+function getAppContext(): AppContext | null {
+  if (appContext)
+    return appContext;
   const instance = getCurrentInstance();
   if (instance?.appContext) {
     appContext = instance.appContext;
     return appContext;
   }
-
-  // 如果无法获取，打印警告
-  if (!appContext) {
+  if (import.meta.dev) {
     console.warn(
-      "[useImageViewer] AppContext not available. Router and other injections may not work. "
-      + "Consider calling useImageViewer from within a component setup.",
+      "[useImageViewer] AppContext 未就绪，请确保已加载 plugins/image-viewer.client.ts",
     );
   }
-
   return null;
 }
 
-/**
- * 创建或获取 ImageViewer 实例
- * 使用 createVNode + render 方式，复用主应用的上下文
- */
-function createOrGetImageViewer(): ViewerInstance | null {
-  // 如果已存在实例则返回
+function createOrGetViewer(): ViewerInstance | null {
   if (vnode?.component?.exposed) {
     return vnode.component.exposed as ViewerInstance;
   }
 
-  // 创建容器
   if (!container) {
     container = document.createElement("div");
     container.classList.add("custom-image-viewer-container");
     document.body.appendChild(container);
   }
 
-  // 创建 VNode
   vnode = createVNode(ImageViewer);
-
-  // 设置 appContext，使其能访问主应用的 router、pinia 等
   const context = getAppContext();
-  if (context) {
+  if (context)
     vnode.appContext = context;
-  }
 
-  // 渲染到容器（使用 Vue 3 的 render 函数，不创建新的应用实例）
   render(vnode, container);
-
-  // 获取组件实例
   return vnode.component?.exposed as ViewerInstance;
 }
 
-/**
- * 销毁 ImageViewer 实例
- */
-function destroyImageViewer() {
+function destroyViewer() {
   if (container && vnode) {
-    // 清空渲染内容
     render(null, container);
     document.body.removeChild(container);
     container = null;
@@ -84,38 +70,23 @@ function destroyImageViewer() {
 }
 
 /**
- * 全局可调用的 ImageViewer API
- * 使用虚拟 DOM 渲染，共享主应用上下文，性能更好
+ * 全局图片预览 API（单例，任意位置可直接调用）
+ * @example useImageViewer.open({ urlList: [url], initialIndex: 0 })
  */
 export const useImageViewer = {
-  /**
-   * 打开图片查看器
-   */
   open(options: ViewerOptions) {
-    const viewer = createOrGetImageViewer();
-    viewer?.open(options);
+    createOrGetViewer()?.open(options);
   },
 
-  /**
-   * 关闭图片查看器
-   */
   close() {
-    const viewer = vnode?.component?.exposed as ViewerInstance;
-    viewer?.close();
+    (vnode?.component?.exposed as ViewerInstance | undefined)?.close();
   },
 
-  /**
-   * 销毁图片查看器实例
-   */
   destroy() {
-    destroyImageViewer();
+    destroyViewer();
   },
 
-  /**
-   * 获取查看器状态
-   */
   get state() {
-    const viewer = vnode?.component?.exposed as ViewerInstance;
-    return viewer?.state;
+    return (vnode?.component?.exposed as ViewerInstance | undefined)?.state;
   },
 };

@@ -74,6 +74,7 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
   const translation = data?.message.body?._textTranslation as TranslationVO | null;
 
   // 大多数消息类型的默认上下文菜单选项
+  // @unocss-include
   const defaultContextMenu = [
     {
       label: "撤回",
