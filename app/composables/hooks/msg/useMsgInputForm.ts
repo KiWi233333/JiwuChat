@@ -524,7 +524,7 @@ export function useMsgInputForm(
       const uid = tag.getAttribute("data-uid");
       const nickName = tag.getAttribute("data-nickName");
 
-      if (!uid || !nickName || !nickName)
+      if (!uid || !nickName)
         return null;
 
       const robotInfo = aiOptions.value.find(r => r.userId === uid);
@@ -538,7 +538,17 @@ export function useMsgInputForm(
       } as AskAiRobotOption;
     });
 
-    chat.askAiRobotList = aiRobots;
+    // 去重处理，根据 userId 进行去重
+    const uniqueAiRobots: AskAiRobotOption[] = [];
+    const seenUserIds = new Set<string>();
+    for (const robot of aiRobots) {
+      if (robot && robot.userId && !seenUserIds.has(robot.userId)) {
+        uniqueAiRobots.push(robot);
+        seenUserIds.add(robot.userId);
+      }
+    }
+
+    chat.askAiRobotList = uniqueAiRobots;
   }
 
   function insertAtUserTag(user: AskAiRobotOption) {
@@ -595,7 +605,7 @@ export function useMsgInputForm(
       uid: robot.userId,
       nickName: robot.nickName || "",
       text: robot.nickName,
-    }, /\/[^/\s]*$/);
+    }, /\/[^/\s]*$/, true);
   }
 
   function handleSelectAtUser(user: AskAiRobotOption) {
@@ -851,6 +861,126 @@ export function useMsgInputForm(
     scrollbar?.scrollToItem?.(selectedIndex);
   }
 
+  // 自定义 Token 粘贴解析（@用户、AI 机器人）
+  function rebuildNodeFromPaste(node: Node, parent: Node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      parent.appendChild(document.createTextNode(node.textContent || ""));
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE)
+      return;
+
+    const el = node as HTMLElement;
+
+    // @用户 token
+    if (el.classList.contains(AT_USER_TAG_CLASSNAME)) {
+      const uid = el.getAttribute("data-uid");
+      if (uid) {
+        // 校验用户是否在当前房间可@列表中
+        const userInfo = userAtOptions.value.find(u => u.userId === uid);
+        if (userInfo) {
+          const nickName = userInfo.nickName;
+          const outer = SecurityUtils.createSafeElement("span", AT_USER_TAG_CLASSNAME, {
+            "data-type": "at-user",
+            "data-uid": uid,
+            "data-nickName": nickName,
+            "draggable": "false",
+            "title": `@${SecurityUtils.sanitizeInput(nickName)}`,
+          });
+          const inner = SecurityUtils.createSafeElement("span", "at-user-inner");
+          inner.textContent = `@${SecurityUtils.sanitizeInput(nickName)}`;
+          outer.appendChild(inner);
+          parent.appendChild(outer);
+          return;
+        }
+      }
+      // 用户不在当前房间，降级为纯文本
+      parent.appendChild(document.createTextNode(el.textContent || ""));
+      return;
+    }
+
+    // AI 机器人 token
+    if (el.classList.contains("ai-robot-tag")) {
+      const uid = el.getAttribute("data-uid");
+      if (uid) {
+        // 校验机器人是否在当前房间可用列表中
+        const robotInfo = aiOptions.value.find(r => r.userId === uid);
+        if (robotInfo) {
+          const nickName = robotInfo.nickName;
+          const outer = SecurityUtils.createSafeElement("span", "ai-robot-tag", {
+            "data-type": "ai-robot",
+            "data-uid": uid,
+            "data-nickName": nickName,
+            "draggable": "false",
+            "title": SecurityUtils.sanitizeInput(nickName),
+          });
+          const inner = SecurityUtils.createSafeElement("span", "ai-robot-inner");
+          inner.textContent = SecurityUtils.sanitizeInput(nickName);
+          if (robotInfo.avatar) {
+            inner.style.setProperty("--ai-robot-inner-icon", `url(${BaseUrlImg + robotInfo.avatar})`);
+          }
+          outer.appendChild(inner);
+          parent.appendChild(outer);
+          return;
+        }
+      }
+      // 机器人不在当前房间，降级为纯文本
+      parent.appendChild(document.createTextNode(el.textContent || ""));
+      return;
+    }
+
+    // 其他元素：递归处理子节点
+    for (const child of Array.from(el.childNodes)) {
+      rebuildNodeFromPaste(child, parent);
+    }
+  }
+
+  /**
+   * 解析粘贴的 HTML 内容，识别并重建自定义 token
+   * @returns 是否成功处理（包含自定义 token 时返回 true）
+   */
+  function pasteHtmlWithTokens(html: string): boolean {
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const body = doc.body;
+      if (!body?.childNodes.length)
+        return false;
+
+      // 检查是否包含自定义 token
+      if (!body.querySelector(`.${AT_USER_TAG_CLASSNAME}, .ai-robot-tag`))
+        return false;
+
+      if (!msgInputRef.value)
+        return false;
+      msgInputRef.value.focus();
+
+      const selection = selectionManager.getCurrent();
+      if (!selection || selection.rangeCount === 0)
+        return false;
+      const range = selection.getRangeAt(0);
+      range.deleteContents();
+
+      const fragment = document.createDocumentFragment();
+      for (const node of Array.from(body.childNodes)) {
+        rebuildNodeFromPaste(node, fragment);
+      }
+
+      range.insertNode(fragment);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      updateFormContent();
+      domCache.clear();
+      return true;
+    }
+    catch (error) {
+      console.warn("pasteHtmlWithTokens failed:", error);
+      return false;
+    }
+  }
+
   // 右键菜单打开前保存的选区快照
   let savedContextMenuRange: Range | null = null;
   let savedContextMenuText = "";
@@ -914,6 +1044,23 @@ export function useMsgInputForm(
 
     async paste() {
       try {
+        // 优先尝试读取 HTML 以保留自定义 token
+        try {
+          const items = await navigator.clipboard.read();
+          for (const item of items) {
+            if (item.types.includes("text/html")) {
+              const blob = await item.getType("text/html");
+              const html = await blob.text();
+              restoreContextMenuSelection();
+              if (pasteHtmlWithTokens(html))
+                return;
+            }
+          }
+        }
+        catch {
+          // Clipboard API HTML 读取不可用，降级处理
+        }
+
         const result = await clipboardRead();
 
         if (result?.type === "image" && result.blob) {
@@ -1305,6 +1452,9 @@ export function useMsgInputForm(
 
     // 提交处理器
     constructMsgFormDTO,
+
+    // 粘贴解析
+    pasteHtmlWithTokens,
 
     // 事件处理器
     handleInput: debouncedHandleInput,

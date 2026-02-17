@@ -118,7 +118,12 @@ export class ImageManager {
       requestAnimationFrame(() => {
         range.deleteContents();
         range.insertNode(container);
+
+        // 尾部插入空格
+        const spaceNode = document.createTextNode(" ");
         range.setStartAfter(container);
+        range.insertNode(spaceNode);
+        range.setStartAfter(spaceNode);
         range.collapse(true);
 
         const selection = this.selectionManager.getCurrent();

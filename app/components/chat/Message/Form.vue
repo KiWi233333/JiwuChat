@@ -92,6 +92,9 @@ const {
   handleSelectAtUser,
   handleSelectAiRobot,
 
+  // 粘贴解析
+  pasteHtmlWithTokens,
+
   // 消息构建
   constructMsgFormDTO,
 
@@ -151,7 +154,13 @@ async function handlePasteEvent(e: ClipboardEvent) {
     return;
   }
 
-  // 处理文本
+  // 优先解析 HTML 以保留自定义 token（@用户、AI 机器人）
+  const html = clipboardData.getData("text/html");
+  if (html && pasteHtmlWithTokens(html)) {
+    return;
+  }
+
+  // 降级：纯文本粘贴
   const text = clipboardData.getData("text/plain");
   if (text) {
     const selection = window.getSelection();
