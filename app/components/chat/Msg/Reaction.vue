@@ -23,9 +23,6 @@ const canReact = computed(() => !chat.isAIRoom);
 const reactions = computed(() => data.message?.reactions?.filter(r => r.count > 0) || []);
 const hasReactions = computed(() => reactions.value.length > 0);
 
-// 悬浮工具栏显示状态
-const showPicker = ref(false);
-
 // 快捷 emoji（工具栏上直接显示的）
 const quickEmojis: ReactionEmojiType[] = MSG_REACTION_EMOJI_LIST.slice(0, 6);
 
@@ -127,7 +124,7 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
         <el-popover
           trigger="hover"
           placement="top"
-          popper-class="global-custom-select !bg-color-br"
+          popper-class="global-custom-select !bg-color-br !backdrop-blur-20px !border-default-3"
           :show-arrow="false"
           :offset="5"
           :width="200"
@@ -264,7 +261,7 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
   }
 
   .reaction-toolbar {
-    --at-apply: "bg-color absolute z-10 flex items-center gap-0.5 p-0.5 rounded-lg shadow-md transition-200 op-0 pointer-events-none";
+    --at-apply: "bg-color absolute z-10 flex items-center gap-0.5 p-0.5 rounded-lg shadow transition-200 op-0 pointer-events-none";
 
     &:not(.is-empty) {
       // 边距
@@ -306,9 +303,7 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
     max-width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     padding 0.2s;
-  max-width: 100vw;
-  max-height: 10rem;
-  will-change: max-width, max-height, padding;
+  max-width: 4rem;
 }
 
 .reaction-animate-list-enter-active,
@@ -330,8 +325,6 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
 .reaction-animate-list-enter-to,
 .reaction-animate-list-leave-from {
   opacity: 1;
-  transform: scale3d(1, 1, 1);
-  max-width: 100vw;
-  max-height: 10rem;
+  max-width: 4rem;
 }
 </style>
