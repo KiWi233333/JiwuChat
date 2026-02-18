@@ -81,78 +81,85 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
         <ChatMsgSendStatus v-if="sendStatus" :oss-file="data?._ossFile" :status="sendStatus" :msg-id="data.message.id" />
       </div>
 
-      <!-- 内容 - 使用渲染函数 -->
-      <slot name="body-pre" :send-status="sendStatus" />
-      <slot name="body" :send-status="sendStatus">
-        <ChatMsgBodyTemplate :data="data" :ctx-name="MSG_CTX_NAMES.CONTENT" />
-      </slot>
-      <!-- 翻译内容 -->
-      <div
-        v-if="showTranslation"
-        key="translation"
-        :ctx-name="MSG_CTX_NAMES.TRANSLATION"
-        class="group translation"
-      >
-        <div :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="mb-2px flex select-none items-center gap-2 border-default-b pb-2px tracking-0.1em dark:op-80">
-          <i :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="i-solar:check-circle-bold bg-theme-info p-2.4" />
-          {{ body?._textTranslation?.tool?.label || '' }}
-          <NuxtLink
-            :to="TranslationPagePath"
-            :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="ml-1 flex-row-c-c text-theme-info op-80 hover:op-100" title="前往更改"
+      <!-- 内容行（主内容 + 右侧 reaction） -->
+      <div class="body-content-row">
+        <div class="body-content">
+          <!-- 内容 - 使用渲染函数 -->
+          <slot name="body-pre" :send-status="sendStatus" />
+          <slot name="body" :send-status="sendStatus">
+            <ChatMsgBodyTemplate :data="data" :ctx-name="MSG_CTX_NAMES.CONTENT" />
+          </slot>
+          <!-- 翻译内容 -->
+          <div
+            v-if="showTranslation"
+            key="translation"
+            :ctx-name="MSG_CTX_NAMES.TRANSLATION"
+            class="group translation"
           >
-            {{ translationLangMap.get(body?._textTranslation?.sourceLang) || "自动" }}
-            <i :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="i-solar:alt-arrow-right-linear inline-block h-4 w-4" />
-            {{ translationLangMap.get(body?._textTranslation?.targetLang) || "自动" }}
-          </NuxtLink>
-          <i :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="i-solar:close-circle-outline float-right btn-danger p-2.4 sm:(op-0 group-hover:op-100)" @click.stop="clearTranslation" />
-        </div>
-        {{ body?._textTranslation?.result || '' }}
-        <svg v-if="body?._textTranslation?.status === 'connecting'" class="inline-block h-1em w-1em animate-spin -mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" /><path fill="currentColor" d="M12 4.5a7.5 7.5 0 1 0 0 15a7.5 7.5 0 0 0 0-15M1.5 12C1.5 6.201 6.201 1.5 12 1.5S22.5 6.201 22.5 12S17.799 22.5 12 22.5S1.5 17.799 1.5 12" opacity=".1" /><path fill="currentColor" d="M12 4.5a7.46 7.46 0 0 0-5.187 2.083a1.5 1.5 0 0 1-2.075-2.166A10.46 10.46 0 0 1 12 1.5a1.5 1.5 0 0 1 0 3" /></g></svg>
-      </div>
+            <div :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="mb-2px flex select-none items-center gap-2 border-default-b pb-2px tracking-0.1em dark:op-80">
+              <i :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="i-solar:check-circle-bold bg-theme-info p-2.4" />
+              {{ body?._textTranslation?.tool?.label || '' }}
+              <NuxtLink
+                :to="TranslationPagePath"
+                :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="ml-1 flex-row-c-c text-theme-info op-80 hover:op-100" title="前往更改"
+              >
+                {{ translationLangMap.get(body?._textTranslation?.sourceLang) || "自动" }}
+                <i :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="i-solar:alt-arrow-right-linear inline-block h-4 w-4" />
+                {{ translationLangMap.get(body?._textTranslation?.targetLang) || "自动" }}
+              </NuxtLink>
+              <i :ctx-name="MSG_CTX_NAMES.TRANSLATION" class="i-solar:close-circle-outline float-right btn-danger p-2.4 sm:(op-0 group-hover:op-100)" @click.stop="clearTranslation" />
+            </div>
+            {{ body?._textTranslation?.result || '' }}
+            <svg v-if="body?._textTranslation?.status === 'connecting'" class="inline-block h-1em w-1em animate-spin -mb-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" /><path fill="currentColor" d="M12 4.5a7.5 7.5 0 1 0 0 15a7.5 7.5 0 0 0 0-15M1.5 12C1.5 6.201 6.201 1.5 12 1.5S22.5 6.201 22.5 12S17.799 22.5 12 22.5S1.5 17.799 1.5 12" opacity=".1" /><path fill="currentColor" d="M12 4.5a7.46 7.46 0 0 0-5.187 2.083a1.5 1.5 0 0 1-2.075-2.166A10.46 10.46 0 0 1 12 1.5a1.5 1.5 0 0 1 0 3" /></g></svg>
+          </div>
 
-      <!-- 回复 -->
-      <small
-        v-if="showReply"
-        title="点击跳转"
-        :ctx-name="MSG_CTX_NAMES.REPLY"
-        class="reply flex items-center text-color text-op-60 transition-all hover:text-op-100"
-        @click="chat.scrollReplyMsg(body?.reply?.id || 0, body?.reply?.gapCount, false)"
-      >
-        <i class="reply-icon i-solar:forward-2-bold-duotone mr-1 inline-block h-4 w-4" />
-        <span class="truncate">
-          {{ `${body?.reply?.nickName} : ${body?.reply?.body?.substring(0, 50) || ''}` }}
-        </span>
-      </small>
-      <!-- URL -->
-      <div
-        v-if="urls.length"
-        class="url-group"
-        :class="{
-          'multiple-url': isMultipleUrl && !showMentionUrls,
-        }"
-      >
-        <ChatPreviewUrl
-          v-for="(urlInfo, key) in urlContentMap"
-          :key="key"
-          :ctx-name="MSG_CTX_NAMES.URL_LINK"
-          :data="urlInfo"
-          :data-url="urlInfo.url"
-          class="url-info"
-        />
-        <div v-if="isMultipleUrl" key="up" class="more flex-row-c-c btn-primary select-none text-center text-mini" @click="showMentionUrls = !showMentionUrls">
-          <i class="i-solar:double-alt-arrow-down-line-duotone mr-1 inline-block transition-200" :class="{ 'rotate-180': showMentionUrls }" />
-          {{ showMentionUrls ? '收起' : '展开' }}
+          <!-- 回复 -->
+          <small
+            v-if="showReply"
+            title="点击跳转"
+            :ctx-name="MSG_CTX_NAMES.REPLY"
+            class="reply flex items-center text-color text-op-60 transition-all hover:text-op-100"
+            @click="chat.scrollReplyMsg(body?.reply?.id || 0, body?.reply?.gapCount, false)"
+          >
+            <i class="reply-icon i-solar:forward-2-bold-duotone mr-1 inline-block h-4 w-4" />
+            <span class="truncate">
+              {{ `${body?.reply?.nickName} : ${body?.reply?.body?.substring(0, 50) || ''}` }}
+            </span>
+          </small>
+          <!-- URL -->
+          <div
+            v-if="urls.length"
+            class="url-group"
+            :class="{
+              'multiple-url': isMultipleUrl && !showMentionUrls,
+            }"
+          >
+            <ChatPreviewUrl
+              v-for="(urlInfo, key) in urlContentMap"
+              :key="key"
+              :ctx-name="MSG_CTX_NAMES.URL_LINK"
+              :data="urlInfo"
+              :data-url="urlInfo.url"
+              class="url-info"
+            />
+            <div v-if="isMultipleUrl" key="up" class="more flex-row-c-c btn-primary select-none text-center text-mini" @click="showMentionUrls = !showMentionUrls">
+              <i class="i-solar:double-alt-arrow-down-line-duotone mr-1 inline-block transition-200" :class="{ 'rotate-180': showMentionUrls }" />
+              {{ showMentionUrls ? '收起' : '展开' }}
+            </div>
+          </div>
+          <!-- AT -->
+          <small
+            v-if="showMentionMe"
+            :ctx-name="MSG_CTX_NAMES.MENTION_LIST"
+            class="at-list flex-ml-a"
+          >
+            有人@我
+          </small>
         </div>
+        <!-- 表情工具栏（右侧侧边，自己消息时在左侧，hover 显示） -->
+        <ChatMsgReactionToolBar :data="data" />
       </div>
-      <!-- AT -->
-      <small
-        v-if="showMentionMe"
-        :ctx-name="MSG_CTX_NAMES.MENTION_LIST"
-        class="at-list flex-ml-a"
-      >
-        有人@我
-      </small>
-      <!-- 表情反应 -->
+      <!-- 表情反应 pill 展示（body 底部，原始位置） -->
       <ChatMsgReaction :data="data" />
     </div>
   </div>
