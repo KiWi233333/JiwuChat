@@ -3,7 +3,7 @@
   --at-apply: "w-full max-w-full flex gap-2 px-2 py-3 leading-1.4em";
   transition: background-color 0.2s;
   .body {
-    --at-apply: "flex-1 max-w-4/5 sm:max-w-full lg:max-w-full";
+    --at-apply: "flex-1 max-w-full";
   }
   .body-content-row {
     --at-apply: "flex items-start gap-2 flex-1 min-w-0";

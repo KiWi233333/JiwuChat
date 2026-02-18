@@ -154,7 +154,7 @@ function createItem() {
       tag="div"
       name="pop-list"
       class="auto-fill-grid mb-4 mt-1 min-h-14em select-none items-start gap-3 sm:gap-4"
-      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(6em, 1fr)); justify-content: space-between;"
+      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(6em, 1fr)); grid-template-columns: repeat(4, minmax(0, 1fr)); justify-content: space-between;"
     >
       <!-- 固定菜单标题 -->
       <small v-if="extendMenuSaveList.length" key="fix-title" class="col-span-full block text-mini">

@@ -13,13 +13,14 @@ const { data } = defineProps<MsgReactionToolBarProps>();
 
 const chat = useChatStore();
 const user = useUserStore();
+const setting = useSettingStore();
 const isSelf = computed(() => user?.userInfo?.id === data?.fromUser?.userId);
 
 // 是否支持 reaction（AI 和热门房间不支持）
 const canReact = computed(() => !chat.isAIRoom);
 
 // 快捷 emoji（工具栏上直接显示的）
-const quickEmojis: ReactionEmojiType[] = MSG_REACTION_EMOJI_LIST.slice(0, 6);
+const quickEmojis = computed<ReactionEmojiType[]>(() => setting.isMobileSize ? MSG_REACTION_EMOJI_LIST.slice(0, 1) : MSG_REACTION_EMOJI_LIST.slice(0, 6));
 
 // 切换 reaction
 const isToggling = ref(false);
@@ -101,7 +102,7 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
     <el-popover
       trigger="hover"
       :teleported="false"
-      placement="top-end"
+      :placement="setting.isMobileSize ? 'bottom-start' : 'bottom-end'"
       :width="200"
       :show-after="0"
       :show-arrow="false"
