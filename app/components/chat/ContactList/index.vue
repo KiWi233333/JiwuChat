@@ -463,11 +463,11 @@ onDeactivated(() => {
       <template #pre>
         <div v-if="isReload" key="skeleton" class="main-bg-color absolute left-0 top-0 z-120 h-100vh w-full flex-1 overflow-y-hidden">
           <div v-for="i in 12" :key="i" class="contact-sky">
-            <div class="flex-shrink-0 flex-shrink-0 rounded-full bg-color object-cover !h-10 !w-10" />
+            <div class="flex-shrink-0 rounded-full bg-color-2 object-cover !h-10 !w-10" />
             <!-- 信息 -->
             <div class="info-skeleton">
-              <div class="nickname-skeleton h-3 w-8em bg-color rounded" />
-              <div class="mt-4 h-3 w-10em bg-color rounded" />
+              <div class="nickname-skeleton h-3 w-8em bg-color-2 rounded" />
+              <div class="mt-4 h-3 w-10em bg-color-2 rounded" />
             </div>
           </div>
         </div>
