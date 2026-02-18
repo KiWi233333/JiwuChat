@@ -157,7 +157,7 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
           </small>
         </div>
         <!-- 表情工具栏（右侧侧边，自己消息时在左侧，hover 显示） -->
-        <ChatMsgReactionToolBar :data="data" />
+        <ChatMsgReactionToolBar class="sticky right-0 top-2" :data="data" />
       </div>
       <!-- 表情反应 pill 展示（body 底部，原始位置） -->
       <ChatMsgReaction :data="data" />

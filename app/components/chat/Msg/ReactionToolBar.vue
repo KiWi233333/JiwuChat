@@ -101,7 +101,7 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
     <el-popover
       trigger="hover"
       :teleported="false"
-      :placement="isSelf ? 'top-start' : 'top-end'"
+      placement="top-end"
       :width="200"
       :show-after="0"
       :show-arrow="false"
