@@ -35,7 +35,7 @@ export const useChatStore = defineStore(
     const { messageQueue, isProcessingQueue, isExsist: isExsistQueue, get: getMsgQueue, addToMessageQueue, resolveQueueItem, processMessageQueue, retryMessage, deleteUnSendMessage, clearMessageQueue, msgBuilder } = useMessageQueue();
     const unReadCount = computed(() => contacts.unReadContactList.value.reduce((acc, cur) => acc + cur.unreadCount, 0));
 
-    // 消息表情反应事件
+    // 消息表情响应事件
     mitter.on(MittEventType.MSG_REACTION, (data) => {
       if (!data?.msgId || !data?.roomId)
         return;

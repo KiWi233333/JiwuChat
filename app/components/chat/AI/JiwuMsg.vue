@@ -19,6 +19,7 @@ const user = useUserStore();
     :prev-msg="prevMsg"
     :index="index"
     :data="data"
+    :enable-reaction="false"
     v-bind="$attrs"
   >
     <template #body>

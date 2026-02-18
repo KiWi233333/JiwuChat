@@ -5,9 +5,10 @@ import { MSG_CTX_NAMES } from "~/constants/msgContext";
  * 消息模板（默认文本）
  * ctx-name 用于右键菜单
  */
-const { data } = defineProps<{
+const { data, enableReaction = true } = defineProps<{
   data: ChatMessageVO<TextBodyMsgVO | ImgBodyMsgVO | RtcBodyMsgVO | AI_CHATBodyMsgVO | GroupNoticeBodyMsgVO | AI_CHATReplyBodyMsgVO>;
   prevMsg?: Partial<ChatMessageVO<TextBodyMsgVO>>
+  enableReaction?: boolean
   index: number
 }>();
 const emit = defineEmits(["clickAvatar"]);
@@ -59,7 +60,11 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
 </script>
 
 <template>
-  <div class="msg" :class="{ self: isSelf }" v-bind="$attrs">
+  <div
+    class="msg"
+    :class="{ 'self': isSelf, 'enable-reaction': enableReaction }"
+    v-bind="$attrs"
+  >
     <!-- 头像 -->
     <CommonElImage
       :ctx-name="MSG_CTX_NAMES.AVATAR"
@@ -157,10 +162,10 @@ const roleClass = chatRoomRoleClassMap[member?.role as ChatRoomRoleEnum.ADMIN | 
           </small>
         </div>
         <!-- 表情工具栏（右侧侧边，自己消息时在左侧，hover 显示） -->
-        <ChatMsgReactionToolBar class="sticky right-0 top-2" :data="data" />
+        <ChatMsgReactionToolBar v-if="enableReaction" class="sticky right-0 top-2" :data="data" />
       </div>
       <!-- 表情反应 pill 展示（body 底部，原始位置） -->
-      <ChatMsgReaction :data="data" />
+      <ChatMsgReaction v-if="enableReaction" :data="data" />
     </div>
   </div>
 </template>

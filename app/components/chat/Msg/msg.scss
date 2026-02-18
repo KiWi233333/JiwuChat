@@ -5,6 +5,12 @@
   .body {
     --at-apply: "flex-1 max-w-full";
   }
+
+  &:not(.enable-reaction) {
+    .body {
+      --at-apply: "max-w-4/5 sm:max-w-full lg:max-w-30rem";
+    }
+  }
   .body-content-row {
     --at-apply: "flex items-start gap-2 flex-1 min-w-0";
     .body-content {

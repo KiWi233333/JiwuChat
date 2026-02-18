@@ -18,7 +18,7 @@ export enum MittEventType {
   PIN_CONTACT = "chat-pin-contact", // 置顶通知
   UPDATE_CONTACT_INFO = "chat-update-contact-info", // 更新会话信息通知
   AI_STREAM = "chat-ai-msg", // AI消息
-  MSG_REACTION = "chat-msg-reaction", // 消息表情反应
+  MSG_REACTION = "chat-msg-reaction", // 消息表情响应
   OTHER = "chat-other",
 
   // 组件滚动事件

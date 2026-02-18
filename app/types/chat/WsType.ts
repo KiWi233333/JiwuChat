@@ -109,7 +109,7 @@ export enum WsMsgBodyType {
    */
   UPDATE_CONTACT_INFO = 12,
   /**
-   * 消息表情反应变更
+   * 消息表情响应变更
    */
   MSG_REACTION = 13,
 }
