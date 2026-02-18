@@ -6,10 +6,12 @@ export default defineNuxtRouteMiddleware((
   from: RouteLocationNormalized,
 ): NavigationGuardReturn => {
   const setting = useSettingStore();
-  // 检测 Element Plus 弹窗，如果有弹窗打开则阻止导航并关闭弹窗
+  // 检测 Element Plus 弹窗，如果有弹窗打开则关闭弹窗；目标为登录页（如退出登录）时允许导航
   if (hasElementPlusPopup()) {
     closeTopElementPlusPopup();
-    return abortNavigation();
+    if (to.path !== "/login") {
+      return abortNavigation();
+    }
   }
 
   // web + 大尺寸
