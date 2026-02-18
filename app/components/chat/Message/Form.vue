@@ -929,6 +929,7 @@ defineExpose({
             </template>
             <!-- 工具栏打开扩展（仅移动端） -->
             <CommonIconTip
+              v-if="setting.isMobileSize"
               class="text-5 transition-200 sm:hidden"
               :class="{ 'rotate-45': showMobileTools }"
               icon="i-solar:add-circle-linear"

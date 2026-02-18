@@ -317,7 +317,7 @@ onUnmounted(() => {
 
   .shortcut-display-area {
     .shortcut-display {
-      --at-apply: "min-h-20 border-2 border-solid border-default rounded-2 p-4 flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out bg-blank mb-3";
+      --at-apply: "min-h-20 border-2 border-solid border-default rounded-3 p-4 flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out bg-blank mb-3";
 
       &:hover {
         --at-apply: "border-theme-primary bg-theme-primary-light-9";

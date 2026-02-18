@@ -340,7 +340,7 @@ defineExpose({
           class="relative"
           :class="{
             [disableClass]: isAnimating,
-            'max-w-full rounded-2 sm:w-fit p-4 border-default-2 dialog-bg-color shadow': !contentClass,
+            'max-w-full rounded-3 sm:w-fit p-4 border-default-2 dialog-bg-color shadow': !contentClass,
             [contentClass]: contentClass,
             'text-center': center,
           }"

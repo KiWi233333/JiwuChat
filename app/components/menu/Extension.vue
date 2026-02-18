@@ -141,7 +141,7 @@ function createItem() {
     v-model="isShow"
     :duration="200"
     :min-scale="0.98"
-    content-class="w-full rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
+    content-class="w-full rounded-3 p-4 sm:w-420px border-default-2 !bg-color-2"
   >
     <template #title>
       <h3 :data-tauri-drag-region="setting.isDesktop" mb-1 flex-row-c-c text-center font-500>
