@@ -43,6 +43,7 @@ const rightRef = ref<HTMLElement | null>(null);
 const offset = ref(0);
 const isDragging = ref(false);
 const isOpen = ref<"left" | "right" | "none">("none");
+const isInitialized = ref(false);
 
 // 宽度
 const leftWidth = ref(0);
@@ -263,6 +264,9 @@ function getBtnStyle(btn: SwipeActionButton) {
 
 onMounted(() => {
   updateWidths();
+  nextTick(() => {
+    isInitialized.value = true;
+  });
 });
 onActivated(() => {
   updateWidths();
@@ -287,7 +291,10 @@ defineExpose({ close, open });
     <div
       ref="leftRef"
       class="absolute left-0 top-0 h-full flex transform-gpu"
-      :class="{ 'transition-transform duration-300 ease-[cubic-bezier(0.18,0.89,0.32,1)]': !isDragging }"
+      :class="{
+        'transition-transform duration-300 ease-[cubic-bezier(0.18,0.89,0.32,1)]': !isDragging && isInitialized,
+        'invisible': !isInitialized,
+      }"
       :style="{ transform: `translateX(${Math.min(0, offset - leftWidth)}px)` }"
     >
       <div
@@ -307,7 +314,10 @@ defineExpose({ close, open });
     <div
       ref="rightRef"
       class="absolute right-0 top-0 h-full flex transform-gpu"
-      :class="{ 'transition-transform duration-300 ease-[cubic-bezier(0.18,0.89,0.32,1)]': !isDragging }"
+      :class="{
+        'transition-transform duration-300 ease-[cubic-bezier(0.18,0.89,0.32,1)]': !isDragging && isInitialized,
+        'invisible': !isInitialized,
+      }"
       :style="{ transform: `translateX(${Math.max(0, offset + rightWidth)}px)` }"
     >
       <div
