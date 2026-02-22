@@ -283,6 +283,8 @@ PORT=3001 pnpm run dev:nuxt
 
 ## 🚢 部署
 
+> 自部署版本（后端）可前往仓库 [jiwu-chat-core](https://github.com/KiWi233333/jiwu-chat-core)（支持 Docker）。
+
 ### Web 部署
 
 项目可以部署到任何支持静态文件托管的平台:
