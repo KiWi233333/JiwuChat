@@ -196,7 +196,7 @@ defineExpose({
     :duration="300"
     destroy-on-close
     :show-close="false"
-    content-class="sm:w-fit w-full light:!bg-white dark:bg-color-2 shadow-lg sm:border-default-2  rounded-2 sm:dialog-bg-color"
+    content-class="sm:w-fit w-full light:!bg-white dark:bg-color-2 shadow-lg sm:border-default-2  rounded-3 overflow-hidden sm:dialog-bg-color"
   >
     <template v-if="setting.isMobileSize" #title>
       <div :data-tauri-drag-region="setting.isDesktop" select-none class="px-4 text-center">

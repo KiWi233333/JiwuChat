@@ -249,7 +249,7 @@ export const msgBodyVOBuilderMap = {
   },
 } as const;
 
-/** 消息反应 emoji 编码常量 */
+/** 消息响应 emoji 编码常量 */
 export type ReactionEmojiType
   // 第一梯队：高频基础表情
   = "thumbs_up" | "heart" | "laugh" | "fire" | "clap" | "pray"
@@ -382,7 +382,7 @@ export interface Message<T> {
    */
   body?: T;
   /**
-   * 表情反应列表
+   * 表情响应列表
    */
   reactions?: ReactionVO[] | null;
 }
@@ -766,7 +766,7 @@ export enum ChatReadType {
 }
 
 /**
- * 添加/取消表情反应（Toggle）
+ * 添加/取消表情响应（Toggle）
  * @param roomId 房间ID
  * @param dto 请求参数
  * @param token JWT Token

@@ -95,7 +95,7 @@ export const messageConfig = defineMessageConfig({
     handlers: silentHandlers,
   },
 
-  /** 消息表情反应 */
+  /** 消息表情响应 */
   [WsMsgBodyType.MSG_REACTION]: {
     key: WsMsgKey.REACTION_MSG,
     type: [] as WSMsgReaction[],

@@ -60,7 +60,9 @@ JiwuChat ist eine leichtgewichtige `(~10MB)` Multiplattform-Chat-Anwendung, die 
 
 > ⚠ Hinweis: ~~Dieses Konto hat eingeschränkte Berechtigungen für Datei-Uploads, Profiländerungen und Passwortänderungen. Es dient nur zu Testzwecken.~~
 
-> 👀 Vielen Dank für Ihre Unterstützung! Das Projekt befindet sich noch in der Entwicklung und das Backend ist noch nicht quelloffen. Wir freuen uns über Ihr wertvolles Feedback. Bei Fragen kontaktieren Sie uns bitte per E-Mail oder QQ.
+##  Selbst gehostet
+
+Für selbst gehostete Backend-Dienste siehe ** [jiwu-chat-core](https://github.com/KiWi233333/jiwu-chat-core)** (Docker-Unterstützung).
 
 ## Projekt-Screenshots
 

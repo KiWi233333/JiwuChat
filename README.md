@@ -2,7 +2,7 @@
  <div align=center margin="10em" style="margin:4em 0 0 0;font-size: 30px;letter-spacing:0.3em;">
 <img src="./.doc/jiwuchat-tauri.png" width="140px" height="140px" alt="图片名称" align=center />
  </div>
- <h2 align=center style="margin: 2em 0;">极物聊天 Tauri APP</h2>
+ <h3 align=center style="margin: 2em 0;">JiwuChat: 极物聊天</h3>
 
 <div>
       <a href="https://github.com/Kiwi233333/JiwuChat" target="_blank">
@@ -63,7 +63,9 @@ JiwuChat 是一款基于 Tauri2 和 Nuxt3 构建的轻量`(~10MB)`多平台聊�
 
 > ⚠ 注：~~该账号上传文件、修改个人信息、修改密码等部分没有权限，只作为测试账号使用。~~
 
-> 👀 感谢大家的支持，项目还在开发阶段，后端暂未开源，欢迎大家提出宝贵意见，如有问题请联系邮箱或QQ。
+## 自部署
+
+如需自建后端服务，请前往 ** [jiwu-chat-core](https://github.com/KiWi233333/jiwu-chat-core)**，支持 Docker 一键部署。
 
 ## 项目截图
 

@@ -3,7 +3,19 @@
   --at-apply: "w-full max-w-full flex gap-2 px-2 py-3 leading-1.4em";
   transition: background-color 0.2s;
   .body {
-    --at-apply: "flex-1 max-w-4/5 sm:max-w-full lg:max-w-30em";
+    --at-apply: "flex-1 max-w-full";
+  }
+
+  &:not(.enable-reaction) {
+    .body {
+      --at-apply: "max-w-4/5 sm:max-w-full lg:max-w-30rem";
+    }
+  }
+  .body-content-row {
+    --at-apply: "flex items-start gap-2 flex-1 min-w-0";
+    .body-content {
+      --at-apply: "flex flex-col gap-2 min-w-0";
+    }
   }
   // 头像
   .avatar {
@@ -26,7 +38,7 @@
   }
   .ai-reply-msg-box,
   .msg-box {
-    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full w-0 px-3 py-2 leading-1.5em bg-color shadow-sm transition-shadow hover:shadow w-fit";
+    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full px-3 py-2 leading-1.5em bg-color shadow-sm transition-shadow hover:shadow w-fit min-w-0 max-w-full sm:max-w-full lg:max-w-30rem";
     border-radius: 6px 1rem 1rem 1rem;
   }
   .msg-wrap {
@@ -163,6 +175,9 @@
   }
   .flex-col {
     justify-content: right;
+  }
+  .body-content-row {
+    flex-direction: row-reverse;
   }
 
   // 子元素 @ 和 url

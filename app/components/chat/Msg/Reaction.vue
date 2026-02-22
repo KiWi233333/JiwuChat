@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { ReactionEmojiType, ReactionVO } from "~/composables/api/chat/message";
 import { CommonListTransitionGroup } from "#components";
-import { MSG_REACTION_EMOJI_LIST, MSG_REACTION_EMOJI_MAP, toggleMessageReaction } from "~/composables/api/chat/message";
+import { MSG_REACTION_EMOJI_MAP, toggleMessageReaction } from "~/composables/api/chat/message";
 
 export interface MsgReactionProps {
   /** 消息数据 */
@@ -23,9 +23,6 @@ const canReact = computed(() => !chat.isAIRoom);
 const reactions = computed(() => data.message?.reactions?.filter(r => r.count > 0) || []);
 const hasReactions = computed(() => reactions.value.length > 0);
 
-// 快捷 emoji（工具栏上直接显示的）
-const quickEmojis: ReactionEmojiType[] = MSG_REACTION_EMOJI_LIST.slice(0, 6);
-
 // 根据 userId 解析用户昵称
 function resolveNickName(userId: string): string {
   if (userId === user?.userInfo?.id)
@@ -45,7 +42,7 @@ function getReactionNames(reaction: ReactionVO): string {
   return reaction.userIds.map(resolveNickName).join("、");
 }
 
-// 切换 reaction
+// 切换 reaction（点击 pill 时触发）
 const isToggling = ref(false);
 async function onToggleReaction(emojiType: ReactionEmojiType) {
   if (isToggling.value || !canReact.value)
@@ -87,7 +84,6 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
   try {
     const res = await toggleMessageReaction(roomId, { msgId, emojiType }, user.getToken);
     if (res.code === StatusCode.SUCCESS && res.data?.reactions) {
-      // 用服务端返回的数据做最终确认
       const finalReactions = res.data.reactions;
       if (userId) {
         for (const r of finalReactions) {
@@ -107,192 +103,89 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
 </script>
 
 <template>
-  <div v-if="canReact" class="reaction-area" :class="{ 'is-self': isSelf }">
-    <!-- reactions 显示条 -->
-    <CommonListTransitionGroup
-      v-if="hasReactions"
-      tag="div"
-      name="reaction-animate-list"
-      :immediate="false"
-      class="reaction-bar"
+  <CommonListTransitionGroup
+    v-if="canReact && hasReactions"
+    tag="div"
+    name="reaction-animate-list"
+    :immediate="false"
+    class="reaction-bar"
+    :class="{ 'is-self': isSelf }"
+  >
+    <!-- 每一个触发表情 -->
+    <div
+      v-for="reaction in reactions"
+      :key="reaction.emojiType"
     >
-      <!-- 每一个触发表情 -->
-      <div
-        v-for="reaction in reactions"
-        :key="reaction.emojiType"
-      >
-        <el-popover
-          trigger="hover"
-          placement="top"
-          popper-class="global-custom-select !bg-color-br !backdrop-blur-20px !border-default-3"
-          :show-arrow="false"
-          :offset="5"
-          :width="200"
-          :show-after="500"
-        >
-          <template #reference>
-            <span
-              :key="reaction.emojiType"
-              class="reaction-pill"
-              :class="{ active: reaction.isCurrentUser }"
-              role="button"
-              tabindex="0"
-              @click="onToggleReaction(reaction.emojiType)"
-            >
-              <i class="reaction-emoji" :class="MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.icon" />
-              <span class="reaction-count">{{ reaction.count }}</span>
-            </span>
-          </template>
-          <template #default>
-            <div class="text-0.8rem leading-1.6em">
-              <div class="mb-1 font-500">
-                <i :class="MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.icon" class="inline-block p-2 align-middle" />
-                {{ MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.label }}
-              </div>
-              <div class="text-small-color">
-                {{ getReactionNames(reaction) }}
-              </div>
-            </div>
-          </template>
-        </el-popover>
-      </div>
-    </CommonListTransitionGroup>
-
-    <!-- 悬浮快捷工具栏 -->
-    <div class="reaction-toolbar" :class="{ 'is-empty': !hasReactions }">
-      <!-- 快捷表情 -->
-      <span
-        v-for="emoji in quickEmojis"
-        :key="emoji"
-        class="toolbar-emoji"
-        role="button"
-        tabindex="0"
-        :title="MSG_REACTION_EMOJI_MAP[emoji].label"
-        @click="onToggleReaction(emoji)"
-      >
-        <i :class="MSG_REACTION_EMOJI_MAP[emoji].icon" />
-      </span>
-
-      <!-- 更多表情 -->
       <el-popover
         trigger="hover"
-        :teleported="false"
-        :placement="isSelf ? 'top-start' : 'top-end'"
-        :width="200"
-        :show-after="0"
+        placement="top"
+        popper-class="global-custom-select !bg-color-br !backdrop-blur-20px !border-default-3"
         :show-arrow="false"
         :offset="5"
-        popper-class="global-custom-select !bg-color-br !p-1 !border-none"
+        :width="200"
+        :show-after="500"
       >
         <template #reference>
-          <span class="toolbar-emoji toolbar-more" role="button" tabindex="0" title="更多表情">
-            <i class="i-tabler:dots p-2" />
+          <span
+            :key="reaction.emojiType"
+            class="reaction-pill"
+            :class="{ active: reaction.isCurrentUser }"
+            role="button"
+            tabindex="0"
+            @click="onToggleReaction(reaction.emojiType)"
+          >
+            <i class="reaction-emoji" :class="MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.icon" />
+            <span class="reaction-count">{{ reaction.count }}</span>
           </span>
         </template>
         <template #default>
-          <div class="emoji-picker-grid">
-            <span
-              v-for="emoji in MSG_REACTION_EMOJI_LIST"
-              :key="emoji"
-              class="emoji-picker-item"
-              role="button"
-              tabindex="0"
-              :title="MSG_REACTION_EMOJI_MAP[emoji].label"
-              @click="onToggleReaction(emoji)"
-            >
-              <i :class="MSG_REACTION_EMOJI_MAP[emoji].icon" />
-            </span>
+          <div class="text-0.8rem leading-1.6em">
+            <div class="mb-1 font-500">
+              <i :class="MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.icon" class="inline-block p-2 align-middle" />
+              {{ MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.label }}
+            </div>
+            <div class="text-small-color">
+              {{ getReactionNames(reaction) }}
+            </div>
           </div>
         </template>
       </el-popover>
     </div>
-  </div>
+  </CommonListTransitionGroup>
 </template>
 
 <style lang="scss" scoped>
-.reaction-area {
-  --at-apply: "relative w-fit";
+.reaction-bar {
+  --at-apply: "flex flex-wrap gap-1";
 
   &.is-self {
-    --at-apply: "ml-auto";
+    --at-apply: "justify-end";
+  }
+}
 
-    .reaction-bar {
-      --at-apply: "justify-end";
-    }
+.reaction-pill {
+  --at-apply: "bg-transparent border-default-2-hover inline-flex items-center gap-1 pl-1 pr-2 py-0 rounded-full cursor-pointer select-none text-0.5rem";
 
-    .reaction-toolbar {
-      --at-apply: "right-0";
-    }
+  &:hover {
+    --at-apply: "shadow-sm";
   }
 
-  .reaction-bar {
-    --at-apply: "flex flex-wrap gap-1 ";
+  &.active {
+    --at-apply: "light:bg-white dark:bg-dark-500 border-default-3 text-color";
   }
 
-  // 当前用户反应的 pill
-  .reaction-pill {
-    --at-apply: "bg-transparent border-default-2-hover inline-flex items-center gap-1 pl-1 pr-2 py-0 rounded-full cursor-pointer select-none text-0.5rem";
-
-    &:hover {
-      --at-apply: "shadow-sm";
-    }
-
-    &.active {
-      --at-apply: "light:bg-white dark:bg-dark-500 border-default-3 text-color";
-    }
-
-    &.add-btn {
-      --at-apply: "text-small-color !p-1 hover:text-color";
-    }
-
-    &:hover {
-      .reaction-emoji {
-        --at-apply: "p-2 transition-200 hover:(filter-brightness-110 scale-110)";
-      }
-    }
-
+  &:hover {
     .reaction-emoji {
       --at-apply: "p-2 transition-200 hover:(filter-brightness-110 scale-110)";
     }
-
-    .reaction-count {
-      --at-apply: "text-secondary text-0.75rem";
-    }
   }
 
-  .reaction-toolbar {
-    --at-apply: "bg-color absolute z-10 flex items-center gap-0.5 p-0.5 rounded-lg shadow transition-200 op-0 pointer-events-none";
-
-    &:not(.is-empty) {
-      // 边距
-      --at-apply: "mt-2";
-    }
-    // 显隐由父级 .msg:hover 在 msg.scss 中统一控制
+  .reaction-emoji {
+    --at-apply: "p-2 transition-200 hover:(filter-brightness-110 scale-110)";
   }
 
-  .toolbar-emoji {
-    --at-apply: "inline-flex items-center justify-center cursor-pointer rounded-md transition-200 hover:bg-color-inverse p-0.5";
-
-    i {
-      --at-apply: "p-2.8";
-    }
-  }
-
-  .toolbar-more {
-    --at-apply: "text-small-color hover:text-color";
-  }
-
-  .emoji-picker-grid {
-    --at-apply: "grid gap-1";
-    grid-template-columns: repeat(6, 1fr);
-
-    .emoji-picker-item {
-      --at-apply: "w-7 h-7 inline-flex items-center justify-center cursor-pointer rounded-md p-1 hover:bg-color-inverse hover:filter-brightness-110";
-
-      i {
-        --at-apply: "p-2.75";
-      }
-    }
+  .reaction-count {
+    --at-apply: "text-secondary text-0.75rem";
   }
 }
 

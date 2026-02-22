@@ -141,7 +141,7 @@ function createItem() {
     v-model="isShow"
     :duration="200"
     :min-scale="0.98"
-    content-class="w-full rounded-2 p-4 sm:w-420px border-default-2 !bg-color-2"
+    content-class="w-full rounded-3 p-4 sm:w-420px border-default-2 !bg-color-2"
   >
     <template #title>
       <h3 :data-tauri-drag-region="setting.isDesktop" mb-1 flex-row-c-c text-center font-500>
@@ -154,7 +154,7 @@ function createItem() {
       tag="div"
       name="pop-list"
       class="auto-fill-grid mb-4 mt-1 min-h-14em select-none items-start gap-3 sm:gap-4"
-      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(6em, 1fr)); justify-content: space-between;"
+      style="display: grid; grid-template-columns: repeat(auto-fill, minmax(6em, 1fr)); grid-template-columns: repeat(4, minmax(0, 1fr)); justify-content: space-between;"
     >
       <!-- 固定菜单标题 -->
       <small v-if="extendMenuSaveList.length" key="fix-title" class="col-span-full block text-mini">
