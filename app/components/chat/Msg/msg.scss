@@ -38,7 +38,7 @@
   }
   .ai-reply-msg-box,
   .msg-box {
-    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full w-0 px-3 py-2 leading-1.5em bg-color shadow-sm transition-shadow hover:shadow w-fit";
+    --at-apply: "overflow-x-hidden active:op-90 transition-opacity text-0.9rem max-w-full px-3 py-2 leading-1.5em bg-color shadow-sm transition-shadow hover:shadow w-fit min-w-0 max-w-full sm:max-w-full lg:max-w-30rem";
     border-radius: 6px 1rem 1rem 1rem;
   }
   .msg-wrap {
