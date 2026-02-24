@@ -1,6 +1,6 @@
 [package]
 name = "jiwuchat"
-version = "1.8.2"
+version = "1.8.3"
 description = "A Tauri App"
 authors = ["Kiwi2333"]
 edition = "2021"
