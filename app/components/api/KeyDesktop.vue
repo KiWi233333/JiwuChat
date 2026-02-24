@@ -65,6 +65,8 @@ const expireType = computed({
 // 新建密钥结果对话框
 const keyResultDialogVisible = ref(false);
 const newApiKey = ref("");
+/** 创建成功后待展示的 key，在创建弹窗完全关闭后再打开结果弹窗，避免 useHistoryState 的 router.back() 把结果弹窗关掉 */
+const pendingNewApiKey = ref("");
 
 // 表单验证规则
 const dialogRules: FormRules = {
@@ -240,6 +242,17 @@ function handleDialogClose() {
   resetDialogForm();
 }
 
+// 创建/编辑弹窗完全关闭后：若有待展示的新 Key 则打开结果弹窗（避免 useHistoryState 的 router.back() 把结果弹窗关掉）
+function handleCreateDialogClosed() {
+  if (pendingNewApiKey.value) {
+    newApiKey.value = pendingNewApiKey.value;
+    pendingNewApiKey.value = "";
+    nextTick(() => {
+      keyResultDialogVisible.value = true;
+    });
+  }
+}
+
 // 对话框确认
 async function handleDialogConfirm() {
   dialogFormRef.value?.validate(async (action) => {
@@ -253,8 +266,7 @@ async function handleDialogConfirm() {
             return;
           }
           if (result.data?.apiKeyRaw) {
-            newApiKey.value = result.data.apiKeyRaw;
-            keyResultDialogVisible.value = true;
+            pendingNewApiKey.value = result.data.apiKeyRaw;
           }
           ElMessage.success("API Key创建成功");
         }
@@ -494,6 +506,7 @@ onActivated(() => {
       }"
       content-class="rounded-3 p-4 shadow-lg sm:w-fit border-default-2 dialog-bg-color"
       @close="handleDialogClose"
+      @closed="handleCreateDialogClosed"
     >
       <template #title>
         <div class="flex-row-c-c">

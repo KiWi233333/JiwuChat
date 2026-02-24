@@ -116,11 +116,6 @@
 .notice {
   --at-apply: "p-3 hover:(shadow-md) inline-block  cursor-pointer transition-all !bg-color";
 }
-// .self .notice {
-//   .popper {
-//     --at-apply: "bg-theme-primary dark:bg-theme-primary text-white";
-//   }
-// }
 // 回复 - 闪动
 .reply-shaing {
   --at-apply: " rounded w-full bg-[var(--el-color-primary-light-7)] op-100 transition-120 ";
@@ -178,6 +173,11 @@
   }
   .body-content-row {
     flex-direction: row-reverse;
+  }
+  .body-content {
+    > * {
+      margin-left: auto;
+    }
   }
 
   // 子元素 @ 和 url

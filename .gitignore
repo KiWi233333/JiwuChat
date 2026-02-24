@@ -27,10 +27,13 @@ report.html
 !.vscode/setting.json
 !.vscode/settings.json
 .vscode
-.claude
 .gemini
 .shared
 .codex
+# claude
+.claude/*
+
+# cursor
 .cursor/*
 !.cursor/commands/
 .cursor/commands/*

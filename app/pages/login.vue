@@ -13,7 +13,7 @@ useSeoMeta({
 });
 
 definePageMeta({
-  key: route => route.fullPath,
+  key: route => route.path,
   layout: "default",
 });
 

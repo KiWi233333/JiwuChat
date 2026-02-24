@@ -524,7 +524,7 @@ function toLoginForm() {
             :model-value="agreeDetail.detail"
           />
         </el-scrollbar>
-        <div class="mt-2 mt-4 flex-row-c-c">
+        <div class="mt-4 flex-row-c-c">
           <CommonElButton
             :icon="ElIconCheck"
             type="info"
