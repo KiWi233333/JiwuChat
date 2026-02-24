@@ -59,7 +59,7 @@ function handleImagePreview() {
         v-if="body?.url"
         :ctx-name="MSG_CTX_NAMES.IMG"
         :style="{ width, height }"
-        class="max-h-50vh max-w-76vw cursor-pointer border-default-2 card-default shadow-sm transition-shadow md:(max-h-18rem max-w-18rem) hover:shadow"
+        class="max-h-30rem max-w-70vw cursor-pointer overflow-hidden card-default shadow-sm transition-shadow md:(max-h-18rem max-w-18rem) hover:shadow"
         @click="handleImagePreview"
       >
         <CommonElImage

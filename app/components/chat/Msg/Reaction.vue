@@ -1,6 +1,5 @@
 <script lang="ts">
 import type { ReactionEmojiType, ReactionVO } from "~/composables/api/chat/message";
-import { CommonListTransitionGroup } from "#components";
 import { MSG_REACTION_EMOJI_MAP, toggleMessageReaction } from "~/composables/api/chat/message";
 
 export interface MsgReactionProps {
@@ -103,55 +102,48 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
 </script>
 
 <template>
-  <CommonListTransitionGroup
+  <div
     v-if="canReact && hasReactions"
-    tag="div"
-    name="reaction-animate-list"
-    :immediate="false"
     class="reaction-bar"
     :class="{ 'is-self': isSelf }"
   >
     <!-- 每一个触发表情 -->
-    <div
+    <el-popover
       v-for="reaction in reactions"
       :key="reaction.emojiType"
+      trigger="hover"
+      placement="top"
+      popper-class="global-custom-select !bg-color-br !backdrop-blur-20px !border-default-3"
+      :show-arrow="false"
+      :offset="5"
+      :width="200"
+      :show-after="500"
     >
-      <el-popover
-        trigger="hover"
-        placement="top"
-        popper-class="global-custom-select !bg-color-br !backdrop-blur-20px !border-default-3"
-        :show-arrow="false"
-        :offset="5"
-        :width="200"
-        :show-after="500"
-      >
-        <template #reference>
-          <span
-            :key="reaction.emojiType"
-            class="reaction-pill"
-            :class="{ active: reaction.isCurrentUser }"
-            role="button"
-            tabindex="0"
-            @click="onToggleReaction(reaction.emojiType)"
-          >
-            <i class="reaction-emoji" :class="MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.icon" />
-            <span class="reaction-count">{{ reaction.count }}</span>
-          </span>
-        </template>
-        <template #default>
-          <div class="text-0.8rem leading-1.6em">
-            <div class="mb-1 font-500">
-              <i :class="MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.icon" class="inline-block p-2 align-middle" />
-              {{ MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.label }}
-            </div>
-            <div class="text-small-color">
-              {{ getReactionNames(reaction) }}
-            </div>
+      <template #reference>
+        <span
+          class="reaction-pill"
+          :class="{ active: reaction.isCurrentUser }"
+          role="button"
+          tabindex="0"
+          @click="onToggleReaction(reaction.emojiType)"
+        >
+          <i class="reaction-emoji" :class="MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.icon" />
+          <span class="reaction-count">{{ reaction.count }}</span>
+        </span>
+      </template>
+      <template #default>
+        <div class="text-0.8rem leading-1.6em">
+          <div class="mb-1 font-500">
+            <i :class="MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.icon" class="inline-block p-2 align-middle" />
+            {{ MSG_REACTION_EMOJI_MAP[reaction.emojiType]?.label }}
           </div>
-        </template>
-      </el-popover>
-    </div>
-  </CommonListTransitionGroup>
+          <div class="text-small-color">
+            {{ getReactionNames(reaction) }}
+          </div>
+        </div>
+      </template>
+    </el-popover>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -174,50 +166,16 @@ async function onToggleReaction(emojiType: ReactionEmojiType) {
     --at-apply: "light:bg-white dark:bg-dark-500 border-default-3 text-color";
   }
 
-  &:hover {
-    .reaction-emoji {
-      --at-apply: "p-2 transition-200 hover:(filter-brightness-110 scale-110)";
-    }
-  }
-
   .reaction-emoji {
-    --at-apply: "p-2 transition-200 hover:(filter-brightness-110 scale-110)";
+    --at-apply: "p-2 transition-200";
+
+    &:hover {
+      --at-apply: "filter-brightness-110 scale-110";
+    }
   }
 
   .reaction-count {
     --at-apply: "text-secondary text-0.75rem";
   }
-}
-
-.reaction-animate-list {
-  --at-apply: "flex flex-wrap gap-1 items-center";
-  overflow: hidden;
-  transition:
-    max-width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    padding 0.2s;
-  max-width: 4rem;
-}
-
-.reaction-animate-list-enter-active,
-.reaction-animate-list-leave-active {
-  transition:
-    max-width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.2s;
-}
-
-.reaction-animate-list-enter-from,
-.reaction-animate-list-leave-to {
-  opacity: 0;
-  max-width: 0;
-  max-height: 0;
-  padding: 0 !important;
-}
-
-.reaction-animate-list-enter-to,
-.reaction-animate-list-leave-from {
-  opacity: 1;
-  max-width: 4rem;
 }
 </style>
