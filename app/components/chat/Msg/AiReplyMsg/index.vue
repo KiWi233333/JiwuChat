@@ -17,7 +17,7 @@ const user = useUserStore();
 
 const body = computed(() => data.message?.body);
 // 初始折叠状态：内容长度超过200  // 且不是最后一条消息时，默认折叠  && chat.theContact.lastMsgId !== data.message.id
-const initFold = data.message?.content?.length && data.message?.content?.length > 200;
+const initFold = +(data.message?.content?.length || 0) + (data.message?.body?.reasoningContent?.length || 0) > 200;
 const isContentExpanded = ref(!initFold);
 const showReasonLoading = computed(() => body.value?.status === AiReplyStatusEnum.IN_PROGRESS && !data.message?.content);
 const showContentLoading = computed(() => (body.value?.status !== undefined && body.value?.status === AiReplyStatusEnum.IN_PROGRESS && (!!data.message?.content || !body.value?.reasoningContent)));
@@ -43,8 +43,8 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
           v-model="isContentExpanded"
           :max-height="200"
           :max-height-with-expand-button="40"
-          :default-expanded="!initFold"
-          :disabled="showContentLoading || showReasonLoading"
+          :default-expanded="!initFold || !showContentLoading || !showReasonLoading"
+          :disabled="showContentLoading"
           class="content-wrapper"
         >
           <!-- 思考内容 -->
@@ -52,12 +52,12 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
             v-if="data?.message?.body?.reasoningContent"
             :max-height="36"
             :max-height-with-expand-button="40"
-            :default-expanded="true"
-            :disabled-animate="showReasonLoading || showContentLoading"
+            :default-expanded="showReasonLoading"
+            :disabled-animate="showReasonLoading"
             class="reason-content-wrapper"
           >
             <div class="reason-content-inner">
-              <span class="text-theme-info">
+              <span class="text-theme-info" :class="{ 'animate-pulse animate-duration-800': showReasonLoading }">
                 <i i-solar:lightbulb-linear p-2 />
                 <span>思考:</span>
               </span>
@@ -246,9 +246,9 @@ const showContentLoading = computed(() => (body.value?.status !== undefined && b
 
 // 思考内容
 :deep(.reason-content-wrapper) {
-  --at-apply: "mt-1 mb-2 overflow-hidden relative z-0 card-rounded-df p-2 shadow-(sm inset) bg-color-2 text-mini-50 flex overflow-hidden";
+  --at-apply: "mt-1 mb-2 overflow-hidden relative z-0";
   .reason-content-inner {
-    --at-apply: "leading-1.5em w-full min-w-0";
+    --at-apply: "leading-1.5em w-full min-w-0 card-rounded-df p-2 bg-color-2 text-mini-50";
   }
   .reason-markdown-preview {
     --at-apply: "op-70 p-0 bg-transparent flex-1 min-w-0";

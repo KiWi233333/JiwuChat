@@ -114,7 +114,7 @@ async function changShieldStatus() {
   >
     <!-- 移动端：分组列表样式（群信息） -->
     <div
-      class="group-section group-section-info w-full flex-1 select-none text-3.5 leading-1.8em"
+      class="group-section group-section-info w-full flex-1 select-none text-3.5 leading-1.8em !mt-0"
     >
       <div relative>
         群头像
@@ -518,6 +518,14 @@ async function changShieldStatus() {
 }
 .dark .shadow-linear {
   background: linear-gradient(to bottom, rgba(31, 31, 31, 0) 0%, rgba(31, 31, 31, 1) 100%);
+}
+@media (max-width: 640px) {
+  .shadow-linear {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(242, 242, 242, 1) 100%) !important;
+  }
+  .dark .shadow-linear {
+    background: linear-gradient(to bottom, rgba(31, 31, 31, 0) 0%, rgba(17, 17, 17, 1) 100%) !important;
+  }
 }
 
 .header {
