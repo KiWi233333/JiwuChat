@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+import { ElIconDArrowLeft, ElIconDArrowRight, ElIconDownload, ElIconFullScreen, ElIconRefreshLeft, ElIconRefreshRight, ElIconZoomIn, ElIconZoomOut } from "#components";
+import { computed, nextTick, onMounted, reactive, ref } from "vue";
+
 const SHOW_SHORTCUT_TIPS_KEY = "image-viewer-show-shortcut-tips";
 const IS_SHORTCUT_CARD_COLLAPSED_KEY = "image-viewer-is-shortcut-card-collapsed";
 
@@ -7,6 +10,19 @@ interface ShortcutInfo {
   key: string;
   description: string;
   disabled?: ComputedRef<boolean>;
+}
+
+// 工具栏操作项
+interface ToolbarAction {
+  key: string;
+  /** EP 图标组件 或 iconify class 字符串 */
+  icon: Component | string;
+  description: string;
+  shortcut?: string;
+  /** undefined = 始终显示；false = 隐藏 */
+  show?: boolean;
+  btnClass?: string;
+  onClick: () => void;
 }
 const MAX_SCALE = 20; // 最大缩放倍数
 const MIN_SCALE = 0.1; // 最小缩放倍数
@@ -19,6 +35,7 @@ const keyShortList = ref<ShortcutInfo[]>([
   { key: "r", description: "顺时针旋转" },
   { key: "R", description: "逆时针旋转" },
   { key: "0", description: "重置图片" },
+  { key: "Ctrl+S", description: "保存图片" },
   { key: "Esc", description: "关闭预览" },
   { key: "双击", description: "放大或重置图片" },
 ]);
@@ -212,8 +229,16 @@ function next() {
 function handleKeydown(e: KeyboardEvent) {
   if (!state.visible)
     return;
-  e.stopPropagation(); // 阻止事件冒泡
-  e.preventDefault(); // 阻止默认行为
+  // Ctrl+S (Windows/Linux) 或 Cmd+S (Mac) 保存
+  if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+    e.stopPropagation();
+    e.preventDefault();
+    if (currentImageUrl.value)
+      saveImage(currentImageUrl.value);
+    return;
+  }
+  e.stopPropagation();
+  e.preventDefault();
   keyDownFnMap[e.key]?.();
 }
 
@@ -414,6 +439,48 @@ function handleDoubleClick(e: MouseEvent) {
   }
 }
 
+// 工具栏操作列表
+const toolbarActions = computed((): ToolbarAction[] => [
+  {
+    key: "prev",
+    icon: ElIconDArrowLeft,
+    description: "上一张",
+    shortcut: "←",
+    show: showPrev.value,
+    onClick: prev,
+  },
+  { key: "zoom-in", icon: ElIconZoomIn, description: "放大", shortcut: "+", onClick: zoomIn },
+  { key: "zoom-out", icon: ElIconZoomOut, description: "缩小", shortcut: "-", onClick: zoomOut },
+  { key: "rotate-cw", icon: ElIconRefreshRight, description: "顺时针旋转", shortcut: "r", btnClass: "scale-104", onClick: rotateClockwise },
+  { key: "reset", icon: ElIconFullScreen, description: "重置", shortcut: "0", onClick: resetImage },
+  { key: "rotate-ccw", icon: ElIconRefreshLeft, description: "逆时针旋转", shortcut: "R", onClick: rotateAnticlockwise },
+  {
+    key: "save",
+    icon: ElIconDownload,
+    description: "保存",
+    shortcut: "Ctrl+S",
+    show: !!currentImageUrl.value,
+    btnClass: "btn-primary dark:btn-info",
+    onClick: () => saveImage(currentImageUrl.value || ""),
+  },
+  {
+    key: "next",
+    icon: ElIconDArrowRight,
+    description: "下一张",
+    shortcut: "→",
+    show: showNext.value,
+    onClick: next,
+  },
+  {
+    key: "shortcut-tips",
+    icon: "i-solar:question-circle-linear",
+    description: "点击展开完整快捷键列表",
+    show: !showShortcutTips.value,
+    btnClass: "btn-primary dark:btn-info",
+    onClick: () => { showShortcutTips.value = true; },
+  },
+]);
+
 // 处理背景点击事件
 function handleContainerClick(e: MouseEvent) {
   // 仅当点击在容器而不是图片上时关闭预览
@@ -495,56 +562,26 @@ defineExpose({
         </div>
         <!-- 工具栏 -->
         <div class="pointer-events-auto absolute bottom-10 left-1/2 flex transform items-center gap-4 rounded-2 card-default-br p-2.5 p-x-3.75 -translate-x-1/2">
-          <el-icon-d-arrow-left
-            v-if="showPrev"
-            class="btn"
-            title="上一张"
-            @click.stop="prev"
-          />
-          <!-- zoom -->
-          <el-icon-zoom-in
-            class="btn"
-            title="放大"
-            @click.stop="zoomIn"
-          />
-          <el-icon-zoom-out
-            class="btn"
-            title="缩小"
-            @click.stop="zoomOut"
-          />
-          <!-- rotate -->
-          <el-icon-refresh-right
-            class="btn scale-104"
-            title="向前旋转"
-            @click.stop="rotateClockwise"
-          />
-          <!-- reset -->
-          <span
-            class="btn i-tabler:maximize !p-3"
-            @click.stop="resetImage"
-          />
-          <el-icon-refresh-left
-            class="btn scale-104"
-            title="重置"
-            @click.stop="rotateAnticlockwise"
-          />
-          <el-icon-download
-            v-if="currentImageUrl"
-            class="h-1.4rem w-1.4rem btn-primary dark:btn-info"
-            title="保存"
-            @click.stop="saveImage(currentImageUrl)"
-          />
-          <el-icon-d-arrow-right
-            v-if="showNext"
-            class="btn"
-            title="下一张"
-            @click.stop="next"
-          />
-          <i
-            v-if="!showShortcutTips"
-            title="提示"
-            class="inline-blcok i-solar:question-circle-linear h-1.4rem w-1.4rem btn-primary dark:btn-info" @click.stop="showShortcutTips = true"
-          />
+          <template v-for="action in toolbarActions" :key="action.key">
+            <CommonIconTip
+              v-if="action.show !== false"
+              placement="top"
+              effect="light"
+              class="btn h-1.4rem w-1.4rem"
+              :class="action.btnClass"
+              @click.stop="action.onClick()"
+            >
+              <template #content>
+                <SettingKbd :description="action.description" :shortcut="action.shortcut" />
+              </template>
+              <template #default>
+                <component
+                  :is="typeof action.icon === 'string' ? 'i' : action.icon"
+                  :class="typeof action.icon === 'string' ? `${action.icon} block h-full w-full` : 'block h-full w-full'"
+                />
+              </template>
+            </CommonIconTip>
+          </template>
         </div>
         <!-- 左右切换箭头 -->
         <div
@@ -582,10 +619,12 @@ defineExpose({
             <i class="i-carbon:close cursor-pointer p-2.6 hover:opacity-70" @click="isShortcutCardCollapsed = true" />
           </div>
           <div class="border-default-2-b px-3 py-2 text-mini leading-1.6em">
-            <div v-for="shortcut in filterKeyShortList" :key="shortcut.key" class="flex-row-bt-c">
-              <span>{{ shortcut.key }}</span>
-              <span>{{ shortcut.description }}</span>
-            </div>
+            <SettingKbd
+              v-for="shortcut in filterKeyShortList"
+              :key="shortcut.key"
+              :description="shortcut.description"
+              :shortcut="shortcut.key"
+            />
           </div>
           <div class="flex-row-bt-c px-3 py-2">
             <el-checkbox v-model="hiddenShortcutTips" size="small" class="mr-1">

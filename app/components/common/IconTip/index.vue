@@ -68,9 +68,15 @@ const emit = defineEmits<{
   (e: "click", event: MouseEvent): void;
 }>();
 
+const slots = useSlots();
+const hasContentSlot = computed(() => !!slots.content);
+
 const setting = useSettingStore();
 
 const shouldDisableTooltip = computed(() => setting.isMobileSize || disabled || disabledTooltip);
+
+/** 有 content 插槽时仅显示插槽内容，不传文案避免与 #content 冲突 */
+const tooltipContent = computed(() => (hasContentSlot.value ? "" : tip));
 
 function handleClick(event: MouseEvent) {
   if (!disabled) {
@@ -81,7 +87,7 @@ function handleClick(event: MouseEvent) {
 
 <template>
   <el-tooltip
-    :content="tip"
+    :content="tooltipContent"
     :effect="effect"
     :disabled="shouldDisableTooltip"
     :placement="placement"
