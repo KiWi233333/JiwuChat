@@ -114,8 +114,10 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 
 // 选择框 / 提及 / 自动补全
 .el-popper.el-mention__popper,
+.el-popper.el-picker__popper,
+.el-popper.el-color-picker__panel,
 .el-popper.el-select__popper {
-  --at-apply: "bg-white dark:bg-dark-8 rounded-10px border-default";
+  --at-apply: "!bg-white overflow-hidden !dark:(bg-dark-8 bg-op-70) !bg-op-80 !backdrop-blur-6 rounded-10px border-default-3";
   .el-select-dropdown,
   .el-mention-dropdown {
     .el-select-dropdown__footer {
@@ -124,6 +126,10 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
     .el-scrollbar {
       padding: 0.5em;
     }
+  }
+
+  .el-popper__arrow::before {
+    --at-apply: "!bg-white  !bg-op-80 !dark:(bg-dark-8 bg-op-50) !backdrop-blur-6 border-default-3";
   }
   .el-scrollbar {
     .el-scrollbar__wrap {
@@ -182,6 +188,13 @@ $drawer-animation-timing: cubic-bezier(0.32, 0.72, 0, 1);
 
 .el-dropdown__popper {
   --at-apply: "!border-default-hover";
+}
+
+/* --- 分割线 --- */
+.el-divider {
+  .el-divider__text {
+    --at-apply: "card-rounded-df leading-[1.5]";
+  }
 }
 
 /* --- 反馈 & 遮罩 --- */
@@ -388,7 +401,7 @@ body .el-message {
 .mx-context-menu {
   --popper-fade-anima-scale: 0.9;
   transform-origin: center top;
-  --at-apply: "!border-default-2 dark:!bg-[#111111] !bg-white animate-[popper-fade-anim_0.15s]";
+  --at-apply: "!border-none dark:!bg-[#22222299] backdrop-blur-6 !bg-[#ffffff99] animate-[popper-fade-anim_0.15s]";
 
   .mx-context-menu-items {
     .mx-context-menu-item {
@@ -428,11 +441,16 @@ body .el-message {
       }
     }
   }
-
-  --mx-menu-active-backgroud: var(--el-color-primary);
-  --mx-menu-hover-backgroud: var(--el-color-primary);
-  --mx-menu-open-hover-backgroud: var(--el-color-primary);
-  --mx-menu-open-backgroud: #71717188 !important;
+}
+.dark {
+  .mx-context-menu {
+    .mx-context-menu-item {
+      --mx-menu-active-backgroud: #ffffff1a;
+      --mx-menu-hover-backgroud: #ffffff1a;
+      --mx-menu-open-hover-backgroud: #7b7b7b10;
+      --mx-menu-open-backgroud: #7b7b7b10;
+    }
+  }
 }
 
 /* --- NProgress 进度条 --- */
