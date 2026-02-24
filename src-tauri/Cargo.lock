@@ -2033,7 +2033,7 @@ dependencies = [
 
 [[package]]
 name = "jiwuchat"
-version = "1.8.2"
+version = "1.8.3"
 dependencies = [
  "objc2",
  "objc2-app-kit",
