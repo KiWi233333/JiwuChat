@@ -79,12 +79,3 @@ pub fn hide_window(app: &AppHandle) {
         let _ = window.hide();
     }
 }
-
-#[cfg(desktop)]
-pub fn minimize_window(app: &AppHandle) {
-    if let Some(window) = app.webview_windows().get("main") {
-        let _ = window.minimize();
-    } else if let Some(window) = app.webview_windows().get("login") {
-        let _ = window.minimize();
-    }
-}
