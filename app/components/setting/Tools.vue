@@ -13,6 +13,7 @@ defineProps<Props>();
       <SettingTranslation class="select" :size="size" />
     </div>
   </div>
+  <SettingOrcaProviderCard class="orca" :size="size" />
 </template>
 
 <style scoped lang="scss">
